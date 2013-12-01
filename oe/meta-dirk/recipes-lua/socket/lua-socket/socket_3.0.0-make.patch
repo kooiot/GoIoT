@@ -1,0 +1,78 @@
+diff -uNr luasocket-3.0-rc1_org/src/makefile luasocket-3.0-rc1/src/makefile
+--- luasocket-3.0-rc1_org/src/makefile	2013-11-29 00:12:00.082006346 +0800
++++ luasocket-3.0-rc1/src/makefile	2013-11-29 00:45:52.037961932 +0800
+@@ -18,7 +18,7 @@
+ 
+ # LUAV: 5.1 5.2
+ # lua version to build against
+-LUAV?=5.1
++LUAV?=5.2
+ 
+ # DEBUG: NODEBUG DEBUG
+ # debug mode causes luasocket to collect and returns timing information useful
+@@ -77,7 +77,8 @@
+ 
+ # prefix: /usr/local /usr /opt/local /sw
+ # the top of the default install tree
+-prefix?=$(LUAPREFIX_$(PLAT))
++# prefix?=$(LUAPREFIX_$(PLAT))
++prefix=/usr
+ 
+ CDIR?=$(CDIR_$(PLAT))
+ LDIR?=$(LDIR_$(PLAT))
+@@ -213,11 +214,10 @@
+ #------
+ # Settings selected for platform
+ #
+-CC=$(CC_$(PLAT))
+-DEF=$(DEF_$(PLAT))
+-CFLAGS=$(CFLAGS_$(PLAT))
+-LDFLAGS=$(LDFLAGS_$(PLAT))
+-LD=$(LD_$(PLAT))
++#DEF=-DLUASOCKET_DEBUG
++#CFLAGS= $(LUAINC) $(DEF) -pedantic -Wall -O2 -fpic
++#LDFLAGS=$(LDFLAGS) `pkg-config --cflags --libs lua52`
++#LD=$(CC)
+ LUAINC= $(LUAINC_$(PLAT))
+ LUALIB= $(LUALIB_$(PLAT))
+ 
+@@ -307,21 +307,23 @@
+ 	@echo "where PLATFORM is one of these:"
+ 	@echo "   $(PLATS)"
+ 
++FLAGS = -shared $(MYFLAGS) `pkg-config --libs --cflags lua5.2`
++
+ all: $(SOCKET_SO) $(MIME_SO)
+ 
+ $(SOCKET_SO): $(SOCKET_OBJS)
+-	$(LD) $(SOCKET_OBJS) $(LDFLAGS)$@
++	$(CC) $(FLAGS) $(SOCKET_OBJS) -o $@
+ 
+ $(MIME_SO): $(MIME_OBJS)
+-	$(LD) $(MIME_OBJS) $(LDFLAGS)$@
++	$(CC) $(FLAGS) $(MIME_OBJS) -o $@
+ 
+ all-unix: all $(UNIX_SO) $(SERIAL_SO)
+ 
+ $(UNIX_SO): $(UNIX_OBJS)
+-	$(LD) $(UNIX_OBJS) $(LDFLAGS)$@
++	$(CC) $(FLAGS) $(UNIX_OBJS) -o $@
+ 
+ $(SERIAL_SO): $(SERIAL_OBJS)
+-	$(LD) $(SERIAL_OBJS) $(LDFLAGS)$@
++	$(CC) $(FLAGS) $(SERIAL_OBJS) -o $@
+ 
+ install: 
+ 	$(INSTALL_DIR) $(INSTALL_TOP_LDIR)
+diff -uNr luasocket-3.0-rc1_org/src/serial.c luasocket-3.0-rc1/src/serial.c
+--- luasocket-3.0-rc1_org/src/serial.c	2013-11-29 00:12:00.082006346 +0800
++++ luasocket-3.0-rc1/src/serial.c	2013-11-29 00:31:49.745980342 +0800
+@@ -66,7 +66,7 @@
+ /*-------------------------------------------------------------------------*\
+ * Initializes module
+ \*-------------------------------------------------------------------------*/
+-LUASOCKET_API int luaopen_socket_serial(lua_State *L) {
++int luaopen_socket_serial(lua_State *L) {
+     /* create classes */
+     auxiliar_newclass(L, "serial{client}", serial_methods);
+     /* create class groups */

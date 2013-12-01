@@ -1,0 +1,22 @@
+diff -uNr xavante-2.3.0_org/config xavante-2.3.0/config
+--- xavante-2.3.0_org/config	2013-11-30 00:49:56.408184174 +0800
++++ xavante-2.3.0/config	2013-11-30 00:50:09.916183879 +0800
+@@ -1,13 +1,13 @@
+ # $Id: config,v 1.16 2007/11/17 14:15:23 carregal Exp $
+ 
+ # Default prefix
+-PREFIX = /usr/local
++PREFIX = /usr
+ 
+ # System's libraries directory (where binary libraries are installed)
+-LUA_LIBDIR= $(PREFIX)/lib/lua/5.1
++LUA_LIBDIR= $(PREFIX)/lib/lua/5.2
+ 
+ # System's lua directory (where Lua libraries are installed)
+-LUA_DIR= $(PREFIX)/share/lua/5.1
++LUA_DIR= $(PREFIX)/share/lua/5.2
+ 
+ # Complete path to Lua command line interpreter
+-LUA_INTERPRETER= $(PREFIX)/bin/lua
+\ 文件尾没有 newline 字符
++LUA_INTERPRETER= $(PREFIX)/bin/lua

@@ -1,0 +1,84 @@
+diff -uNr wsapi-1.6_org/configure wsapi-1.6/configure
+--- wsapi-1.6_org/configure	2013-11-29 13:04:11.336551285 +0800
++++ wsapi-1.6/configure	2013-11-29 13:07:49.872546509 +0800
+@@ -1,36 +1,36 @@
+-#!/bin/sh
+-
+-if [ $1 == "--help" ]; then
+-  echo "Usage: configure lua51"
+-  echo "where lua51 is the name of your Lua executable"
+-  exit 0
+-fi
+-
+-echo "Trying to find where you installed Lua..."
+-
+-if [ $1 != "" ]; then
+-  lua=$1
+-else
+-  lua="lua51"
+-fi
+-
+-lua_bin=`which $lua`
+-lua_bin_dir=`dirname $lua_bin`
+-
+-lua_root=`dirname $lua_bin_dir`
+-
+-if [ $lua_root != "" ]; then
+-  echo "Lua is in $lua_root"
+-  echo "Writing config"
+-  lua_share=$lua_root/share/lua/5.1
+-  lua_lib=$lua_root/lib/lua/5.1
+-  bin_dir=$lua_root/bin
+-  echo "LIB_OPTION= -shared -fPIC" > config
+-  echo "LUA_DIR= $lua_share" >> config
+-  echo "BIN_DIR= $bin_dir" >> config
+-  echo "LUA_LIBDIR= $lua_lib" >> config
+-  echo "Now run 'make && sudo make install'"
+-else
+-  echo "Lua not found, please install Lua 5.1 (and put in your PATH)"
+-fi
+-
++#!/bin/sh
++
++if [ $1 == "--help" ]; then
++  echo "Usage: configure lua51"
++  echo "where lua51 is the name of your Lua executable"
++  exit 0
++fi
++
++echo "Trying to find where you installed Lua..."
++
++if [ $1 != "" ]; then
++  lua=$1
++else
++  lua="lua51"
++fi
++
++lua_bin=`which $lua`
++lua_bin_dir=`dirname $lua_bin`
++
++lua_root=`dirname $lua_bin_dir`
++
++if [ $lua_root != "" ]; then
++  echo "Lua is in $lua_root"
++  echo "Writing config"
++  lua_share=$lua_root/share/lua/5.1
++  lua_lib=$lua_root/lib/lua/5.1
++  bin_dir=$lua_root/bin
++  echo "LIB_OPTION= -shared -fPIC" > config
++  echo "LUA_DIR= $lua_share" >> config
++  echo "BIN_DIR= $bin_dir" >> config
++  echo "LUA_LIBDIR= $lua_lib" >> config
++  echo "Now run 'make && sudo make install'"
++else
++  echo "Lua not found, please install Lua 5.1 (and put in your PATH)"
++fi
++
+
+--- wsapi-1.6_org/config	1970-01-01 08:00:00.000000000 +0800
++++ wsapi-1.6/config	2013-11-29 13:14:28.372537798 +0800
+@@ -0,0 +1,4 @@
++LIB_OPTION= -shared -fPIC
++LUA_DIR= ${PREFIX}/share/lua/5.2
++BIN_DIR= ${PREFIX}/bin
++LUA_LIBDIR= ${PREFIX}/lib/lua/5.2

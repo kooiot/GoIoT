@@ -1,0 +1,25 @@
+diff -uNr luafilesystem-1.6.2_org/config luafilesystem-1.6.2/config
+--- luafilesystem-1.6.2_org/config	2013-11-29 01:20:11.221916923 +0800
++++ luafilesystem-1.6.2/config	2013-11-29 01:20:43.649916214 +0800
+@@ -1,10 +1,10 @@
+ # Installation directories
+ 
+ # Default installation prefix
+-PREFIX=/usr/local
++PREFIX=/usr
+ 
+ # System's libraries directory (where binary libraries are installed)
+-LUA_LIBDIR= $(PREFIX)/lib/lua/5.1
++LUA_LIBDIR= $(PREFIX)/lib/lua/5.2
+ 
+ # Lua includes directory
+ LUA_INC= $(PREFIX)/include
+@@ -19,6 +19,5 @@
+ # Compilation directives
+ WARN= -O2 -Wall -fPIC -W -Waggregate-return -Wcast-align -Wmissing-prototypes -Wnested-externs -Wshadow -Wwrite-strings -pedantic
+ INCS= -I$(LUA_INC)
+-CFLAGS= $(WARN) $(INCS)
+-CC= gcc
++CFLAGS= $(WARN)
+
+# $Id: config,v 1.21 2007/10/27 22:42:32 carregal Exp $

@@ -1,0 +1,12 @@
+diff -uNr rings-v_1_3_0.org/Makefile rings-v_1_3_0/Makefile
+--- rings-v_1_3_0.org/Makefile	2013-11-29 16:15:49.964299951 +0800
++++ rings-v_1_3_0/Makefile	2013-11-29 16:16:03.828299648 +0800
+@@ -11,7 +11,7 @@
+ all: src/rings.so
+ 
+ src/rings.so: $(OBJS)
+-	export MACOSX_DEPLOYMENT_TARGET="10.3"; $(CC) $(CFLAGS) $(LIB_OPTION) -o src/rings.so $(OBJS)
++	export MACOSX_DEPLOYMENT_TARGET="10.3"; $(CC) $(CFLAGS) $(LIB_OPTION) $(LDFLAGS) -o src/rings.so $(OBJS)
+ 
+ install:
+ 	mkdir -p $(DESTDIR)$(LUA_LIBDIR)

@@ -1,0 +1,8 @@
+diff -uNr coxpcall-1_14_0_org/config coxpcall-1_14_0/config
+--- coxpcall-1_14_0_org/config	1970-01-01 08:00:00.000000000 +0800
++++ coxpcall-1_14_0/config	2013-11-29 12:23:29.300604663 +0800
+@@ -0,0 +1,4 @@
++LUA_BIN= $(PREFIX)/bin/lua
++LUA_DIR= $(PREFIX)/share/lua/5.2
++BIN_DIR= $(PREFIX)/bin
++LUA_LIBDIR= $(PREFIX)/lib/lua/5.2
