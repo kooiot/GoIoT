@@ -4,8 +4,7 @@ LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://doc/us/license.html;beginline=64;endline=111;md5=1d7b97a787be0fde7bd8c3d01b529426"
 HOMEPAGE = "https://www.github.com/keplerproject"
 
-RDEPENDS_${PN} += "lua5.2"
-IMAGE_INSTALL += "lua5.2"
+RDEPENDS_${PN} += "liblua"
 
 PR = "r1"
 S = "${WORKDIR}/md5-1.2"
@@ -24,7 +23,11 @@ FILES_${PN} = "${LUA_LIB_DIR}/*.so"
 
 EXTRA_OEMAKE = "LUA_V=5.2"
 
-do_install() {
+do_configure_prepend () {
+	oe_runmake clean
+}
+
+do_install () {
 		oe_runmake install PREFIX=${D}/${prefix}
 		install -d ${D}/${docdir}/${PN}-${PV}
 		install -m 0644 doc/us/* ${D}/${docdir}/${PN}-${PV}

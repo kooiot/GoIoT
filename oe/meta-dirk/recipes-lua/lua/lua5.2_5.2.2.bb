@@ -1,8 +1,6 @@
-DESCRIPTION = "Lua is a powerful light-weight programming language designed \
-for extending applications."
-LICENSE = "MIT"
+require lua.inc
+
 LIC_FILES_CHKSUM = "file://doc/readme.html;beginline=364;endline=401;md5=668892f07dfdc2a7766ac46f4cf8132b"
-HOMEPAGE = "http://www.lua.org/"
 
 PR = "r1"
 

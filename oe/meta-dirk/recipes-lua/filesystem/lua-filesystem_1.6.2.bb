@@ -1,9 +1,9 @@
 DESCRIPTION = "LuaFileSystem is a Lua library with set of functions related to file systems operations."
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://doc/us/license.html;beginline=63;endline=109;md5=6838cdec7c5b74b89993b8cd93b141a6"
 HOMEPAGE = "https://github.com/keplerproject"
 
-RDEPENDS_${PN} += "lua5.2"
+RDEPENDS_${PN} += "liblua"
 
 PR = "r1"
 S = "${WORKDIR}/luafilesystem-${PV}"

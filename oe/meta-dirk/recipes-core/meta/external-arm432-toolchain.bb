@@ -31,9 +31,6 @@ PROVIDES += "\
 	libstd++ \
 	libSegFault \
 	eglibc \
-	glibc \
-	kmod \
-	virtual/kmod \
 	virtual/linux-headers \
 	virtual/linux-libc-headers \
 "

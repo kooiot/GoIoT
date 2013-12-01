@@ -18,8 +18,7 @@ SRC_URI[sha256sum] = "665a7ffa426dad32cca4e1f2e3d202783fe9865319e310d7a19a3fccb1
 LUA_LIB_DIR = "${libdir}/lua/5.2"
 LUA_SHARE_DIR = "${datadir}/lua/5.2"
 
-RDEPENDS_${PN} += "lua5.2"
-IMAGE_INSTALL += "lua5.2"
+RDEPENDS_${PN} += "liblua"
 
 do_install() {
 		oe_runmake install PREFIX=${D}/${prefix}

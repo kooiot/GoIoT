@@ -3,7 +3,7 @@ LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://doc/us/license.html;beginline=51;endline=113;md5=9ac2e7c3defedb69616216fc9b154c0f"
 HOMEPAGE = "https://www.github.com/keplerproject"
 
-RDEPENDS_${PN} += "lua5.2 lua-filesystem lua-rings lua-coxpcall libfcgi"
+RDEPENDS_${PN} += "liblua lua-filesystem lua-rings lua-coxpcall libfcgi"
 
 PR = "r1"
 S = "${WORKDIR}/wsapi-1.6"

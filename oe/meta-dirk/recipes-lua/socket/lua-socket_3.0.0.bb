@@ -3,7 +3,7 @@ LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=ab6706baf6d39a6b0fa2613a3b0831e7"
 HOMEPAGE = "https://github.com/diegonehab/luasocket"
 
-RDEPENDS_${PN} += "lua5.2"
+RDEPENDS_${PN} += "liblua"
 
 PR = "r0"
 S = "${WORKDIR}/luasocket-3.0-rc1"

@@ -3,7 +3,7 @@ LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://doc/us/license.html;beginline=60;endline=109;md5=590cda4282e9a8adca435648c46104ca"
 HOMEPAGE = "https://www.github.com/keplerproject"
 
-RDEPENDS_${PN} += "lua5.2 lua-socket lua-coxpcall"
+RDEPENDS_${PN} += "liblua lua-socket lua-coxpcall"
 
 PR = "r0"
 S = "${WORKDIR}/copas-1_2_0"

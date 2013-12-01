@@ -3,7 +3,7 @@ LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://doc/us/license.html;beginline=61;endline=105;md5=233d45b83cb017f713f5293cabd9f391"
 HOMEPAGE = "https://www.github.com/keplerproject"
 
-RDEPENDS_${PN} += "lua5.2 expat"
+RDEPENDS_${PN} += "liblua expat"
 
 PR = "r1"
 S = "${WORKDIR}/lua-expat-1f41c74ce686"

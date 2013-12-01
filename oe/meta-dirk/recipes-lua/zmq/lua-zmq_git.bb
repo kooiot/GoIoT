@@ -3,7 +3,7 @@ LICENSE = "OpenDomain"
 LIC_FILES_CHKSUM = "file://COPYRIGHT;md5=2a42bad4cc9c1f188181fded2c969311"
 HOMEPAGE = "https://github.com/Neopallium/lua-zmq"
 
-RDEPENDS_${PN} += "lua5.2 zmq"
+RDEPENDS_${PN} += "liblua zmq"
 
 S = "${WORKDIR}/git"
 
