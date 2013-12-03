@@ -4,7 +4,7 @@ local cjson = require 'cjson.safe'
 
 local _M = {}
 
-local function create_pub(ctx, option)
+function _M.create(ctx, option)
 	_M.context = ctx or zmq.context()
 	if option then
 		option[1] = zmq.PUB
@@ -12,12 +12,12 @@ local function create_pub(ctx, option)
 	else
 		_M.option = {
 			zmq.PUB, 
-			bind = "tcp://*:5556"
+			bind = "tcp://*:5566"
 		}
 	end
 
 	local err = nil
-	_M.publisher, err = context:socket(option)
+	_M.publisher, err = _M.context:socket(_M.option)
 	zassert(_M.publisher, err)
 	return true
 end
@@ -28,9 +28,8 @@ end
 
 _M.pub = function (key, data)
 	-- Write two messages, each with an envelope and content
-	if key then
-		_M.publisher:send(key, zmq.SNDMORE)
-	end
+	_M.publisher:send(key..' ', zmq.SNDMORE)
 	_M.publisher:send(data)
 end
 
+return _M

@@ -1,8 +1,14 @@
 #!/usr/bin/env lua
 
+local m_path = '/home/cch/cad2/app/shared/'
+local m_package_path = package.path  
+package.path = string.format("%s;%s?.lua;%s?/init.lua", m_package_path, m_path, m_path)  
+
 require 'zhelpers'
 local zmq = require 'lzmq'
+local zpoller = require 'lzmq.poller'
 local cjson = require 'cjson.safe'
+
 local db = require('db').new()
 db:open('db.sqlite3')
 
@@ -10,6 +16,10 @@ local ctx = zmq.context()
 
 local server, err = ctx:socket{zmq.REP, bind = "tcp://*:5555"}
 zassert(server, err)
+
+local ptable = {}
+local publisher, err = ctx:socket{zmq.PUB, bind = "tcp://*:5566"}
+zassert(publisher, err)
 
 function send_err(err)
 	local reply = {'error', {err=err}}
@@ -70,6 +80,14 @@ mpft['set'] = function(vars)
 			if r then
 				local rep = {'set', {result='ok', name=vars.name}}
 				server:send(cjson.encode(rep))
+
+				-- publish changes
+				if ptable[vars.name] then
+					for k, v in pairs(ptable[vars.name]) do
+						publisher:send(k..' ', zmq.SNDMORE)
+						publisher:send(cjson.encode(vars))
+					end
+				end
 				return
 			end
 		end
@@ -95,29 +113,59 @@ mpft['get'] = function(vars)
 	send_err(err)
 end
 
-function run()
-	while true do
-		local req_json = server:recv()
-		print("REQ:\t"..req_json)
+mpft['subscribe'] = function(vars)
+	local err =  'Invalid/Unsupported subscribe request'
+	local id = vars.id
+	local tags = vars.tags
+	for k,v in pairs(tags) do
+		print('subscribe '..v..' for '..id)
+		ptable[v] = ptable[v] or {}
+		ptable[v][id] = true
+	end
+	local rep = {'subscribe', {result="ok", id=id}}
+	server:send(cjson.encode(rep))
+end
 
-		local req, err = cjson.decode(req_json)
-		if not req then
-			send_err(err)
+mpft['unsubscribe'] = function(vars)
+	local err =  'Invalid/Unsupported unsubscribe request'
+	local id = vars.id
+	for k,v in pairs(ptable) do
+		if ptable[v] and ptable[v][id] then
+			print('unsubscribe '..v..' for '..id)
+			ptable[v][id] = nil
+		end
+	end
+	local rep = {'unsubscribe', {result="ok", id=id}}
+	server:send(cjson.encode(rep))
+end
+
+local poller = zpoller.new(2)
+poller:add(server, zmq.POLLIN, function()
+	local req_json = server:recv()
+	print("REQ:\t"..req_json)
+
+	local req, err = cjson.decode(req_json)
+	if not req then
+		send_err(err)
+	else
+		if type(req) ~= 'table' then
+			send_err('unsupport message type')
 		else
-			if type(req) ~= 'table' then
-				send_err('unsupport message type')
+			-- handle request
+			--server:send(cjson.encode(req))
+			local fun = mpft[req[1]]
+			if fun then
+				fun(req[2])
 			else
-				-- handle request
-				--server:send(cjson.encode(req))
-				local fun = mpft[req[1]]
-				if fun then
-					fun(req[2])
-				else
-					send_err('Unsupported message operation'..req[1])
-				end
+				send_err('Unsupported message operation'..req[1])
 			end
 		end
 	end
-end
+end)
 
-run()
+poller:add(publisher, zmq.POLLIN, function()
+	--- NONE
+end)
+
+poller:start()
+

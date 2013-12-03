@@ -18,9 +18,16 @@ cgilua.put('  <strong>'..greeting..'</strong>')
 ]]--
 
 local api = require 'api'
-local tag = api.get('tag1')
-for k,v in pairs(tag) do
-	cgilua.put(k, '=', v)
-	cgilua.put('<p>')
+
+local function get_tag(name)
+	local tag = api.get(name)
+	for k,v in pairs(tag) do
+		cgilua.put(k, '=', v)
+		cgilua.put('<p>')
+	end
 end
+
+get_tag('test.tag1')
+get_tag('test.tag2')
+get_tag('test.tag9')
 
