@@ -12,7 +12,7 @@ SRC_URI = "http://download.zeromq.org/zeromq-${PV}.tar.gz \
 
 S = "${WORKDIR}/zeromq-${PV}"
 
-inherit autotools pkgconfig
+inherit autotools pkgconfig lib_package
 
 # We move shared libraries for target builds to avoid
 # qa warnings.

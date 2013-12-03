@@ -25,7 +25,7 @@ FILES_${PN} = "${LUA_LIB_DIR}/*.so \
 EXTRA_OEMAKE = "LUA_V=5.2"
 
 do_install() {
-		oe_runmake install PREFIX=${D}/${prefix}
+		oe_runmake install DESTDIR=${D}
 		install -d ${D}/${docdir}/${PN}-${PV}
 		install -m 0644 doc/us/* ${D}/${docdir}/${PN}-${PV}
 }

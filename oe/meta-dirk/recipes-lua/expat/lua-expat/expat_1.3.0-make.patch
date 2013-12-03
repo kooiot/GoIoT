@@ -1,0 +1,19 @@
+diff -uNr lua-expat-1f41c74ce686_org/Makefile lua-expat-1f41c74ce686/Makefile
+--- lua-expat-1f41c74ce686_org/Makefile	2013-12-03 17:21:45.268356753 +0800
++++ lua-expat-1f41c74ce686/Makefile	2013-12-03 17:21:55.792356790 +0800
+@@ -12,7 +12,7 @@
+ COMMON_CFLAGS	 = -g -pedantic -Wall -O2 -shared -fPIC -DPIC -ansi
+ LUA_INC		?= -I/usr/include/lua$(LUA_V)
+ EXPAT_INC	?= -I/usr/include
+-CF		 = $(LUA_INC) $(EXPAT_INC) $(COMMON_CFLAGS) $(CFLAGS)
++CF		 = $(COMMON_CFLAGS) $(CFLAGS)
+ 
+ EXPAT_LIB	 = -lexpat
+ COMMON_LDFLAGS	 = -shared
+@@ -31,4 +31,4 @@
+ 	$(INSTALL_PROGRAM) -D src/$T/lom.lua $(DESTDIR)$(LUA_LDIR)/$T/lom.lua
+ 
+ clean:
+-	$(RM) src/$(LIBNAME) $(OBJS)
+\ 文件尾没有 newline 字符
++	$(RM) src/$(LIBNAME) $(OBJS)

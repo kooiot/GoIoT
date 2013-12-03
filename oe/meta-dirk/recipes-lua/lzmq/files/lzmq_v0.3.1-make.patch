@@ -1,0 +1,102 @@
+diff -uNr git_org/Makefile git/Makefile
+--- git_org/Makefile	1970-01-01 08:00:00.000000000 +0800
++++ git/Makefile	2013-12-03 22:19:04.215083537 +0800
+@@ -0,0 +1,82 @@
++CC		?= cc
++RM		?= rm -rf
++INSTALL		?= install
++INSTALL_PROGRAM	?= $(INSTALL)
++INSTALL_DATA	?= $(INSTALL) -m 644
++LUA_V		?= 5.2
++LUA_LDIR	?= $(PREFIX)/share/lua/$(LUA_V)
++LUA_CDIR	?= $(PREFIX)/lib/lua/$(LUA_V)
++LIBNAME		= lzmq.so
++TIMER_LIBNAME = timer.so
++
++COMMON_CFLAGS = -DLUAZMQ_USE_SEND_AS_BUF -DLUAZMQ_USE_TEMP_BUFFERS -DLUAZMQ_USE_ERR_TYPE_OBJECT -DUSE_CLOCK_MONOTONIC -DUSE_GETTIMEOFDAY
++CF		 = $(COMMON_CFLAGS) $(CFLAGS)
++
++LIBS	 = -rt -lzmq -llua
++COMMON_LDFLAGS	 = -shared
++LF		 = $(COMMON_LDFLAGS) $(LIBS) $(LDFLAGS)
++
++%.o : %.c
++		$(CC) $(CF) -c $< -o $@ 
++
++OBJS		 = src/lzmq.o \
++			   src/lzutils.o \
++			   src/poller.o \
++			   src/zcontext.o \
++			   src/zerror.o \
++			   src/zmsg.o \
++			   src/zpoller.o \
++			   src/zsocket.o
++
++TIMER_OBJS   = src/ztimer.o \
++			   src/lzutils.o
++
++lib: src/$(LIBNAME) src/$(TIMER_LIBNAME)
++
++timer_lib: src/$(TIMER_LIBNAME)
++
++src/$(LIBNAME): $(OBJS)
++	$(CC) $(LF) -o $@ $(OBJS)
++
++src/$(TIMER_LIBNAME): $(TIMER_OBJS)
++	$(CC) $(LF) -o $@ $(TIMER_OBJS)
++
++all: lib
++
++LZMQ_LUA_FILES =\
++			   src/lua/lzmq/poller.lua \
++			   src/lua/lzmq/threads.lua \
++			   src/lua/lzmq/loop.lua \
++			   src/lua/lzmq/ffi.lua
++
++LZMQ_LUA_IMPL_FILES=\
++			   src/lua/lzmq/impl/loop.lua \
++			   src/lua/lzmq/impl/threads.lua 
++
++LZMQ_LUA_LLT_FILES=\
++			   src/lua/lzmq/llthreads/ex.lua 
++
++LZMQ_LUA_FFI_FILES=\
++			   src/lua/lzmq/ffi/api.lua \
++			   src/lua/lzmq/ffi/lzmq.lua \
++			   src/lua/lzmq/ffi/timer.lua \
++			   src/lua/lzmq/ffi/poller.lua \
++			   src/lua/lzmq/ffi/loop.lua \
++			   src/lua/lzmq/ffi/error.lua \
++			   src/lua/lzmq/ffi/threads.lua
++
++install:
++	$(INSTALL_PROGRAM) -D src/$(LIBNAME) $(LUA_CDIR)/$(LIBNAME)
++	$(INSTALL_PROGRAM) -D src/$(TIMER_LIBNAME) $(LUA_CDIR)/lzmq/$(TIMER_LIBNAME)
++	$(INSTALL) -d $(LUA_LDIR)/lzmq
++	$(INSTALL_DATA) $(LZMQ_LUA_FILES) $(LUA_LDIR)/lzmq
++	$(INSTALL) -d $(LUA_LDIR)/lzmq/impl
++	$(INSTALL_DATA) $(LZMQ_LUA_IMPL_FILES) $(LUA_LDIR)/lzmq/impl
++	$(INSTALL) -d $(LUA_LDIR)/lzmq/llthreads
++	$(INSTALL_DATA) $(LZMQ_LUA_LLT_FILES) $(LUA_LDIR)/lzmq/llthreads
++	$(INSTALL) -d $(LUA_LDIR)/lzmq/ffi
++	$(INSTALL_DATA) $(LZMQ_LUA_FFI_FILES) $(LUA_LDIR)/lzmq/ffi
++
++clean:
++	$(RM) src/$(LIBNAME) $(OBJS)
++	$(RM) src/$(TIMER_LIBNAME) $(TIMER_OBJS)
+diff -uNr git_org/src/zpoller.c git/src/zpoller.c
+--- git_org/src/zpoller.c	2013-12-03 17:50:17.856362785 +0800
++++ git/src/zpoller.c	2013-12-03 21:36:16.531074493 +0800
+@@ -6,12 +6,6 @@
+ 
+ #define LUAZMQ_DEFAULT_POLLER_LEN 10
+ 
+-#if defined(_WIN32) || defined(_WINDOWS) 
+-typedef SOCKET socket_t;
+-#else
+-typedef int socket_t;
+-#endif
+-
+ 
+ int luazmq_poller_create(lua_State *L){
+   unsigned int n = luaL_optinteger(L,1,LUAZMQ_DEFAULT_POLLER_LEN);
