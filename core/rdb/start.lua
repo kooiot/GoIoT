@@ -1,10 +1,10 @@
 #!/usr/bin/env lua
 
-local m_path = '/home/cch/cad2/app/shared/'
+local m_path = os.getenv('CAD_DIR') or "."
 local m_package_path = package.path  
-package.path = string.format("%s;%s?.lua;%s?/init.lua", m_package_path, m_path, m_path)  
+package.path = string.format("%s;%s/?.lua;%s/?/init.lua", m_package_path, m_path, m_path)  
 
-require 'zhelpers'
+require 'shared.zhelpers'
 local zmq = require 'lzmq'
 local zpoller = require 'lzmq.poller'
 local cjson = require 'cjson.safe'

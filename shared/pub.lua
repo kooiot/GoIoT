@@ -1,4 +1,4 @@
-require"zhelpers"
+require "shared.zhelpers"
 local zmq =require"lzmq"
 local cjson = require 'cjson.safe'
 

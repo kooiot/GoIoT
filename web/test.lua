@@ -23,7 +23,7 @@ cgilua.put('</html>')
 
 cgilua.contentheader('text', 'plain')
 
-local api = require 'api'
+local api = require 'shared.api.data'
 
 local function get_tag(name)
 	local tag = api.get(name)
