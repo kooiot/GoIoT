@@ -9,25 +9,58 @@ else
 	greeting = '[unknown language]'
 end
 
+local title = 'Test getting tags'
 cgilua.put('<html>')  
 cgilua.put('<head>')
-cgilua.put('  <title>'..greeting..'</title>')
+cgilua.put('  <title>'..title..'</title>')
 cgilua.put('</head>')
 cgilua.put('<body>')
-cgilua.put('  <strong>'..greeting..'</strong>')
+cgilua.put('  <strong>'..title..'</strong>')
+
+cgilua.put('</body>')
+cgilua.put('</html>')  
 ]]--
+
+cgilua.contentheader('text', 'plain')
 
 local api = require 'api'
 
 local function get_tag(name)
 	local tag = api.get(name)
-	for k,v in pairs(tag) do
-		cgilua.put(k, '=', v)
-		cgilua.put('<p>')
-	end
+	return tag
+	--return {tag.name, tag.value, tag.timestamp}
 end
 
-get_tag('test.tag1')
-get_tag('test.tag2')
-get_tag('test.tag9')
+local tags = {}
+tags[#tags + 1] = get_tag('test.tag1')
+tags[#tags + 1] = get_tag('test.tag1')
+tags[#tags + 1] = get_tag('test.tag2')
+tags[#tags + 1] = get_tag('test.tag2')
+tags[#tags + 1] = get_tag('test.tag2')
+tags[#tags + 1] = get_tag('test.tag2')
+tags[#tags + 1] = get_tag('test.tag2')
+tags[#tags + 1] = get_tag('test.tag2')
+tags[#tags + 1] = get_tag('test.tag2')
+tags[#tags + 1] = get_tag('test.tag2')
+tags[#tags + 1] = get_tag('test.tag2')
+tags[#tags + 1] = get_tag('test.tag2')
+tags[#tags + 1] = get_tag('test.tag2')
+tags[#tags + 1] = get_tag('test.tag2')
+tags[#tags + 1] = get_tag('test.tag2')
+tags[#tags + 1] = get_tag('test.tag2')
+tags[#tags + 1] = get_tag('test.tag2')
+tags[#tags + 1] = get_tag('test.tag2')
+tags[#tags + 1] = get_tag('test.tag2')
+tags[#tags + 1] = get_tag('test.tag2')
+tags[#tags + 1] = get_tag('test.tag2')
+tags[#tags + 1] = get_tag('test.tag2')
+tags[#tags + 1] = get_tag('test.tag2')
+tags[#tags + 1] = get_tag('test.tag2')
+tags[#tags + 1] = get_tag('test.tag2')
+tags[#tags + 1] = get_tag('test.tag2')
+tags[#tags + 1] = get_tag('test.tag9')
 
+local cjson = require 'cjson.safe'
+
+local j = {tags=tags}
+cgilua.put(cjson.encode(j))
