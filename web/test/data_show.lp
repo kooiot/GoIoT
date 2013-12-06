@@ -1,3 +1,11 @@
+<%
+if not cgilua.authentication.username() then
+	cgilua.redirect(cgilua.authentication.checkURL())
+else
+-- continues with the application flow
+	cgilua.contentheader('text', 'html; charset=utf8')
+%>
+
 <html>
 	<head>
 		<title>Login</title>
@@ -69,7 +77,7 @@
 					{ "mDataProp": "timestamp" },
 					]
 				});
-				var newtimer = setInterval( function () {
+				newtimer = setInterval( function () {
 					oTable.fnReloadAjax(null, null, false);
 					}, 1000 );
 				}); 
@@ -80,14 +88,8 @@
 		<h1> Test Page! </h1>
 		<div id="sysdate"><b>System Time:</b><u><%= os.date() %></u></div>
 		<br />
-		<div id="loginform">
-			<form method="post" action="" >
-				User name: <input name="username" maxlength="20" size="20" value="<%= username %>" ><br />
-				Password: <input name="pass" type="password" maxlength="20" size="20"><br />
-				<input type="submit" value="Login" />
-				<input type="reset" value="Reset" />
-			</form>
-		</div>
+		<p>User <%= cgilua.authentication.username() %> logged in <a href="<%= cgilua.authentication.logoutURL() %>">Logout</a> </p>
+		<button onclick="newtimer=window.clearInterval(newtimer)"> 停止刷新</button> 
 
 		<table cellpadding="0" cellspacing="0" border="0" class="display" id="mytable">
 			<thead>
@@ -110,3 +112,7 @@
 		</table>
 	</body>
 </html>
+
+<%
+end
+%>

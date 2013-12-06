@@ -5,7 +5,7 @@
 require "shared.zhelpers"
 local zmq = require "lzmq"
 
-local REQUEST_TIMEOUT = 2500 -- msecs, (> 1000!)
+local REQUEST_TIMEOUT = 500 -- msecs, (> 1000!)
 local REQUEST_RETRIES = 3    -- Before we abandon
 local SERVER_ENDPOINT = "tcp://localhost:5555"
 

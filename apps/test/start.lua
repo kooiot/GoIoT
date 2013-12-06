@@ -39,7 +39,7 @@ while loop do
 		print(k,v)
 	end
 	]]--
-	sleep(5)
+	sleep(1)
 	var = var + 1
 end
 

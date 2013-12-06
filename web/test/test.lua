@@ -21,12 +21,23 @@ cgilua.put('</body>')
 cgilua.put('</html>')  
 ]]--
 
-cgilua.contentheader('text', 'plain')
+--cgilua.contentheader('application/json', 'charset=utf-8')
+cgilua.contentheader('application', 'json; charset=utf8')
+--cgilua.header("Content-Type", "application/json; charset=utf-8")
 
 local api = require 'shared.api.data'
 
+local api_fail = false
 local function get_tag(name)
+
+	if api_fail then
+		return nil
+	end
+
 	local tag = api.get(name)
+	if not tag then
+		api_fail = true
+	end
 	return tag
 	--return {tag.name, tag.value, tag.timestamp}
 end
