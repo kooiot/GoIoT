@@ -22,6 +22,7 @@
 				<a href=<?=url('/')?>> Home </a>
 				<a href=<?=url('system')?>> System </a>
 				<a href=<?=url('status')?>> Status </a>	
+				<a href=<?=url('apps.lp')?>> Applications </a>	
 			</div>
 			</nav>
 			</header>

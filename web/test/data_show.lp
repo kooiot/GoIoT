@@ -69,7 +69,7 @@ else
 					"bProcessing": true,
 					"bStateSave": true,
 					//"bServerSide": true, // ServerSide true will append the columns name to server side with the get request
-					"sAjaxSource": 'test.lua',
+					"sAjaxSource": 'test/test.lua',
 					"sAjaxDataProp": "tags",
 					"aoColumns": [
 					{ "mDataProp": "name" },

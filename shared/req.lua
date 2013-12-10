@@ -18,9 +18,9 @@ function _M.open(ctx, option, retry)
 
 	local SOCKET_OPTION = option or {
 		zmq.REQ,
-		linger   = 0;
-		connect  = SERVER_ENDPOINT;
-		rcvtimeo = REQUEST_TIMEOUT;
+		linger   = 0,
+		connect  = SERVER_ENDPOINT,
+		rcvtimeo = REQUEST_TIMEOUT,
 	}
 	assert(SOCKET_OPTION[1] == zmq.REQ, "Incorrect socket option found in REQ")
 

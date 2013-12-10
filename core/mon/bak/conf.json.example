@@ -1,0 +1,17 @@
+[{
+	"name":"rdb",
+	"program":"lua",
+	"args":"start.lua",
+	"restart":"function() restart(all) end",
+	"startup":"function() end",
+	"type":"core",
+	"teardown":"function() end",
+	"path":"~\/cad2\/core\/rdb"
+},{
+	"name":"test",
+	"program":"lua",
+	"args":"start.lua",
+	"type":"app",
+	"restart":"true",
+	"path":"~\/cad2\/apps\/test"
+}]

@@ -6,82 +6,101 @@ package.path = string.format("%s;%s/?.lua;%s/?/init.lua", m_package_path, m_path
 
 require 'shared.zhelpers'
 
+local zmq = require 'lzmq'
+local zpoller = require 'lzmq.poller'
 local cjson = require 'cjson.safe'
 
-local CONF_FILE = 'conf.json'
-
-local conf = nil
-
-function load_conf()
-	local file, err = io.open(CONF_FILE, "r")
-	if file then
-		local conf = cjson.decode(file:read("*a"))
-		file:close()
-		return conf
-	end
-	return nil, err
-end
-
-function save_conf()
-	local file, err = io.open(CONF_FILE, "w+")
-	if file then
-		file:write(cjson.encode(conf))
-		file:close()
-		return true
-	end
-	return nil, err
-end
-
-conf = load_conf() or {
-	{
-		type = "core",
-		name = "core",
-	},
+local running = {
+	test = {run = true, last = os.time()}
 }
 
---[[
-	{
-		{
-			type = "core",
-			name = "rdb",
-			path = 'app/rdb',
-			program = 'start.lua',
-			args = nil,
-			restart = "function() restart(all) end"
-			startup = "function() end"
-			teardown = "function() end"
-		},
-		{
-			type = 'app',
-			name = 'rdb',
-			path = 'app/test',
-			program = 'start.lua',
-			args = nil,
-			restart = ture,
-		},
-		{
-		....
-		},
-]]--
+local ctx = zmq.context()
+local poller = zpoller.new(1)
 
-local function start_app(app)
-	print('run app', app.name)
-	-- TODO:
+local server, err = ctx:socket{zmq.REP, bind = "tcp://*:5511"}
+zassert(server, err)
+
+local mpft = {} -- message process function table
+
+function send_err(err)
+	local reply = {'error', {err=err}}
+	local rep_json = cjson.encode(reply)
+	print(rep_json)
+	server:send(rep_json)
 end
 
-local function start(app) 
-	for k, v in pairs(conf) do
-		if not app or app == v.name then
-			start_app(v)
+mpft['notice'] = function(vars)
+	local err = 'Invalid/Unsupported add request'
+	if vars and type(vars) == 'table' then
+		if vars.name then
+			running[vars.name] = running[vars.name] or {} 
+			running[vars.name].last = os.time()
+			local rep = {'notice', {result='ok'}}
+			server:send(cjson.encode(rep))
+		end
+	end
+	send_err(err)
+end
+
+mpft['query'] = function(vars)
+	local err = 'Invalid/Unsupported add request'
+	if vars and type(vars) ~= 'table' then
+		send_err(err)
+		return
+	end
+
+	local st = {}
+	for k, v in pairs(running) do
+		if not vars or vars[k] then
+			st[k] = v
+		end
+	end
+	local rep = {'query', {result='ok', status = st}}
+	server:send(cjson.encode(rep))
+end
+
+poller:add(server, zmq.POLLIN, function()
+	local req_json = server:recv()
+	print("REQ:\t"..req_json)
+
+	local req, err = cjson.decode(req_json)
+	if not req then
+		send_err(err)
+	else
+		if type(req) ~= 'table' then
+			send_err('unsupport message type')
+		else
+			-- handle request
+			--server:send(cjson.encode(req))
+			local fun = mpft[req[1]]
+			if fun then
+				fun(req[2])
+			else
+				send_err('Unsupported message operation'..req[1])
+			end
+		end
+	end
+	
+end)
+local ztimer   = require "lzmq.timer"
+local timer = ztimer.monotonic(3000)
+local stop = false
+
+local function check_timeout()
+	local now = os.time()
+	for k,v in pairs(running) do
+		print('checking '..k..' run:'..tostring(v.run)..' last:'..tostring(v.last))
+		if v.run == true and (now - v.last)  > 10 then
+			print('application does not send the notice')
+			v.run = false
 		end
 	end
 end
 
-local num = 3
-while (num > 0) do
-	start()
-	sleep(1)
-	num = num - 1
+while not stop do
+	timer:start()
+	while timer:rest() > 0 do
+		poller:poll(timer:rest())
+	end
+	check_timeout()
 end
-
-save_conf()
