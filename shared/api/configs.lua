@@ -32,6 +32,9 @@ _M.get = function(key)
 	local reply, err = client.request(cjson.encode(req), true)
 	if reply then
 		reply = cjson.decode(reply)[2]
+		if reply then
+			reply = reply.vals
+		end
 	end
 	return reply, err
 end

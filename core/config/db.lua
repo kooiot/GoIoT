@@ -6,10 +6,9 @@ local con = sqlite3:connect('config-db.sqlite3')
 
 local _M = {}
 local _buf = {}
-local _del = {}
 
 local _create_table = [[CREATE TABLE IF NOT EXISTS configs
-						(key, value);]]
+						(key UNIQUE NOT NULL, value);]]
 						--(id INTEGER PRIMARY KEY UNIQUE NOT NULL, key TEXT, value TEXT);]]
 
 con:execute(_create_table)
@@ -18,8 +17,10 @@ con:setautocommit(false)
 local function save_(key, value)
 	--local s = string.format('REPLACE INTO configs VALUES (%d,"%s", "%s")', id, key, value)
 	--local s = 'REPLACE INTO configs VALUES ('..id..',"'..key..'","'..value..'")'
-	local s = string.format('REPLACE INTO configs VALUES ("%s", "%s")', key, value)
-	return con:execute(con:escape(s))
+	local s = string.format([[REPLACE INTO configs VALUES ('%s', '%s')]], con:escape(key), con:escape(value))
+	print('SQL', s)
+	local r, err = con:execute(s)
+	return r, err
 end
 
 local function delete_(key)
@@ -34,9 +35,8 @@ local function load()
 	if cur then
 		local row = cur:fetch({})
 		while row do
-			for k,v in pairs(row) do
-				_buf[k] = v
-			end
+			--print(row[1], row[2])
+			_buf[row[1]] = row[2]
 			row = cur:fetch(row)
 		end
 	end
@@ -55,6 +55,7 @@ end
 
 function _M.set(key, value)
 	_buf[key] = value
+	return save_(key, value)
 end
 
 function _M.get(key)
@@ -63,28 +64,23 @@ end
 
 function _M.add(key, value)
 	_buf[key] = value
+	return save_(key, value)
 end
 
 function _M.del(key)
 	_buf[key] = nil
-	_del[key] = true
+	return delete_(key)
 end
 
 _M.load = load
 _M.timer = function()
-	save()
-	for k, v in pairs(_del) do
-		if not _buf[key] then
-			delete_(key)
-		end
-	end
+--	save()
+	--- commit all changes happens before timer been called, and also the delete_stuff
 	con:commit()
-	_del = {}
 end
 
 _M.reload = function()
 	_buf = {}
-	_del = {}
 	load()
 end
 

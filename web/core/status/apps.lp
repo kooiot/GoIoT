@@ -7,7 +7,7 @@
 	local app_status = mon.query()
 	if not app_status or not app_status.result then
 %>
-		<h2> Query API failed <h2>
+		<h2> Query API failed </h2>
 <%
 	else
 		for k,v in pairs(app_status.status) do

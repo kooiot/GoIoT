@@ -10,6 +10,7 @@ local zmq = require 'lzmq'
 local zpoller = require 'lzmq.poller'
 local cjson = require 'cjson.safe'
 local db = require 'db'
+db.load()
 
 local ctx = zmq.context()
 local poller = zpoller.new(1)
@@ -32,12 +33,6 @@ mpft['get'] = function(vars)
 		if vars.key then
 			local val_json = db.get(vars.key)
 			local vals = cjson.decode(val_json)
-			--[[
-			vals = {
-				version = "1.0",
-				build = "01"
-			}
-			]]--
 			local rep = {'get', {result=true, key=vars.key, vals=vals}}
 			server:send(cjson.encode(rep))
 			return
@@ -51,7 +46,7 @@ mpft['set'] = function(vars)
 
 	if vars and type(vars) == 'table' then
 		if vars.key and vars.vals then
-			db.set(vars.key, vars.vals)
+			db.set(vars.key, cjson.encode(vars.vals))
 			local rep = {'set', {result=true}}
 			server:send(cjson.encode(rep))
 			return

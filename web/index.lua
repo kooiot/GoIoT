@@ -12,8 +12,6 @@ if not r then
 	return
 end
 
-cgilua.htmlheader()
-
 local logoutURL = cgilua.authentication.logoutURL()
 
 local path = cgilua.QUERY._path
@@ -47,8 +45,4 @@ end
 local loader = require 'core.model'
 env = loader.load(app, env)
 
--- load the pages now
-lp.include("core/header.lp", env)
 cgilua.doscript("core/main.lua", env)
-lp.include("core/footer.lp", env)
-

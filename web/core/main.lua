@@ -26,7 +26,11 @@ local file = io.open(real_path)
 if file then
 	file:close()
 	if lp_file then
+		--cgilua.htmlheader()
+		-- load the pages now
+		include("core/header.lp", env)
 		include(real_path)
+		include("core/footer.lp", env)
 	else
 		script(real_path)
 	end
