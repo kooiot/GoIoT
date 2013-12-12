@@ -44,7 +44,7 @@ mpft['add'] = function(vars)
 			local r = true
 			r, err = db:add(vars.name, vars.desc, vars.value)
 			if r then
-				local rep = {'add', {result='ok', name=vars.name}}
+				local rep = {'add', {result=true, name=vars.name}}
 				server:send(cjson.encode(rep))
 				return
 			end
@@ -61,7 +61,7 @@ mpft['erase'] = function(vars)
 			local r = true
 			r, err = db:erase(vars.name)
 			if r then
-				local rep = {'erase', {result='ok', name=vars.name}}
+				local rep = {'erase', {result=true, name=vars.name}}
 				server:send(cjson.encode(rep))
 				return
 			end
@@ -78,7 +78,7 @@ mpft['set'] = function(vars)
 			local r = true
 			r, err = db:set(vars.name, vars.value, vars.timestamp)
 			if r then
-				local rep = {'set', {result='ok', name=vars.name}}
+				local rep = {'set', {result=true, name=vars.name}}
 				server:send(cjson.encode(rep))
 
 				-- publish changes
@@ -122,7 +122,7 @@ mpft['subscribe'] = function(vars)
 		ptable[v] = ptable[v] or {}
 		ptable[v][id] = true
 	end
-	local rep = {'subscribe', {result="ok", id=id}}
+	local rep = {'subscribe', {result=true, id=id}}
 	server:send(cjson.encode(rep))
 end
 
@@ -135,7 +135,7 @@ mpft['unsubscribe'] = function(vars)
 			ptable[v][id] = nil
 		end
 	end
-	local rep = {'unsubscribe', {result="ok", id=id}}
+	local rep = {'unsubscribe', {result=true, id=id}}
 	server:send(cjson.encode(rep))
 end
 

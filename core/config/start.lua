@@ -1,38 +1,112 @@
 #!/usr/bin/env lua
 
-local sql = require 'luasql.sqlite3'
+local m_path = os.getenv('CAD_DIR') or "."
+local m_package_path = package.path  
+package.path = string.format("%s;%s/?.lua;%s/?/init.lua", m_package_path, m_path, m_path)  
 
-for k, v in pairs(sql) do print(k,v) end
+require 'shared.zhelpers'
 
-print(sql.sqlite3)
-local sqlite3 = sql.sqlite3()
+local zmq = require 'lzmq'
+local zpoller = require 'lzmq.poller'
+local cjson = require 'cjson.safe'
+local db = require 'db'
 
-local con = sqlite3:connect('config-db.sqlite3')
+local ctx = zmq.context()
+local poller = zpoller.new(1)
 
-con:execute([[ CREATE TABLE test (id, content) ]])
+local server, err = ctx:socket{zmq.REP, bind = "tcp://*:5522"}
+zassert(server, err)
 
-local r, err = con:execute(con:escape([[INSERT INTO test VALUES (1, "hello world")]]))
-if not r then
-	print (err)
+local mpft = {} -- message process function table
+
+function send_err(err)
+	local reply = {'error', {err=err}}
+	local rep_json = cjson.encode(reply)
+	print(rep_json)
+	server:send(rep_json)
 end
 
-r, err = con:execute(con:escape([[INSERT INTO test VALUES (2, "hello lua")]]))
-if not r then
-	print (err)
-end
-
-con:commit()
-
-
-local cur = con:execute([[SELECT * FROM test]])
-
-if cur then
-	local row = cur:fetch({})
-	while row do
-		for k,v in pairs(row) do
-			print(k,v)
+mpft['get'] = function(vars)
+	local err = 'Invalid/Unsupported request message format'
+	if vars and type(vars) == 'table' then
+		if vars.key then
+			local val_json = db.get(vars.key)
+			local vals = cjson.decode(val_json)
+			local rep = {'get', {result=true, key=vars.key, vals=vals}}
+			server:send(cjson.encode(rep))
+			return
 		end
-		row = cur:fetch(row)
 	end
+	send_err(err)
 end
 
+mpft['set'] = function(vars)
+	local err = 'Invalid/Unsupported request message format'
+
+	if vars and type(vars) == 'table' then
+		if vars.key and vars.vals then
+			db.set(vars.key, vars.vals)
+			local rep = {'set', {result=true}}
+			server:send(cjson.encode(rep))
+			return
+		end
+	end
+	send_err(err)
+end
+
+mpft['add'] = function(vars)
+	local err = 'Invalid/Unsupported request message format'
+
+	if vars and type(vars) == 'table' then
+		if vars.key and vars.vals then
+			local r, err = db.add(vars.key, vars.vals)
+			local rep = {'add', {result=r, err=err}}
+			server:send(cjson.encode(rep))
+			return
+		end
+	end
+	send_err(err)
+end
+
+mpft['delete'] = function(vars)
+end
+
+poller:add(server, zmq.POLLIN, function()
+	local req_json = server:recv()
+	print("REQ:\t"..req_json)
+
+	local req, err = cjson.decode(req_json)
+	if not req then
+		send_err(err)
+	else
+		if type(req) ~= 'table' then
+			send_err('unsupport message type')
+		else
+			-- handle request
+			--server:send(cjson.encode(req))
+			local fun = mpft[req[1]]
+			if fun then
+				fun(req[2])
+			else
+				send_err('Unsupported message operation'..req[1])
+			end
+		end
+	end
+	
+end)
+local ztimer   = require "lzmq.timer"
+local timer = ztimer.monotonic(3000)
+local stop = false
+
+local function timer_loop()
+	-- trigger saving to disk
+	db.timer()
+end
+
+while not stop do
+	timer:start()
+	while timer:rest() > 0 do
+		poller:poll(timer:rest())
+	end
+	timer_loop()
+end

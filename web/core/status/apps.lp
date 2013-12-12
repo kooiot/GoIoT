@@ -5,7 +5,7 @@
 <%
 	local mon = require 'shared.api.mon'
 	local app_status = mon.query()
-	if not app_status or app_status.result ~= 'ok' then
+	if not app_status or not app_status.result then
 %>
 		<h2> Query API failed <h2>
 <%

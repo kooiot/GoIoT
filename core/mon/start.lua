@@ -35,7 +35,7 @@ mpft['notice'] = function(vars)
 		if vars.name then
 			running[vars.name] = running[vars.name] or {} 
 			running[vars.name].last = os.time()
-			local rep = {'notice', {result='ok'}}
+			local rep = {'notice', {result=true}}
 			server:send(cjson.encode(rep))
 		end
 	end
@@ -55,7 +55,7 @@ mpft['query'] = function(vars)
 			st[k] = v
 		end
 	end
-	local rep = {'query', {result='ok', status = st}}
+	local rep = {'query', {result=true, status = st}}
 	server:send(cjson.encode(rep))
 end
 
@@ -89,7 +89,7 @@ local stop = false
 local function check_timeout()
 	local now = os.time()
 	for k,v in pairs(running) do
-		print('checking '..k..' run:'..tostring(v.run)..' last:'..tostring(v.last))
+		--print('checking '..k..' run:'..tostring(v.run)..' last:'..tostring(v.last))
 		if v.run == true and (now - v.last)  > 10 then
 			print('application does not send the notice')
 			v.run = false

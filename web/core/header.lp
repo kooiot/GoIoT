@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Login</title>
+		<title>OpenGate</title>
 			
 		<script src='http://cdn.staticfile.org/jquery/1.9.1/jquery.js'></script>
 		<script src='http://cdn.staticfile.org/jqueryui/1.10.3/css/base/jquery.ui.all.css'></script>
@@ -22,7 +22,7 @@
 				<a href=<?=url('/')?>> Home </a>
 				<a href=<?=url('system')?>> System </a>
 				<a href=<?=url('status')?>> Status </a>	
-				<a href=<?=url('apps.lp')?>> Applications </a>	
+				<a href=<?=url('status/apps.lp')?>> Applications </a>	
 			</div>
 			</nav>
 			</header>
