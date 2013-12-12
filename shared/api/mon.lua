@@ -26,5 +26,14 @@ _M.query = function(apps)
 	return reply, err
 end
 
+_M.version = function()
+	local req = {'version'}
+	local reply, err = client.request(cjson.encode(req), true)
+	if reply then
+		reply = cjson.decode(reply)[2]
+	end
+	return reply, err
+end
+
 
 return _M

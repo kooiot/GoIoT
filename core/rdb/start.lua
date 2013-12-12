@@ -139,6 +139,18 @@ mpft['unsubscribe'] = function(vars)
 	server:send(cjson.encode(rep))
 end
 
+mpft['version'] = function()
+	local reply = {
+		'version',
+		{
+			version = '0.1',
+			build = '01',
+		}
+	}
+	server:send(cjson.encode(reply))
+end
+
+
 local poller = zpoller.new(2)
 poller:add(server, zmq.POLLIN, function()
 	local req_json = server:recv()

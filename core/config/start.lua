@@ -32,6 +32,12 @@ mpft['get'] = function(vars)
 		if vars.key then
 			local val_json = db.get(vars.key)
 			local vals = cjson.decode(val_json)
+			--[[
+			vals = {
+				version = "1.0",
+				build = "01"
+			}
+			]]--
 			local rep = {'get', {result=true, key=vars.key, vals=vals}}
 			server:send(cjson.encode(rep))
 			return
@@ -68,7 +74,30 @@ mpft['add'] = function(vars)
 	send_err(err)
 end
 
-mpft['delete'] = function(vars)
+mpft['erase'] = function(vars)
+	local err = 'Invalid/Unsupported request message format'
+
+	if vars and type(vars) == 'table' then
+		if vars.key then
+			local r, err = db.del(vars.key)
+			local rep = {'erase', {result=r, err=err}}
+			server:send(cjson.encode(rep))
+			return
+		end
+	end
+	send_err(err)
+
+end
+
+mpft['version'] = function()
+	local reply = {
+		'version',
+		{
+			version = '0.1',
+			build = '01',
+		}
+	}
+	server:send(cjson.encode(reply))
 end
 
 poller:add(server, zmq.POLLIN, function()

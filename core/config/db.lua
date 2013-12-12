@@ -87,3 +87,5 @@ _M.reload = function()
 	_del = {}
 	load()
 end
+
+return _M
