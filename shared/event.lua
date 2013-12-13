@@ -1,6 +1,7 @@
 
 require "shared.zhelpers"
 local zmq = require "lzmq"
+local cjson = require 'cjson'
 
 local CONN_METHOD = "tcp://"
 local PUB_SERVER_PORT = ":5519"
@@ -34,9 +35,14 @@ function _CLIENT:open(poller, ip)
 	
 	poller:add(self.subscriber, zmq_POLLIN, function()
 		if self.callback then
-			local r, err = self.subscriber:recv()
-			if r then
-				self.callback(r)
+			local msg, err = self.subscriber:recv()
+			if msg then
+				local event, err = cjson.decode(msg)
+				if event and type(event) == 'table' then
+					if event[1] == 'EVENT' then
+						self.callback(event[2])
+					end
+				end
 			end
 		end
 	end)
@@ -51,8 +57,15 @@ function _CLIENT:close()
 	self.client = nil
 end
 
-function _CLIENT:send(msg, option)
-	self.client:send(msg, option)
+function _CLIENT:send(event)
+	assert(event.src)
+	assert(event.msg)
+	event.dest = event.dest or "ALL"
+	local msg = {
+		"EVENT",
+		event,
+	}
+	self.client:send(cjson.encode(msg))
 end
 
 function _CLIENT.new(ctx, cb)
@@ -111,7 +124,7 @@ function _SERVER.new(ctx)
 		server = nil,
 		publisher = nil,
 		option = nil,
-	}, {__index = _CLIENT})
+	}, {__index = _SERVER})
 end
 
 function _SERVER:close()
