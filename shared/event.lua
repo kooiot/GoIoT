@@ -33,7 +33,7 @@ function _CLIENT:open(poller, ip)
 
 	self.poller = poller
 	
-	poller:add(self.subscriber, zmq_POLLIN, function()
+	self.poller:add(self.subscriber, zmq.POLLIN, function()
 		if self.callback then
 			local msg, err = self.subscriber:recv()
 			if msg then
