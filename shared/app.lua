@@ -63,14 +63,16 @@ function class:regEventHandler(name, handler)
 end
 
 function class:onEvent(event)
-	print('onEvent', event.name, event.dest)
-	if event.dest ~= self.name then
+	--print('onEvent', event.name, event.dest)
+	if event.dest ~= self.name and event.dest ~= 'ALL' then
 		print('Event is not for me')
 		return
 	end
 
 	if self.empft[event.name] then
 		self.empft[event.name](self, event)
+	else
+		print('No handler for event', event.name)
 	end
 end
 

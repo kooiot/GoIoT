@@ -15,7 +15,10 @@ local running = {
 }
 
 local ctx = zmq.context()
-local poller = zpoller.new(1)
+local poller = zpoller.new(2)
+
+local event = require('shared.event').S.new(ctx)
+event:open(poller)
 
 local server, err = ctx:socket{zmq.REP, bind = "tcp://*:5511"}
 zassert(server, err)
@@ -95,6 +98,7 @@ poller:add(server, zmq.POLLIN, function()
 	end
 	
 end)
+
 local ztimer   = require "lzmq.timer"
 local timer = ztimer.monotonic(3000)
 local stop = false

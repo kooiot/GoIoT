@@ -14,10 +14,7 @@ db.load()
 
 
 local ctx = zmq.context()
-local poller = zpoller.new(2)
-
-local event = require('shared.event').S.new(ctx)
-event:open(poller)
+local poller = zpoller.new(1)
 
 local server, err = ctx:socket{zmq.REP, bind = "tcp://*:5522"}
 zassert(server, err)

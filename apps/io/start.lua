@@ -45,7 +45,6 @@ while true do
 	while timer:rest() > 0 do
 		app:run(timer:rest())
 	end
-	print('fire event')
 	app:firevent('ALL', 'ping', {ping = 'test'})
 end
 
