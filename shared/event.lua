@@ -11,6 +11,8 @@ local SERVER_ENDPOINT = "localhost"
 local _CLIENT = {}
 
 function _CLIENT:open(poller, ip)
+	self.poller = poller
+
 	local SOCKET_OPTION = {
 		zmq.SUB,
 		linger   = 0,
@@ -20,20 +22,9 @@ function _CLIENT:open(poller, ip)
 	local subscriber, err = self.ctx:socket(SOCKET_OPTION)
 	zassert(subscriber, err)
 	self.subscriber = subscriber
-
-	local REQ_SOCKET_OPTION = {
-		zmq.REQ,
-		linger   = 0,
-		connect  = CONN_METHOD..(endpoint or SERVER_ENDPOINT)..REP_SERVER_PORT,
-	}
-
-	local client, err = self.ctx:socket(REQ_SOCKET_OPTION)
-	zassert(client, err)
-	self.client = client
-
-	self.poller = poller
 	
 	self.poller:add(self.subscriber, zmq.POLLIN, function()
+		print('EVENT SUB RECV')
 		if self.callback then
 			local msg, err = self.subscriber:recv()
 			if msg then
@@ -45,6 +36,22 @@ function _CLIENT:open(poller, ip)
 				end
 			end
 		end
+	end)
+
+
+	local REQ_SOCKET_OPTION = {
+		zmq.REQ,
+		linger   = 0,
+		connect  = CONN_METHOD..(endpoint or SERVER_ENDPOINT)..REP_SERVER_PORT,
+	}
+
+	local client, err = self.ctx:socket(REQ_SOCKET_OPTION)
+	zassert(client, err)
+	self.client = client
+	
+	self.poller:add(self.client, zmq.POLLIN, function()
+		local msg, err = self.client:recv()
+		print('EVENT FIRE RESULT: '..msg)
 	end)
 end
 
@@ -59,13 +66,14 @@ end
 
 function _CLIENT:send(event)
 	assert(event.src)
-	assert(event.msg)
+	assert(event.name)
 	event.dest = event.dest or "ALL"
 	local msg = {
 		"EVENT",
 		event,
 	}
-	self.client:send(cjson.encode(msg))
+	-- We will not wait for event done
+	return self.client:send(cjson.encode(msg))
 end
 
 function _CLIENT.new(ctx, cb)
@@ -87,8 +95,7 @@ function _SERVER:open(poller, ip)
 	local ip = ip or "*"
 	local SOCKET_OPTION = {
 		zmq.PUB,
-		linger   = 0,
-		connect  = CONN_METHOD..ip..PUB_SERVER_PORT,
+		bind  = CONN_METHOD..ip..PUB_SERVER_PORT,
 	}
 
 	local publisher, err = self.ctx:socket(SOCKET_OPTION)
@@ -98,8 +105,7 @@ function _SERVER:open(poller, ip)
 
 	local REP_SOCKET_OPT = {
 		zmq.REP,
-		linger = 0,
-		connect = CONN_METHOD..ip..REP_SERVER_PORT,
+		bind = CONN_METHOD..ip..REP_SERVER_PORT,
 	}
 	local server, err = self.ctx:socket(REP_SOCKET_OPT)
 	zassert(server, err)
@@ -108,11 +114,15 @@ function _SERVER:open(poller, ip)
 	self.poller = poller
 	poller:add(server, zmq.POLLIN, function()
 		local msg, err = self.server:recv()
+		print('EVENT RECV', msg)
 		if msg then
 			self.publisher:send(msg)
 		else
 			print('ERR', err)
 		end
+		print('EVENT PUB DONE')
+		-- tell the client
+		self.server:send('DONE')
 	end)
 end
 

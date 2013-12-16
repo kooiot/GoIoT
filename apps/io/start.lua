@@ -36,5 +36,16 @@ app = require('shared.app').new(info)
 assert(app)
 
 app:init()
-app:start()
+
+local ztimer = require 'lzmq.timer'
+local timer = ztimer.monotonic(3000)
+
+while true do
+	timer:start()
+	while timer:rest() > 0 do
+		app:run(timer:rest())
+	end
+	print('fire event')
+	app:firevent('ALL', 'ping', {ping = 'test'})
+end
 

@@ -18,15 +18,16 @@ function class:log(level, cate, msg)
 	print(level, cate, self.name, msg)
 end
 
-function class:firevent(name, vals)
-	vals.src = self.name
-	print('EVENT', name, table.concat(vals))
+function class:firevent(dest, name, vars)
+	local event = {src=self.name, dest=dest, name=name, vars=vars}
+	print('fire EVENT('..name..') to '..dest )
+	return self.event:send(event)
 end
 
 local function send_err(server, err)
 	local reply = {'error', {err=err}}
 	local rep_json = cjson.encode(reply)
-	server:send(rep_json)
+	return server:send(rep_json)
 end
 
 function class:regRequestHandler(name, handler)
@@ -61,19 +62,10 @@ function class:regEventHandler(name, handler)
 	return false, 'Event '..name..' already registered!!'
 end
 
-function class:onEvent(msg)
-	local json, err = cjson.decode(msg)
-	if not json then
-		print('JSON DECODE ERR', err)
-		send_err(self.server, 'Unsupported event message format')
-		return
-	end
-
-	local msgtype = json[1]
-	if self.empft[msgtype] then
-		self.empft[msgtype](self, msg)
-	else
-		send_err(self.server, 'No handler for event message '..msgtype)
+function class:onEvent(event)
+	print('onEvent:', event.name)
+	if self.empft[event.name] then
+		self.empft[event.name](self, event)
 	end
 end
 
