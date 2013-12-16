@@ -2,6 +2,7 @@
 require "shared.zhelpers"
 local zmq = require "lzmq"
 local cjson = require 'cjson'
+local zpoller = require 'lzmq.poller'
 
 local CONN_METHOD = "tcp://"
 local PUB_SERVER_PORT = ":5519"
@@ -11,7 +12,7 @@ local SERVER_ENDPOINT = "localhost"
 local _CLIENT = {}
 
 function _CLIENT:open(poller, ip)
-	self.poller = poller
+	self.poller = poller or zpoller.new()
 
 	local SOCKET_OPTION = {
 		zmq.SUB,

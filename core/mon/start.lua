@@ -38,6 +38,7 @@ mpft['notice'] = function(vars)
 		if vars.name then
 			running[vars.name] = running[vars.name] or {} 
 			running[vars.name].last = os.time()
+			running[vars.name].run = true
 			local rep = {'notice', {result=true}}
 			server:send(cjson.encode(rep))
 			return

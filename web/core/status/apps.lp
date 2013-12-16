@@ -2,6 +2,21 @@
 	Application status page
 </h1>
 
+<script>
+	function operateApp(action, key) {
+		$.post(<?=url("status/app.lua")?>, { key: key, action:action },
+		function(data){
+			alert(data);
+		})
+		.done(function() {
+			//alert("Data Saved successfully!!");
+		})
+		.fail(function() {
+			alert("Failed to post!!");
+		});
+	};
+</script>
+
 <%
 	local mon = require 'shared.api.mon'
 	local app_status = mon.query()
@@ -16,7 +31,11 @@
 <%
 		put(v.run and 'True' or 'False')
 		put(os.date("%c", v.last))
-		put('<br/>')
+		%>
+		<input type="button" value="Start" onClick="operateApp('start', '<?=k?>')">
+		<input type="button" value="Reload" onClick="operateApp('reload', '<?=k?>')">
+		<input type="button" value="Stop" onClick="operateApp('stop', '<?=k?>')">
+		<%
 		end
 	end
 %>
