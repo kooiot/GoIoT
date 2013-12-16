@@ -20,7 +20,7 @@ end
 
 function class:firevent(dest, name, vars)
 	local event = {src=self.name, dest=dest, name=name, vars=vars}
-	print('fire EVENT('..name..') to '..dest )
+	--print('fire EVENT('..name..') to '..dest )
 	return self.event:send(event)
 end
 
@@ -63,7 +63,12 @@ function class:regEventHandler(name, handler)
 end
 
 function class:onEvent(event)
-	print('onEvent:', event.name)
+	print('onEvent', event.name, event.dest)
+	if event.dest ~= self.name then
+		print('Event is not for me')
+		return
+	end
+
 	if self.empft[event.name] then
 		self.empft[event.name](self, event)
 	end
@@ -92,16 +97,35 @@ function class:init()
 		self:onEvent(event)
 	end)
 	self.event:open(self.poller)
+
+	local client, err = self.ctx:socket({
+		zmq.REQ,
+		connect = "tcp://localhost:5511"
+	})
+	zassert(client, err)
+	self.monclient = client
+
+	self.poller:add(client, zmq.POLLIN, function()
+		local msg, err = self.monclient:recv()
+		-- DO NOTHING on return
+	end)
 end
 
 function class:run(ms)
+	-- make sure there will no longger than 3 second blocked in poller
+	if ms > 3000 then
+		ms = 3000
+	end
 	if ms then
 		self.poller:poll(ms)
 	end
-end
 
-function class:start()
-	self.poller:start()
+	local now = os.time()
+	if now - self.monlast > 3 then
+		self.monlast = now
+		local req = {'notice', {name=self.name}}
+		self.monclient:send(cjson.encode(req))
+	end
 end
 
 local _M = {}
@@ -123,7 +147,7 @@ function _M.new(info)
 	obj.onStatus = info.onStatus or function() return false end
 
 	obj.ctx = info.ctx or zmq.context()
-	obj.poller = info.poller or zpoller.new()
+	obj.poller = info.poller or zpoller.new(3)
 	obj.event = nil
 
 	obj.mpft = {}
@@ -135,6 +159,9 @@ function _M.new(info)
 	for k,v in pairs(empft) do
 		obj.empft[k] = v
 	end
+
+	obj.monlast = 0
+	obj.monclient = nil
 	return setmetatable(obj, {__index = class})
 end
 

@@ -15,7 +15,7 @@ function _CLIENT:open(poller, ip)
 
 	local SOCKET_OPTION = {
 		zmq.SUB,
-		linger   = 0,
+		subscribe = 'EVENT ',
 		connect  = CONN_METHOD..(endpoint or SERVER_ENDPOINT)..PUB_SERVER_PORT,
 	}
 
@@ -24,16 +24,19 @@ function _CLIENT:open(poller, ip)
 	self.subscriber = subscriber
 	
 	self.poller:add(self.subscriber, zmq.POLLIN, function()
-		print('EVENT SUB RECV')
-		if self.callback then
-			local msg, err = self.subscriber:recv()
-			if msg then
-				local event, err = cjson.decode(msg)
-				if event and type(event) == 'table' then
-					if event[1] == 'EVENT' then
-						self.callback(event[2])
-					end
-				end
+		local msg, err = self.subscriber:recv()
+		if msg ~= 'EVENT ' then
+			print('Received in correct message')
+			return
+		end
+
+		local msg, err = self.subscriber:recv()
+		--print('EVENT SUB RECV:', msg)
+
+		if msg and self.callback then
+			local event, err = cjson.decode(msg)
+			if event and type(event) == 'table' then
+				self.callback(event)
 			end
 		end
 	end)
@@ -51,7 +54,7 @@ function _CLIENT:open(poller, ip)
 	
 	self.poller:add(self.client, zmq.POLLIN, function()
 		local msg, err = self.client:recv()
-		print('EVENT FIRE RESULT: '..msg)
+		--print('EVENT FIRE RESULT: '..msg)
 	end)
 end
 
@@ -68,12 +71,8 @@ function _CLIENT:send(event)
 	assert(event.src)
 	assert(event.name)
 	event.dest = event.dest or "ALL"
-	local msg = {
-		"EVENT",
-		event,
-	}
 	-- We will not wait for event done
-	return self.client:send(cjson.encode(msg))
+	return self.client:send(cjson.encode(event))
 end
 
 function _CLIENT.new(ctx, cb)
@@ -103,6 +102,11 @@ function _SERVER:open(poller, ip)
 
 	self.publisher = publisher
 
+	--[[
+	poller:add(self.publisher, zmq.POLLIN, function()
+	end)
+	]]--
+
 	local REP_SOCKET_OPT = {
 		zmq.REP,
 		bind = CONN_METHOD..ip..REP_SERVER_PORT,
@@ -114,13 +118,14 @@ function _SERVER:open(poller, ip)
 	self.poller = poller
 	poller:add(server, zmq.POLLIN, function()
 		local msg, err = self.server:recv()
-		print('EVENT RECV', msg)
 		if msg then
+			--print('EVENT RECV', msg)
+			self.publisher:send('EVENT ', zmq.SNDMORE)
 			self.publisher:send(msg)
+			--print('EVENT PUB DONE')
 		else
 			print('ERR', err)
 		end
-		print('EVENT PUB DONE')
 		-- tell the client
 		self.server:send('DONE')
 	end)

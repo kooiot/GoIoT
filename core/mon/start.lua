@@ -11,7 +11,7 @@ local zpoller = require 'lzmq.poller'
 local cjson = require 'cjson.safe'
 
 local running = {
-	test = {run = true, last = os.time()}
+--	test = {run = true, last = os.time()}
 }
 
 local ctx = zmq.context()
@@ -37,6 +37,7 @@ mpft['notice'] = function(vars)
 			running[vars.name].last = os.time()
 			local rep = {'notice', {result=true}}
 			server:send(cjson.encode(rep))
+			return
 		end
 	end
 	send_err(err)
@@ -73,7 +74,7 @@ end
 
 poller:add(server, zmq.POLLIN, function()
 	local req_json = server:recv()
-	print("REQ:\t"..req_json)
+	--print("REQ:\t"..req_json)
 
 	local req, err = cjson.decode(req_json)
 	if not req then
