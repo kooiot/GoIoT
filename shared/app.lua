@@ -113,6 +113,11 @@ function class:init()
 	end)
 end
 
+function class:sendNotice()
+	local req = {'notice', {name=self.name, port=self.port}}
+	self.monclient:send(cjson.encode(req))
+end
+
 function class:run(ms)
 	-- make sure there will no longger than 3 second blocked in poller
 	if ms > 3000 then
@@ -125,8 +130,7 @@ function class:run(ms)
 	local now = os.time()
 	if now - self.monlast > 3 then
 		self.monlast = now
-		local req = {'notice', {name=self.name}}
-		self.monclient:send(cjson.encode(req))
+		self:sendNotice()
 	end
 end
 

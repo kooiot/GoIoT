@@ -9,12 +9,10 @@ local REQUEST_TIMEOUT = 500 -- msecs, (> 1000!)
 local REQUEST_RETRIES = 3    -- Before we abandon
 local SERVER_ENDPOINT = "tcp://localhost:5555"
 
-local _M = {}
+local class = {}
 
-function _M.open(ctx, option, retry)
-	local ctx = ctx or zmq.context()
-	_M.ctx = ctx
-	_M.max_retry = retry or REQUEST_RETRIES
+function class:open(option, retry)
+	self.max_retry = retry or REQUEST_RETRIES
 
 	local SOCKET_OPTION = option or {
 		zmq.REQ,
@@ -25,26 +23,26 @@ function _M.open(ctx, option, retry)
 	assert(SOCKET_OPTION[1] == zmq.REQ, "Incorrect socket option found in REQ")
 
 	printf("I: connecting to server...\n")
-	local client, err = ctx:socket(SOCKET_OPTION)
+	local client, err = self.ctx:socket(SOCKET_OPTION)
 	zassert(client, err)
-	_M.client = client
-	_M.option = SOCKET_OPTION
+	self.client = client
+	self.option = SOCKET_OPTION
 end
 
 -- return reply object
-function _M.request(request, expect_reply)
+function class:request(request, expect_reply)
 	local reply = expect_reply and nil or true
 	local err = nil
 
 	-- 
-	local retries_left = _M.max_retry
+	local retries_left = self.max_retry
 
 	while retries_left > 0 do
 		-- We send a request, then we work to get a reply
-		_M.client:send(request)
+		self.client:send(request)
 
 		while expect_reply do
-			reply, err = _M.client:recv()
+			reply, err = self.client:recv()
 
 			-- Here we process a server reply and exit our loop if the
 			-- reply is valid. If we didn't a reply we close the client
@@ -69,17 +67,29 @@ function _M.request(request, expect_reply)
 				else
 					printf("W: no response from server, retrying...\n")
 					-- Old socket is confused; close it and open a new one
-					_M.client:close()
+					self.client:close()
 					printf ("I: reconnecting to server...\n")
-					_M.client, err = _M.ctx:socket(_M.option)
-					zassert(_M.client, err)
+					sefl.client, err = self.ctx:socket(self.option)
+					zassert(self.client, err)
 					-- Send request again, on new socket
-					_M.client:send(request)
+					self.client:send(request)
 				end
 			end
 		end
 	end
 	return reply, tostring(err)
+end
+
+local _M = {}
+function _M.new(ctx)
+	local ctx = ctx or zmq.context()
+	return setmetatable(
+	{
+		ctx=ctx,
+		max_retry = REQUEST_RETRIES, 
+		client = nil,
+		option = nil
+	}, {__index = class})
 end
 
 return _M

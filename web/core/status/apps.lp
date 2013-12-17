@@ -29,8 +29,13 @@
 %>
 		<label> Application: <?=k?> </label>
 <%
+		put('<br/>')
 		put(v.run and 'True' or 'False')
+		put('<br/>')
+		put(v.port or 'None')
+		put('<br/>')
 		put(os.date("%c", v.last))
+		put('<br/>')
 		%>
 		<input type="button" value="Start" onClick="operateApp('start', '<?=k?>')">
 		<input type="button" value="Reload" onClick="operateApp('reload', '<?=k?>')">
@@ -39,3 +44,4 @@
 		end
 	end
 %>
+
