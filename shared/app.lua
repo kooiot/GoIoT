@@ -111,6 +111,8 @@ function class:init()
 		local msg, err = self.monclient:recv()
 		-- DO NOTHING on return
 	end)
+
+	self.onStart()
 end
 
 function class:sendNotice()
@@ -134,6 +136,20 @@ function class:run(ms)
 	end
 end
 
+function class:meta()
+	return {
+		name = self.name,
+		port = self.port,
+		version = {
+			version = self.version,
+			build = self.build,
+			manufactor = self.manufactor,
+		},
+		web = self.web,
+		app = self:appMeta()
+	}
+end
+
 local _M = {}
 
 function _M.new(info)
@@ -147,27 +163,35 @@ function _M.new(info)
 	obj.port = info.port
 	obj.server = nil
 
+	-- handler functions
 	obj.onStart = info.onStart or function() return true end
 	obj.onStop = info.onStop or function() return true end
 	obj.onReload = info.onReload or function() return true end
 	obj.onStatus = info.onStatus or function() return false end
 
+	-- app meta data enum interface
+	obj.appMeta = info.appMeta or function() return {} end
+
 	obj.ctx = info.ctx or zmq.context()
 	obj.poller = info.poller or zpoller.new(3)
 	obj.event = nil
 
+	-- Message Process Function table for REQ/REP
 	obj.mpft = {}
 	for k,v in pairs(mpft) do
 		obj.mpft[k] = v
 	end
 
+	-- Event Message Process Function table
 	obj.empft = {}
 	for k,v in pairs(empft) do
 		obj.empft[k] = v
 	end
 
+	-- Monitor application interfaces, which will be updated automatically
 	obj.monlast = 0
 	obj.monclient = nil
+
 	return setmetatable(obj, {__index = class})
 end
 

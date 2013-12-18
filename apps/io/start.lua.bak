@@ -6,26 +6,13 @@ package.path = string.format("%s;%s/?.lua;%s/?/init.lua", m_package_path, m_path
 
 local app = nil
 
-local ioname = arg[1]
-local port = arg[2]
-local folder = arg[3]
-
-if not ioname then
-	print('Applicaiton needs to have a name')
-	os.exit(-1)
-end
-
-if not folder then
-	folder = ioname
-end
-
 local info = {
 	version = "1.0",
 	build = 'build01',
-	name = ioname,
+	name = 'io', -- TODO:
 	web = true,
 	manufactor = 'OpenGate',
-	port = port,
+	port = 5515,
 	onStart = function ()
 		print('onStart')
 		return true

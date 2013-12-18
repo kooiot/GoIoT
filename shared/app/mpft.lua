@@ -38,4 +38,12 @@ mpft['reload'] = function(obj, msg)
 	obj.server:send(cjson.encode(reply))
 end
 
+-- Get the application meta information
+mpft['meta'] = function(obj, msg)
+	local meta = obj:meta()
+	local reply = {'meta', {result=true, meta=meta}}
+
+	obj.server:send(cjson.encode(reply))
+end
+
 return mpft
