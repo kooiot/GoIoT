@@ -5,7 +5,7 @@ cgilua.contentheader('text', 'html; charset=utf8')
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>OpenGate</title>
+		<title>OpenGate - <?=app?></title>
 
 		<script src='http://cdn.staticfile.org/jquery/1.9.1/jquery.js'></script>
 		<script src='http://cdn.staticfile.org/jqueryui/1.10.3/jquery-ui.js'></script>

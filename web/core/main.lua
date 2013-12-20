@@ -14,27 +14,27 @@ else
 end
 
 
-local real_path= "core/"..path
-
 -- Do not try to access the core/main.lua
-if real_path == "core/main.lua" then
-	real_path = "core/index.lp"
+if path == "main.lua" then
+	path = "index.lp"
 end
 
-debug("file=", real_path)
-local file = io.open(real_path)
+local file = io.open(app..'/'..path)
+
 if file then
 	file:close()
 	if lp_file then
 		--cgilua.htmlheader()
 		-- load the pages now
-		include("core/header.lp", env)
-		include(real_path)
-		include("core/footer.lp", env)
+		include("header.lp")
+		include(path, app)
+		include("footer.lp")
 	else
-		script(real_path)
+		script(path, app)
 	end
 else
-	include('core/404.lp')	
+	include("header.lp")
+	include('404.lp')
+	include("footer.lp")
+	--redirect('/404.html')
 end
-

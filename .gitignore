@@ -1,6 +1,7 @@
 !/oe/meta-dirk
 /oe/build
 build*/
+web/io
 *.swp
 *.orig
 *.rej

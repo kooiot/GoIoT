@@ -28,6 +28,8 @@ local _M = {}
 
 local function  app_meta()
 	return {
+		type = "IO",
+		config = config,
 		settings = _M.settings,
 		commands = _M.commands
 	}

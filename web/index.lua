@@ -14,32 +14,38 @@ end
 
 local logoutURL = cgilua.authentication.logoutURL()
 
-local path = cgilua.QUERY._path
-if not path then
-	path = '/'
-end
+local path = cgilua.QUERY._path or '/'
+local app = cgilua.QUERY._app or 'core'
 
 local lp = require 'cgilua.lp'
 
 local env = _ENV
 env.path = path
+env.app = app
 env.user = user
 env.put = cgilua.put
 env.print = cgilua.put
 env.redirect = cgilua.redirect
-env.include = function(path)
-	lp.include(path, env)
+env.include = function(path, app)
+	local app = app or 'core'
+	lp.include(app..'/'..path, env)
 end
-env.script = function(path)
-	cgilua.doscript(path, env)
+env.script = function(path, app)
+	local app = app or 'core'
+	cgilua.doscript(app..'/'..path, env)
 end
 env.debug = function(...)
 	io.write(...)
 	io.write('\n')
 end
 
-env.url = function(url)
-	return '"/?_path='..url..'"'
+env.url = function(url, app)
+	local app = app or 'core'
+	if app == 'core' then
+		return '"/?_path='..url..'"'
+	else
+		return '"/?_app='..app..'&_path='..url..'"'
+	end
 end
 
 local loader = require 'core.model'
