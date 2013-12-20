@@ -144,6 +144,7 @@ function _SERVER.new(ctx)
 	return setmetatable(
 	{
 		ctx = ctx,
+		poller = poller,
 		server = nil,
 		publisher = nil,
 		option = nil,

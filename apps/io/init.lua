@@ -2,7 +2,7 @@
 
 local configs = require 'shared.api.configs'
 local info = require '_ver'
-local setting = require 'setting'
+local setting = require 'apps.io.setting'
 
 local app = nil
 
@@ -13,13 +13,13 @@ local function load_config()
 			port = 5515,
 		}
 	end
-	local settings, err = configs.get(ioname..'.settings')
-	assert(settings, err)
+	local config, err = configs.get(ioname..'.configs')
+	assert(config, err)
 
-	settings, err = cjson.decode(settings)
-	assert(settings, err)
+	config, err = cjson.decode(settings)
+	assert(config, err)
 
-	return settings
+	return config 
 end
 
 local config = nil
@@ -58,7 +58,7 @@ function _M.init(name, handlers)
 	config = load_config()
 	_M.handlers = handlers
 	info.name = name 
-	info.port = settings.port
+	info.port = config.port
 	info.on_start = function()
 		handlers.on_start(app)
 	end

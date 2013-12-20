@@ -115,7 +115,8 @@ function class:init()
 	self.on_start()
 end
 
-function class:sendNotice()
+function class:send_notice()
+	--print(os.date(), 'send notice')
 	local req = {'notice', {name=self.name, port=self.port}}
 	self.monclient:send(cjson.encode(req))
 end
@@ -130,9 +131,9 @@ function class:run(ms)
 	end
 
 	local now = os.time()
-	if now - self.monlast > 3 then
-		self.monlast = now
-		self:sendNotice()
+	if now - self.monlast >= 2 then
+		self.monlast = now + 1
+		self:send_notice()
 	end
 end
 
