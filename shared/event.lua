@@ -11,8 +11,7 @@ local SERVER_ENDPOINT = "localhost"
 
 local _CLIENT = {}
 
-function _CLIENT:open(poller, ip)
-	self.poller = poller or zpoller.new()
+function _CLIENT:open(ip)
 
 	local SOCKET_OPTION = {
 		zmq.SUB,
@@ -60,12 +59,19 @@ function _CLIENT:open(poller, ip)
 end
 
 function _CLIENT:close()
+	if not self.client then
+		return nil, "not connected"
+	end
+
 	if self.poller then
 		self.poller:remove(self.client)
-		self.poller = nil
+		self.poller:remove(self.subscriber)
 	end
 	self.client:close()
 	self.client = nil
+	self.subscriber:close()
+	self.subscriber = nil
+	return true
 end
 
 function _CLIENT:send(event)
@@ -76,11 +82,13 @@ function _CLIENT:send(event)
 	return self.client:send(cjson.encode(event))
 end
 
-function _CLIENT.new(ctx, cb)
+function _CLIENT.new(ctx, poller, cb)
+	local poller = poller or zpoller.new()
 	local ctx = ctx or zmq.context()
 	return setmetatable(
 	{
 		ctx = ctx,
+		poller = poller,
 		client = nil,
 		subscriber = nil,
 		option = nil,
@@ -90,8 +98,7 @@ end
 
 local _SERVER = {}
 
-function _SERVER:open(poller, ip)
-	assert(poller)
+function _SERVER:open(ip)
 	local ip = ip or "*"
 	local SOCKET_OPTION = {
 		zmq.PUB,
@@ -104,7 +111,7 @@ function _SERVER:open(poller, ip)
 	self.publisher = publisher
 
 	--[[
-	poller:add(self.publisher, zmq.POLLIN, function()
+	self.poller:add(self.publisher, zmq.POLLIN, function()
 	end)
 	]]--
 
@@ -116,8 +123,7 @@ function _SERVER:open(poller, ip)
 	zassert(server, err)
 	self.server = server
 
-	self.poller = poller
-	poller:add(server, zmq.POLLIN, function()
+	self.poller:add(server, zmq.POLLIN, function()
 		local msg, err = self.server:recv()
 		if msg then
 			--print('EVENT RECV', msg)
@@ -134,6 +140,7 @@ end
 
 function _SERVER.new(ctx)
 	local ctx = ctx or zmq.context()
+	local poller = poller or zpoller.new()
 	return setmetatable(
 	{
 		ctx = ctx,
@@ -144,10 +151,19 @@ function _SERVER.new(ctx)
 end
 
 function _SERVER:close()
+	if not server then
+		return nil, "not initialized"
+	end
+	if self.poller then
+		self.poller:remove(self.server)
+		self.poller:remove(self.publisher)
+	end
+	
 	self.server:close()
 	self.server = nil
 	self.publisher:close()
 	self.publisher = nil
+	return true
 end
 
 return  {

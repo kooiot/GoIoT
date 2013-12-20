@@ -29,6 +29,12 @@ function class:open(option, retry)
 	self.option = SOCKET_OPTION
 end
 
+function class:close()
+	self.clent:close()
+	self.client = nil
+	self.option = nil
+end
+
 -- return reply object
 function class:request(request, expect_reply)
 	local reply = expect_reply and nil or true
@@ -69,7 +75,7 @@ function class:request(request, expect_reply)
 					-- Old socket is confused; close it and open a new one
 					self.client:close()
 					printf ("I: reconnecting to server...\n")
-					sefl.client, err = self.ctx:socket(self.option)
+					self.client, err = self.ctx:socket(self.option)
 					zassert(self.client, err)
 					-- Send request again, on new socket
 					self.client:send(request)

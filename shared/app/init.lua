@@ -30,7 +30,7 @@ local function send_err(server, err)
 	return server:send(rep_json)
 end
 
-function class:regRequestHandler(name, handler)
+function class:reg_request_handler(name, handler)
 	if not self.mpft[name] then
 		self.mpft[name] = handler
 		return true
@@ -38,7 +38,7 @@ function class:regRequestHandler(name, handler)
 	return false, 'MSG '..name..' already registered!!'
 end
 
-function class:onRequest(msg)
+function class:on_request(msg)
 	local json, err = cjson.decode(msg)
 	if not json then
 		print('JSON DECODE ERR', err)
@@ -54,7 +54,7 @@ function class:onRequest(msg)
 	end
 end
 
-function class:regEventHandler(name, handler)
+function class:reg_event_handler(name, handler)
 	if not self.empft[name] then
 		self.empft[name] = handler
 		return true
@@ -62,8 +62,8 @@ function class:regEventHandler(name, handler)
 	return false, 'Event '..name..' already registered!!'
 end
 
-function class:onEvent(event)
-	--print('onEvent', event.name, event.dest)
+function class:on_event(event)
+	--print('on_event', event.name, event.dest)
 	if event.dest ~= self.name and event.dest ~= 'ALL' then
 		print('Event is not for me')
 		return
@@ -88,17 +88,17 @@ function class:init()
 		self.poller:add(server, zmq.POLLIN, function()
 			local msg, err = self.server:recv()
 			if msg then
-				self:onRequest(msg)
+				self:on_request(msg)
 			else
 				print('ERR', err)
 			end
 		end)
 	end
 
-	self.event = event.C.new(self.ctx, function (event) 
-		self:onEvent(event)
+	self.event = event.C.new(self.ctx, self.poller, function (event) 
+		self:on_event(event)
 	end)
-	self.event:open(self.poller)
+	self.event:open()
 
 	local client, err = self.ctx:socket({
 		zmq.REQ,
@@ -112,7 +112,7 @@ function class:init()
 		-- DO NOTHING on return
 	end)
 
-	self.onStart()
+	self.on_start()
 end
 
 function class:sendNotice()
@@ -146,7 +146,7 @@ function class:meta()
 			manufactor = self.manufactor,
 		},
 		web = self.web,
-		app = self:appMeta()
+		app = self:app_meta()
 	}
 end
 
@@ -164,13 +164,13 @@ function _M.new(info)
 	obj.server = nil
 
 	-- handler functions
-	obj.onStart = info.onStart or function() return true end
-	obj.onStop = info.onStop or function() return true end
-	obj.onReload = info.onReload or function() return true end
-	obj.onStatus = info.onStatus or function() return false end
+	obj.on_start = info.on_start or function() return true end
+	obj.on_stop = info.on_stop or function() return true end
+	obj.on_reload = info.on_reload or function() return true end
+	obj.on_status = info.on_status or function() return false end
 
 	-- app meta data enum interface
-	obj.appMeta = info.appMeta or function() return {} end
+	obj.app_meta = info.app_meta or function() return {} end
 
 	obj.ctx = info.ctx or zmq.context()
 	obj.poller = info.poller or zpoller.new(3)
