@@ -36,8 +36,7 @@ mpft['notice'] = function(vars)
 	local err = 'Invalid/Unsupported add request'
 	if vars and type(vars) == 'table' then
 		if vars.name then
-			running[vars.name] = running[vars.name] or {} 
-			running[vars.name].port = vars.port
+			running[vars.name] = vars 
 			running[vars.name].last = os.time()
 			running[vars.name].run = true
 			local rep = {'notice', {result=true}}

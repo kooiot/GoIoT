@@ -19,7 +19,7 @@ if path == "main.lua" then
 	path = "index.lp"
 end
 
-local file = io.open(app..'/'..path)
+local file = io.open('core/'..path)
 
 if file then
 	file:close()
@@ -27,10 +27,10 @@ if file then
 		--cgilua.htmlheader()
 		-- load the pages now
 		include("header.lp")
-		include(path, app)
+		include(path)
 		include("footer.lp")
 	else
-		script(path, app)
+		script(path)
 	end
 else
 	include("header.lp")

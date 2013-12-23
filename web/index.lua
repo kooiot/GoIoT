@@ -1,3 +1,4 @@
+
 local function auth_user()
 	local username = cgilua.authentication.username()
 	if not username then
@@ -15,37 +16,34 @@ end
 local logoutURL = cgilua.authentication.logoutURL()
 
 local path = cgilua.QUERY._path or '/'
-local app = cgilua.QUERY._app or 'core'
 
 local lp = require 'cgilua.lp'
 
 local env = _ENV
 env.path = path
-env.app = app
 env.user = user
 env.put = cgilua.put
 env.print = cgilua.put
 env.redirect = cgilua.redirect
-env.include = function(path, app)
-	local app = app or 'core'
-	lp.include(app..'/'..path, env)
+env.include = function(path)
+	lp.include('core/'..path, env)
 end
-env.script = function(path, app)
-	local app = app or 'core'
-	cgilua.doscript(app..'/'..path, env)
+env.script = function(path)
+	cgilua.doscript('core/'..path, env)
 end
 env.debug = function(...)
 	io.write(...)
 	io.write('\n')
 end
 
-env.url = function(url, app)
-	local app = app or 'core'
-	if app == 'core' then
-		return '"/?_path='..url..'"'
-	else
-		return '"/?_app='..app..'&_path='..url..'"'
+env.url = function(url, args)
+	local args = args or {}
+	args['_path']=url
+	local url = {}
+	for k,v in pairs(args) do
+		url[#url+1] = k..'='..v
 	end
+	return table.concat(url, '&')
 end
 
 local loader = require 'core.model'

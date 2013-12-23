@@ -17,7 +17,7 @@ cgilua.contentheader('text', 'html; charset=utf8')
 			<header id="header">
 			<nav>   
 			<div id="logo">
-				<a href="#"><img src="<?=cgilua.put('images/logo.png')?>" alt="Logo here" /></a> 
+				<a href="#"><img src="<?=put('images/logo.png')?>" alt="Logo here" /></a> 
 			</div>
 
 			<div id="main_menu">

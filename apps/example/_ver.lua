@@ -1,7 +1,7 @@
 return {
 	version = "1.0",
 	build = 'build01',
-	name = 'io',
+	product = 'example',
 	web = true,
 	manufactor = 'OpenGate',
 }

@@ -30,6 +30,8 @@
 		<label> Application: <?=k?> </label>
 <%
 		put('<br/>')
+		put('Project:'..v.product)
+		put('<br/>')
 		put(v.run and 'True' or 'False')
 		put('<br/>')
 		put(v.port or 'None')
@@ -40,6 +42,7 @@
 		<input type="button" value="Start" onClick="operateApp('start', '<?=k?>')">
 		<input type="button" value="Reload" onClick="operateApp('reload', '<?=k?>')">
 		<input type="button" value="Stop" onClick="operateApp('stop', '<?=k?>')">
+		<a href=<?=url(v.product)?>> Manage </a>
 		<%
 		end
 	end

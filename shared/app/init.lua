@@ -117,7 +117,7 @@ end
 
 function class:send_notice()
 	--print(os.date(), 'send notice')
-	local req = {'notice', {name=self.name, port=self.port}}
+	local req = {'notice', {name=self.name, product=self.product, port=self.port}}
 	self.monclient:send(cjson.encode(req))
 end
 
@@ -140,6 +140,7 @@ end
 function class:meta()
 	return {
 		name = self.name,
+		product = self.product,
 		port = self.port,
 		version = {
 			version = self.version,
@@ -155,9 +156,13 @@ local _M = {}
 
 function _M.new(info)
 	local info = info or {}
+	assert(info.product, 'App product name must be specified')
+	assert(info.port, 'App port must be specified')
+
 	local obj = {}
 	obj.version = info.version or '0.1'
 	obj.build = info.build or '000001'
+	obj.product = info.product
 	obj.name = info.name or ('name'..os.time()..math.random(os.time()))
 	obj.web = info.web or false -- the application pack has its own web pages
 	obj.manufactor = info.manufactor or 'OpenGate'
