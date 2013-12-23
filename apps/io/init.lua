@@ -58,8 +58,31 @@ function _M.add_command(cmd)
 	_M.commands[cmd.name] = cmd:meta()
 end
 
-function _M.add_port(name, port)
-	_M.ports[name] = port
+function _M.add_port(name, types, default)
+	local port = require 'apps.io.port'
+	_M.ports[name] = {types = types, default = port[default..'_conf']()}
+end
+
+local function get_port_conf(name)
+	if config.ports and config.ports[name] then
+		return config.ports[name]
+	end
+
+	if _M.ports[name] and _M.ports[name].default then
+		return _M.ports[name].default
+	end
+	return nil, 'no such port'
+end
+
+function _M.get_port(name)
+	local conf, err = get_port_conf(name)
+	if not conf then
+		return nil, err
+	end
+
+	local port = require 'apps.io.port'
+
+	return port.create(app, conf)
 end
 
 function _M.init(name, handlers)

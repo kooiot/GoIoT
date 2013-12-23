@@ -2,45 +2,19 @@ require 'shared.zhelpers'
 local zmq = require 'lzmq'
 local zpoller = require 'lzmq.poller'
 
-local ctx = zmq.context()
-
-local server, err = ctx:socket({zmq.STREAM, linger=0, bind="tcp://*:8000"})
-
-zassert(server, err)
-
-while(true) do
-	local id, err = server:recv_len(256)
-	if not id then
-		print(err)
-	else
-		print(id)
-	end
-
-	local msg, err = server:recv()
-	if msg then
-		print(msg)
-	else
-		print(err)
-	end
-
-	--server:send(id, zmq.SNDMORE)
-	server:send('back')
-end
-
 local class = {}
 
-function class:open(ip, port)
+function class:open(cb)
 	if self.server then
 		return nil, "already binded"
 	end
-	if not ip or not port then
-		return nil, "Incorrect parameters"
+
+	if not cb then
+		return nil, "No callback"
 	end
+	self.cb = cb
 
-	self.sip = ip
-	self.sport = port
-
-	local server, err = ctx:socket({zmq.STREAM, linger=0, bind="tcp://"..ip..":"..port})
+	local server, err = ctx:socket({zmq.STREAM, linger=0, bind="tcp://"..self.sip..":"..self.sport})
 	zassert(server, err)
 
 	self.server = server
@@ -64,6 +38,7 @@ function class:open(ip, port)
 			print(err)
 		end
 	end)
+	return true
 end
 
 function class:reg_msg_handler(id, func)
@@ -97,7 +72,7 @@ end
 
 
 local _M = {}
-_M.new = function(ctx, poller, cb)
+_M.new = function(ctx, poller, ip, port)
 	local ctx = ctx or zmq.context()
 	local poller = poller or zpoller.new()
 	return setmetatable({
@@ -105,9 +80,10 @@ _M.new = function(ctx, poller, cb)
 		poller = poller,
 		server=nil,
 		client_cbs = {},
-		sip = "*",
-		sport = 4000,
-		cb=cb},
+		sip = ip or "*",
+		sport = port or 4000,
+		cb=nil},
 		{__index=class})
 end
 
+return _M

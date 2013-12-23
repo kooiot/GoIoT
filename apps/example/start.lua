@@ -6,25 +6,36 @@ package.path = string.format("%s;%s/?.lua;%s/?/init.lua", m_package_path, m_path
 
 local configs = require 'shared.api.configs'
 local info = require '_ver'
+local io = require('apps.io')
+local pp = require('shared.PrettyPrint')
 
 local app = nil
+local io_ports = {}
 
 local ioname = arg[1]
 assert(ioname, 'Applicaiton needs to have a name')
 
+local function on_data(port, msg)
+	print(msg)
+end
+
 local handlers = {}
 handlers.on_start = function(app)
+	io_ports.main = io.get_port('port')
+
+	local r, err = io_ports.main:open(on_data)
+	if not r then
+		print(err)
+	end
 	return true
 end
 
 handlers.on_timer = function(app)
-	print('timer')
+	--print('timer')
 end
 
-local io = require('apps.io')
-
 local port = require('apps.io.port')
-io.add_port('port', port.tcp_client())
+io.add_port('port', {port.tcp_client, port.tcp_server, port.serial}, port.tcp_client) 
 
 local setting = require('apps.io.setting')
 local command = require('apps.io.command')

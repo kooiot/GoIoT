@@ -71,12 +71,65 @@
 %>
 
 <%
+local pp = require 'shared.PrettyPrint'
 local meta, err = api:meta()
 if not meta then
 	put('Api Error:', err)
 else
-	local pp = require 'shared.PrettyPrint'
-	put(pp(meta))
+	--put(pp(meta))
 end
 %>
+
+<script>
+	$(function() {
+		$( "#tabs" ).tabs();
+		$( "#radio" ).buttonset();
+	});
+</script>
+
+<div id="tabs">
+	<ul>
+		<li><a href="#tabs-1">Port</a></li>
+		<li><a href="#tabs-2">Settings</a></li>
+		<li><a href="#tabs-3">Commands</a></li>
+	</ul>
+	<div id="tabs-1">
+		<p>
+
+		<% for k,v in pairs(meta.app.ports) do %>
+			<label> <?=k ?> </label>
+			<div id="radio">
+				<input type="radio" id="radio1" name="radio" checked="checked"><label for="radio1">TCP Client</label>
+				<input type="radio" id="radio2" name="radio"><label for="radio2">TCP Server</label>
+				<input type="radio" id="radio3" name="radio"><label for="radio3">Serial</label>
+			</div>
+
+			<label for="ip1">Local IP: </label>
+			<input type="text" id="ip1" name="ip1" value="<?=v.default.props.local_addr.value ?>" > 
+			<label for="ip2">Remote IP: </label>
+			<input type="text" id="ip2" name="ip2" value="<?=v.default.props.remote_addr.value ?>" > 
+			<label for="port1">Port: </label>
+			<input type="text" id="port1" name="port1" value="<?=v.default.props.port.value ?>" > 
+		<% end %>
+		</p>
+
+		<p>
+		<% 
+		put(pp(meta.app.ports)) 
+		%>
+		</p>
+	</div>
+	<div id="tabs-2">
+		<p>
+		<% put(pp(meta.app.settings)) %>
+		</p>
+	</div>
+	<div id="tabs-3">
+		<p>
+		<% put(pp(meta.app.commands)) %>
+		</p>
+	</div>
+</div>
+
+<input type="button" value="Save" onClick="alert('test')">
 

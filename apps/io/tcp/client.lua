@@ -4,18 +4,19 @@ local zpoller = require 'lzmq.poller'
 
 local class = {}
 
-function class:open(ip, port)
+function class:open(cb)
 	if self.client then
 		return nil, "already connected"
 	end
-	if not ip or not port then
-		return nil, "Incorrect parameters"
+
+	if not cb then
+		return nil, "No callback"
 	end
+	self.cb = cb
 
-	self.sip = ip
-	self.sport = port
+	--print(require('shared.PrettyPrint')({zmq.STREAM, linger=0, identity='abcde', connect="tcp://"..self.sip..":"..self.sport}))
 
-	local client, err = ctx:socket({zmq.STREAM, linger=0, identity='abcde', connect="tcp://"..ip..":"..port})
+	local client, err = self.ctx:socket({zmq.STREAM, linger=0, identity='abcde', connect="tcp://"..self.sip..":"..self.sport})
 	zassert(client, err)
 
 	local id, err = client:getopt_str(zmq.IDENTITY)
@@ -39,6 +40,7 @@ function class:open(ip, port)
 			print(err)
 		end
 	end)
+	return true
 end
 
 function class:close()
@@ -57,7 +59,7 @@ function class:send(msg)
 end
 
 local _M = {}
-_M.new = function(ctx, poller, cb)
+_M.new = function(ctx, poller, sip, sport)
 	local ctx = ctx or zmq.context()
 	local poller = poller or zpoller.new()
 	return setmetatable({
@@ -65,9 +67,10 @@ _M.new = function(ctx, poller, cb)
 		poller = poller,
 		client=nil,
 		client_id = nil,
-		sip = "127.0.0.1",
-		sport = 4000,
-		cb=cb},
+		sip = sip or "127.0.0.1",
+		sport = sport or 4000,
+		cb=nil},
 		{__index=class})
 end
 
+return _M

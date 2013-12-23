@@ -43,8 +43,10 @@ end
 -- Get the application meta information
 mpft['meta'] = function(obj, msg)
 	local meta = obj:meta()
+	print(require('shared.PrettyPrint')(meta))
 	local reply = {'meta', {result=true, meta=meta}}
 
+	print(cjson.encode(reply))
 	obj.server:send(cjson.encode(reply))
 end
 
