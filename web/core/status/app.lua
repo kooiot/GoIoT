@@ -6,3 +6,4 @@ if cgilua.POST.key then
 	event:send({src='web', name=cgilua.POST.action, dest=cgilua.POST.key})
 	put('DONE')
 end
+

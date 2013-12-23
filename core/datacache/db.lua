@@ -59,6 +59,14 @@ function class:get(name)
 	end
 end
 
+function class:enum(pattern)
+	if pattern == "*" then
+		return self.fake
+	end
+	-- TODO:
+	return {}
+end
+
 function class:close()
 	assert(self._conn:close())
 end

@@ -32,3 +32,6 @@ function _M.from(tbl)
 	assert(tbl)
 	return setmetatable(tbl, {__index=class})
 end
+
+return _M
+

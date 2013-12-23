@@ -42,7 +42,7 @@
 		<input type="button" value="Start" onClick="operateApp('start', '<?=k?>')">
 		<input type="button" value="Reload" onClick="operateApp('reload', '<?=k?>')">
 		<input type="button" value="Stop" onClick="operateApp('stop', '<?=k?>')">
-		<a href=<?=url(v.product)?>> Manage </a>
+		<a href=<?=url(v.product, {name=k, port=v.port})?>> Manage </a>
 		<%
 		end
 	end

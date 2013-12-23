@@ -25,22 +25,25 @@ end
 local config = nil
 
 local _M = {}
+_M.ports = {}
+_M.settings = {}
+_M.commands = {}
 
 local function  app_meta()
 	return {
 		type = "IO",
 		config = config,
+		ports = _M.ports,
 		settings = _M.settings,
 		commands = _M.commands
 	}
 end
 
-function _M.add_settings(item)
-	_M.settings = _M.settings or {}
-	_M.settings[item.name] = item.meta()
+function _M.add_setting(item)
+	_M.settings[item.name] = item:meta()
 end
 
-function _M.get_settings(name)
+function _M.get_setting(name)
 	if config.settings and config.settings[name] then
 		return setting.from(config.settings[name])
 	end
@@ -52,8 +55,11 @@ function _M.get_settings(name)
 end
 
 function _M.add_command(cmd)
-	_M.commands = _M.commands or {}
-	_M.commands[cmd.name] = cmd.meta()
+	_M.commands[cmd.name] = cmd:meta()
+end
+
+function _M.add_port(name, port)
+	_M.ports[name] = port
 end
 
 function _M.init(name, handlers)

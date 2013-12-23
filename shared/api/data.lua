@@ -30,7 +30,16 @@ end
 
 _M.get = function(name)
 	local req = {'get', {name=name}}
-	reply, err = client:request(cjson.encode(req), true)
+	local reply, err = client:request(cjson.encode(req), true)
+	if reply then
+		reply = cjson.decode(reply)[2]
+	end
+	return reply, err
+end
+
+_M.enum = function(pattern)
+	local req = {'enum', {pattern=pattern}}
+	local reply, err = client:request(cjson.encode(req), true)
 	if reply then
 		reply = cjson.decode(reply)[2]
 	end
@@ -39,7 +48,7 @@ end
 
 _M.subscribe = function(self_id, tags)
 	local req = {'subscribe', {id = self_id, tags=tags}}
-	reply, err = client:request(cjson.encode(req), true)
+	local reply, err = client:request(cjson.encode(req), true)
 	if reply then
 		reply = cjson.decode(reply)[2]
 	end
@@ -48,7 +57,7 @@ end
 
 _M.unsubscribe = function(self_id)
 	local req = {'unsubscribe', {id = self_id}}
-	reply, err = client:request(cjson.encode(req), true)
+	local reply, err = client:request(cjson.encode(req), true)
 	if reply then
 		reply = cjson.decode(reply)[2]
 	end

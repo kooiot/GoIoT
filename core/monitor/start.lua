@@ -48,7 +48,7 @@ mpft['notice'] = function(vars)
 end
 
 mpft['query'] = function(vars)
-	local err = 'Invalid/Unsupported add request'
+	local err = 'Invalid/Unsupported query request'
 	if vars and type(vars) ~= 'table' then
 		send_err(err)
 		return

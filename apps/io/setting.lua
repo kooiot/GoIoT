@@ -2,7 +2,7 @@
 
 local class = {}
 
-function class:add_prop(name, desc, type, vals)
+function class:add_prop(name, desc, type, value, vals)
 	self.props[name] = {name = name, desc = desc, type = type, value=value, vals = vals}
 end
 
@@ -32,3 +32,5 @@ function _M.from(tbl)
 	assert(tbl)
 	return setmetatable(tbl, {__index=class})
 end
+
+return _M

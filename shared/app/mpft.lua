@@ -1,3 +1,5 @@
+local cjson = require 'cjson.safe'
+
 local mpft = {}
 
 mpft['version'] = function(obj, msg)

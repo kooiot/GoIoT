@@ -113,6 +113,12 @@ mpft['get'] = function(vars)
 	send_err(err)
 end
 
+mpft['enum'] = function (vars)
+	local tags = db:enum(vars.pattern or "*")
+	local rep = {'enum', tags}
+	server:send(cjson.encode(rep))
+end
+
 mpft['subscribe'] = function(vars)
 	local err =  'Invalid/Unsupported subscribe request'
 	local id = vars.id
