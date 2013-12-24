@@ -21,7 +21,7 @@ end
 
 local handlers = {}
 handlers.on_start = function(app)
-	io_ports.main = io.get_port('port')
+	io_ports.main = assert(io.get_port('main'))
 
 	local r, err = io_ports.main:open(on_data)
 	if not r then
@@ -35,7 +35,8 @@ handlers.on_timer = function(app)
 end
 
 local port = require('apps.io.port')
-io.add_port('port', {port.tcp_client, port.tcp_server, port.serial}, port.tcp_client) 
+io.add_port('main', {port.tcp_client, port.tcp_server, port.serial}, port.tcp_client) 
+io.add_port('backup', {port.tcp_client, port.tcp_server, port.serial}, port.tcp_client) 
 
 local setting = require('apps.io.setting')
 local command = require('apps.io.command')

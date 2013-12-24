@@ -60,7 +60,7 @@ end
 
 function _M.add_port(name, types, default)
 	local port = require 'apps.io.port'
-	_M.ports[name] = {types = types, default = port[default..'_conf']()}
+	_M.ports[#_M.ports + 1] = {name=name, types = types, default = port[default..'_conf']()}
 end
 
 local function get_port_conf(name)
@@ -68,9 +68,12 @@ local function get_port_conf(name)
 		return config.ports[name]
 	end
 
-	if _M.ports[name] and _M.ports[name].default then
-		return _M.ports[name].default
+	for k,v in pairs(_M.ports) do
+		if v.name == name then
+			return v.default
+		end
 	end
+
 	return nil, 'no such port'
 end
 
