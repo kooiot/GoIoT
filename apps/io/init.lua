@@ -117,15 +117,49 @@ function _M.init(name, handlers)
 	return app
 end
 
-function _M.run(ms)
-	local ms = ms or 1000
-	local ztimer = require 'lzmq.timer'
-	local timer = ztimer.monotonic(ms)
+local aborting = false
+function _M.abort()
+	aborting = true
+end
 
-	while true do
+local MIN_MS = 50
+
+function _M.run(timer_span)
+	aborting = false
+
+	local timer_span = timer_span or 5000
+
+	local ztimer = require 'lzmq.timer'
+	local timer = ztimer.monotonic(timer_span)
+
+
+	local co = coroutine.create(function (abort)
+		local abort = abort or false
+		while not abort do
+			if _M.handlers.on_run then
+				abort = _M.handlers.on_run(app)
+				if not abort then
+					-- tell whether we want to abort run
+					abort = coroutine.yield(false, MIN_MS)
+				end
+			else
+				abort = coroutine.yield(false, 1000)
+			end
+		end
+	end)
+
+	local r = true
+	local ms = MIN_MS
+	while not aborting do
 		timer:start()
-		while timer:rest() > 0 do
-			app:run(timer:rest())
+		while timer:rest() > 0 and not aborting do
+			r, aborting, ms = assert(coroutine.resume(co, aborting))
+			ms = ms or MIN_MS
+			if ms > timer:rest() then
+				app:run(timer:rest())
+			else
+				app:run(ms)
+			end
 		end
 		_M.handlers.on_timer(app)
 	end

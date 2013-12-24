@@ -33,6 +33,12 @@ end
 handlers.on_timer = function(app)
 	--print('timer')
 end
+--[[
+handlers.on_run = function(app)
+	print('on_run', os.date())
+	print(coroutine.yield(false, 1000))
+end
+]]--
 
 local port = require('apps.io.port')
 io.add_port('main', {port.tcp_client, port.tcp_server, port.serial}, port.tcp_client) 
