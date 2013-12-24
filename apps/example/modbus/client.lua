@@ -6,7 +6,7 @@ local function packet_check(msg)
 	return true, string.len(msg)
 end
 
-function class:request (port, unit, name, ...) 
+function class:request (unit, name, ...) 
 	local args = {...}
 
 	local p, parser = pdu[name](table.unpack(args))
@@ -17,10 +17,10 @@ function class:request (port, unit, name, ...)
 
 	--- write to pipe
 	-- fiber.await(self.internal.write(apdu_raw))
-	port:send(apdu_raw)
+	self.stream.send(apdu_raw)
 
 	--local raw = fiber.await(self.internal.read())
-	local raw = port:read(packet_check, 500)
+	local raw = self.stream.read(packet_check, 500)
 	if not raw then
 		print('no data ready')
 		return
@@ -41,7 +41,7 @@ function class:request (port, unit, name, ...)
 
 end
 
-return function (apdu)
-	return setmetatable({apdu = apdu, requests = {}, transcode = 0, stop = false}, {__index=class})
+return function (stream, apdu)
+	return setmetatable({stream = stream, apdu = apdu, requests = {}, transcode = 0, stop = false}, {__index=class})
 end
 

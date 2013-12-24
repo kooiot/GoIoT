@@ -85,7 +85,7 @@ function _M.get_port(name)
 
 	local port = require 'apps.io.port'
 
-	return port.create(app, conf)
+	return port.create(app, conf), conf
 end
 
 function _M.init(name, handlers)
