@@ -8,22 +8,20 @@ local configs = require 'shared.api.configs'
 local info = require '_ver'
 local io = require('apps.io')
 local pp = require('shared.PrettyPrint')
+local modbus = require('modbus.init')
 
 local app = nil
 local io_ports = {}
+local mclient = modbus.client(modbus.apdu_tcp)
 
 local ioname = arg[1]
 assert(ioname, 'Applicaiton needs to have a name')
-
-local function on_data(port, msg)
-	print(msg)
-end
 
 local handlers = {}
 handlers.on_start = function(app)
 	io_ports.main = assert(io.get_port('main'))
 
-	local r, err = io_ports.main:open(on_data)
+	local r, err = io_ports.main:open()
 	if not r then
 		print(err)
 	end
@@ -33,12 +31,14 @@ end
 handlers.on_timer = function(app)
 	--print('timer')
 end
---[[
+
 handlers.on_run = function(app)
 	print('on_run', os.date())
-	print(coroutine.yield(false, 1000))
+
+	mclient:request(io_ports.main, 0, 'ReadHoldingRegisters', 1, 16)
+
+	return coroutine.yield(false, 5000)
 end
-]]--
 
 local port = require('apps.io.port')
 io.add_port('main', {port.tcp_client, port.tcp_server, port.serial}, port.tcp_client) 

@@ -4,15 +4,30 @@ local zpoller = require 'lzmq.poller'
 
 local class = {}
 
+
+function hex_raw(raw)
+	if not raw then
+		return ""
+	end
+	if (string.len(raw) > 1) then
+		return string.format("%02X", string.byte(raw:sub(1, 1)))..hex_raw(raw:sub(2))
+	else
+		return string.format("%02X", string.byte(raw:sub(1, 1)))
+	end
+end
+
+function class:on_rev(msg)
+	assert(self)
+	print('on_rev', hex_raw(msg))
+	self.buf = self.buf..msg
+end
+
 function class:open(cb)
 	if self.client then
 		return nil, "already connected"
 	end
 
-	if not cb then
-		return nil, "No callback"
-	end
-	self.cb = cb
+	self.cb = cb or self.on_rev
 
 	--print(require('shared.PrettyPrint')({zmq.STREAM, linger=0, identity='abcde', connect="tcp://"..self.sip..":"..self.sport}))
 
@@ -58,6 +73,27 @@ function class:send(msg)
 	return self.client:send(msg)
 end
 
+function class:read(check, timeout)
+
+	local ztimer = require 'lzmq.timer'
+	local timer = ztimer.monotonic(timeout)
+	timer:start()
+
+	local abort = false
+	while not abort and timer:rest() > 0 do
+		if string.len(self.buf) > 0 then
+			local r, len = check(self.buf)
+			if r then
+				local msg = string.sub(self.buf, 1, len + 1)
+				self.buf = string.sub(self.buf, len + 1)
+				return msg
+			end
+		end
+		abort = coroutine.yield(false, 100)
+	end
+	return nil, timeout
+end
+
 local _M = {}
 _M.new = function(ctx, poller, sip, sport)
 	local ctx = ctx or zmq.context()
@@ -65,6 +101,7 @@ _M.new = function(ctx, poller, sip, sport)
 	return setmetatable({
 		ctx = ctx,
 		poller = poller,
+		buf = '',
 		client=nil,
 		client_id = nil,
 		sip = sip or "127.0.0.1",
