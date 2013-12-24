@@ -22,8 +22,7 @@ function class:request (unit, name, ...)
 	--local raw = fiber.await(self.internal.read())
 	local raw = self.stream.read(packet_check, 500)
 	if not raw then
-		print('no data ready')
-		return
+		return nil, 'no data ready'
 	end
 
 	local trans, unit, pdu_raw = self.apdu.decode(raw)
@@ -32,6 +31,7 @@ function class:request (unit, name, ...)
 	if _ ~= p then
 		log:error('P: '..err)
 	end
+	return p
 --[[
 	for k, v in pairs(p:data()) do
 	print(k, v)

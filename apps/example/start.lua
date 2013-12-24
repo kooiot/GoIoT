@@ -10,35 +10,38 @@ local io = require('apps.io')
 local pp = require('shared.PrettyPrint')
 local modbus = require('modbus.init')
 local port = require('apps.io.port')
-
-local app = nil
-local io_ports = {}
+local api = require('shared.api.data')
 
 local ioname = arg[1]
 assert(ioname, 'Applicaiton needs to have a name')
+
+-- application object
+local app = nil
+local io_ports = {}
+
+-- the stream object used by modbus lib
+local stream = {}
+stream.buf = ''
+
+local mclient = modbus.client(stream, modbus.apdu_tcp)
 
 local function hex_raw(raw)
 	if not raw then
 		return ""
 	end
 	if (string.len(raw) > 1) then
-		return string.format("%02X", string.byte(raw:sub(1, 1)))..hex_raw(raw:sub(2))
+		return string.format("%02X ", string.byte(raw:sub(1, 1)))..hex_raw(raw:sub(2))
 	else
-		return string.format("%02X", string.byte(raw:sub(1, 1)))
+		return string.format("%02X ", string.byte(raw:sub(1, 1)))
 	end
 end
 
-local stream = {}
-stream.buf = ''
-local mclient = modbus.client(stream, modbus.apdu_tcp)
-
 local function on_rev(port, msg)
-	print('DATA RECV', hex_raw(msg))
+	print(os.date(), 'DATA RECV', hex_raw(msg))
 	stream.buf = stream.buf..msg
 end
 
 stream.read = function (check, timeout)
-
 	local ztimer = require 'lzmq.timer'
 	local timer = ztimer.monotonic(timeout)
 	timer:start()
@@ -71,21 +74,26 @@ handlers.on_start = function(app)
 		if not r then
 			print(err)
 		end
+
+		for v = 1, 16 do
+			api.add(ioname..'.data'..v, 'Modbus Tag '..v, 0)
+		end
+
 		return true
 	end
 	return false
 end
 
-handlers.on_timer = function(app)
-	--print('timer')
-end
-
 handlers.on_run = function(app)
-	print('RUN TIME', os.date())
+	print(os.date(), 'RUN TIME')
 
-	mclient:request(0, 'ReadHoldingRegisters', 1, 16)
+	local pa = mclient:request(1, 'ReadHoldingRegisters', 1, 16)
 
-	return coroutine.yield(false, 5000)
+	for k, v in pairs(pa:data()) do
+		api.set(k, v, os.time())
+	end
+
+	return coroutine.yield(false, 3000)
 end
 
 io.add_port('main', {port.tcp_client, port.serial}, port.tcp_client) 
@@ -105,5 +113,5 @@ io.add_command(c1)
 app = io.init(ioname, handlers)
 assert(app)
 
-io.run(3000)
+io.run(5000)
 

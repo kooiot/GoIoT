@@ -43,35 +43,14 @@ local function get_tag(name)
 end
 
 local tags = {}
-tags[#tags + 1] = get_tag('test.tag1')
-tags[#tags + 1] = get_tag('test.tag1')
-tags[#tags + 1] = get_tag('test.tag2')
-tags[#tags + 1] = get_tag('test.tag2')
-tags[#tags + 1] = get_tag('test.tag2')
-tags[#tags + 1] = get_tag('test.tag2')
-tags[#tags + 1] = get_tag('test.tag2')
-tags[#tags + 1] = get_tag('test.tag2')
-tags[#tags + 1] = get_tag('test.tag2')
-tags[#tags + 1] = get_tag('test.tag2')
-tags[#tags + 1] = get_tag('test.tag2')
-tags[#tags + 1] = get_tag('test.tag2')
-tags[#tags + 1] = get_tag('test.tag2')
-tags[#tags + 1] = get_tag('test.tag2')
-tags[#tags + 1] = get_tag('test.tag2')
-tags[#tags + 1] = get_tag('test.tag2')
-tags[#tags + 1] = get_tag('test.tag2')
-tags[#tags + 1] = get_tag('test.tag2')
-tags[#tags + 1] = get_tag('test.tag2')
-tags[#tags + 1] = get_tag('test.tag2')
-tags[#tags + 1] = get_tag('test.tag2')
-tags[#tags + 1] = get_tag('test.tag2')
-tags[#tags + 1] = get_tag('test.tag2')
-tags[#tags + 1] = get_tag('test.tag2')
-tags[#tags + 1] = get_tag('test.tag2')
-tags[#tags + 1] = get_tag('test.tag2')
-tags[#tags + 1] = get_tag('test.tag9')
+tags[#tags + 1] = get_tag('test.data1')
+tags[#tags + 1] = get_tag('test.data2')
+tags[#tags + 1] = get_tag('test.data3')
+tags[#tags + 1] = get_tag('test.data16')
 
 local cjson = require 'cjson.safe'
+
+io.write('dddddddddddddddddddddddddddddddd')
 
 local j = {tags=tags}
 cgilua.put(cjson.encode(j))

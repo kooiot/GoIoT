@@ -124,14 +124,8 @@ end
 
 local MIN_MS = 50
 
-function _M.run(timer_span)
+function _M.run()
 	aborting = false
-
-	local timer_span = timer_span or 5000
-
-	local ztimer = require 'lzmq.timer'
-	local timer = ztimer.monotonic(timer_span)
-
 
 	local co = coroutine.create(function (abort)
 		local abort = abort or false
@@ -151,18 +145,13 @@ function _M.run(timer_span)
 	local r = true
 	local ms = MIN_MS
 	while not aborting do
-		timer:start()
-		while timer:rest() > 0 and not aborting do
+		while not aborting do
 			r, aborting, ms = assert(coroutine.resume(co, aborting))
 			ms = ms or MIN_MS
-			if ms > timer:rest() then
-				app:run(timer:rest())
-			else
-				app:run(ms)
-			end
+			app:run(ms)
 		end
-		_M.handlers.on_timer(app)
 	end
 end
 
 return _M
+
