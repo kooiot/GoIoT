@@ -81,7 +81,7 @@ handlers.on_timer = function(app)
 end
 
 handlers.on_run = function(app)
-	print('on_run', os.date())
+	print('RUN TIME', os.date())
 
 	mclient:request(0, 'ReadHoldingRegisters', 1, 16)
 

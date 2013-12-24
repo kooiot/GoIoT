@@ -32,13 +32,11 @@ function class:request (unit, name, ...)
 	if _ ~= p then
 		log:error('P: '..err)
 	end
-
-	--[[
+--[[
 	for k, v in pairs(p:data()) do
 	print(k, v)
 	end
-	]]--
-
+]]--
 end
 
 return function (stream, apdu)
