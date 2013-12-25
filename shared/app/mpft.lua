@@ -14,7 +14,7 @@ mpft['version'] = function(obj, msg)
 end
 
 mpft['status'] = function(obj, msg)
-	local r, status = obj.onStatus()
+	local r, status = obj.on_status()
 	if not r then
 		status = 'running'
 	end
@@ -23,19 +23,19 @@ mpft['status'] = function(obj, msg)
 end
 
 mpft['start'] = function(obj, msg)
-	local r, status = obj.onStart()
+	local r, status = obj.on_start()
 	local reply = { 'start', {result=r, status = status}}
 	obj.server:send(cjson.encode(reply))
 end
 
 mpft['stop'] = function(obj, msg)
-	local r, status = obj.onStop()
+	local r, status = obj.on_stop()
 	local reply = { 'stop', {result=r, status = status}}
 	obj.server:send(cjson.encode(reply))
 end
 
 mpft['reload'] = function(obj, msg)
-	local r, status = obj.onReload()
+	local r, status = obj.on_reload()
 	local reply = { 'reload', {result=r, status = status}}
 	obj.server:send(cjson.encode(reply))
 end

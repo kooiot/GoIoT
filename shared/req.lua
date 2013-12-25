@@ -22,7 +22,7 @@ function class:open(option, retry)
 	}
 	assert(SOCKET_OPTION[1] == zmq.REQ, "Incorrect socket option found in REQ")
 
-	printf("I: connecting to server...\n")
+	--printf("I: connecting to server...\n")
 	local client, err = self.ctx:socket(SOCKET_OPTION)
 	zassert(client, err)
 	self.client = client
@@ -56,7 +56,7 @@ function class:request(request, expect_reply)
 			-- before finally abandoning:
 
 			if reply then
-				printf ("I: server replied OK (%s)\n", reply)
+				--printf ("I: server replied OK (%s)\n", reply)
 				expect_reply = false
 				retries_left = 0
 				break

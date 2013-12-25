@@ -1,4 +1,5 @@
 local pdu = require 'modbus.pdu'
+local log = require 'shared.log.client'
 
 local class = {}
 
@@ -22,7 +23,7 @@ function class:request (unit, name, ...)
 	--local raw = fiber.await(self.internal.read())
 	local raw = self.stream.read(packet_check, 500)
 	if not raw then
-		return nil, 'no data ready'
+		return nil, 'Packet timeout'
 	end
 
 	local trans, unit, pdu_raw = self.apdu.decode(raw)

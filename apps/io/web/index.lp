@@ -33,7 +33,9 @@
 			port = v.port
 			put('<label> <b> Information </b> </label>')
 			put('<div>')
-			put('name:', name) 
+			put('Name:', name) 
+			put('<br/>')
+			put('Description:', v.desc) 
 			put('<br/>')
 			put('Project:'..v.product)
 			put('<br/>')
@@ -102,7 +104,7 @@ end
 			local name = 'radio'..index
 		%>
 			<div class="port_conf">
-				<label> <?=v.name ?> </label>
+				<label> <b> 端口: <?=v.name ?> </b> </label>
 				<div id="<?=name?>">
 					<input type="radio" id="radio1" name="<?=name?>" checked="checked"><label for="radio1">TCP Client</label>
 					<input type="radio" id="radio2" name="<?=name?>"><label for="radio2">TCP Server</label>

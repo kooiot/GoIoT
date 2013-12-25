@@ -11,6 +11,7 @@ local pp = require('shared.PrettyPrint')
 local modbus = require('modbus.init')
 local port = require('apps.io.port')
 local api = require('shared.api.data')
+local log = require('shared.log.client')
 
 local ioname = arg[1]
 assert(ioname, 'Applicaiton needs to have a name')
@@ -25,6 +26,9 @@ stream.buf = ''
 
 local mclient = modbus.client(stream, modbus.apdu_tcp)
 
+-- When user click stop, we only pause the data 
+local pause = false
+
 local function hex_raw(raw)
 	if not raw then
 		return ""
@@ -37,7 +41,7 @@ local function hex_raw(raw)
 end
 
 local function on_rev(port, msg)
-	print(os.date(), 'DATA RECV', hex_raw(msg))
+--	print(os.date(), 'DATA RECV', hex_raw(msg))
 	stream.buf = stream.buf..msg
 end
 
@@ -67,6 +71,11 @@ end
 
 local handlers = {}
 handlers.on_start = function(app)
+	pause = false
+	if io_ports.main then
+		return
+	end
+
 	io_ports.main, io_ports.main_type = assert(io.get_port('main'))
 
 	if io_ports.main_type ~= port.tcp_client then
@@ -84,16 +93,27 @@ handlers.on_start = function(app)
 	return false
 end
 
+handlers.on_stop = function(app)
+	print(os.date(), 'Received Stop Event')
+	pause = true
+end
+
 handlers.on_run = function(app)
+	print(log:info('example', os.date(), 'RUN TIME'))
 	print(os.date(), 'RUN TIME')
 
-	local pa = mclient:request(1, 'ReadHoldingRegisters', 1, 16)
-
-	for k, v in pairs(pa:data()) do
-		api.set(k, v, os.time())
+	if not pause then
+		local pa, err = mclient:request(1, 'ReadHoldingRegisters', 1, 16)
+		if pa then
+			for k, v in pairs(pa:data()) do
+				api.set(ioname..'.'..k, v, os.time())
+			end
+		else
+			print(os.date(), 'pa is nil', err)
+		end
 	end
 
-	return coroutine.yield(false, 3000)
+	return coroutine.yield(false, 1000)
 end
 
 io.add_port('main', {port.tcp_client, port.serial}, port.tcp_client) 

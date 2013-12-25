@@ -6,7 +6,7 @@ local zpoller = require 'lzmq.poller'
 
 local CONN_METHOD = "tcp://"
 local PUB_SERVER_PORT = ":5519"
-local REP_SERVER_PORT = ":5418"
+local REP_SERVER_PORT = ":5518"
 local SERVER_ENDPOINT = "localhost"
 
 local _CLIENT = {}
@@ -54,7 +54,7 @@ function _CLIENT:open(ip)
 	
 	self.poller:add(self.client, zmq.POLLIN, function()
 		local msg, err = self.client:recv()
-		--print('EVENT FIRE RESULT: '..msg)
+		print('EVENT FIRE RESULT: '..msg)
 	end)
 end
 
@@ -138,7 +138,7 @@ function _SERVER:open(ip)
 	end)
 end
 
-function _SERVER.new(ctx)
+function _SERVER.new(ctx, poller)
 	local ctx = ctx or zmq.context()
 	local poller = poller or zpoller.new()
 	return setmetatable(

@@ -3,6 +3,7 @@
 local configs = require 'shared.api.configs'
 local info = require '_ver'
 local setting = require 'apps.io.setting'
+local ztimer = require 'lzmq.timer'
 
 local app = nil
 
@@ -132,10 +133,6 @@ function _M.run()
 		while not abort do
 			if _M.handlers.on_run then
 				abort = _M.handlers.on_run(app)
-				if not abort then
-					-- tell whether we want to abort run
-					abort = coroutine.yield(false, MIN_MS)
-				end
 			else
 				abort = coroutine.yield(false, 1000)
 			end
@@ -148,7 +145,12 @@ function _M.run()
 		while not aborting do
 			r, aborting, ms = assert(coroutine.resume(co, aborting))
 			ms = ms or MIN_MS
-			app:run(ms)
+
+			local timer = ztimer.monotonic(ms)
+			timer:start()
+			while timer:rest() > 0 do
+				app:run(timer:rest())
+			end
 		end
 	end
 end

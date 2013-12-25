@@ -63,7 +63,7 @@ function class:reg_event_handler(name, handler)
 end
 
 function class:on_event(event)
-	--print('on_event', event.name, event.dest)
+	print('on_event', event.name, event.dest)
 	if event.dest ~= self.name and event.dest ~= 'ALL' then
 		print('Event is not for me')
 		return
@@ -117,7 +117,7 @@ end
 
 function class:send_notice()
 	--print(os.date(), 'send notice')
-	local req = {'notice', {name=self.name, product=self.product, port=self.port}}
+	local req = {'notice', {name=self.name, desc=self.desc, product=self.product, port=self.port}}
 	self.monclient:send(cjson.encode(req))
 end
 
@@ -164,6 +164,7 @@ function _M.new(info)
 	obj.build = info.build or '000001'
 	obj.product = info.product
 	obj.name = info.name or ('name'..os.time()..math.random(os.time()))
+	obj.desc = info.desc or 'unknown application'
 	obj.web = info.web or false -- the application pack has its own web pages
 	obj.manufactor = info.manufactor or 'OpenGate'
 	obj.port = info.port

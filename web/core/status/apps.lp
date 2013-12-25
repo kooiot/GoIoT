@@ -32,6 +32,8 @@
 		put('<br/>')
 		put('Project:'..v.product)
 		put('<br/>')
+		put('Description:'..v.desc)
+		put('<br/>')
 		put(v.run and 'True' or 'False')
 		put('<br/>')
 		put(v.port or 'None')
