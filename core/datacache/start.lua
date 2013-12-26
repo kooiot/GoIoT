@@ -95,6 +95,40 @@ mpft['set'] = function(vars)
 	send_err(err)
 end
 
+mpft['sets'] = function(vars)
+	local err = 'Invalid/Unsupported sets request'
+	--- valid the request
+	if vars and type(vars) == 'table' then
+		local result = false
+		local names = {}
+		for k,v in pairs(vars) do
+			if v.name and v.value and v.timestamp then
+				local r = true
+				r, err = db:set(v.name, v.value, v.timestamp)
+				if not r then
+					print('ERR', err)
+					result = false
+				else
+					table.insert(names, v.name)
+					-- publish changes
+					if ptable[v.name] then
+						for client_id, sub in pairs(ptable[v.name]) do
+							publisher:send(k..' ', zmq.SNDMORE)
+							publisher:send(cjson.encode(v))
+						end
+					end
+				end
+			else
+				result = false
+			end
+		end
+		local rep = {'sets', {result=result, names=names}}
+		server:send(cjson.encode(rep))
+		return
+	end
+	send_err(err)
+end
+
 mpft['get'] = function(vars)
 	local err = 'Invalid/Unsupported get request'
 	--- valid the request
@@ -160,7 +194,7 @@ end
 local poller = zpoller.new(2)
 poller:add(server, zmq.POLLIN, function()
 	local req_json = server:recv()
-	print("REQ:\t"..req_json)
+	--print("REQ:\t"..req_json)
 
 	local req, err = cjson.decode(req_json)
 	if not req then

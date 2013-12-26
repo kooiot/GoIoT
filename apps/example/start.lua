@@ -12,6 +12,7 @@ local modbus = require('modbus.init')
 local port = require('shared.io.port')
 local api = require('shared.api.data')
 local log = require('shared.log.client')
+local ztimer = require 'lzmq.timer'
 
 local ioname = arg[1]
 assert(ioname, 'Applicaiton needs to have a name')
@@ -105,9 +106,12 @@ handlers.on_run = function(app)
 	if not pause then
 		local pa, err = mclient:request(1, 'ReadHoldingRegisters', 1, 16)
 		if pa then
+			local ts = ztimer.absolute_time()
+			local vals = {}
 			for k, v in pairs(pa:data()) do
-				api.set(ioname..'.'..k, v, os.time())
+				vals[#vals+1] = {name = ioname..'.'..k, value = v, timestamp=ts}
 			end
+			api.sets(vals)
 		else
 			print(os.date(), 'pa is nil', err)
 		end

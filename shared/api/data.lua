@@ -5,6 +5,7 @@
 require "shared.zhelpers"
 local zmq = require "lzmq"
 local cjson = require "cjson.safe"
+local ztimer = require 'lzmq.timer'
 
 local req = require "shared.req"
 local client = req.new()
@@ -24,7 +25,13 @@ _M.erase = function(name)
 end
 
 _M.set = function(name, val, timestamp)
+	local timestamp = timestamp or ztimer.absolute_time()
 	local req = {'set', {name=name, value=val, timestamp=timestamp}}
+	return client:request(cjson.encode(req), true)
+end
+
+_M.sets = function(vals)
+	local req = {'sets', vals}
 	return client:request(cjson.encode(req), true)
 end
 
