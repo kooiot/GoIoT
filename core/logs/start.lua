@@ -4,8 +4,10 @@ local m_path = os.getenv('CAD_DIR') or "."
 local m_package_path = package.path  
 package.path = string.format("%s;%s/?.lua;%s/?/init.lua", m_package_path, m_path, m_path)  
 
+local cjson = require 'cjson.safe'
 local configs = require 'shared.api.configs'
 local info = require '_ver'
+local cache = {}
 
 local app = nil
 
@@ -85,8 +87,16 @@ app = init()
 
 local srv = require('shared.log.server')(app.ctx, app.poller, function(log)
 	local pp = require 'shared.PrettyPrint'
-	print(pp(log))
+	--print(pp(log))
+	cache[#cache+1] = pp(log)
 end)
 srv:open()
+
+app:reg_request_handler('logs', function(app, msg)
+	print('logs request received')
+	--assert(false)
+	local reply = {'status', {result=true, logs=cache}}	
+	app.server:send(cjson.encode(reply))
+end)
 
 run(app)

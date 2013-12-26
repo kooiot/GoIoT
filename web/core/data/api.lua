@@ -23,6 +23,8 @@ local match_tags = api.enum(pattern)
 
 local tags = {}
 for k, v in pairs(match_tags) do
+	local ts = os.date('%c', v.timestamp / 1000)..' '..(v.timestamp % 1000)
+	v.timestamp = ts
 	table.insert(tags, v)
 end
 
