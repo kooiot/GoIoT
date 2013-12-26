@@ -2,7 +2,7 @@
 
 local configs = require 'shared.api.configs'
 local info = require '_ver'
-local setting = require 'apps.io.setting'
+local setting = require 'shared.io.setting'
 local ztimer = require 'lzmq.timer'
 
 local app = nil
@@ -60,7 +60,7 @@ function _M.add_command(cmd)
 end
 
 function _M.add_port(name, types, default)
-	local port = require 'apps.io.port'
+	local port = require 'shared.io.port'
 	_M.ports[#_M.ports + 1] = {name=name, types = types, default = port[default..'_conf']()}
 end
 
@@ -84,7 +84,7 @@ function _M.get_port(name)
 		return nil, err
 	end
 
-	local port = require 'apps.io.port'
+	local port = require 'shared.io.port'
 
 	return port.create(app, conf), conf
 end

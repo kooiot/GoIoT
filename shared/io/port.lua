@@ -31,7 +31,7 @@ end
 local function create_tcp_client(app, props)
 	local remote_addr = props.remote_addr.value
 	local port = props.port.value 
-	local tcpc = require 'apps.io.tcp.client'
+	local tcpc = require 'shared.io.tcp.client'
 	return tcpc.new(app.ctx, app.poller, remote_addr, port)
 end
 

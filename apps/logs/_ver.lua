@@ -1,4 +1,5 @@
 return {
+	name = 'logs',
 	version = "1.0",
 	build = 'build01',
 	product = 'logs',

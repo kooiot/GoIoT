@@ -6,10 +6,10 @@ package.path = string.format("%s;%s/?.lua;%s/?/init.lua", m_package_path, m_path
 
 local configs = require 'shared.api.configs'
 local info = require '_ver'
-local io = require('apps.io')
+local io = require('shared.io')
 local pp = require('shared.PrettyPrint')
 local modbus = require('modbus.init')
-local port = require('apps.io.port')
+local port = require('shared.io.port')
 local api = require('shared.api.data')
 local log = require('shared.log.client')
 
@@ -119,8 +119,8 @@ end
 io.add_port('main', {port.tcp_client, port.serial}, port.tcp_client) 
 io.add_port('backup', {port.tcp_client, port.serial}, port.tcp_client) 
 
-local setting = require('apps.io.setting')
-local command = require('apps.io.command')
+local setting = require('shared.io.setting')
+local command = require('shared.io.command')
 
 local t1 = setting.new('t1')
 t1:add_prop('prop1', 'test prop 1', 'number', 11, {min=1, max=99})

@@ -34,9 +34,8 @@ local function  app_meta()
 	}
 end
 
-local function init(name)
+local function init()
 	config = load_config()
-	info.name = name 
 	info.port = config.port
 	info.on_start = function()
 		-- TODO:
