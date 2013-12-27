@@ -81,6 +81,17 @@ function obj:debug(src, ...)
 	return self:send(log)
 end
 
+function obj:packet(src, desc, ...)
+	local info = {...}
+	local log = {
+		src = src or 'UNKOWN',
+		desc = desc  or '',
+		level = 'packet', 
+		content = table.concat(info),
+	}
+	return self:send(log)
+end
+
 open()
 
 return obj
