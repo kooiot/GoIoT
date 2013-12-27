@@ -3,7 +3,7 @@
 		query_logs();
 	});
 	function query_logs() {
-		$.get(<?=url('logs/api.lua')?>, { type : 'logs' }, function(data){
+		$.get(<?=url('logs/api.lua')?>, { type : 'packets' }, function(data){
 			$("textarea#output_box").val(data);
 		})
 		.done(function() {

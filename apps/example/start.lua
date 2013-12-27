@@ -43,6 +43,7 @@ end
 
 local function on_rev(port, msg)
 --	print(os.date(), 'DATA RECV', hex_raw(msg))
+	log:packet('MODBUS', ioname..'.RECV', hex_raw(msg))
 	stream.buf = stream.buf..msg
 end
 

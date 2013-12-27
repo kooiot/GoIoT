@@ -15,7 +15,7 @@ local pub = require 'shared.pub'
 
 local info = require '_ver'
 local cache = fifo('Log Start...')
-local pcache = filo()
+local pcache = fifo()
 
 local app = nil
 
