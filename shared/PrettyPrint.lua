@@ -138,7 +138,7 @@ local PrettyPrint do
 	end
 
 	function PrettyPrint(dataTable)
-		return "return {\n" .. traverseTable(dataTable,{[dataTable]=true},1) .. "}"
+		return "{\n" .. traverseTable(dataTable,{[dataTable]=true},1) .. "}"
 	end
 end
 

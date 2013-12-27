@@ -3,6 +3,7 @@ require "shared.zhelpers"
 local zmq = require "lzmq"
 local cjson = require 'cjson'
 local zpoller = require 'lzmq.poller'
+local ztimer = require 'lzmq.timer'
 
 local IPC = "ipc:///tmp/og.log.ipc"
 --local IPC = "tcp://localhost:5593"
@@ -35,6 +36,7 @@ end
 function obj:send(log)
 	assert(log.src)
 	assert(log.level)
+	log.timestamp = log.timestamp or ztimer.absolute_time()
 	-- We will not wait for event done
 	return self.client:send(cjson.encode(log))
 end

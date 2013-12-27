@@ -27,7 +27,8 @@
 	else
 		for k,v in pairs(app_status.status) do
 %>
-		<label> Application: <?=k?> </label>
+		<p>
+		<label> Application: <b> <?=k?> </b> </label>
 <%
 		put('<br/>')
 		put('Project:'..v.product)
@@ -45,6 +46,7 @@
 		<input type="button" value="Reload" onClick="operateApp('reload', '<?=k?>')">
 		<input type="button" value="Stop" onClick="operateApp('stop', '<?=k?>')">
 		<a href=<?=url(v.product, {name=k, port=v.port})?>> Manage </a>
+		</p>
 		<%
 		end
 	end

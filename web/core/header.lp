@@ -37,8 +37,9 @@ cgilua.contentheader('text', 'html; charset=utf8')
 				<a href=<?=url('/')?>> Home </a>
 				<a href=<?=url('system')?>> System </a>
 				<a href=<?=url('status')?>> Status </a>	
-				<a href=<?=url('data')?>> Data </a>	
 				<a href=<?=url('status/apps.lp')?>> Applications </a>	
+				<a href=<?=url('logs')?>> Logs </a>
+				<a href=<?=url('data')?>> Data </a>	
 				<a href=<?=url('configs')?>> Configuration </a>	
 			</div>
 

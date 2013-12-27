@@ -100,7 +100,7 @@ handlers.on_stop = function(app)
 end
 
 handlers.on_run = function(app)
-	print(log:info('example', os.date(), 'RUN TIME'))
+	log:info('example', os.date(), 'RUN TIME')
 	print(os.date(), 'RUN TIME')
 
 	if not pause then
