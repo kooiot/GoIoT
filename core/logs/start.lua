@@ -90,24 +90,39 @@ local srv = require('shared.log.server')(app.ctx, app.poller, function(log)
 end)
 srv:open()
 
-app:reg_request_handler('logs', function(app, msg)
+app:reg_request_handler('logs', function(app, vars)
 	print('logs request received')
 	--assert(false)
 	local caches = {}
-	cache:foreach(function(k,v)
-		table.insert(caches, cjson.encode(v))
-	end)
+
+	if cache:length() > 0 then
+		cache:foreach(function(k,v)
+			table.insert(caches, cjson.encode(v))
+		end)
+		if vars.clean == true then
+			print('clean logs...')
+			cache:clean()
+		end
+	end
 	local reply = {'logs', {result=true, logs=caches}}	
 	app.server:send(cjson.encode(reply))
 end)
 
-app:reg_request_handler('packets', function(app, msg)
+app:reg_request_handler('packets', function(app, vars)
 	print('logs request received')
 	--assert(false)
 	local caches = {}
-	pcache:foreach(function(k,v)
-		table.insert(caches, cjson.encode(v))
-	end)
+	if pcache:length() > 0 then
+		pcache:foreach(function(k,v)
+			table.insert(caches, cjson.encode(v))
+		end)
+
+		if vars.clean == true then
+			print('clean packets...')
+			pcache:clean()
+		end
+	end
+
 	local reply = {'packets', {result=true, logs=caches}}	
 	app.server:send(cjson.encode(reply))
 end)

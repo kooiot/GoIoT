@@ -84,6 +84,15 @@ function fifo:remove ( n )
 	return v
 end
 
+function fifo:clean( )
+	local head , tail = self.head , self.tail
+	for i = head, tail do
+		self[i] = nil
+	end
+	self.head = 1
+	self.tail = 0
+end
+
 function fifo:setempty ( func )
 	self.empty = func
 end

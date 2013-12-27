@@ -48,7 +48,7 @@ function class:on_request(msg)
 
 	local msgtype = json[1]
 	if self.mpft[msgtype] then
-		self.mpft[msgtype](self, msg)
+		self.mpft[msgtype](self, json[2])
 	else
 		send_err(self.server, 'No handler for message '..msgtype)
 	end
