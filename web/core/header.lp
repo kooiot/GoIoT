@@ -7,13 +7,16 @@ cgilua.contentheader('text', 'html; charset=utf8')
 	<head>
 		<title>OpenGate - <?=app?></title>
 
-		<script src='http://cdn.staticfile.org/jquery/1.9.1/jquery.js'></script>
-		<script src='http://cdn.staticfile.org/jqueryui/1.10.3/css/base/jquery.ui.all.css'></script>
-		<script src='http://cdn.staticfile.org/jqueryui/1.10.3/jquery-ui.js'></script>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+		<!-- Jquery -->
+		<script type="text/javascript" charset="utf8" src="http://cdn.staticfile.org/jquery/1.9.1/jquery.js"></script>
+
+		<!-- Jquery UI -->
+		<link rel="stylesheet" type="text/css" href="http://cdn.staticfile.org/jqueryui/1.10.3/css/base/jquery.ui.all.css">
+		<script type="text/javascript" charset="utf8" src="http://cdn.staticfile.org/jqueryui/1.10.3/jquery-ui.js"></script>
 
 		<!-- DataTables CSS -->
 		<link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css">
-
 		<!-- DataTables -->
 		<script type="text/javascript" charset="utf8" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
 	</head>

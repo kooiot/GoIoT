@@ -3,6 +3,8 @@
 -- Save a cached log for web, and publish the log to any one who wants.
 ]]--
 
+-- TODO: not use the appbase for this core log
+
 local m_path = os.getenv('CAD_DIR') or "."
 local m_package_path = package.path  
 package.path = string.format("%s;%s/?.lua;%s/?/init.lua", m_package_path, m_path, m_path)  

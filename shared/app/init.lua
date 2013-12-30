@@ -171,9 +171,9 @@ function _M.new(info)
 	obj.server = nil
 
 	-- handler functions
-	obj.on_start = info.on_start or function() return true end
-	obj.on_stop = info.on_stop or function() return true end
-	obj.on_reload = info.on_reload or function() return true end
+	obj.on_start = info.on_start or function() return false end
+	obj.on_stop = info.on_stop or function() return false end
+	obj.on_reload = info.on_reload or function() return false end
 	obj.on_status = info.on_status or function() return false end
 
 	-- app meta data enum interface

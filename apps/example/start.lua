@@ -22,6 +22,7 @@ local app = nil
 local io_ports = {}
 
 -- the stream object used by modbus lib
+-- TODO: use the ltn12 utility from luasocket ??????
 local stream = {}
 stream.buf = ''
 

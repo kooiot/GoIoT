@@ -39,3 +39,7 @@ end
 -- cgilua.preprocess = cgilua.handlelp
 -- cgilua.includehtml = cgilua.lp.include
 
+-- Set the post Max
+
+cgilua.setmaxinput(5 * 1024 * 1024)
+cgilua.setmaxfilesize(5 * 1024 * 1024)
