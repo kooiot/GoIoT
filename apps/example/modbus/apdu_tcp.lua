@@ -26,4 +26,16 @@ function _M.decode(raw)
 	return transaction, unit, raw:sub(8, 7 + len)
 end
 
+function _M.check(raw)
+	if string.len(raw) < 7 then
+		return false
+	end
+	local len = decode.uint16(raw:sub(5, 6))
+	--print(string.len(raw), 6 + len)
+	if string.len(raw) < len + 6 then
+		return false
+	end
+	return true, 6 + len
+end
+
 return _M

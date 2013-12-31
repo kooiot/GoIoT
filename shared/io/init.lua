@@ -28,6 +28,7 @@ local config = nil
 local _M = {}
 _M.ports = {}
 _M.settings = {}
+_M.tags = {}
 _M.commands = {}
 
 local function  app_meta()
@@ -36,17 +37,22 @@ local function  app_meta()
 		config = config,
 		ports = _M.ports,
 		settings = _M.settings,
-		commands = _M.commands
+		tags = _M.tags,
+		commands = _M.commands,
 	}
 end
 
 function _M.add_setting(item)
-	_M.settings[item.name] = item:meta()
+	table.insert(_M.settings, item:meta())
 end
 
 function _M.get_setting(name)
-	if config.settings and config.settings[name] then
-		return setting.from(config.settings[name])
+	if config.settings then
+		for k, v in config.settings do 
+			if v.name == name then
+				return setting.from(config.settings[name])
+			end
+		end
 	end
 
 	if _M.settings[name] then
@@ -56,7 +62,7 @@ function _M.get_setting(name)
 end
 
 function _M.add_command(cmd)
-	_M.commands[cmd.name] = cmd:meta()
+	table.insert(_M.commands, cmd:meta())
 end
 
 function _M.add_port(name, types, default)

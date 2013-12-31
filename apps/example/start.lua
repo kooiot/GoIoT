@@ -56,6 +56,7 @@ stream.read = function (check, timeout)
 	local abort = false
 	while not abort and timer:rest() > 0 do
 		if string.len(stream.buf) > 0 then
+			--print(os.date(), 'DATA CHECK', hex_raw(stream.buf))
 			local r, len = check(stream.buf)
 			if r then
 				local msg = string.sub(stream.buf, 1, len + 1)
@@ -63,9 +64,10 @@ stream.read = function (check, timeout)
 				return msg
 			end
 		end
-		abort = coroutine.yield(false, 100)
+		abort = coroutine.yield(false, 50)
 	end
-	return nil, timeout
+	stream.buf = ''
+	return nil, 'timeout'
 end
 
 stream.send = function(msg)
@@ -103,15 +105,15 @@ end
 
 handlers.on_run = function(app)
 	log:info('example', os.date(), 'RUN TIME')
-	print(os.date(), 'RUN TIME')
+	--print(os.date(), 'RUN TIME')
 
 	if not pause then
-		local pa, err = mclient:request(1, 'ReadHoldingRegisters', 1, 16)
+		local pa, err = mclient:request(1, 'ReadHoldingRegisters', 3, 16)
 		if pa then
 			local ts = ztimer.absolute_time()
 			local vals = {}
 			for k, v in pairs(pa:data()) do
-				vals[#vals+1] = {name = ioname..'.'..k, value = v, timestamp=ts}
+				vals[#vals+1] = {name = ioname..'.data'..k, value = v, timestamp=ts}
 			end
 			api.sets(vals)
 		else

@@ -1,4 +1,4 @@
-<script type="text/javascript" charset="utf-8">
+<script type="text/javascript">
 	// for tag count changes
 	var last_count = 0;
 	$.fn.dataTableExt.oApi.fnReloadAjax = function ( oSettings, sNewSource, fnCallback, bStandingRedraw )

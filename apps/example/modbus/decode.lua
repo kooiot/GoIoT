@@ -43,8 +43,8 @@ _M.string = function (data, len)
 	return string.sub(data, 1, len)
 end
 
-_M.bit = function (data, len, index)
-	if bit32.band(_M.uint8(data), bit32.lshift(1, index)) == 0 then
+_M.bit = function (data, len, offset)
+	if bit32.band(_M.uint8(data), bit32.lshift(1, offset)) == 0 then
 		return 0
 	else
 		return 1

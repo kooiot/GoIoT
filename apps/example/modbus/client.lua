@@ -3,8 +3,10 @@ local log = require 'shared.log.client'
 
 local class = {}
 
-local function packet_check(msg)
-	return true, string.len(msg)
+local function packet_check(apdu)
+	return function(msg)
+		return apdu.check(msg)
+	end
 end
 
 function class:request (unit, name, ...) 
@@ -21,18 +23,22 @@ function class:request (unit, name, ...)
 	self.stream.send(apdu_raw)
 
 	--local raw = fiber.await(self.internal.read())
-	local raw = self.stream.read(packet_check, 500)
+	local raw = self.stream.read(packet_check(self.apdu), 500)
 	if not raw then
 		return nil, 'Packet timeout'
 	end
 
 	local trans, unit, pdu_raw = self.apdu.decode(raw)
-	p = pdu.parser_pdu(pdu_raw)
-	local _, err = parser(p)
-	if _ ~= p then
+	local pdu, err = pdu.parser_pdu(pdu_raw)
+	if not pdu then
+		return nil, err
+	end
+
+	local _, err = parser(pdu)
+	if _ ~= pdu then
 		log:error('P: '..err)
 	end
-	return p
+	return pdu, err
 --[[
 	for k, v in pairs(p:data()) do
 	print(k, v)

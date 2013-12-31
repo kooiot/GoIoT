@@ -34,8 +34,8 @@ end
 function _M.parser_pdu(raw)
 	local fc = decode.uint8(raw.sub(1,1))
 	local raw_len = decode.uint8(raw:sub(2,2))
-	if raw_len + 2 ~= string.len(raw) then
-		return nil, 'data not enough'
+	if raw_len + 2 > string.len(raw) then
+		return nil, 'data not enough raw_len:'..raw_len..' len(raw):'..string.len(raw)
 	end
 
 	local obj = {
@@ -49,13 +49,13 @@ function _M.parser_pdu(raw)
 		data = function(self)
 			return obj.data
 		end,
-		get = function(self, name)
-			return obj.data[name]
+		get = function(self, index)
+			return obj.data[index]
 		end,
 		raw = function(self)
 			return obj.raw_data
 		end,
-		parser = function(self, name, decode_func, start, len, index)
+		parser = function(self, index, decode_func, start, len, offset)
 			start = start or obj.curpos
 			len = decode.get_len(decode_func, len)
 			local raw_data = obj.raw_data:sub(start, start + len - 1)
@@ -63,9 +63,9 @@ function _M.parser_pdu(raw)
 				return nil, 'not enough data'
 			end
 			--print(string.len(raw_data))
-			local val = decode[decode_func](raw_data, len, index)
+			local val = decode[decode_func](raw_data, len, offset)
 			if val then
-				obj.data[name] = val
+				obj.data[index] = val
 				if start == obj.curpos then
 					obj.curpos = obj.curpos + len
 				end
@@ -105,7 +105,7 @@ _M.ReadCoils = function (addr, len)
 		end
 		for i = 1, len do
 			local start = math.floor((i + 7) / 8)
-			if not pdu:parser('data'..i, 'bit', start, 1, (i - 1) % 8) then
+			if not pdu:parser(i, 'bit', start, 1, (i - 1) % 8) then
 				return nil, 'not enough data'
 			end
 		end
@@ -116,7 +116,7 @@ _M.ReadDisreteInputs = function (addr, len)
 	return _M.create_read_pdu(code.ReadDisreteInputs, addr, len), function(pdu)
 		len = math.floor(len + 7)
 		for i = 1, len do
-			if not pdu:parser('data'..i, 'uint8') then
+			if not pdu:parser(i, 'uint8') then
 				return nil, 'not enough data'
 			end
 		end
@@ -129,7 +129,7 @@ _M.ReadHoldingRegisters = function (addr, len)
 			return nil, 'falure cause'
 		end
 		for i = 1, len do
-			if not pdu:parser('data'..i, 'uint16') then
+			if not pdu:parser(i, 'uint16') then
 				return nil, 'not enough data'
 			end
 		end
@@ -139,7 +139,7 @@ end
 _M.ReadInputRegisters = function (addr, len)
 	return _M.create_read_pdu(code.ReadInputRegisters, addr, len), function(pdu)
 		for i = 1, len do
-			if not pdu:parser('data'..i, 'uint16') then
+			if not pdu:parser(i, 'uint16') then
 				return nil, 'not enough data'
 			end
 		end

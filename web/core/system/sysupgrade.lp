@@ -2,7 +2,7 @@
 
 <h2>Upload from local disk</h2>
 
-<p>Choose the application pack file to install in this device.</a>
+<p>Choose the application pack file to install in this device.</p>
 <form method="POST" enctype="multipart/form-data" action=<?=url("system/sysupgrade.lp")?>>
     <input type="file" name="file">
     <input type="submit" value="Upload">

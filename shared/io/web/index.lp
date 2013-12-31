@@ -31,6 +31,7 @@
 		local v = app_status.status[name]
 		if v then
 			port = v.port
+			--[[
 			put('<label> <b> Information </b> </label>')
 			put('<div>')
 			put('Name:', name) 
@@ -45,11 +46,12 @@
 			put('<br/>')
 			put(os.date("%c", v.last))
 			put('<br/>')
+			]]--
 			%>
 			<input type="button" value="Start" onClick="operateApp('start', '<?=name?>')">
 			<input type="button" value="Reload" onClick="operateApp('reload', '<?=name?>')">
 			<input type="button" value="Stop" onClick="operateApp('stop', '<?=name?>')">
-			<a href=<?=url(v.product, {name=name, port=v.port})?>> Manage </a>
+			<a href="#"> Manage </a>
 			<%
 			put('</div>')
 		else
@@ -60,6 +62,7 @@
 
 <%
 	local api = require('shared.api.app').new(port)
+	--[[
 	local version, err = api:version()
 	if not version then
 		put('Api Error:', err)
@@ -70,6 +73,7 @@
 		put('build:', version.build)
 		put('</div>')
 	end
+	]]--
 %>
 
 <%
@@ -78,68 +82,53 @@ local meta, err = api:meta()
 if not meta then
 	put('Api Error:', err)
 else
-	--put(pp(meta))
-end
 %>
 
 <script>
 	$(function() {
 		$( "#tabs" ).tabs();
-		$( "#radio1" ).buttonset();
-		$( "#radio2" ).buttonset();
+		$( "#radio_1" ).buttonset();
+		$( "#radio_2" ).buttonset();
 	});
 </script>
 
+<input type="button" value="Save" onClick="alert('test')">
+
 <div id="tabs">
 	<ul>
-		<li><a href="#tabs-1">Port</a></li>
-		<li><a href="#tabs-2">Settings</a></li>
-		<li><a href="#tabs-3">Commands</a></li>
+		<li><a href="#tabs-ports">Ports</a></li>
+		<% if meta.app.settings and #meta.app.settings ~= 0 then %>
+		<li><a href="#tabs-settings">Settings</a></li>
+		<% end %>
+		<li><a href="#tabs-tags">Tags</a></li>
+		<% if meta.app.commands and #meta.app.commands ~= 0 then %>
+		<li><a href="#tabs-commands">Commands</a></li>
+		<% end %>
 	</ul>
-	<div id="tabs-1">
-		<p>
-		<% local index = 1 %>
-		<%
-		for k,v in pairs(meta.app.ports) do 
-			local name = 'radio'..index
-		%>
-			<div class="port_conf">
-				<label> <b> 端口: <?=v.name ?> </b> </label>
-				<div id="<?=name?>">
-					<input type="radio" id="radio1" name="<?=name?>" checked="checked"><label for="radio1">TCP Client</label>
-					<input type="radio" id="radio2" name="<?=name?>"><label for="radio2">TCP Server</label>
-					<input type="radio" id="radio3" name="<?=name?>"><label for="radio3">Serial</label>
-				</div>
-
-				<label for="ip1">Local IP: </label>
-				<input type="text" id="ip1" name="ip1" value="<?=v.default.props.local_addr.value ?>"> 
-				<label for="ip2">Remote IP: </label>
-				<input type="text" id="ip2" name="ip2" value="<?=v.default.props.remote_addr.value ?>"> 
-				<label for="port1">Port: </label>
-				<input type="text" id="port1" name="port1" value="<?=v.default.props.port.value ?>"> 
-			</div>
-		<% 
-			index = index + 1
-		end
-		%>
-		</p>
-		<p>
+	<div id="tabs-ports">
+		<% rinclude('ports.lp', {ports = meta.app.ports, cgilua=cgilua, pairs=pairs}) %>	
 		<% 
 		put(pp(meta.app.ports)) 
 		%>
-		</p>
 	</div>
-	<div id="tabs-2">
-		<p>
+	<% if meta.app.settings and #meta.app.settings ~= 0 then %>
+	<div id="tabs-settings">
+		<% rinclude('settings.lp', {settings = meta.app.settings, cgilua=cgilua, pairs=pairs}) %>	
 		<% put(pp(meta.app.settings)) %>
-		</p>
 	</div>
-	<div id="tabs-3">
-		<p>
+	<% end %>
+	<div id="tabs-tags">
+		<% rinclude('tags.lp', {tags = meta.app.tags, cgilua=cgilua, pairs=pairs, next=next, url=url, os=os, rurl=rurl}) %>	
+	</div>
+	<% if meta.app.commands and #meta.app.commands ~= 0 then %>
+	<div id="tabs-commands">
+		<% rinclude('commands.lp', {commands = meta.app.commands, cgilua=cgilua, pairs=pairs}) %>	
 		<% put(pp(meta.app.commands)) %>
-		</p>
 	</div>
+	<% end %>
 </div>
 
-<input type="button" value="Save" onClick="alert('test')">
+<%
+end
+%>
 
