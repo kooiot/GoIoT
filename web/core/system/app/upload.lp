@@ -1,7 +1,7 @@
 <h2>File Upload</h2>
 
 <p>Choose the application pack file to install in this device.</p>
-<form method="POST" enctype="multipart/form-data" action=<?=url("system/app/upload.lp")?>>
+<form method="POST" enctype="multipart/form-data" action="<?=url("system/app/upload.lp")?>">
     <input type="file" name="file">
     <input type="submit" value="Upload">
 </form>
@@ -23,7 +23,7 @@
 			--cgilua.print("<a href='"..name.."'>"..name.."</a>\n")
 			cgilua.print("<b>"..name.."</b>\n")
 			%>
-			<form method="POST" enctype="multipart/form-data" action=<?=url("system/app/upload.lp")?>>
+			<form method="POST" enctype="multipart/form-data" action="<?=url("system/app/upload.lp")?>">
 				<input type="hidden" name="filename" value="<?=name?>">
 				<input type="submit" name="remove" value="Remove">
 				<input type="submit" name="install" value="Install">

@@ -3,7 +3,7 @@
 <h2>Upload from local disk</h2>
 
 <p>Choose the application pack file to install in this device.</p>
-<form method="POST" enctype="multipart/form-data" action=<?=url("system/sysupgrade.lp")?>>
+<form method="POST" enctype="multipart/form-data" action="<?=url("system/sysupgrade.lp")?>">
     <input type="file" name="file">
     <input type="submit" value="Upload">
 </form>
@@ -25,7 +25,7 @@
 			--cgilua.print("<a href='"..name.."'>"..name.."</a>\n")
 			cgilua.print("<b>"..name.."</b>\n")
 			%>
-			<form method="POST" enctype="multipart/form-data" action=<?=url("system/sysupgrade.lp")?>>
+			<form method="POST" enctype="multipart/form-data" action="<?=url("system/sysupgrade.lp")?>">
 				<input type="hidden" name="filename" value="<?=name?>">
 				<input type="submit" name="remove" value="Remove">
 				<input type="submit" name="install" value="Upgrade">

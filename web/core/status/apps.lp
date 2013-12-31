@@ -4,7 +4,7 @@
 
 <script>
 	function operateApp(action, key) {
-		$.post(<?=url("status/app.lua")?>, { key: key, action:action },
+		$.post("<?=url("status/app.lua")?>", { key: key, action:action },
 		function(data){
 			alert(data);
 		})
@@ -45,7 +45,7 @@
 		<input type="button" value="Start" onClick="operateApp('start', '<?=k?>')">
 		<input type="button" value="Reload" onClick="operateApp('reload', '<?=k?>')">
 		<input type="button" value="Stop" onClick="operateApp('stop', '<?=k?>')">
-		<a href=<?=url('apps/'..v.product..'/web', {name=k, port=v.port})?>> Manage </a>
+		<a href="<?=url('apps/'..v.product..'/web', {name=k, port=v.port})?>"> Manage </a>
 		</p>
 		<%
 		end

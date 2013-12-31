@@ -61,7 +61,7 @@ env.url = function(url, args)
 	for k,v in pairs(args) do
 		url[#url+1] = k..'='..v
 	end
-	return '"/?'..table.concat(url, '&')..'"'
+	return '/?'..table.concat(url, '&')
 end
 
 env.rurl = function(url, args)

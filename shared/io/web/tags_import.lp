@@ -27,9 +27,8 @@ if f and next(f) then
 end
 
 if cgilua.POST.install then
-	local install = require 'shared.app.install'
-	install(tmp_folder..'/'..cgilua.POST.filename, apps_folder, 'test__app')
 	os.remove(tmp_folder..'/'..cgilua.POST.filename)
+	cgilua.redirect(rurl('/'))
 end
 if cgilua.POST.remove then
 	os.remove(tmp_folder..'/'..cgilua.POST.filename)

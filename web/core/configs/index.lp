@@ -37,7 +37,7 @@
 	function set_value() {
 		var key = $("#key").val();
 		var value = $("#value").val();
-		$.post(<?=url("configs/api.lua")?>, { key: key, value:value },
+		$.post("<?=url("configs/api.lua")?>", { key: key, value:value },
 		function(data){
 			alert(data);
 		})
@@ -50,7 +50,7 @@
 	};
 	function get_value() {
 		var key = $("#key").val();
-		$.get(<?=url("configs/api.lua")?>, { key : key }, function(data) {
+		$.get("<?=url("configs/api.lua")?>", { key : key }, function(data) {
 			$("#value").val();
 			$("#value").val(data);
 		})
