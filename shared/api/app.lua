@@ -48,7 +48,6 @@ function class:reload()
 end
 
 function class:meta()
-	local request = request or 'status'
 	local req = {'meta', {from='web'}}
 	local reply, err = self.client:request(cjson.encode(req), true)
 
@@ -60,6 +59,21 @@ function class:meta()
 		else
 			reply = nil
 			err = 'result is not true'
+		end
+	end
+	return reply, err
+end
+
+function class:import(filename)
+	local req = {'import', {filename=filename}}
+	local reply, err = self.client:request(cjson.encode(req), true)
+	if reply then
+		reply = cjson.decode(reply)[2]
+		if reply.result then
+			reply = true
+		else
+			err = reply.err
+			reply = reply.result
 		end
 	end
 	return reply, err

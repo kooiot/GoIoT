@@ -11,6 +11,9 @@ cgilua.contentheader('text', 'html; charset=utf-8')
 		<!-- Jquery -->
 		<script type="text/javascript" charset="utf-8" src="http://cdn.staticfile.org/jquery/1.9.1/jquery.js"></script>
 
+		<!-- Jquery Form -->
+		<script type="text/javascript" charset="utf-8" src="js/jquery.form.min.js"></script>
+
 		<!-- Jquery UI -->
 		<link rel="stylesheet" type="text/css" href="http://cdn.staticfile.org/jqueryui/1.10.3/css/base/jquery.ui.all.css">
 		<script type="text/javascript" charset="utf-8" src="http://cdn.staticfile.org/jqueryui/1.10.3/jquery-ui.js"></script>

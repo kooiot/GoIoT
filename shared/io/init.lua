@@ -4,6 +4,7 @@ local configs = require 'shared.api.configs'
 local info = require '_ver'
 local setting = require 'shared.io.setting'
 local ztimer = require 'lzmq.timer'
+local cjson = require 'cjson.safe'
 
 local app = nil
 
@@ -120,6 +121,23 @@ function _M.init(name, handlers)
 	assert(app)
 
 	app:init()
+
+	app:reg_request_handler('import', function(app, vars)
+		print('import message received')
+		local re = false
+		local err = 'Incorrect request found for msg:import'
+		if vars.filename  then
+			if handlers.on_import then
+				re, err = handlers.on_import(vars.filename)
+			else
+				err = 'This io application does not implement the import'
+			end
+		end
+		local reply = {'import', {result=re, err=err}}
+		app.server:send(cjson.encode(reply))
+	end)
+
+	--TODO: export
 	
 	return app
 end

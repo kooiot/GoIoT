@@ -92,7 +92,6 @@ else
 	});
 </script>
 
-<input type="button" value="Save" onClick="alert('test')">
 
 <div id="tabs">
 	<ul>
@@ -118,7 +117,7 @@ else
 	</div>
 	<% end %>
 	<div id="tabs-tags">
-		<% rinclude('tags.lp', {tags = meta.app.tags, cgilua=cgilua, pairs=pairs, next=next, url=url, os=os, rurl=rurl}) %>	
+		<% rinclude('tags.lp', {tags = meta.app.tags, cgilua=cgilua, pairs=pairs, next=next, url=url, os=os, rurl=rurl, rinclude=rinclude}) %>	
 	</div>
 	<% if meta.app.commands and #meta.app.commands ~= 0 then %>
 	<div id="tabs-commands">
@@ -127,6 +126,8 @@ else
 	</div>
 	<% end %>
 </div>
+
+<% rinclude('import.lp') %>	
 
 <%
 end
