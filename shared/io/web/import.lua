@@ -36,7 +36,17 @@ if f and type(f) == 'table' and next(f) then
 		else
 			cgilua.print("<br> Failed to import "..name, "<br> ERROR: "..err)
 		end
+
+		-- remove temp file
 		os.remove(tmp_file)
+
+		-- reload
+		local r, err = api:reload()
+		if r then
+			cgilua.print("<br> Application reload successfully")
+		else
+			cgilua.print("<br> Failed to reload "..name, "<br> ERROR: "..err)
+		end
 	else
 		cgilua.print("Failed to save file, error", err)
 	end

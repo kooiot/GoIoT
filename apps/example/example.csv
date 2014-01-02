@@ -1,6 +1,6 @@
 SECTION_BEGIN,PORTS
-0,name,type,parameters
-1,main,tcp_client
+0,name,type,json_setting
+1,main,tcp_client,
 SECTION_END
 
 SECTION_BEGIN,SETTINGS
@@ -9,8 +9,8 @@ SECTION_BEGIN,SETTINGS
 SECTION_END
 
 SECTION_BEGIN,TAGS
-0,name,code,addr,len,tag_names
-1,packet1,0x03,1,9,data1,data2,data3,data4,data5,data6,data7,data8,data9
-2,packet2,0x03,16,9,tag1,tag2,tag3,tag4,tag5,tag6,tag7,tag8,tag9
+0,name,code,unit,addr,len,tag_names
+1,packet1,0x03,1,1,9,data1,data2,data3,data4,data5,data6,data7,data8,data9
+2,packet2,0x03,1,16,9,tag1,tag2,tag3,tag4,tag5,tag6,tag7,tag8,tag9
 SECTION_END
 

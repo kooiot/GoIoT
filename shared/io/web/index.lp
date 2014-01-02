@@ -3,8 +3,14 @@
 ?>
 
 <script>
+	$(function() {
+		$( "#tabs" ).tabs();
+		$( "#radio_1" ).buttonset();
+		$( "#radio_2" ).buttonset();
+	});
+
 	function operateApp(action, key) {
-		$.post(<?=url("status/app.lua")?>, { key: key, action:action },
+		$.post("<?=url("status/app.lua")?>", { key: key, action:action },
 		function(data){
 			alert(data);
 		})
@@ -31,22 +37,6 @@
 		local v = app_status.status[name]
 		if v then
 			port = v.port
-			--[[
-			put('<label> <b> Information </b> </label>')
-			put('<div>')
-			put('Name:', name) 
-			put('<br/>')
-			put('Description:', v.desc) 
-			put('<br/>')
-			put('Project:'..v.product)
-			put('<br/>')
-			put(v.run and 'True' or 'False')
-			put('<br/>')
-			put(v.port or 'None')
-			put('<br/>')
-			put(os.date("%c", v.last))
-			put('<br/>')
-			]]--
 			%>
 			<input type="button" value="Start" onClick="operateApp('start', '<?=name?>')">
 			<input type="button" value="Reload" onClick="operateApp('reload', '<?=name?>')">
@@ -66,12 +56,6 @@
 	local version, err = api:version()
 	if not version then
 		put('Api Error:', err)
-	else
-		put('<div>')
-		put('version:', version.version)
-		put('<br/>')
-		put('build:', version.build)
-		put('</div>')
 	end
 	]]--
 %>
@@ -83,15 +67,6 @@ if not meta then
 	put('Api Error:', err)
 else
 %>
-
-<script>
-	$(function() {
-		$( "#tabs" ).tabs();
-		$( "#radio_1" ).buttonset();
-		$( "#radio_2" ).buttonset();
-	});
-</script>
-
 
 <div id="tabs">
 	<ul>

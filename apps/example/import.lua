@@ -1,7 +1,8 @@
+local pp = require ('shared.PrettyPrint')
 local log = require('shared.log.client')
+local cjson = require('cjson.safe')
 
 local function import_section(name, section)
-
 	--[[
 	print('example', "Import section "..name)
 	for k, v in pairs(section) do
@@ -17,6 +18,10 @@ local function import_section(name, section)
 	end
 
 	if name == 'TAGS' then
+		print(pp(section))
+		file = io.open('tags.json', "w+")
+		file:write(cjson.encode(section))
+		file:close()
 	end
 
 	if name == 'SETTINGS' then
@@ -54,14 +59,15 @@ local function import(app, filename)
 						bsec = false
 						import_section(sec_name, section)
 					else
-						table.insert(section, v)
+						if tonumber(v[1]) ~= 0 then
+							table.insert(section, v)
+						end
 					end
 				end
 			end
 		end
 		return true
 	end
-
 end
 
 

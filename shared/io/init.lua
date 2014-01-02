@@ -102,16 +102,32 @@ function _M.init(name, handlers)
 	info.name = name 
 	info.port = config.port
 	info.on_start = function()
-		handlers.on_start(app)
+		if handlers.on_start then
+			return handlers.on_start(app)
+		else
+			return nil, 'Not implemented'
+		end
 	end
 	info.on_stop = function()
-		handlers.on_stop(app)
+		if handlers.on_stop then
+			return handlers.on_stop(app)
+		else
+			return nil, 'Not implemented'
+		end
 	end
 	info.on_reload = function()
-		handlers.on_reload(app)
+		if handlers.on_reload then
+			return handlers.on_reload(app)
+		else
+			return nil, 'Not implemented'
+		end
 	end
 	info.on_status = function()
-		handlers.on_status(app)
+		if handlers.on_status then
+			return handlers.on_status(app)
+		else
+			return nil, 'Not implemented'
+		end
 	end
 
 	info.app_meta = app_meta

@@ -27,12 +27,6 @@ for k,v in pairs(ports) do
 				end
 			end
 			%>
-
-			<!--
-			<input type="radio" id="radio1" name="<?=name?>" checked="checked"><label for="radio1">TCP Client</label>
-			<input type="radio" id="radio2" name="<?=name?>"><label for="radio2">TCP Server</label>
-			<input type="radio" id="radio3" name="<?=name?>"><label for="radio3">Serial</label>
-			-->
 		</div>
 		
 		<label for="<?='lip'..index ?>">Local IP: </label>

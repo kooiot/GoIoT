@@ -4,7 +4,6 @@ local m_path = os.getenv('CAD_DIR') or "."
 local m_package_path = package.path  
 package.path = string.format("%s;%s/?.lua;%s/?/init.lua", m_package_path, m_path, m_path)  
 
-local configs = require 'shared.api.configs'
 local info = require '_ver'
 local io = require('shared.io')
 local pp = require('shared.PrettyPrint')
@@ -25,6 +24,24 @@ local io_ports = {}
 -- TODO: use the ltn12 utility from luasocket ??????
 local stream = {}
 stream.buf = ''
+
+
+-- Load tags from file
+local packets = {}
+
+local function load_tags_conf()
+	packets = require('tags').load_tags()
+
+	for k, v in pairs(packets) do
+		for k,v in pairs(v.names) do
+			if v ~= '' then
+				api.add(ioname..'.'..v, 'Modebus Tag '..v, 0)
+			end
+		end
+	end
+
+	return true
+end
 
 local mclient = modbus.client(stream, modbus.apdu_tcp)
 
@@ -89,9 +106,12 @@ handlers.on_start = function(app)
 			print(err)
 		end
 
+		load_tags_conf()
+		--[[
 		for v = 1, 16 do
 			api.add(ioname..'.data'..v, 'Modbus Tag '..v, 0)
 		end
+		]]--
 
 		return true
 	end
@@ -103,11 +123,17 @@ handlers.on_stop = function(app)
 	pause = true
 end
 
+handlers.on_reload = function(app)
+	print(os.date(), "On Reload")
+	return load_tags_conf()
+end
+
 handlers.on_run = function(app)
 	log:info('example', os.date(), 'RUN TIME')
 	--print(os.date(), 'RUN TIME')
 
 	if not pause then
+		--[[
 		local pa, err = mclient:request(1, 'ReadHoldingRegisters', 3, 16)
 		if pa then
 			local ts = ztimer.absolute_time()
@@ -118,6 +144,23 @@ handlers.on_run = function(app)
 			api.sets(vals)
 		else
 			print(os.date(), 'pa is nil', err)
+		end
+		]]--
+
+		for k, v in pairs(packets) do
+			local pa, err = mclient:request(v.unit, v.code, v.start, v.count)
+			if pa then
+				local ts = ztimer.absolute_time()
+				local vals = {}
+				for i, val in pairs(pa:data()) do
+					if v.names[i] and v.names[i] ~= '' then
+						vals[#vals+1] = {name = ioname..'.'..v.names[i], value = val, timestamp=ts}
+					end
+				end
+				api.sets(vals)
+			else
+				print(os.date(), 'pa is nil', err)
+			end
 		end
 	end
 

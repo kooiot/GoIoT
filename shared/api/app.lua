@@ -19,7 +19,7 @@ end
 
 function class:status(request)
 	local request = request or 'status'
-	local req = {'status', {from='web'}}
+	local req = {request, {from='web'}}
 	local reply, err = self.client:request(cjson.encode(req), true)
 
 	if reply then
