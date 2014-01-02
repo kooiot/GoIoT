@@ -10,19 +10,18 @@ end
 
 local f = cgilua.POST.file
 
-if f and next(f) then
+if f and type(f) == 'table' and next(f) then
 	local _, name = cgilua.splitonlast(f.filename)
 	local file = f.file
 
 	local tmp_file = tmp_folder..'/'..name
 	local dest, err = io.open(tmp_file, "wb")
 	if dest then
-		local bytes = file:read("*l")
 		local filelen = 0
-		while bytes do
-			filelen = filelen + string.len(bytes) + 1
-			dest:write(bytes)
-			bytes = file:read("*l")
+		for c in file:lines() do
+			filelen = filelen + string.len(c) + 1
+			dest:write(c)
+			dest:write('\n')
 		end
 		dest:close()
 
@@ -30,14 +29,18 @@ if f and next(f) then
 		local api = require('shared.api.app').new(port)
 		local r, err = api:import(tmp_file)
 
-		cgilua.print("<br> Upload OK ", tmp_file, " Size - ", filelen)
+		--uploaded: 05.jpg (49467 bytes)
+		cgilua.print("<br> Uploaded "..name.." ("..filelen.." bytes)")
 		if r then
 			cgilua.print("<br> Import file successfully")
 		else
-			cgilua.print("<br>", err)
+			cgilua.print("<br> Failed to import "..name, "<br> ERROR: "..err)
 		end
+		os.remove(tmp_file)
 	else
 		cgilua.print("Failed to save file, error", err)
 	end
+else
+	cgilua.print("Please select a local file first")
 end
 

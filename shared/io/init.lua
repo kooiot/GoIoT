@@ -128,9 +128,9 @@ function _M.init(name, handlers)
 		local err = 'Incorrect request found for msg:import'
 		if vars.filename  then
 			if handlers.on_import then
-				re, err = handlers.on_import(vars.filename)
+				re, err = handlers.on_import(app, vars.filename)
 			else
-				err = 'This io application does not implement the import'
+				err = 'Import not implemented'
 			end
 		end
 		local reply = {'import', {result=re, err=err}}

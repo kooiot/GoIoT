@@ -23,6 +23,9 @@ cgilua.contentheader('text', 'html; charset=utf-8')
 		<!-- DataTables -->
 		<script type="text/javascript" charset="utf-8" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
 	</head>
+	<style>
+		body { padding: 10px }
+	</style>
 	<body>
 		<!--start container -->
 		<div id="container">

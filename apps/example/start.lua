@@ -124,6 +124,8 @@ handlers.on_run = function(app)
 	return coroutine.yield(false, 1000)
 end
 
+handlers.on_import = require('import').import
+
 io.add_port('main', {port.tcp_client, port.serial}, port.tcp_client) 
 io.add_port('backup', {port.tcp_client, port.serial}, port.tcp_client) 
 
