@@ -22,11 +22,17 @@ if [ $1 = "start" ] ; then
 	start-stop-daemon --start --oknodo --make-pidfile --pidfile $PID_FOLDER/web.pid --chdir $CAD_DIR/web --background --startas /usr/local/bin/wsapi -- --cgilua
 else
 	start-stop-daemon --stop --oknodo --pidfile $PID_FOLDER/web.pid --retry 5
+	rm $PID_FOLDER/web.pid
 	start-stop-daemon --stop --oknodo --pidfile $PID_FOLDER/example.pid --retry 5
+	rm $PID_FOLDER/example.pid
 	start-stop-daemon --stop --oknodo --pidfile $PID_FOLDER/logs.pid --retry 5
+	rm $PID_FOLDER/logs.pid
 	start-stop-daemon --stop --oknodo --pidfile $PID_FOLDER/core_datacache.pid --retry 5
+	rm $PID_FOLDER/core_datacache.pid
 	start-stop-daemon --stop --oknodo --pidfile $PID_FOLDER/core_monitor.pid --retry 5
+	rm $PID_FOLDER/core_monitor.pid
 	start-stop-daemon --stop --oknodo --pidfile $PID_FOLDER/core_config.pid --retry 5
+	rm $PID_FOLDER/core_config.pid
 fi
 
 exit 0

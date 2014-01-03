@@ -93,6 +93,9 @@ else
 	<% end %>
 	<div id="tabs-tags">
 		<% rinclude('tags.lp', {tags = meta.app.tags, cgilua=cgilua, pairs=pairs, next=next, url=url, os=os, rurl=rurl, rinclude=rinclude}) %>	
+		<% 
+		put(pp(meta.app.tags)) 
+		%>
 	</div>
 	<% if meta.app.commands and #meta.app.commands ~= 0 then %>
 	<div id="tabs-commands">

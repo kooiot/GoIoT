@@ -96,6 +96,10 @@ function _M.get_port(name)
 	return port.create(app, conf), conf
 end
 
+function _M.set_tags(tags)
+	_M.tags = tags
+end
+
 function _M.init(name, handlers)
 	config = load_config()
 	_M.handlers = handlers

@@ -9,6 +9,7 @@ require 'shared.zhelpers'
 local zmq = require 'lzmq'
 local zpoller = require 'lzmq.poller'
 local cjson = require 'cjson.safe'
+local log = require 'shared.log.client'
 
 local running = {
 --	test = {run = true, last = os.time()}
@@ -110,6 +111,7 @@ local function check_timeout()
 		--print('checking '..k..' run:'..tostring(v.run)..' last:'..tostring(v.last))
 		if v.run == true and (now - v.last)  > 10 then
 			print('application does not send the notice')
+			log:warn('MONITOR', 'Application ['..k..'] does not send the notice message within 10 seconds')
 			v.run = false
 		end
 	end

@@ -29,16 +29,34 @@ stream.buf = ''
 -- Load tags from file
 local packets = {}
 
-local function load_tags_conf()
+local function remove_tags()
+	for k, v in pairs(packets) do
+		for k,v in pairs(v.names) do
+			if v ~= '' then
+				api.erase(ioname..'.'..v, 'Modebus Tag '..v, 0)
+			end
+		end
+	end
+end
+
+local function load_tags_conf(reload)
+	if reload then
+		-- Remove previous tags first when doing import
+		remove_tags()
+	end
+
 	packets = require('tags').load_tags()
 
+	local tags = {}
 	for k, v in pairs(packets) do
 		for k,v in pairs(v.names) do
 			if v ~= '' then
 				api.add(ioname..'.'..v, 'Modebus Tag '..v, 0)
+				table.insert(tags, {name=ioname..'.'..v, desc='Modebus Tag '..v})
 			end
 		end
 	end
+	io.set_tags(tags)
 
 	return true
 end
@@ -125,7 +143,7 @@ end
 
 handlers.on_reload = function(app)
 	print(os.date(), "On Reload")
-	return load_tags_conf()
+	return load_tags_conf(true)
 end
 
 handlers.on_run = function(app)
