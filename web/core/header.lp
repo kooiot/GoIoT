@@ -38,18 +38,26 @@ cgilua.contentheader('text', 'html; charset=utf-8')
 			<div id="main_menu">
 				<a href="<?=url('/')?>"> Home </a>
 				<a href="<?=url('system')?>"> System </a>
-				<a href="<?=url('status')?>"> Status </a>	
+				<a href="<?=url('configs')?>"> Configuration </a>	
 			</div>
 			</nav>
 			</header>
 			<div id="left_tree">
-				<a href="<?=url('/')?>"> Home </a>
-				<a href="<?=url('system')?>"> System </a>
+				<aside class="widget">
 				<a href="<?=url('status')?>"> Status </a>	
+				</aside>
+				<aside class="widget">
 				<a href="<?=url('status/apps.lp')?>"> Applications </a>	
+				</aside>
+				<aside class="widget">
+				<% script('status/list_app.lua') %>
+				</aside>
+				<aside class="widget">
 				<a href="<?=url('logs')?>"> Logs </a>
 				<a href="<?=url('logs/packets.lp')?>"> Packets </a>
+				</aside>
+				<aside class="widget">
 				<a href="<?=url('data')?>"> Data </a>	
-				<a href="<?=url('configs')?>"> Configuration </a>	
+				</aside>
 			</div>
 

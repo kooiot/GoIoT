@@ -1,5 +1,4 @@
 local mon = require 'shared.api.mon'
-local cjson = require 'cjson.safe'
 local app_status = mon.query()
 
 local app = cgilua.QUERY.app
