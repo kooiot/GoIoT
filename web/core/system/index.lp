@@ -53,7 +53,6 @@ System Pages
 				var percentVal = percentComplete + '%';
 				bar.width(percentVal);
 				percent.html(percentVal);
-				alert(percentVal);
 			},
 			success: function() {
 				var percentVal = '100%';
