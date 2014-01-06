@@ -17,7 +17,7 @@ local function save()
 	local file, err = io.open('/tmp/apps/_list', "w")
 	if file then
 		for i, node in pairs(list) do
-			assert(file:write('NAME='..node.name..' PROJECT='..node.project))
+			assert(file:write('NAME='..node.name..' PROJECT='..node.project..'\n'))
 		end
 		file:close()
 		return true
