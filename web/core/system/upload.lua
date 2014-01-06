@@ -1,8 +1,14 @@
 local apps_folder = os.getenv('CAD_APPS_DIR') or '/tmp/apps'
 local core_folder = os.getenv('CAD_CORE_DIR') or '/tmp/core'
-local tmp_folder = os.getenv('CAD_TEMP_DIR') or '/tmp/upload'
+local tmp_folder = os.getenv('CAD_TEMP_DIR') or '/tmp/apps/_upload'
 
 local filetype = cgilua.POST.filetype
+local appname = cgilua.POST.appname
+
+if not appname or string.len(appname) == 0 then
+	cgilua.print('<br> Incorrect POST found, we need the appname')
+	appname = "example"
+end
 
 if not filetype then
 	cgilua.print('<br> Incorrect POST found, we need the filetype')
@@ -27,7 +33,7 @@ else
 			elseif filetype == 'app' then
 				local install = require 'shared.app.install'
 				-- TODO: Fixed the name
-				install(tmp_file, apps_folder, 'test__app')
+				install(tmp_file, apps_folder, appname)
 			else
 				cgilua.print('<br> Incorrect file type')
 			end

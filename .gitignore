@@ -8,3 +8,5 @@ web/io
 *.rej
 *~
 *.sqlite3
+*.cramfs
+*.zip

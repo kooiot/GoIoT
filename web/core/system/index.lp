@@ -14,6 +14,8 @@ System Pages
 	<label>Install App:</label>
 	<input type="hidden" name="filetype" value="app">
 	<input type="file" name="file">
+	<label>App Name:</label>
+	<input type="text" name="appname" value="">
 	<input type="submit" value="Upload">
 </form>
 
