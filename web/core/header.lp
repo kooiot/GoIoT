@@ -22,42 +22,36 @@ cgilua.contentheader('text', 'html; charset=utf-8')
 		<link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css">
 		<!-- DataTables -->
 		<script type="text/javascript" charset="utf-8" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
+		<! -- CSS -->
+		<link rel="stylesheet" type="text/css" href="css/header.css">
+		<link rel="stylesheet" type="text/css" href="css/styles.css">
+		<link rel="stylesheet" type="text/css" href="css/control.css">
+		<link rel="stylesheet" type="text/css" href="css/cloud.css">
+		<link rel="stylesheet" type="text/css" href="css/footer.css">
 	</head>
-	<style>
-		body { padding: 10px }
-	</style>
 	<body>
-		<!--start container -->
-		<div id="container">
-			<header id="header">
-			<nav>   
-			<div id="logo">
-				<a href="#"><img src="<?=put('images/logo.png')?>" alt="Logo here" /></a> 
-			</div>
+			<li class='active'><a href='#'><img src="/images/logo.png" alt="Logo here" /></a></li>
+			<div id='cssmenu'>
+				<ul>
+					<li class='active'><a href="<?=url('/')?>"><span>Home</span></a>
+					<li class='no-sub'><a href="<?=url('system')?>"><span>System</span></a>
+					<li class='no-sub'><a href="<?=url('configs')?>"><span>Configuration</span></a>
 
-			<div id="main_menu">
-				<a href="<?=url('/')?>"> Home </a>
-				<a href="<?=url('system')?>"> System </a>
-				<a href="<?=url('configs')?>"> Configuration </a>	
+					<li class='has-sub'><a href='<?=url("status")?>'><span>Status</span></a>
+					<ul>
+						<% script('status/list_app.lua') %>
+						<li class='last'><a href='<?=url("status/apps.lp")?>'><span>Applications</span></a></li>
+					</ul>
+					</li>
+					<li class='has-sub'><a href='<?=url("logs")?>'><span>Logs</span></a>
+					<ul>
+						<li><a href='<?=url("logs")?>'><span>Logs</span></a></li>
+						<li class='last'><a href='<?=url("logs/packets.lp")?>'><span>Packets</span></a></li>
+					</ul>
+					</li>
+					<li class='no-sub'><a href='<?=url("data")?>'><span>Data</span></a></li>
+					<li class='last'><a href='<?=url("about")?>'><span>About</span></a></li>
+				</ul>
 			</div>
-			</nav>
-			</header>
-			<div id="left_tree">
-				<aside class="widget">
-				<a href="<?=url('status')?>"> Status </a>	
-				</aside>
-				<aside class="widget">
-				<a href="<?=url('status/apps.lp')?>"> Applications </a>	
-				</aside>
-				<aside class="widget">
-				<% script('status/list_app.lua') %>
-				</aside>
-				<aside class="widget">
-				<a href="<?=url('logs')?>"> Logs </a>
-				<a href="<?=url('logs/packets.lp')?>"> Packets </a>
-				</aside>
-				<aside class="widget">
-				<a href="<?=url('data')?>"> Data </a>	
-				</aside>
-			</div>
+		</div>
 

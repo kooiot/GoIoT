@@ -9,7 +9,7 @@ else
 	for k,v in pairs(app_status.status) do
 		if k ~= 'logs' then
 			local link = url('apps/'..v.product..'/web', {name=k, port=v.port})
-			put('<a href="'..link..'"> '..k..' </a>')
+			put('<li><a href="'..link..'"><span>'..k..'</span></a></li>')
 		end
 	end
 end
