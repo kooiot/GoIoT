@@ -25,10 +25,8 @@ else
 			cgilua.print("<br> Uploaded "..name.." ("..string.len(bytes).." bytes)")
 
 			if filetype == 'sys' then
-				--os.execute('mv '..tmp_file..' '..core_folder)
-				local mv = 'cp '..tmp_file..' '..core_folder..'/'..name
-				--delay_exec('upgrade.sh', {'$CAD_DIR/run.sh stop', mv, 'sleep 3', 'reboot'})
-				delay_exec('upgrade.sh', {'cd /', '$CAD_DIR/run.sh stop', 'umount /tmp/cad2', 'sleep 1', mv, 'sleep 3', 'reboot'})
+				local mv = 'mv '..tmp_file..' '..core_folder..'/'..name
+				delay_exec('upgrade.sh', {'cd /', '$CAD_DIR/run.sh stop', 'umount /tmp/cad2', mv, 'sleep 3', 'reboot'})
 
 			elseif filetype == 'app' then
 				local appname = cgilua.POST.appname

@@ -4,6 +4,7 @@ application install lua script
 
 local lfs = require 'lfs'
 local unzip = require 'shared.unzip'
+local list = require 'shared.app.list'
 
 return function(zip_file, apps_folder, dest_name)
 	assert(zip_file, 'No application packe file specified')
@@ -24,6 +25,7 @@ return function(zip_file, apps_folder, dest_name)
 
 	-- Add to auto start script
 	-- 
+	list.add(dest_name, dest_name)
 
 	lock:free()
 end
