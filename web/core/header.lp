@@ -22,7 +22,7 @@ cgilua.contentheader('text', 'html; charset=utf-8')
 		<link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css">
 		<!-- DataTables -->
 		<script type="text/javascript" charset="utf-8" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
-		<! -- CSS -->
+		<!-- CSS -->
 		<link rel="stylesheet" type="text/css" href="css/header.css">
 		<link rel="stylesheet" type="text/css" href="css/styles.css">
 		<link rel="stylesheet" type="text/css" href="css/control.css">
@@ -30,18 +30,21 @@ cgilua.contentheader('text', 'html; charset=utf-8')
 		<link rel="stylesheet" type="text/css" href="css/footer.css">
 	</head>
 	<body>
+		<div id="container">
 			<div id="header">
 				<li class='active'><a href='#'><img src="/images/logo.png" alt="Logo here" /></a></li>
 				<div id='cssmenu'>
 					<ul>
 						<li class='active'><a href="<?=url('/')?>"><span>Home</span></a>
-						<li class='no-sub'><a href="<?=url('system')?>"><span>System</span></a>
+						<li class='no-sub'><a href="<?=url('store')?>"><span>Store</span></a>
+
 						<li class='no-sub'><a href="<?=url('configs')?>"><span>Configuration</span></a>
 
-						<li class='has-sub'><a href='<?=url("status")?>'><span>Status</span></a>
+						<li class='has-sub'><a href='<?=url("system")?>'><span>System</span></a>
 						<ul>
-							<% script('status/list_app.lua') %>
-							<li class='last'><a href='<?=url("status/apps.lp")?>'><span>Applications</span></a></li>
+							<li class='has-sub'><a href='<?=url("system/apps.lp")?>'><span>Apps</span></a></li>
+							<% script('system/list_app.lua') %>
+							<li class='last'><a href='<?=url("system/status.lp")?>'><span>System Information</span></a></li>
 						</ul>
 						</li>
 						<li class='has-sub'><a href='<?=url("logs")?>'><span>Logs</span></a>

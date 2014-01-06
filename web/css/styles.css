@@ -89,20 +89,3 @@
   clear: left;
 }
 
-#container {
-	min-height:100%;
-	position:relative;
-}
-#header {
-	/*padding:10px;*/
-}
-#body {
-	padding:10px;
-	padding-bottom:60px;   /* Height of the footer */
-}
-#footer {
-	position:absolute;
-	bottom:0;
-	width:100%;
-	height:120px;   /* Height of the footer */
-}

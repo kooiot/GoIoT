@@ -3,7 +3,7 @@
 		query_status();
 	});
 	function query_status() {
-		$.get("<?=rurl('status.lua')?>", {from : "web" }, function(data){
+		$.get("<?=rurl('apps.lua')?>", {from : "web" }, function(data){
 			$("#app_status").html(data);
 		})
 		.done(function() {
@@ -15,7 +15,7 @@
 	};
 
 	function operateApp(action, key) {
-		$.post("<?=rurl('app.lua')?>", { key: key, action:action },
+		$.post("<?=rurl('event.lua')?>", { key: key, action:action },
 		function(data){
 			alert(data);
 		})
