@@ -27,7 +27,7 @@ else
 			if filetype == 'sys' then
 				local mv = 'mv '..tmp_file..' '..core_folder..'/'..name
 				delay_exec('upgrade.sh', {'cd /', '$CAD_DIR/run.sh stop', 'umount /tmp/cad2', mv, 'sleep 3', 'reboot'})
-
+				cgilua.print('<br> Device is rebooting to upgrade the system....')
 			elseif filetype == 'app' then
 				local appname = cgilua.POST.appname
 
@@ -40,6 +40,7 @@ else
 
 				-- remove temp file
 				os.remove(tmp_file)
+				cgilua.print('<br> Installed finished!')
 			else
 				cgilua.print('<br> Incorrect file type')
 				-- remove temp file

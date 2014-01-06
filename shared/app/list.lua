@@ -16,8 +16,8 @@ end
 local function save()
 	local file, err = io.open('/tmp/apps/_list', "w")
 	if file then
-		for name, project in pairs(list) do
-			assert(file:write('NAME='..name..' PROJECT='..project))
+		for i, node in pairs(list) do
+			assert(file:write('NAME='..node.name..' PROJECT='..node.project))
 		end
 		file:close()
 		return true
@@ -39,5 +39,7 @@ _M.del = function(name)
 	end
 	save()
 end
+
+load()
 
 return _M
