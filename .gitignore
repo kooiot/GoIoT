@@ -1,5 +1,6 @@
 !/oe/meta-dirk
 /oe/build
+__install
 build*/
 web/io
 *.swp
