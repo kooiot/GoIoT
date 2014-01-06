@@ -29,6 +29,7 @@ else
 				local mv = 'cp '..tmp_file..' '..core_folder..'/'..name
 				--delay_exec('upgrade.sh', {'$CAD_DIR/run.sh stop', mv, 'sleep 3', 'reboot'})
 				delay_exec('upgrade.sh', {'cd /', '$CAD_DIR/run.sh stop', 'umount /tmp/cad2', 'sleep 1', mv, 'sleep 3', 'reboot'})
+
 			elseif filetype == 'app' then
 				local appname = cgilua.POST.appname
 
@@ -38,12 +39,14 @@ else
 				end
 				local install = require 'shared.app.install'
 				install(tmp_file, apps_folder, appname)
+
+				-- remove temp file
+				os.remove(tmp_file)
 			else
 				cgilua.print('<br> Incorrect file type')
+				-- remove temp file
+				os.remove(tmp_file)
 			end
-
-			-- ATTENTION: FIXME: remove temp file
-			os.remove(tmp_file)
 		else
 			cgilua.print("<br> Failed to save file, error", err)
 		end
