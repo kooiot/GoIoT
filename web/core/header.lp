@@ -30,28 +30,30 @@ cgilua.contentheader('text', 'html; charset=utf-8')
 		<link rel="stylesheet" type="text/css" href="css/footer.css">
 	</head>
 	<body>
-			<li class='active'><a href='#'><img src="/images/logo.png" alt="Logo here" /></a></li>
-			<div id='cssmenu'>
-				<ul>
-					<li class='active'><a href="<?=url('/')?>"><span>Home</span></a>
-					<li class='no-sub'><a href="<?=url('system')?>"><span>System</span></a>
-					<li class='no-sub'><a href="<?=url('configs')?>"><span>Configuration</span></a>
+			<div id="header">
+				<li class='active'><a href='#'><img src="/images/logo.png" alt="Logo here" /></a></li>
+				<div id='cssmenu'>
+					<ul>
+						<li class='active'><a href="<?=url('/')?>"><span>Home</span></a>
+						<li class='no-sub'><a href="<?=url('system')?>"><span>System</span></a>
+						<li class='no-sub'><a href="<?=url('configs')?>"><span>Configuration</span></a>
 
-					<li class='has-sub'><a href='<?=url("status")?>'><span>Status</span></a>
-					<ul>
-						<% script('status/list_app.lua') %>
-						<li class='last'><a href='<?=url("status/apps.lp")?>'><span>Applications</span></a></li>
+						<li class='has-sub'><a href='<?=url("status")?>'><span>Status</span></a>
+						<ul>
+							<% script('status/list_app.lua') %>
+							<li class='last'><a href='<?=url("status/apps.lp")?>'><span>Applications</span></a></li>
+						</ul>
+						</li>
+						<li class='has-sub'><a href='<?=url("logs")?>'><span>Logs</span></a>
+						<ul>
+							<li><a href='<?=url("logs")?>'><span>Logs</span></a></li>
+							<li class='last'><a href='<?=url("logs/packets.lp")?>'><span>Packets</span></a></li>
+						</ul>
+						</li>
+						<li class='no-sub'><a href='<?=url("data")?>'><span>Data</span></a></li>
+						<li class='last'><a href='<?=url("about")?>'><span>About</span></a></li>
 					</ul>
-					</li>
-					<li class='has-sub'><a href='<?=url("logs")?>'><span>Logs</span></a>
-					<ul>
-						<li><a href='<?=url("logs")?>'><span>Logs</span></a></li>
-						<li class='last'><a href='<?=url("logs/packets.lp")?>'><span>Packets</span></a></li>
-					</ul>
-					</li>
-					<li class='no-sub'><a href='<?=url("data")?>'><span>Data</span></a></li>
-					<li class='last'><a href='<?=url("about")?>'><span>About</span></a></li>
-				</ul>
+				</div>
 			</div>
-		</div>
+			<div id="body">
 

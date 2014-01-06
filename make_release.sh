@@ -8,6 +8,7 @@ cp -r shared __install/shared
 cp -r web __install/web
 cp run.sh __install/run.sh
 
+rm -rf __install/web/test 
 cd __install/web/core
 rm -f apps
 ln -s /tmp/apps apps
