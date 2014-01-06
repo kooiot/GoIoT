@@ -1,6 +1,9 @@
 #!/usr/bin/env sh
 
-export CAD_DIR=$(pwd)
+if [ -z $CAD_DIR ]; then
+	export CAD_DIR=$(pwd)
+fi
+
 echo $CAD_DIR
 
 if [ $# != 1 ] ; then
