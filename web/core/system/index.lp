@@ -10,6 +10,8 @@ System Pages
 	.percent { position:absolute; display:inline-block; top:3px; left:48%; }
 </style>
 
+<input type="button" name="reboot" id="reboot" value="Reboot">
+
 <form action="<?=rurl('upload.lua')?>" method="post" enctype="multipart/form-data">
 	<label>Install App:</label>
 	<input type="hidden" name="filetype" value="app">
@@ -63,6 +65,16 @@ System Pages
 			}
 		}); 
 
+		$( "#reboot" ).click(function() {
+			$.post("<?=rurl("reboot.lua")?>", {from:"web"}, function(data) {
+				status.html(data);
+			})
+			.done(function() {
+			})
+			.fail(function() {
+				alert("Failed to reboot");
+			});
+		});
 	})();       
 </script>
 
