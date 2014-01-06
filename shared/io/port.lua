@@ -21,7 +21,7 @@ local function tcp_client_conf()
 	return {type='tcp_client', props = {
 		port={type='number', value='502'},
 		local_addr={type='string', value='*'},
-		remote_addr={type='string', value='172.30.11.28'},
+		remote_addr={type='string', value='192.168.56.101'},
 	}}
 end
 
