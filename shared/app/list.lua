@@ -7,7 +7,7 @@ local function load()
 	if file then
 		for line in file:lines() do
 			local name, project = line:match('NAME=(.+) PROJECT=(.+)')
-			table.insert(list, {name=name, project=project})
+			list[name] = {name=name, project=project}
 		end
 		file:close()
 	end
@@ -16,7 +16,7 @@ end
 local function save()
 	local file, err = io.open('/tmp/apps/_list', "w")
 	if file then
-		for i, node in pairs(list) do
+		for name, node in pairs(list) do
 			assert(file:write('NAME='..node.name..' PROJECT='..node.project..'\n'))
 		end
 		file:close()
@@ -27,17 +27,15 @@ local function save()
 end
 
 _M.add = function(name, project)
-	table.insert(list, {name=name, project=project})
+	list[name] = {name=name, project=project}
 	save()
 end
 
 _M.del = function(name)
-	for k, v in pairs(list) do
-		if v.name == name then
-			list[k] = nil
-		end
+	if list[name] then
+		list[name] = nil
+		save()
 	end
-	save()
 end
 
 load()

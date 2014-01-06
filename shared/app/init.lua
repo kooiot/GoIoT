@@ -80,9 +80,9 @@ function class:init()
 	if self.port then
 		local server, err = self.ctx:socket({
 			zmq.REP,
-			bind = "tcp://*:"..self.port
 		})
 		zassert(server, err)
+		self.port = server:bind_to_random_port('tcp://*', self.port, 128)
 		self.server = server
 
 		self.poller:add(server, zmq.POLLIN, function()
