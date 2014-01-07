@@ -26,6 +26,8 @@ System Pages
 	<input type="hidden" name="filetype" value="sys">
 	<input type="file" name="file">
 	<input type="submit" value="Upload">
+	<br>
+	<label><b> Please clean broswer's cache after upgrade the system!! </b></label>
 </form>
 
 <div class="progress">
