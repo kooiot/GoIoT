@@ -20,7 +20,7 @@
   padding: 0px;
 }
 #cssmenu li a {
-  background: #333333 url('images/seperator.png') bottom right no-repeat;
+  background: #333333 url('/images/seperator.gif') bottom right no-repeat;
   display: block;
   font-weight: normal;
   line-height: 35px;
@@ -37,7 +37,7 @@
 }
 #cssmenu li > a:hover,
 #cssmenu ul li:hover > a {
-  background: #2580a2 url('images/hover.png') bottom center no-repeat;
+  background: #2580a2 url('/images/hover.png') bottom center no-repeat;
   color: #FFFFFF;
   text-decoration: none;
 }
@@ -59,7 +59,7 @@
   display: block;
 }
 #cssmenu li li {
-  background: url('images/sub_sep.png') bottom left no-repeat;
+  background: url('/images/sub_sep.gif') bottom left no-repeat;
   display: block;
   float: none;
   margin: 0px;
@@ -80,7 +80,7 @@
 }
 #cssmenu li ul a:hover,
 #cssmenu li ul li:hover > a {
-  background: #2580a2 url('images/hover_sub.png') center left no-repeat;
+  background: #2580a2 url('/images/hover_sub.png') center left no-repeat;
   border: 0px;
   color: #ffffff;
   text-decoration: none;

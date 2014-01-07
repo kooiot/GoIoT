@@ -7,9 +7,17 @@ cgilua.contentheader('text', 'html; charset=utf-8')
 	<head>
 		<title>OpenGate - <?=app?></title>
 
+		<!-- CSS -->
+		<link rel="stylesheet" type="text/css" href="css/styles.css">
+
+		<link rel="stylesheet" type="text/css" href="css/header.css">
+		<link rel="stylesheet" type="text/css" href="css/control.css">
+		<link rel="stylesheet" type="text/css" href="css/cloud.css">
+		<link rel="stylesheet" type="text/css" href="css/footer.css">
+
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 		<!-- Jquery -->
-		<script type="text/javascript" charset="utf-8" src="http://cdn.staticfile.org/jquery/1.9.1/jquery.js"></script>
+		<script type="text/javascript" charset="utf-8" src="http://cdn.staticfile.org/jquery/1.10.2/jquery.js"></script>
 
 		<!-- Jquery Form -->
 		<script type="text/javascript" charset="utf-8" src="js/jquery.form.min.js"></script>
@@ -22,12 +30,6 @@ cgilua.contentheader('text', 'html; charset=utf-8')
 		<link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css">
 		<!-- DataTables -->
 		<script type="text/javascript" charset="utf-8" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
-		<!-- CSS -->
-		<link rel="stylesheet" type="text/css" href="css/header.css">
-		<link rel="stylesheet" type="text/css" href="css/styles.css">
-		<link rel="stylesheet" type="text/css" href="css/control.css">
-		<link rel="stylesheet" type="text/css" href="css/cloud.css">
-		<link rel="stylesheet" type="text/css" href="css/footer.css">
 	</head>
 	<body>
 		<div id="container">
