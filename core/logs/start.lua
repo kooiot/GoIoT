@@ -50,6 +50,7 @@ local function init()
 	config = load_config()
 	info.port = config.port
 	info.app_meta = app_meta
+	info.no_port_retry = true
 
 	app = require('shared.app').new(info)
 	assert(app)

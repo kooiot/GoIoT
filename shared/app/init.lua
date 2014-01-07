@@ -82,7 +82,11 @@ function class:init()
 			zmq.REP,
 		})
 		zassert(server, err)
-		self.port = server:bind_to_random_port('tcp://*', self.port, 128)
+		if self.no_port_retry then
+			server:bind('tcp://*:'..self.port)
+		else
+			self.port = server:bind_to_random_port('tcp://*', self.port, 128)
+		end
 		self.server = server
 
 		self.poller:add(server, zmq.POLLIN, function()
@@ -168,6 +172,7 @@ function _M.new(info)
 	obj.web = info.web or false -- the application pack has its own web pages
 	obj.manufactor = info.manufactor or 'OpenGate'
 	obj.port = info.port
+	obj.no_port_retry = info.no_port_retry
 	obj.server = nil
 
 	-- handler functions
