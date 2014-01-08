@@ -14,25 +14,41 @@ client:open()
 
 local _M = {}
 
+local function reply(json, err)
+	local reply = nil
+	if json then
+		reply, err = cjson.decode(json)
+		if reply then
+			if #reply == 2 then
+				reply = reply[2].result
+				err = reply[2].err
+			else
+				err = "incorrect reply json"
+			end
+		end
+	end
+	return reply, err
+end
+
 _M.add = function(name, desc, value)
 	local req = {"add", {name=name, desc=desc, value=value}}
-	return client:request(cjson.encode(req), true)
+	return reply(client:request(cjson.encode(req), true))
 end
 
 _M.erase = function(name)
 	local req = {"erase", {name=name}}
-	return client:request(cjson.encode(req), true)
+	return reply(client:request(cjson.encode(req), true))
 end
 
 _M.set = function(name, val, timestamp)
 	local timestamp = timestamp or ztimer.absolute_time()
 	local req = {'set', {name=name, value=val, timestamp=timestamp}}
-	return client:request(cjson.encode(req), true)
+	return reply(client:request(cjson.encode(req), true))
 end
 
 _M.sets = function(vals)
 	local req = {'sets', vals}
-	return client:request(cjson.encode(req), true)
+	return reply(client:request(cjson.encode(req), true))
 end
 
 _M.get = function(name)

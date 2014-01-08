@@ -13,28 +13,48 @@ client:open({zmq.REQ, linger = 0, connect="tcp://localhost:5522", rcvtimeo = 300
 
 local _M = {}
 
+local function reply(json, err)
+	local reply = nil
+	if json then
+		reply, err = cjson.decode(json)
+		if reply then
+			if #reply == 2 then
+				reply = reply[2].result
+				err = reply[2].err
+			else
+				err = "incorrect reply json"
+			end
+		end
+	end
+	return reply, err
+end
+
 _M.add = function(key, vals)
 	local req = {"add", {key=key, vals=vals}}
-	return client:request(cjson.encode(req), true)
+	return reply(client:request(cjson.encode(req), true))
 end
 
 _M.erase = function(key)
 	local req = {"erase", {key=key}}
-	return client:request(cjson.encode(req), true)
+	return reply(client:request(cjson.encode(req), true))
 end
 
 _M.set = function(key, vals)
 	local req = {'set', {key=key, vals=vals}}
-	return client:request(cjson.encode(req), true)
+	return reply(client:request(cjson.encode(req), true))
 end
 
 _M.get = function(key)
 	local req = {'get', {key=key}}
 	local reply, err = client:request(cjson.encode(req), true)
 	if reply then
-		reply = cjson.decode(reply)[2]
+		reply, err = cjson.decode(reply)
 		if reply then
-			reply = reply.vals
+			if reply[2].result then
+				reply = reply.vals
+			else
+				err = reply.err
+			end
 		end
 	end
 	return reply, err

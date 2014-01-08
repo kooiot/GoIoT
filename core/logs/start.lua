@@ -12,7 +12,7 @@ package.path = string.format("%s;%s/?.lua;%s/?/init.lua", m_package_path, m_path
 local zmq = require 'lzmq'
 local ztimer = require 'lzmq.timer'
 local cjson = require 'cjson.safe'
-local configs = require 'shared.api.configs'
+local config_api = require 'shared.api.config'
 local fifo = require 'shared.fifo'
 local pub = require 'shared.pub'
 
@@ -29,7 +29,7 @@ local function load_config()
 			port = 5500,
 		}
 	end
-	local config, err = configs.get(ioname..'.configs')
+	local config, err = config_api.get(ioname..'.configs')
 	assert(config, err)
 
 	config, err = cjson.decode(settings)

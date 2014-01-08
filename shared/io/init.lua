@@ -1,6 +1,6 @@
 #!/usr/bin/env lua
 
-local configs = require 'shared.api.configs'
+local configs = require 'shared.api.config'
 local info = require '_ver'
 local setting = require 'shared.io.setting'
 local ztimer = require 'lzmq.timer'
