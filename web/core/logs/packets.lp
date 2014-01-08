@@ -46,7 +46,7 @@
 <table cellpadding="0" cellspacing="0" border="0" class="display" id="logstable">
 	<thead>
 		<tr>
-			<th style="width: 280px">Timestamp</th>
+			<th style="width: 300px">Timestamp</th>
 			<th style="width: 60px">Source</th>
 			<th style="width: 200px">Description</th>
 			<th>Content</th>

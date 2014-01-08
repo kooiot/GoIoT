@@ -4,7 +4,7 @@
 <script>
 	$(document).ready(function() {
 		var oTable = $('#logstable').dataTable({
-			"bStateSave": true,
+			//"bStateSave": true,
 		});
 
 		newtimer = setInterval( function () {
@@ -24,9 +24,8 @@
 				var commonTime = unixTimestamp.toLocaleString() + ' ' +  (log.timestamp % 1000)
 				oTable.fnAddData( [
 					commonTime,
-					log.level ? log.level : "N/A",
 					log.src ? log.src : "N/A",
-					log.desc ? log.desc : "N/A",
+					log.level ? log.level : "N/A",
 					log.content ? log.content : "N/A",
 					]);
 			};
@@ -47,10 +46,9 @@
 <table cellpadding="0" cellspacing="0" border="0" class="display" id="logstable">
 	<thead>
 		<tr>
-			<th style="width: 280px">Timestamp</th>
-			<th style="width: 30px">Level</th>
+			<th style="width: 300px">Timestamp</th>
 			<th style="width: 60px">Source</th>
-			<th style="width: 200px">Description</th>
+			<th style="width: 60px">Level</th>
 			<th>Content</th>
 		</tr>
 	</thead>
