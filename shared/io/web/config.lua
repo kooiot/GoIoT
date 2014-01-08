@@ -5,7 +5,7 @@ local name = cgilua.POST.name
 if name then
 	if cgilua.POST.key == 'ports' then
 		local ports = cjson.decode(cgilua.POST.data)
-		if ports and #ports ~= 0 then
+		if ports then
 			local reply, err = api.set(name..'.ports', ports)
 			if reply then
 				cgilua.print('done')

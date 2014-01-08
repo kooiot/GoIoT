@@ -5,21 +5,19 @@ local info = require '_ver'
 local setting = require 'shared.io.setting'
 local ztimer = require 'lzmq.timer'
 local cjson = require 'cjson.safe'
+local pp = require 'shared.PrettyPrint'
 
 local app = nil
 
-local function load_config()
-	local debug = true
-	if debug then
-		return {
-			port = 5515,
-		}
-	end
-	local config, err = configs.get(ioname..'.configs')
-	assert(config, err)
+local function load_config(name)
+	local config = {
+		port = 5515,
+	}
 
-	config, err = cjson.decode(settings)
-	assert(config, err)
+	local ports, err = configs.get(name..'.ports')
+	if ports then
+		config.ports = ports
+	end
 
 	return config 
 end
@@ -72,17 +70,23 @@ function _M.add_port(name, types, default)
 end
 
 local function get_port_conf(name)
-	if config.ports and config.ports[name] then
-		return config.ports[name]
-	end
-
+	local conf = nil
 	for k,v in pairs(_M.ports) do
 		if v.name == name then
-			return v.default
+			conf = v.default
 		end
 	end
 
-	return nil, 'no such port'
+	if conf and config.ports and config.ports[name] then
+		local ports = config.ports[name]
+		for k, v in pairs(ports.props) do
+			if conf.props[k] then
+				conf.props[k].value = v
+			end
+		end
+	end
+
+	return conf, 'no such port'
 end
 
 function _M.get_port(name)
@@ -101,7 +105,7 @@ function _M.set_tags(tags)
 end
 
 function _M.init(name, handlers)
-	config = load_config()
+	config = load_config(name)
 	_M.handlers = handlers
 	info.name = name 
 	info.port = config.port

@@ -1,18 +1,18 @@
 <script>
 	function save_ports() {
-		var data = [
-		<% for index,v in pairs(ports) do %>
-		{ 
-			name : '<?=v.name?>',
-			type : "tcp_client", 
-			props : { 
-				local_addr :  $("#<?='lip'..index?>").val(), 
-				remote_addr : $("#<?='rip'..index?>").val(),
-				port : $("#<?='port'..index?>").val(),
-			}
-		},
-		<% end %>
-		];
+		var data = {
+			<% for index,v in pairs(ports) do %>
+			<?=v.name?> : { 
+				name : '<?=v.name?>',
+				type : "tcp_client", 
+				props : { 
+					local_addr :  $("#<?='lip'..index?>").val(), 
+					remote_addr : $("#<?='rip'..index?>").val(),
+					port : $("#<?='port'..index?>").val(),
+				}
+			},
+			<% end %>
+		};
 		post_config('ports', data);
 	};
 </script>

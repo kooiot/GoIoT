@@ -1,3 +1,4 @@
+local log = require 'shared.log'
 
 local class={}
 
@@ -30,8 +31,9 @@ end
 
 local function create_tcp_client(app, props)
 	local remote_addr = props.remote_addr.value
-	local port = props.port.value 
+	local port = props.port.value
 	local tcpc = require 'shared.io.tcp.client'
+	log:info(app.name, 'Creating tcp client to', remote_addr, 'port', port)
 	return tcpc.new(app.ctx, app.poller, remote_addr, port)
 end
 

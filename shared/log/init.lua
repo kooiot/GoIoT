@@ -47,7 +47,7 @@ function obj:error(src, ...)
 	local log = {
 		src = src or 'UNKOWN',
 		level = 'error',
-		content = table.concat(info),
+		content = table.concat(info, ' '),
 	}
 	return self:send(log)
 end
@@ -57,7 +57,7 @@ function obj:warn(src, ...)
 	local log = {
 		src = src or 'UNKOWN',
 		level = 'warn', 
-		content = table.concat(info),
+		content = table.concat(info, ' '),
 	}
 	return self:send(log)
 end
@@ -67,7 +67,7 @@ function obj:info(src, ...)
 	local log = {
 		src = src or 'UNKOWN',
 		level = 'info', 
-		content = table.concat(info),
+		content = table.concat(info, ' '),
 	}
 	return self:send(log)
 end
@@ -77,7 +77,7 @@ function obj:debug(src, ...)
 	local log = {
 		src = src or 'UNKOWN',
 		level = 'debug', 
-		content = table.concat(info),
+		content = table.concat(info, ' '),
 	}
 	return self:send(log)
 end
