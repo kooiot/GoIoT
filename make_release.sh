@@ -18,4 +18,5 @@ sudo chown -R root:root __install
 mkfs.cramfs __install cad2.cramfs
 sudo rm -rf __install
 
-#scp cad2.cramfs user@172.30.11.135:~/
+./scripts/release_app.sh example
+
