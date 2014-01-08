@@ -10,13 +10,14 @@ local m_package_path = package.path
 package.path = string.format("%s;%s/?.lua;%s/?/init.lua", m_package_path, m_path, m_path)  
 
 local zmq = require 'lzmq'
+local ztimer = require 'lzmq.timer'
 local cjson = require 'cjson.safe'
 local configs = require 'shared.api.configs'
 local fifo = require 'shared.fifo'
 local pub = require 'shared.pub'
 
 local info = require '_ver'
-local cache = fifo('Log Start...')
+local cache = fifo({timestamp = ztimer.absolute_time(), src="CORE", level="info", content="Log Start"})
 local pcache = fifo()
 
 local app = nil

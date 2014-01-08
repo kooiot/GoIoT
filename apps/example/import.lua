@@ -4,7 +4,7 @@ local cjson = require('cjson.safe')
 
 local function import_section(name, section)
 	--[[
-	print('example', "Import section "..name)
+	print('import', "Import section "..name)
 	for k, v in pairs(section) do
 		if tonumber(v[1]) == 0 then
 			for k, v in pairs(v) do
@@ -29,7 +29,7 @@ local function import_section(name, section)
 end
 
 local function import(app, filename)
-	log:debug('example', "Import from file "..filename)
+	log:debug(app.name or 'example', "Import from file "..filename)
 
 	if not filename:match("%.csv$") then
 		return nil, "Only csv file can not imported to "..ioname

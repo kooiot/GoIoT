@@ -80,7 +80,7 @@ end
 
 local function on_rev(port, msg)
 --	print(os.date(), 'DATA RECV', hex_raw(msg))
-	log:packet('MODBUS', ioname..'.RECV', hex_raw(msg))
+	log:packet(ioname, 'MODBUS.RECV', hex_raw(msg))
 	stream.buf = stream.buf..msg
 end
 
@@ -112,7 +112,7 @@ end
 
 local handlers = {}
 handlers.on_start = function(app)
-	log:info('example', 'Received event [START]')
+	log:info(ioname, 'Received event [START]')
 	pause = false
 	if io_ports.main then
 		return
@@ -135,19 +135,19 @@ end
 
 handlers.on_stop = function(app)
 	--print(os.date(), 'Received Stop Event')
-	log:info('example', 'Received event [STOP]')
+	log:info(ioname, 'Received event [STOP]')
 	pause = true
 end
 
 handlers.on_reload = function(app)
 	--print(os.date(), "On Reload")
-	log:info('example', 'Received event [RELOAD]')
+	log:info(ioname, 'Received event [RELOAD]')
 
 	return load_tags_conf(true)
 end
 
 handlers.on_run = function(app)
-	--log:info('example', 'RUN TIME')
+	--log:info(ioname, 'RUN TIME')
 	--print(os.date(), 'RUN TIME')
 	
 	if err_count > 5 then
