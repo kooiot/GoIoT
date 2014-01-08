@@ -1,12 +1,17 @@
+local cjson = require 'cjson.safe'
+
 cgilua.contentheader('application', 'text; charset=utf8')
 
 if cgilua.POST.key then
 	local api = require 'shared.api.configs'
-	local r, err = api.set(cgilua.POST.key, cgilua.POST.value)
-	if not r then
-		put(err)
+	local vals, err = cjson.decode(cgilua.POST.value)
+	if vals then
+		local r, err = api.set(cgilua.POST.key, vals)
+	end
+	if err then
+		put('<br> '..err)
 	else
-		put('DONE')
+		put('<br> DONE')
 	end
 elseif cgilua.QUERY.key then
 	local api = require 'shared.api.configs'
@@ -14,7 +19,7 @@ elseif cgilua.QUERY.key then
 	if not value then
 	--	put(err)
 	else
-		put(value)
+		put(cjson.encode(value))
 	end
 end
 

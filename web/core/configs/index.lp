@@ -39,13 +39,13 @@
 		var value = $("#value").val();
 		$.post("<?=url("configs/api.lua")?>", { key: key, value:value },
 		function(data){
-			alert(data);
+			$( "#status" ).html(data);
 		})
 		.done(function() {
 			//alert("Data Saved successfully!!");
 		})
 		.fail(function() {
-			alert("Failed to save!!");
+			$( "#status" ).html("<br> ERROR:failed to post");
 		});
 	};
 	function get_value() {
@@ -55,9 +55,10 @@
 			$("#value").val(data);
 		})
 		.done(function() {
+			$( "#status" ).html("<br> Get value done");
 		})
 		.fail(function() {
-			alert("Failed to get!!");
+			$( "#status" ).html("<br> ERROR:Failed to get value");
 		});
 	};
 
@@ -68,4 +69,6 @@
 	<button id="btnget">Get</button>
 	<button id="btnset">Set</button>
 </div>
+
+<div id = "status"></div>
 
