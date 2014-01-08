@@ -3,7 +3,7 @@
 </h1>
 
 <%
-	local api = require 'shared.api.configs'
+	local api = require 'shared.api.config'
 	local data = api.version()
 	if not data then
 %>

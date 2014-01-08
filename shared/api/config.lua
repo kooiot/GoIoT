@@ -19,8 +19,8 @@ local function reply(json, err)
 		reply, err = cjson.decode(json)
 		if reply then
 			if #reply == 2 then
-				reply = reply[2].result
 				err = reply[2].err
+				reply = reply[2].result
 			else
 				err = "incorrect reply json"
 			end
@@ -51,7 +51,8 @@ _M.get = function(key)
 		reply, err = cjson.decode(reply)
 		if reply then
 			if reply[2].result then
-				reply = reply.vals
+				err = reply[2].err
+				reply = reply[2].vals
 			else
 				err = reply.err
 			end

@@ -34,7 +34,7 @@ mpft['get'] = function(vars)
 	if vars and type(vars) == 'table' then
 		if vars.key then
 			local val_json = db.get(vars.key)
-	--		log:debug('CONFIGS', 'get '..vars.key..(val_json or 'nil'))
+			log:debug('CONFIGS', 'get '..vars.key..(val_json or 'nil'))
 			local vals = cjson.decode(val_json)
 			local rep = {'get', {result=true, key=vars.key, vals=vals}}
 			server:send(cjson.encode(rep))

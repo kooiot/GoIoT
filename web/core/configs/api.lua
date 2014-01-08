@@ -20,7 +20,7 @@ elseif cgilua.QUERY.key then
 	local api = require 'shared.api.config'
 	local value, err = api.get(cgilua.QUERY.key)
 	if not value then
-	--	put(err)
+		put(err)
 	else
 		put(cjson.encode(value))
 	end

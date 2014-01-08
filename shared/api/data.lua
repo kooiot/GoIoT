@@ -20,8 +20,8 @@ local function reply(json, err)
 		reply, err = cjson.decode(json)
 		if reply then
 			if #reply == 2 then
-				reply = reply[2].result
 				err = reply[2].err
+				reply = reply[2].result
 			else
 				err = "incorrect reply json"
 			end

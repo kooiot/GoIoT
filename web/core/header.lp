@@ -40,14 +40,18 @@ cgilua.contentheader('text', 'html; charset=utf-8')
 						<li class='active'><a href="<?=url('/')?>"><span>Home</span></a>
 						<li class='no-sub'><a href="<?=url('store')?>"><span>Store</span></a>
 
-						<li class='no-sub'><a href="<?=url('configs')?>"><span>Configuration</span></a>
+
+						<li class='has-sub'><a href='<?=url("system/apps.lp")?>'><span>Applications</span></a>
+						<ul>
+							<% script('system/list_app.lua') %>
+						</ul>
 
 						<li class='has-sub'><a href='<?=url("system")?>'><span>System</span></a>
 						<ul>
-							<li class='has-sub'><a href='<?=url("system/apps.lp")?>'><span>Apps</span></a></li>
-							<% script('system/list_app.lua') %>
 							<li class='last'><a href='<?=url("system/status.lp")?>'><span>System Information</span></a></li>
+							<li class='no-sub'><a href="<?=url('configs')?>"><span>Configuration</span></a>
 						</ul>
+
 						</li>
 						<li class='has-sub'><a href='<?=url("logs")?>'><span>Logs</span></a>
 						<ul>
