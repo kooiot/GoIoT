@@ -9,7 +9,7 @@ require 'shared.zhelpers'
 local zmq = require 'lzmq'
 local zpoller = require 'lzmq.poller'
 local cjson = require 'cjson.safe'
-local log = require 'shared.log.client'
+local log = require 'shared.log'
 
 local running = {
 --	test = {run = true, last = os.time()}

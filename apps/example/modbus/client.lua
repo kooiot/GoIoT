@@ -1,5 +1,5 @@
 local pdu = require 'modbus.pdu'
-local log = require 'shared.log.client'
+local log = require 'shared.log'
 
 local class = {}
 

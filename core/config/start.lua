@@ -9,6 +9,7 @@ require 'shared.zhelpers'
 local zmq = require 'lzmq'
 local zpoller = require 'lzmq.poller'
 local cjson = require 'cjson.safe'
+local log = require 'shared.log'
 local db = require 'db'
 db.load()
 
@@ -32,7 +33,9 @@ mpft['get'] = function(vars)
 	local err = 'Invalid/Unsupported request message format'
 	if vars and type(vars) == 'table' then
 		if vars.key then
+			log:debug('CONFIGS', 'get '..vars.key)
 			local val_json = db.get(vars.key)
+			log:debug('CONFIGS', 'get '..vars.key..(val_json or 'nil'))
 			local vals = cjson.decode(val_json)
 			local rep = {'get', {result=true, key=vars.key, vals=vals}}
 			server:send(cjson.encode(rep))

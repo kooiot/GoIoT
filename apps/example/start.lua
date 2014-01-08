@@ -10,7 +10,7 @@ local pp = require('shared.PrettyPrint')
 local modbus = require('modbus.init')
 local port = require('shared.io.port')
 local api = require('shared.api.data')
-local log = require('shared.log.client')
+local log = require('shared.log')
 local ztimer = require 'lzmq.timer'
 
 local ioname = arg[1]
@@ -19,6 +19,7 @@ assert(ioname, 'Applicaiton needs to have a name')
 -- application object
 local app = nil
 local io_ports = {}
+local err_count = 1
 
 -- the stream object used by modbus lib
 -- TODO: use the ltn12 utility from luasocket ??????
@@ -148,6 +149,12 @@ end
 handlers.on_run = function(app)
 	--log:info('example', 'RUN TIME')
 	--print(os.date(), 'RUN TIME')
+	
+	if err_count > 5 then
+		err_count = 1
+		log:warn(ioname, 'Error reach the max count, wait for 30 seconds for retry')
+		return coroutine.yield(false,  30000)
+	end
 
 	if not pause then
 		for k, v in pairs(packets) do
@@ -162,6 +169,7 @@ handlers.on_run = function(app)
 				end
 				api.sets(vals)
 			else
+				err_count = err_count + 1
 				print(os.date(), 'pa is nil', err)
 			end
 		end

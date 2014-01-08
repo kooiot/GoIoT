@@ -1,5 +1,5 @@
 local pp = require ('shared.PrettyPrint')
-local log = require('shared.log.client')
+local log = require('shared.log')
 local cjson = require('cjson.safe')
 
 local function import_section(name, section)
