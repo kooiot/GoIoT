@@ -1,4 +1,4 @@
-local tmp_folder = os.getenv('CAD_TEMP_DIR') or '/tmp/upload'
+local tmp_folder = os.getenv('CAD_TEMP_DIR') or '/tmp/apps/_upload'
 
 local name = cgilua.POST.name
 local port = cgilua.POST.port

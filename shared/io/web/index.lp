@@ -2,6 +2,11 @@
 	local name = cgilua.QUERY.name
 ?>
 
+<style>
+	.black { display: block; margin: 20px auto; background: #aaa; border-radius: 10px; padding: 15px }
+	.gray { display: block; margin: 0px auto; background: #eee; border-radius: 10px; padding: 15px }
+</style>
+
 <script>
 	$(function() {
 		$( "#tabs" ).tabs();
@@ -21,12 +26,24 @@
 			alert("Failed to post!!");
 		});
 	};
+
+	function post_config(key, data)
+		$.post("<?=rurl('config.lua')?>", {name: '<?=name?>', key: key, data : JSON.stringify(data)}, function (data) {
+			alert(data);
+		})
+		.done(function(data) {
+		})
+		.fail(function() {
+		});
+
+	end
 </script>
 
 <h1>
 	IO APP - <? =name ?>
 </h1>
 
+<div class="black">
 <%
 	local port = cgilua.QUERY.port
 	local mon = require 'shared.api.mon'
@@ -49,15 +66,15 @@
 		end
 	end
 %>
-
+</div>
 <%
-	local api = require('shared.api.app').new(port)
-	--[[
-	local version, err = api:version()
-	if not version then
-		put('Api Error:', err)
-	end
-	]]--
+local api = require('shared.api.app').new(port)
+--[[
+local version, err = api:version()
+if not version then
+	put('Api Error:', err)
+end
+]]--
 %>
 
 <%
@@ -80,27 +97,33 @@ else
 		<% end %>
 	</ul>
 	<div id="tabs-ports">
-		<% rinclude('ports.lp', {ports = meta.app.ports, cgilua=cgilua, pairs=pairs}) %>	
+		<div class="gray">
+		<% rinclude('ports.lp', {ports = meta.app.ports, cgilua=cgilua, pairs=pairs, rurl=rurl}) %>	
 		<% 
-		put(pp(meta.app.ports)) 
+		--put(pp(meta.app.ports)) 
 		%>
+	</div>
 	</div>
 	<% if meta.app.settings and #meta.app.settings ~= 0 then %>
 	<div id="tabs-settings">
 		<% rinclude('settings.lp', {settings = meta.app.settings, cgilua=cgilua, pairs=pairs}) %>	
-		<% put(pp(meta.app.settings)) %>
+		<% 
+		--put(pp(meta.app.settings)) 
+		%>
 	</div>
 	<% end %>
 	<div id="tabs-tags">
 		<% rinclude('tags.lp', {tags = meta.app.tags, cgilua=cgilua, pairs=pairs, next=next, url=url, os=os, rurl=rurl, rinclude=rinclude}) %>	
 		<% 
-		put(pp(meta.app.tags)) 
+		--put(pp(meta.app.tags)) 
 		%>
 	</div>
 	<% if meta.app.commands and #meta.app.commands ~= 0 then %>
 	<div id="tabs-commands">
 		<% rinclude('commands.lp', {commands = meta.app.commands, cgilua=cgilua, pairs=pairs}) %>	
-		<% put(pp(meta.app.commands)) %>
+		<%
+		--put(pp(meta.app.commands)) 
+		%>
 	</div>
 	<% end %>
 </div>

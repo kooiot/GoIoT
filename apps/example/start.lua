@@ -111,6 +111,7 @@ end
 
 local handlers = {}
 handlers.on_start = function(app)
+	log:info('example', 'Received event [START]')
 	pause = false
 	if io_ports.main then
 		return
@@ -125,11 +126,6 @@ handlers.on_start = function(app)
 		end
 
 		load_tags_conf()
-		--[[
-		for v = 1, 16 do
-			api.add(ioname..'.data'..v, 'Modbus Tag '..v, 0)
-		end
-		]]--
 
 		return true
 	end
@@ -137,34 +133,23 @@ handlers.on_start = function(app)
 end
 
 handlers.on_stop = function(app)
-	print(os.date(), 'Received Stop Event')
+	--print(os.date(), 'Received Stop Event')
+	log:info('example', 'Received event [STOP]')
 	pause = true
 end
 
 handlers.on_reload = function(app)
-	print(os.date(), "On Reload")
+	--print(os.date(), "On Reload")
+	log:info('example', 'Received event [RELOAD]')
+
 	return load_tags_conf(true)
 end
 
 handlers.on_run = function(app)
-	log:info('example', os.date(), 'RUN TIME')
+	--log:info('example', 'RUN TIME')
 	--print(os.date(), 'RUN TIME')
 
 	if not pause then
-		--[[
-		local pa, err = mclient:request(1, 'ReadHoldingRegisters', 3, 16)
-		if pa then
-			local ts = ztimer.absolute_time()
-			local vals = {}
-			for k, v in pairs(pa:data()) do
-				vals[#vals+1] = {name = ioname..'.data'..k, value = v, timestamp=ts}
-			end
-			api.sets(vals)
-		else
-			print(os.date(), 'pa is nil', err)
-		end
-		]]--
-
 		for k, v in pairs(packets) do
 			local pa, err = mclient:request(v.unit, v.code, v.start, v.count)
 			if pa then

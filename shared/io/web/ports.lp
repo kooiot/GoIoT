@@ -1,6 +1,23 @@
-<% local index = 1 %>
+<script>
+	function save_ports() {
+		var data = [
+		<% for index,v in pairs(ports) do %>
+		{ 
+			name : '<?=v.name?>',
+			type : "tcp_client", 
+			props : { 
+				local_addr :  $("#<?='lip'..index?>").val(), 
+				remote_addr : $("#<?='rip'..index?>").val(),
+				port : $("#<?='port'..index?>").val(),
+			}
+		},
+		<% end %>
+		];
+		post_config('ports', data);
+	};
+</script>
 <%
-for k,v in pairs(ports) do 
+for index,v in pairs(ports) do 
 	local name = 'radio_'..index
 %>
 	<div class="port_conf">
@@ -40,4 +57,8 @@ for k,v in pairs(ports) do
 	index = index + 1
 end
 %>
+
+<div class="black">
+	<input type="button" id="save_port" value="Save" onClick="save_ports()">
+</div>
 

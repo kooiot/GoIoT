@@ -93,6 +93,7 @@ function class:init()
 		self.poller:add(server, zmq.POLLIN, function()
 			local msg, err = self.server:recv()
 			if msg then
+				print(os.date(), 'Received request message')
 				self:on_request(msg)
 			else
 				print('ERR', err)

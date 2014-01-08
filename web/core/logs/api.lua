@@ -9,6 +9,9 @@ local typ = cgilua.QUERY.type or 'logs'
 local req = {typ, {from='web', clean=true}}
 local reply, err = client:request(cjson.encode(req), true)
 if reply then
-	put(reply)
+	local reply = cjson.decode(reply)
+	if reply and #reply == 2 and reply[1] == typ and reply[2].result == true then
+		put(cjson.encode(reply[2].logs))
+	end
 end
 
