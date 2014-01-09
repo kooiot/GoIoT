@@ -7,4 +7,5 @@ return function(apps_folder, name)
 	local dest_folder = apps_folder..'/'..dest_name
 	assert(os.execute('rm -rf '..dest_folder))
 	lock:free()
+	return true
 end

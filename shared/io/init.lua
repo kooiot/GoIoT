@@ -1,7 +1,6 @@
 #!/usr/bin/env lua
 
 local configs = require 'shared.api.config'
-local info = require '_ver'
 local setting = require 'shared.io.setting'
 local ztimer = require 'lzmq.timer'
 local cjson = require 'cjson.safe'
@@ -106,41 +105,12 @@ end
 
 function _M.init(name, handlers)
 	config = load_config(name)
-	_M.handlers = handlers
-	info.name = name 
+	handlers.app_meta = app_meta
+
+	local info = {}
+	info.name = name
 	info.port = config.port
-	info.on_start = function()
-		if handlers.on_start then
-			return handlers.on_start(app)
-		else
-			return nil, 'Not implemented'
-		end
-	end
-	info.on_stop = function()
-		if handlers.on_stop then
-			return handlers.on_stop(app)
-		else
-			return nil, 'Not implemented'
-		end
-	end
-	info.on_reload = function()
-		if handlers.on_reload then
-			return handlers.on_reload(app)
-		else
-			return nil, 'Not implemented'
-		end
-	end
-	info.on_status = function()
-		if handlers.on_status then
-			return handlers.on_status(app)
-		else
-			return nil, 'Not implemented'
-		end
-	end
-
-	info.app_meta = app_meta
-
-	app = require('shared.app').new(info)
+	app = require('shared.app').new(info, handlers)
 
 	assert(app)
 

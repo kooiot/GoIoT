@@ -68,8 +68,12 @@ file is successfully processed, however, the exit status is 1.)]]
 -- Unzips the file at the given path to the given destination.
 -- Depends on Info-ZIP UnZip, which is included with Unix/Linux/MacOSX.
 -- This Tool contains an UnZip executable for Windows.
-return function (path, destination)
-  local r, way, error_code = os.execute(("unzip %s -d %s"):format(path, destination))
+return function (path, destination, force)
+  local cmd = "unzip %s -d %s"
+  if force then
+	  cmd = "unzip -o %s -d %s"
+  end
+  local r, way, error_code = os.execute(cmd:format(path, destination))
 
   if way == 'exit' then
 	  --print("UnZip: " .. (code[error_code] or "Unknown error encountered while unzipping. code-"..error_code))

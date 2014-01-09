@@ -34,7 +34,7 @@ cgilua.contentheader('text', 'html; charset=utf-8')
 	<body>
 		<div id="container">
 			<div id="header">
-				<li class='active'><a href='#'><img src="/images/logo.png" alt="Logo here" /></a></li>
+				<li class='active'><a href='/'><img src="/images/logo.png" alt="Logo here" /></a></li>
 				<div id='cssmenu'>
 					<ul>
 						<li class='active'><a href="<?=url('/')?>"><span>Home</span></a>

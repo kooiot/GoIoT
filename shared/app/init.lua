@@ -11,6 +11,8 @@ local cjson = require 'cjson.safe'
 local mpft = require 'shared.app.mpft'
 local empft = require 'shared.app.empft'
 
+local _ver = require '_ver'
+
 local class = {}
 
 function class:log(level, cate, msg)
@@ -123,7 +125,7 @@ end
 
 function class:send_notice()
 	--print(os.date(), 'send notice')
-	local req = {'notice', {name=self.name, desc=self.desc, product=self.product, port=self.port}}
+	local req = {'notice', {name=self.name, desc=self.desc, port=self.port}}
 	self.monclient:send(cjson.encode(req))
 end
 
@@ -146,7 +148,6 @@ end
 function class:meta()
 	return {
 		name = self.name,
-		product = self.product,
 		port = self.port,
 		version = {
 			version = self.version,
@@ -154,37 +155,28 @@ function class:meta()
 			manufactor = self.manufactor,
 		},
 		web = self.web,
-		app = self:app_meta()
+		app = self.handlers.app_meta(self)
 	}
 end
 
 local _M = {}
 
-function _M.new(info)
-	local info = info or {}
-	assert(info.product, 'App product name must be specified')
-	assert(info.port, 'App port must be specified')
+function _M.new(info, handlers)
+	assert(info.name, 'App port must be specified')
 
 	local obj = {}
-	obj.version = info.version or '0.1'
-	obj.build = info.build or '000001'
-	obj.product = info.product
-	obj.name = info.name or ('name'..os.time()..math.random(os.time()))
-	obj.desc = info.desc or 'unknown application'
-	obj.web = info.web or false -- the application pack has its own web pages
-	obj.manufactor = info.manufactor or 'OpenGate'
-	obj.port = info.port
+	obj.version = _ver.version or '0.1'
+	obj.build = _ver.build or '000001'
+	obj.name = name or _ver.name 
+	obj.desc = _ver.desc or 'unknown application'
+	obj.web = _ver.web or false -- the application pack has its own web pages
+	obj.manufactor = _ver.manufactor or 'OpenGate'
+	obj.port = info.port or 5515
 	obj.port_retry = info.no_port_retry and 0 or 128
 	obj.server = nil
 
 	-- handler functions
-	obj.on_start = info.on_start or function() return false end
-	obj.on_stop = info.on_stop or function() return false end
-	obj.on_reload = info.on_reload or function() return false end
-	obj.on_status = info.on_status or function() return false end
-
-	-- app meta data enum interface
-	obj.app_meta = info.app_meta or function() return {} end
+	obj.handlers = handlers or {}
 
 	obj.ctx = info.ctx or zmq.context()
 	obj.poller = info.poller or zpoller.new(3)

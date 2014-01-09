@@ -16,7 +16,6 @@ local config_api = require 'shared.api.config'
 local fifo = require 'shared.fifo'
 local pub = require 'shared.pub'
 
-local info = require '_ver'
 local cache = fifo({timestamp = ztimer.absolute_time(), src="CORE", level="info", content="Log Start"})
 local pcache = fifo()
 
@@ -49,11 +48,11 @@ end
 
 local function init()
 	config = load_config()
+	info.name = 'logs'
 	info.port = config.port
-	info.app_meta = app_meta
 	info.no_port_retry = true
 
-	app = require('shared.app').new(info)
+	app = require('shared.app').new(info, {app_meta=app_meta})
 	assert(app)
 	app:init()
 
