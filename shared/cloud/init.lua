@@ -28,8 +28,7 @@ local function load_installed()
 	_M.inst_apps = {}
 	local apps = list.list()
 	for k, v in pairs(apps) do
-		local app = {name=k, lname=k, desc="local application", author="local", manufactor="local", version="local", build="local"}
-		table.insert(_M.inst_apps, v.app or app)
+		table.insert(_M.inst_apps, v.app)
 	end
 end
 

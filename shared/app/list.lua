@@ -8,8 +8,12 @@ local function load()
 	local file, err = io.open('/tmp/apps/_list', "r")
 	if file then
 		for line in file:lines() do
-			local name, project, json = line:match("NAME='(.+)' PROJECT='(.+)' JSON='(.+)'")
-			list[name] = {name=name, project=project, app=cjson.decode(json)}
+			local name, insname, json = line:match("NAME='(.+)' INSNAME='(.+)' APPJSON='(.+)'")
+			if not list[name] then
+				list[name] = {name=name, insts={insname}, app=cjson.decode(json)}
+			else
+				table.insert(list[name].insts, name)
+			end
 		end
 		file:close()
 	end
@@ -20,7 +24,9 @@ local function save()
 	if file then
 		for name, node in pairs(list) do
 			local json = app and cjson.encode(app) or ''
-			assert(file:write("NAME='"..node.name.."' PROJECT='"..node.project.."' JSON='"..json.."'\n"))
+			for k, v in pairs(node.insts) do
+				assert(file:write("NAME='"..node.name.."' INSNAME='"..v.."' APPJSON='"..json.."'\n"))
+			end
 		end
 		file:close()
 		return true
@@ -29,18 +35,21 @@ local function save()
 	end
 end
 
-_M.add = function(name, project, app)
-	list[name] = {name=name, project=project, app=app}
+_M.add = function(insname, name, app)
+	table.insert(list[name].insts, insname)
 	save()
 end
 
-_M.del = function(name)
+_M.del = function(name, on_remove)
 	if list[name] then
-		list[name] = nil
-		for k, v in pairs(list) do
-			if v.project == name then
-				list[k] = nil
+		for k, v in pairs(list[name].insts) do
+			if v == name then
+				list[name].insts = nil
 			end
+		end
+		if #list[name].insts == 0 then
+			on_remove()
+			list[name] = nil
 		end
 		save()
 	end

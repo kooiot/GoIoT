@@ -1,11 +1,14 @@
 
 local list = require 'shared.app.list'
 
-return function(apps_folder, name)
-	local lock = lfs.lock_dir(apps_folder)
-	list.del(name)
+local function on_remove()
 	local dest_folder = apps_folder..'/'..dest_name
 	assert(os.execute('rm -rf '..dest_folder))
+end
+
+return function(apps_folder, name)
+	local lock = lfs.lock_dir(apps_folder)
+	list.del(name, on_remove)
 	lock:free()
 	return true
 end

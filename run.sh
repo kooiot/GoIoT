@@ -40,11 +40,11 @@ if [ -f /tmp/apps/_list ]; then
 	do
 		eval "$line";
 		if [ $1 = "start" ] ; then
-			echo $NAME $PROJECT $JSON
-			start-stop-daemon --start --oknodo --make-pidfile --pidfile $PID_FOLDER/app_$NAME.pid --chdir /tmp/apps/$PROJECT --background --startas /usr/bin/lua -- start.lua $NAME
+			echo $NAME $INSNAME $APPJSON
+			start-stop-daemon --start --oknodo --make-pidfile --pidfile $PID_FOLDER/app_$INSNAME.pid --chdir /tmp/apps/$NAME --background --startas /usr/bin/lua -- start.lua $INSNAME
 		else
-			start-stop-daemon --stop --oknodo --pidfile $PID_FOLDER/app_$NAME.pid --retry 5
-			rm $PID_FOLDER/app_$NAME.pid
+			start-stop-daemon --stop --oknodo --pidfile $PID_FOLDER/app_$INSNAME.pid --retry 5
+			rm $PID_FOLDER/app_$INSNAME.pid
 		fi
 	done < /tmp/apps/_list
 fi
