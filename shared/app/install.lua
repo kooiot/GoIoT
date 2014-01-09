@@ -6,6 +6,7 @@ local cjson = require 'cjson.safe'
 local lfs = require 'lfs'
 local unzip = require 'shared.unzip'
 local list = require 'shared.app.list'
+local newinst = require 'shared.app.newinst'
 local pp = require 'shared.PrettyPring'
 
 local function update_ver(apps_folder, dest_name)
@@ -54,7 +55,7 @@ return function(zip_file, apps_folder, dest_name, app)
 		-- 
 		list.add(dest_name, dest_name, app)
 	else
-		copy(apps_folder, app, dest_name)
+		newinst(apps_folder, app, dest_name)
 	end
 	lock:free()
 end
