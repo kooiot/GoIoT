@@ -1,4 +1,8 @@
 
+local m_path = os.getenv('CAD_DIR') or "."
+local m_package_path = package.path  
+package.path = string.format("%s;%s/?.lua;%s/?/init.lua", m_package_path, m_path, m_path)  
+
 local function auth_user()
 	local username = cgilua.authentication.username()
 	if not username then

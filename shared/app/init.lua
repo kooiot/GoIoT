@@ -120,7 +120,9 @@ function class:init()
 		-- DO NOTHING on return
 	end)
 
-	self.on_start()
+	if self.handlers.on_start then
+		self.handlers.on_start(self)
+	end
 end
 
 function class:send_notice()
@@ -167,7 +169,7 @@ function _M.new(info, handlers)
 	local obj = {}
 	obj.version = _ver.version or '0.1'
 	obj.build = _ver.build or '000001'
-	obj.name = name or _ver.name 
+	obj.name = info.name or _ver.name 
 	obj.desc = _ver.desc or 'unknown application'
 	obj.web = _ver.web or false -- the application pack has its own web pages
 	obj.manufactor = _ver.manufactor or 'OpenGate'

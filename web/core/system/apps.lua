@@ -13,8 +13,6 @@ else
 			<label> Application: <b> ]]..k..[[ </b> </label>
 			]])
 			put('<br/>')
-			put('Project:'..v.product)
-			put('<br/>')
 			put('Description:'..v.desc)
 			put('<br/>')
 			put('Running:', v.run and 'True' or 'False')
@@ -27,7 +25,7 @@ else
 			<input type="button" value="Start" onClick="operateApp('start', ']]..k..[[')">
 			<input type="button" value="Reload" onClick="operateApp('reload', ']]..k..[[')">
 			<input type="button" value="Stop" onClick="operateApp('stop', ']]..k..[[')">
-			<a href="]]..url('apps/'..v.product..'/web', {name=k, port=v.port})..[["> Manage </a>
+			<a href="]]..url('apps/'..k..'/web', {name=k, port=v.port})..[["> Manage </a>
 			</p>
 			]])
 		end

@@ -6,9 +6,9 @@ local function on_remove()
 	assert(os.execute('rm -rf '..dest_folder))
 end
 
-return function(apps_folder, name)
+return function(apps_folder, name, insname)
 	local lock = lfs.lock_dir(apps_folder)
-	list.del(name, on_remove)
+	list.del(name, insname, on_remove)
 	lock:free()
 	return true
 end

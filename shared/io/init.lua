@@ -105,6 +105,7 @@ end
 
 function _M.init(name, handlers)
 	config = load_config(name)
+	_M.handlers = handlers
 	handlers.app_meta = app_meta
 
 	local info = {}

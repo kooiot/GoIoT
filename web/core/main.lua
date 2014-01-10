@@ -1,4 +1,4 @@
-debug("_path=", path)
+--debug("_path=", path)
 
 local lp_file = true
 if path:sub(-1) == '/' then

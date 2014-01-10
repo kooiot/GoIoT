@@ -7,7 +7,8 @@ local lfs = require 'lfs'
 local unzip = require 'shared.unzip'
 local list = require 'shared.app.list'
 local newinst = require 'shared.app.newinst'
-local pp = require 'shared.PrettyPring'
+local pp = require 'shared.PrettyPrint'
+local log  = require 'shared.log'
 
 local function update_ver(apps_folder, dest_name)
 	local _ver = nil
@@ -18,15 +19,20 @@ local function update_ver(apps_folder, dest_name)
 
 		_ver = chunk and chunk() or {}
 		file:close()
+	else
+		log:warn('WEB', "Failed to open _ver.lua", err)
 	end
 
 	_ver.name=dest_name
 	_ver.localapp = true
-	local file, err = io.open(apps_folder..'/'..dest_name..'/_ver.lua', 'r')
+	local file, err = io.open(apps_folder..'/'..dest_name..'/_ver.lua', 'w')
 	if file then
-		file:write('return '..pp(_ver))
+		file:write('return '..pp(_ver)..'\n')
 		file:close()
+	else
+		log:error('WEB', "Failed to save _ver.lua", err)
 	end
+	return _ver
 end
 
 --TODO: Windows is not supported!!
@@ -35,8 +41,12 @@ return function(zip_file, apps_folder, dest_name, app)
 	assert(zip_file, 'No application packe file specified')
 	assert(apps_folder, 'No installation folder specified')
 	assert(dest_name, 'No installation name specified')
+	log:debug('WEB', "install app", zip_file, apps_folder, dest_name, app)
 
 	local lock = lfs.lock_dir(apps_folder)
+	if not lock then
+		return nil, "already locked"
+	end
 
 	local dest_folder = apps_folder..'/'..dest_name
 	if app then
@@ -51,9 +61,10 @@ return function(zip_file, apps_folder, dest_name, app)
 	if not app then
 		app = update_ver(apps_folder, dest_name)
 
+		log:debug('WEB', "Fake app", pp(app))
 		-- Add to auto start script
 		-- 
-		list.add(dest_name, dest_name, app)
+		list.add(app, dest_name, dest_name)
 	else
 		newinst(apps_folder, app, dest_name)
 	end

@@ -7,5 +7,5 @@ return function(apps_folder, app, dest)
 		assert(os.execute('ln -s '..org_folder..' '..new_folder))
 	end
 	
-	list.add(dest, app.name, app)
+	list.add(app, app.name, dest)
 end
