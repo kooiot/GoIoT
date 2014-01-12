@@ -57,17 +57,32 @@
 			{ "mDataProp": "timestamp" },
 			]
 		});
+
 		newtimer = setInterval( function () {
 			oTable.fnReloadAjax(null, null, false);
-			}, 1000 );
-		}); 
+		}, 1000 );
+
+		var timer_running = true;
+
+		$("#stop").click(function() {
+			if (timer_running) {
+				clearInterval(newtimer)
+				timer_running = false;
+			}
+		});
+		$("#start").click(function() {
+			if(!timer_running) {
+				newtimer = setInterval( function () {
+					oTable.fnReloadAjax(null, null, false);
+				}, 1000 );
+				timer_running = true;
+			}
+		});
+	});
 </script>
 
-<h1> Test Page! </h1>
-<div id="sysdate"><b>System Time:</b><u><%= os.date() %></u></div>
-<br />
-<p>User <%= cgilua.authentication.username() %> logged in <a href="<%= cgilua.authentication.logoutURL() %>">Logout</a> </p>
-<button onclick="newtimer=window.clearInterval(newtimer)"> 停止刷新</button> 
+<input type="button" id="stop" name="stop" value="停止刷新">
+<input type="button" id="start" name="start" value="开始刷新">
 
 <table cellpadding="0" cellspacing="0" border="0" class="display" id="mytable">
 	<thead>

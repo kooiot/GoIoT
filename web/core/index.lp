@@ -1,6 +1,9 @@
 <div>
 <h1>Open Gate</h1>
 
+
+
+
 <%
 	local ver = require('_ver')
 	if not ver then
@@ -10,6 +13,7 @@
 	else
 	%>
 		<label> <b> <?=ver.desc?></b></label>
+		<div id="sysdate">System Time:<u><%= os.date() %></u></div>
 		</br>
 		<label> Manufactor: </label>
 		<?=ver.manufactor ?>

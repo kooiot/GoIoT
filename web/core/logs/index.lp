@@ -15,6 +15,7 @@
 		$("#clear").click(function() {
 			oTable.fnClearTable();
 		});
+
 		$("#stop").click(function() {
 			if (timer_running) {
 				clearInterval(newtimer)
