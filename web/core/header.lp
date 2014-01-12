@@ -64,7 +64,7 @@ cgilua.contentheader('text', 'html; charset=utf-8')
 						</li>
 						<li class='no-sub'><a href='<?=url("data")?>'><span>Data</span></a></li>
 
-						<li class='has-sub'><a href='<?=url("user")?>'><span><?= cgilua.authentication.username() ?></span></a>
+						<li class='has-sub'><a href='<?=url("user")?>'><span><?= cgilua.authentication.username() ?> User</span></a>
 						<ul>
 							<li class='last'><a href='<%= cgilua.authentication.logoutURL() %>'><span>Logout</span></a></li>
 						</ul>
