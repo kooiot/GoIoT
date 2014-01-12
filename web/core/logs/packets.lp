@@ -10,6 +10,25 @@
 		newtimer = setInterval( function () {
 			query_logs();
 		}, 1000 );
+		var timer_running = true;
+
+		$("#clear").click(function() {
+			oTable.fnClearTable();
+		});
+		$("#stop").click(function() {
+			if (timer_running) {
+				clearInterval(newtimer)
+				timer_running = false;
+			}
+		});
+		$("#start").click(function() {
+			if(!timer_running) {
+				newtimer = setInterval( function () {
+					query_logs();
+				}, 1000 );
+				timer_running = true;
+			}
+		});
 
 		query_logs();
 	});
@@ -42,6 +61,10 @@
 		});
 	}
 </script>
+
+<input type="button" id="clear" name="clear" value="Clear">
+<input type="button" id="stop" name="stop" value="Stop Refresh">
+<input type="button" id="start" name="start" value="Start Refresh">
 
 <table cellpadding="0" cellspacing="0" border="0" class="display" id="logstable">
 	<thead>
