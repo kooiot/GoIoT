@@ -18,8 +18,8 @@
 				});
 				} else {
 				alert('uninstall app');
-				$.post("<?=rurl("store.lua")?>", {from:"web", action:"uninstall", name:this.id}, function(data) {
-					status.html('<br>' + data);
+				$.post("<?=rurl("store.lua")?>", {from:"web", action:"remove", name:this.id, lname:this.id}, function(data) {
+						alert(data);
 				})
 				.done(function() {
 				})
@@ -93,7 +93,7 @@
 			<% if mode == 'a' then %>
 			<div title="安装此应用" isin="1" class="appCLKCls feebtn symBtnGray" id="<?=v.name?>">安装</div>
 			<% else %>
-			<div title="删除此应用" isin="0" class="appCLKCls feebtn symBtnGray" id="<?=v.name?>">删除</div>
+			<div title="删除此应用" isin="0" class="appCLKCls feebtn symBtnGray" id="<?=v.name?>" lname="<?=v.lname?>">删除</div>
 			<% end %>
 		</div>
 		</li>

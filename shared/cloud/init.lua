@@ -8,7 +8,6 @@ local pp = require 'shared.PrettyPrint'
 
 local _M = {}
 _M.apps = {}
-_M.inst_apps = {}
 
 local cfg = {
 	--srvurl = 'ftp://cloud.opengate.com',
@@ -54,11 +53,19 @@ local function load_cache()
 end
 
 local function load_installed()
-	_M.inst_apps = {}
+	local inst_apps = {}
 	local apps = list.list()
 	for k, v in pairs(apps) do
-		table.insert(_M.inst_apps, v.app)
+		for i, insname in pairs(v.insts) do
+			local app = {}
+			for k,v in pairs(v.app) do
+				app[k] = v
+			end
+			app.lname = insname
+			table.insert(inst_apps, app)
+		end
 	end
+	return inst_apps
 end
 
 --
@@ -136,6 +143,14 @@ end
 -- Install one application
 _M.install = function(name, lname)
 	log:info('CLOUD', "Installing "..name.." as "..lname)
+	-- Check for unique local name
+	for k, v in pairs(load_installed()) do
+		if v.lname == lname then
+			return nil, "The application instance name has been used"
+		end
+	end
+
+	-- Find the cloud app information
 	local app = nil
 	for k, v in pairs(_M.apps) do
 		if v.name == name then
@@ -147,6 +162,7 @@ _M.install = function(name, lname)
 		return nil, "no such app "..name
 	end
 
+	-- Download the applcation from server
 	local src = cfg.srvurl..app.path..'/latest.zip'
 	local dest = cfg.cachefolder..'/'..name..'.zip'
 	log:info('CLOUD', "Download "..name.." from "..src.." to "..dest)
@@ -155,7 +171,8 @@ _M.install = function(name, lname)
 		log:warn('CLOUD', "Download fails", err)
 		return nil, err
 	end
-		
+
+	-- INstall the application
 	log:info('CLOUD', "Install "..lname.." to "..cfg.appsfolder)
 	return install(dest, cfg.appsfolder, lname, app)
 end
@@ -166,8 +183,14 @@ end
 --       'n' -- only remove application, keep the configuration
 _M.remove = function(lname, mode)
 	local mode = mode or 'n'
-	-- TODO: for clean the configuration
-	return uninstall(cfg.appsfolder, lname)
+	log:info("CLOUD", "Uninstalling application", lname)
+	for k,v in pairs(load_installed()) do
+		if v.lname == lname then
+			-- TODO: for clean the configuration
+			return uninstall(cfg.appsfolder, v.name, lname)
+		end
+	end
+	return nil, "No such application instance"
 end
 
 --
@@ -181,7 +204,7 @@ _M.list = function(mode)
 		return _M.apps
 	end
 	if mode == 'i' then
-		return _M.inst_apps
+		return load_installed()
 	end
 	return nil, 'incorrect mode'
 end

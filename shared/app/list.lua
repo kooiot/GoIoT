@@ -56,9 +56,9 @@ _M.del = function(name, insname, on_remove)
 			end
 		end
 		if #list[name].insts == 0 then
-			on_remove()
 			list[name] = nil
 		end
+		on_remove(name, insname, list[name])
 		save()
 	end
 end
