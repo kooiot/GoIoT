@@ -38,7 +38,10 @@ cgilua.contentheader('text', 'html; charset=utf-8')
 				<div id='cssmenu'>
 					<ul>
 						<li class='active'><a href="<?=url('/')?>"><span>Home</span></a>
-						<li class='no-sub'><a href="<?=url('store')?>"><span>Store</span></a>
+						<li class='has-sub'><a href="<?=url('store')?>"><span>Store</span></a>
+						<ul>
+							<li class='last'><a href='<?=url("store/config.lp")?>'><span>Config</span></a></li>
+						</ul>
 
 
 						<li class='has-sub'><a href='<?=url("system/apps.lp")?>'><span>Applications</span></a>
@@ -48,8 +51,8 @@ cgilua.contentheader('text', 'html; charset=utf-8')
 
 						<li class='has-sub'><a href='<?=url("system")?>'><span>System</span></a>
 						<ul>
-							<li class='last'><a href='<?=url("system/status.lp")?>'><span>System Information</span></a></li>
 							<li class='no-sub'><a href="<?=url('configs')?>"><span>Configuration</span></a>
+							<li class='last'><a href='<?=url("system/status.lp")?>'><span>System Information</span></a></li>
 						</ul>
 
 						</li>

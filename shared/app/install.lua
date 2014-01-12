@@ -41,10 +41,11 @@ return function(zip_file, apps_folder, dest_name, app)
 	assert(zip_file, 'No application packe file specified')
 	assert(apps_folder, 'No installation folder specified')
 	assert(dest_name, 'No installation name specified')
-	log:debug('WEB', "install app", zip_file, apps_folder, dest_name, app)
+	log:debug('APP', "install app", zip_file, apps_folder, dest_name, pp(app))
 
 	local lock = lfs.lock_dir(apps_folder)
 	if not lock then
+		log:error("APP", "Failed to lock app folder")
 		return nil, "already locked"
 	end
 
@@ -61,7 +62,7 @@ return function(zip_file, apps_folder, dest_name, app)
 	if not app then
 		app = update_ver(apps_folder, dest_name)
 
-		log:debug('WEB', "Fake app", pp(app))
+		log:debug('APP', "Installing local application", pp(app))
 		-- Add to auto start script
 		-- 
 		list.add(app, dest_name, dest_name)
@@ -69,4 +70,6 @@ return function(zip_file, apps_folder, dest_name, app)
 		newinst(apps_folder, app, dest_name)
 	end
 	lock:free()
+	log:info("APP", "Install application "..dest_name.." done!!!")
+	return true
 end

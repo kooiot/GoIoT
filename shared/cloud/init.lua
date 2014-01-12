@@ -3,16 +3,45 @@ local download = require 'shared.cloud.download'
 local install = require 'shared.app.install'
 local uninstall = require 'shared.app.uninstall'
 local list = require 'shared.app.list'
+local log = require 'shared.log'
+local pp = require 'shared.PrettyPrint'
 
 local _M = {}
 _M.apps = {}
 _M.inst_apps = {}
-_M.srvurl = 'cloud.opengate.com'
-_M.cachefolder = '/tmp'
-_M.appsfolder = '/tmp/apps'
+
+local cfg = {
+	--srvurl = 'ftp://cloud.opengate.com',
+	srvurl = 'http://localhost/',
+	cachefolder = '/tmp',
+	appsfolder = '/tmp/apps',
+}
+
+local cfg_file = '/tmp/apps/_store.cfg'
+
+local function load_config()
+	local chunk, err = loadfile(cfg_file)
+
+	if chunk then
+		local c = chunk()
+		if c then
+			cfg = c
+		end
+	end
+end
+
+local function save_config()
+	local file, err = io.open(cfg_file, 'w')
+	if not file then
+		log:error('CLOUD', 'Failed to open the configuration file', err)
+		return nil, err
+	end
+	file:write('return '..pp(cfg)..'\n')
+	file:close()
+end
 
 local function load_cache()
-	local cache = _M.cachefolder..'/release'
+	local cache = cfg.cachefolder..'/release'
 
 	-- load the lua file
 	local chunk, err = loadfile(cache..'/apps.lua')
@@ -34,21 +63,39 @@ end
 
 --
 -- Initialize the server url and cache folder
-_M.init = function (srvurl, cachefolder, appfolder)
-	_M.srvurl = srvurl or _M.srvurl
-	_M.cachefolder = cachefolder or _M.cachefolder
-	_M.appsfolder = appsfolder or _M.appsfolder
-
+local function init ()
 	load_cache()
 	load_installed()
+end
+
+local function save_after_success(r, err)
+	if r then
+		save_config()
+	end
+	return r, err
+end
+
+_M.config = function(c)
+	if type(c) == 'table' then
+		cfg.srvurl = cfg.srvurl or cfg.srvurl
+		cfg.cachefolder = cfg.cachefolder or cfg.cachefolder
+		cfg.appsfolder = cfg.appsfolder or cfg.appsfolder
+		return save_after_success(_M.update())
+	end
+	if type(c) == 'string' then
+		cfg.srvurl = c
+		return save_after_success(_M.update())
+	end
+	log:error('CLOUD', 'Incorrect config parameter')
+	return nil, 'Incorrect config parameter'
 end
 
 --
 -- Fetch the release.gz from server
 _M.update = function()
-	local src = _M.srvurl..'/release.zip'
-	local dest = _M.cachefolder..'/release.zip'
-	local cache = _M.cachefolder..'/release'
+	local src = cfg.srvurl..'/release.zip'
+	local dest = cfg.cachefolder..'/release.zip'
+	local cache = cfg.cachefolder..'/release'
 
 	-- Remove the previous cache
 	os.remove(dest)
@@ -76,9 +123,10 @@ _M.search = function(key)
 	for k,v in pairs(_M.apps) do
 		if v.name:match(pattern) then
 			table.insert(matches, v)
-		end
-		if v.desc:match(pattern) then
-			table.insert(matches, v)
+		else
+			if v.desc:match(pattern) then
+				table.insert(matches, v)
+			end
 		end
 	end
 	return matches
@@ -87,19 +135,29 @@ end
 --
 -- Install one application
 _M.install = function(name, lname)
-	local app = _M.apps[name]
+	log:info('CLOUD', "Installing "..name.." as "..lname)
+	local app = nil
+	for k, v in pairs(_M.apps) do
+		if v.name == name then
+			app = v
+			break
+		end
+	end
 	if not app then
 		return nil, "no such app "..name
 	end
 
-	local src = _M.srvurl..app.path..'/latest.zip'
-	local dest = _M.cachefolder..'/'..name..'.zip'
+	local src = cfg.srvurl..app.path..'/latest.zip'
+	local dest = cfg.cachefolder..'/'..name..'.zip'
+	log:info('CLOUD', "Download "..name.." from "..src.." to "..dest)
 	local r, err = download(src, dest)
 	if not r then
+		log:warn('CLOUD', "Download fails", err)
 		return nil, err
 	end
 		
-	install(dest, _M.appsfolder, lname, app)
+	log:info('CLOUD', "Install "..lname.." to "..cfg.appsfolder)
+	return install(dest, cfg.appsfolder, lname, app)
 end
 
 --
@@ -109,7 +167,7 @@ end
 _M.remove = function(lname, mode)
 	local mode = mode or 'n'
 	-- TODO: for clean the configuration
-	return uninstall(_M.appsfolder, lname)
+	return uninstall(cfg.appsfolder, lname)
 end
 
 --
@@ -127,5 +185,7 @@ _M.list = function(mode)
 	end
 	return nil, 'incorrect mode'
 end
+
+init()
 
 return _M
