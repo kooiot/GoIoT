@@ -49,7 +49,7 @@ end
 local function init()
 	config = load_config()
 	local info = {}
-	info.name = 'logs'
+	info.name = '__logs'
 	info.port = config.port
 	info.no_port_retry = true
 

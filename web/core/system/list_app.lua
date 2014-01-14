@@ -7,7 +7,7 @@ if not app_status or not app_status.result then
 	cgilua.print('API failure!!!')
 else
 	for k,v in pairs(app_status.status) do
-		if k ~= 'logs' then
+		if k ~= '__logs' then
 			local link = url('apps/'..k..'/web', {name=k, port=v.port})
 			put('<li class="no-sub"><a href="'..link..'"><span>'..k..'</span></a></li>\n')
 		end
