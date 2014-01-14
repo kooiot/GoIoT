@@ -67,6 +67,16 @@ _M.list = function()
 	return list
 end
 
+_M.find = function(insname)
+	for name, v in pairs(list) do
+		for k, name in pairs(v.insts) do
+			if name == insname then
+				return v.app
+			end
+		end
+	end
+end
+
 load()
 
 return _M

@@ -10,20 +10,20 @@
 			//alert("Data Saved successfully!!");
 		})
 		.fail(function() {
-			//alert("Failed to save content to file!!");
+			alert("Failed to list applications!!");
 		});
 	};
 
 	function operateApp(action, key) {
-		$.post("<?=rurl('event.lua')?>", { key: key, action:action },
+		$.post("<?=rurl('api.lua')?>", { key: key, action:action },
 		function(data){
-			alert(data);
+			$("#info_output").html('<br>' + data);
 		})
 		.done(function() {
 			//alert("Data Saved successfully!!");
 		})
 		.fail(function() {
-			alert("Failed to post!!");
+			alert("Failed to post to api.lua!!");
 		});
 	};
 
@@ -36,5 +36,5 @@
 <input type="button" value="Refresh" onClick="query_status()">
 <div id="app_status">
 </div>
-
+<div id="info_output"></div>
 

@@ -2,59 +2,59 @@ local cjson = require 'cjson.safe'
 
 local mpft = {}
 
-local function call_handler(name, obj, vars)
-	if obj.handlers[name] then
-		return obj.handlers[name](obj, vars)
+local function call_handler(name, app, vars)
+	if app.handlers[name] then
+		return app.handlers[name](app, vars)
 	end
 	return nil, "Not implemented"
 end
 
-mpft['version'] = function(obj, vars)
+mpft['version'] = function(app, vars)
 	local reply = {
 		'version',
 		{
-			version = obj.version,
-			build = obj.build,
+			version = app.version,
+			build = app.build,
 		}
 	}
-	obj.server:send(cjson.encode(reply))
+	app.server:send(cjson.encode(reply))
 end
 
-mpft['status'] = function(obj, vars)
-	local r, status = call_handler('on_status', obj, vars)
+mpft['status'] = function(app, vars)
+	local r, status = call_handler('on_status', app, vars)
 	if not r then
 		status = 'running'
 	end
 	local reply = { 'status', {result=true, status = status}}
-	obj.server:send(cjson.encode(reply))
+	app.server:send(cjson.encode(reply))
 end
 
-mpft['pause'] = function(obj, vars)
-	local r, status = call_handler('on_pause', obj, vars)
+mpft['pause'] = function(app, vars)
+	local r, status = call_handler('on_pause', app, vars)
 	local reply = { 'pause', {result=r, status = status}}
-	obj.server:send(cjson.encode(reply))
+	app.server:send(cjson.encode(reply))
 end
 
-mpft['close'] = function(obj, vars)
-	local r, status = call_handler('on_close', obj, vars)
+mpft['close'] = function(app, vars)
+	local r, status = call_handler('on_close', app, vars)
 	local reply = { 'close', {result=r, status = status}}
-	obj.server:send(cjson.encode(reply))
+	app.server:send(cjson.encode(reply))
 end
 
-mpft['reload'] = function(obj, vars)
-	local r, status = call_handler('on_reload', obj, vars)
+mpft['reload'] = function(app, vars)
+	local r, status = call_handler('on_reload', app, vars)
 	local reply = { 'reload', {result=r, status = status}}
-	obj.server:send(cjson.encode(reply))
+	app.server:send(cjson.encode(reply))
 end
 
 -- Get the application meta information
-mpft['meta'] = function(obj, vars)
-	local meta = obj:meta()
+mpft['meta'] = function(app, vars)
+	local meta = app:meta()
 	--print(require('shared.PrettyPrint')(meta))
 	local reply = {'meta', {result=true, meta=meta}}
 
 	print(cjson.encode(reply))
-	obj.server:send(cjson.encode(reply))
+	app.server:send(cjson.encode(reply))
 end
 
 return mpft
