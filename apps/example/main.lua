@@ -164,6 +164,7 @@ handlers.on_run = function(app)
 					end
 				end
 				api.sets(vals)
+				err_count = 0
 			else
 				err_count = err_count + 1
 				print(os.date(), 'pa is nil', err)
