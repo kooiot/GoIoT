@@ -6,7 +6,10 @@ mkdir __install
 cp -r core __install/core
 cp -r shared __install/shared
 cp -r web __install/web
+cp -r scripts __install/scripts
 cp run.sh __install/run.sh
+
+rm __install/scripts/release*
 
 rm -rf __install/web/test 
 cd __install/web/core
