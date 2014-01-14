@@ -55,9 +55,9 @@
 		if v then
 			port = v.port
 			%>
-			<input type="button" value="Start" onClick="operateApp('start', '<?=name?>')">
+			<!--input type="button" value="Pause" onClick="operateApp('pause', '<?=name?>')"-->
 			<input type="button" value="Reload" onClick="operateApp('reload', '<?=name?>')">
-			<input type="button" value="Stop" onClick="operateApp('stop', '<?=name?>')">
+			<input type="button" value="Close" onClick="operateApp('close', '<?=name?>')">
 			<a href="#"> Manage </a>
 			<%
 			put('</div>')

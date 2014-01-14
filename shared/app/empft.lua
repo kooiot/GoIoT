@@ -1,11 +1,11 @@
 local mpft = {}
 
-mpft['start'] = function(obj, event)
-	local r, status = obj.on_start()
+mpft['pause'] = function(obj, event)
+	local r, status = obj.on_pause()
 end
 
-mpft['stop'] = function(obj, event)
-	local r, status = obj.on_stop()
+mpft['close'] = function(obj, event)
+	local r, status = obj.on_close()
 end
 
 mpft['reload'] = function(obj, event)

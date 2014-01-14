@@ -35,12 +35,12 @@ function class:status(request)
 	return reply, err
 end
 
-function class:start()
-	return self:status('start')
+function class:pause()
+	return self:status('pause')
 end
 
-function class:stop()
-	return self:status('stop')
+function class:close()
+	return self:status('close')
 end
 
 function class:reload()

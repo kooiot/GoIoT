@@ -129,9 +129,9 @@ handlers.on_start = function(app)
 	return false
 end
 
-handlers.on_stop = function(app)
+handlers.on_pause = function(app)
 	--print(os.date(), 'Received Stop Event')
-	log:info(ioname, 'Received event [STOP]')
+	log:info(ioname, 'Received event [PAUSE]')
 	pause = true
 end
 
@@ -193,5 +193,5 @@ io.add_command(c1)
 app = io.init(ioname, handlers)
 assert(app)
 
-io.run(5000)
+io.run()
 

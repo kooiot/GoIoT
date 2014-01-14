@@ -39,13 +39,8 @@ if [ -f /tmp/apps/_list ]; then
 	while read line
 	do
 		eval "$line";
-		if [ $1 = "start" ] ; then
-			echo $NAME $INSNAME $APPJSON
-			start-stop-daemon --start --oknodo --make-pidfile --pidfile $PID_FOLDER/app_$INSNAME.pid --chdir /tmp/apps/$NAME --background --startas /usr/bin/lua -- $CAD_DIR/shared/app/run.lua $INSNAME
-		else
-			start-stop-daemon --stop --oknodo --pidfile $PID_FOLDER/app_$INSNAME.pid --retry 5
-			rm $PID_FOLDER/app_$INSNAME.pid
-		fi
+		echo $NAME $INSNAME $APPJSON
+		./scripts/run_app.sh $NAME $INSNAME $1
 	done < /tmp/apps/_list
 fi
 

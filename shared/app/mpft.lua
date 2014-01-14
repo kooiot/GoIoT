@@ -29,15 +29,15 @@ mpft['status'] = function(obj, vars)
 	obj.server:send(cjson.encode(reply))
 end
 
-mpft['start'] = function(obj, vars)
-	local r, status = call_handler('on_start', obj, vars)
-	local reply = { 'start', {result=r, status = status}}
+mpft['pause'] = function(obj, vars)
+	local r, status = call_handler('on_pause', obj, vars)
+	local reply = { 'pause', {result=r, status = status}}
 	obj.server:send(cjson.encode(reply))
 end
 
-mpft['stop'] = function(obj, vars)
-	local r, status = call_handler('on_stop', obj, vars)
-	local reply = { 'stop', {result=r, status = status}}
+mpft['close'] = function(obj, vars)
+	local r, status = call_handler('on_close', obj, vars)
+	local reply = { 'close', {result=r, status = status}}
 	obj.server:send(cjson.encode(reply))
 end
 

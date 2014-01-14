@@ -108,6 +108,12 @@ function _M.init(name, handlers)
 	_M.handlers = handlers
 	handlers.app_meta = app_meta
 
+	if not handlers.on_close then
+		handlers.on_close = function(app)
+			_M.abort()
+		end
+	end
+
 	local info = {}
 	info.name = name
 	info.port = config.port
