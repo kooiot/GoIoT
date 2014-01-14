@@ -40,7 +40,7 @@ if [ -f /tmp/apps/_list ]; then
 	do
 		eval "$line";
 		echo $NAME $INSNAME $APPJSON
-		./scripts/run_app.sh $NAME $INSNAME $1
+		./scripts/run_app.sh $1 $NAME $INSNAME
 	done < /tmp/apps/_list
 fi
 

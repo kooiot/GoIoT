@@ -23,6 +23,7 @@ else
 			put('<br/>')
 			put([[
 			<input type="button" value="Start" onClick="operateApp('start', ']]..k..[[')">
+			<input type="button" value="Start Debug" onClick="debugApp(']]..k..[[')">
 			<input type="button" value="Reload" onClick="operateApp('reload', ']]..k..[[')">
 			<input type="button" value="Close" onClick="operateApp('close', ']]..k..[[')">
 			<a href="]]..url('apps/'..k..'/web', {name=k, port=v.port})..[["> Manage </a>

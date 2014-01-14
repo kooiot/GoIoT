@@ -1,3 +1,6 @@
+
+local log = require 'shared.log'
+
 cgilua.contentheader('application', 'text; charset=utf8')
 
 local key = cgilua.POST.key
@@ -13,7 +16,28 @@ actions.start = function(key)
 		put('Can not find application information')
 	else
 		local caddir = os.getenv('CAD_DIR') or '/tmp/cad2'
-		local cmd = caddir..'/scripts/run_app.sh '..app.name..' '..key..' start'
+		local cmd = caddir..'/scripts/run_app.sh start '..app.name..' '..key
+
+		if cgilua.POST.debug == '1' then
+			if cgilua.POST.addr then
+				local file, err = io.open('/tmp/apps/_debug', "w")
+				if file then
+					local pp = require 'shared.PrettyPrint'
+					local cfg = {}
+					cfg.addr = cgilua.POST.addr
+					cfg.port = cgilua.POST.port
+					file:write('return '..pp(cfg)..'\n')
+					file:close()
+					cmd = cmd..' -debug'
+				else
+					log:error('WEB', err)
+				end
+			else
+				log:error('WEB', "Incorrect debug post")
+			end
+		end
+
+		log:debug('WEB', "Running application", cmd)
 		os.execute(cmd)
 		put('Starting application....')
 	end
