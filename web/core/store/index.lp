@@ -99,7 +99,11 @@ end
 	%>
 		<li>
 		<div class="left">
+			<% if mode == 'a' then %>
 			<a href="<?=rurl('details.lp', {name=v.name}) ?>"><img src="/images/app.png" alt="<?=v.name?>"></a>
+			<% else %>
+			<a href="<?=rurl('details.lp', {lname=v.lname}) ?>"><img src="/images/app.png" alt="<?=v.lname?>"></a>
+			<% end %>
 		</div>
 		<div class="right">
 			<div class="title cutTitle" title="<?=v.name?>">
@@ -114,7 +118,7 @@ end
 			<% if mode == 'a' then %>
 			<div title="安装此应用" isin="1" class="appCLKCls feebtn symBtnGray" id="<?=v.name?>">安装</div>
 			<% else %>
-			<div title="删除此应用" isin="0" class="appCLKCls feebtn symBtnGray" id="<?=v.name?>" lname="<?=v.lname?>">删除</div>
+			<div title="删除此应用" isin="0" class="appCLKCls feebtn symBtnGray" id="<?=v.lname?>" lname="<?=v.lname?>">删除</div>
 			<% end %>
 		</div>
 		</li>
