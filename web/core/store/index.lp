@@ -103,7 +103,11 @@ end
 		</div>
 		<div class="right">
 			<div class="title cutTitle" title="<?=v.name?>">
+				<% if mode == 'a' then %>
 				<a href="<?=rurl('details.lp', {name=v.name}) ?>"><?=v.name?></a>
+				<% else %>
+				<a href="<?=rurl('details.lp', {lname=v.lname}) ?>"><?=v.name?></a>
+				<% end %>
 			</div>
 			<div class="name" title="<?=v.manufactor?>"><?=v.manufactor?></div>
 			<div class="starcls star41" sysver="Android4.2、Android4.1、Android4.0"></div>

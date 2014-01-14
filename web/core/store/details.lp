@@ -7,8 +7,34 @@
   <li id="appBelongId"><a href="<?=url('store', {mode='i'})?>" class="" hidefocus=""></a></li><!--我的应用-->
 </ul>
 
-
-
 <div class="soft_ware">
-<h1> detail -- <?=cgilua.QUERY.name?> </h1>
+<%
+local app = nil 
+if cgilua.QUERY.lname then
+	local list = require 'shared.app.list'
+	app =list.find(cgilua.QUERY.lname)
+elseif cgilua.QUERY.name then
+	local cloud = require 'shared.cloud'
+	local t = cloud.search(cgilua.QUERY.name)
+	for k, v in pairs(t) do
+		if v.name == cgilua.QUERY.name then
+			app = v
+		end
+	end
+end
+
+if not app then
+%>
+<b> Failed to fetch application information for [<?=cgilua.QUERY.name?>] </b>
+<%
+else
+	put([[<h1> Application Details </h1>]])
+	put('<br> Name:', app.name)
+	put('<br> Description:', app.desc)
+	put('<br> Manufactor:', app.manufactor)
+	put('<br> Author:', app.author)
+	put('<br> Version:', app.version)
+	put('<br> Build:', app.build)
+end
+%>
 </div>
