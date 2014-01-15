@@ -3,11 +3,13 @@ local app_status = mon.query()
 
 local app = cgilua.QUERY.app
 
+local runned = {}
 if not app_status or not app_status.result then
 	cgilua.print('API failure!!!')
 else
 	for k,v in pairs(app_status.status) do
 		if not app or app == k then
+			runned[k] = true
 			put([[
 			<p>
 			<label> Application: <b> ]]..k..[[ </b> </label>
@@ -33,3 +35,24 @@ else
 	end
 end
 
+if not app then
+	local list = require 'shared.app.list'
+	for k, v in pairs(list.list()) do
+		for k, lname in pairs(v.insts) do
+			if not runned[lname] then
+				put([[
+				<p>
+				<label> Application: <b> ]]..lname..[[ </b> </label>
+				]])
+				put('<br/>')
+				put('Description:'..v.app.desc)
+				put('<br/>')
+				put([[
+				<input type="button" value="Start" onClick="operateApp('start', ']]..lname..[[')">
+				<input type="button" value="Start Debug" onClick="debugApp(']]..lname..[[')">
+				</p>
+				]])
+			end
+		end
+	end
+end
