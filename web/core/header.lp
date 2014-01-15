@@ -35,41 +35,47 @@ cgilua.contentheader('text', 'html; charset=utf-8')
 		<div id="container">
 			<div id="header">
 				<li class='active'><a href='/'><img src="/images/logo.png" alt="Logo here" /></a></li>
+
 				<div id='cssmenu'>
 					<ul>
-						<li class='active'><a href="<?=url('/')?>"><span>Home</span></a>
+						<li class='active'><a href="<?=url('/')?>"><span>Home</span></a></li>
 						<li class='has-sub'><a href="<?=url('store')?>"><span>Store</span></a>
 						<ul>
 							<li class='last'><a href='<?=url("store/config.lp")?>'><span>Config</span></a></li>
 						</ul>
+						</li>
 
 
 						<li class='has-sub'><a href='<?=url("system/apps.lp")?>'><span>Applications</span></a>
 						<ul>
 							<% script('system/list_app.lua') %>
 						</ul>
+						</li>
 
 						<li class='has-sub'><a href='<?=url("system")?>'><span>System</span></a>
 						<ul>
-							<li class='no-sub'><a href="<?=url('configs')?>"><span>Configuration</span></a>
+							<li class='no-sub'><a href="<?=url('configs')?>"><span>Configuration</span></a></li>
 							<li class='last'><a href='<?=url("system/status.lp")?>'><span>System Information</span></a></li>
 						</ul>
-
 						</li>
+
 						<li class='has-sub'><a href='<?=url("logs")?>'><span>Logs</span></a>
 						<ul>
 							<li><a href='<?=url("logs")?>'><span>Logs</span></a></li>
 							<li class='last'><a href='<?=url("logs/packets.lp")?>'><span>Packets</span></a></li>
 						</ul>
 						</li>
+
 						<li class='no-sub'><a href='<?=url("data")?>'><span>Data</span></a></li>
 
-						<li class='has-sub'><a href='<?=url("user")?>'><span><?= cgilua.authentication.username() ?> User</span></a>
+						<li class='has-sub'><a href='<?=url("help")?>'><span>Help</span></a>
 						<ul>
-							<li class='last'><a href='<%= cgilua.authentication.logoutURL() %>'><span>Logout</span></a></li>
+							<li class='no-usb'><a href='http://help.opengate.com'><span>Online Help</span></a></li>
+							<li class='last'><a href='<?=url("about")?>'><span>About</span></a></li>
 						</ul>
 						</li>
-						<li class='last'><a href='<?=url("about")?>'><span>About</span></a></li>
+
+						<li class='last'><a href='<%= cgilua.authentication.logoutURL() %>'><span>Logout</span></a></li>
 					</ul>
 				</div>
 			</div>
