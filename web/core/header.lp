@@ -8,19 +8,19 @@ cgilua.contentheader('text', 'html; charset=utf-8')
 		<title>OpenGate - <?=app?></title>
 
 		<!-- CSS -->
-		<link rel="stylesheet" type="text/css" href="css/styles.css">
+		<link rel="stylesheet" type="text/css" href="/css/styles.css">
 
-		<link rel="stylesheet" type="text/css" href="css/header.css">
-		<link rel="stylesheet" type="text/css" href="css/control.css">
-		<link rel="stylesheet" type="text/css" href="css/cloud.css">
-		<link rel="stylesheet" type="text/css" href="css/footer.css">
+		<link rel="stylesheet" type="text/css" href="/css/header.css">
+		<link rel="stylesheet" type="text/css" href="/css/control.css">
+		<link rel="stylesheet" type="text/css" href="/css/cloud.css">
+		<link rel="stylesheet" type="text/css" href="/css/footer.css">
 
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 		<!-- Jquery -->
 		<script type="text/javascript" charset="utf-8" src="http://cdn.staticfile.org/jquery/1.10.2/jquery.js"></script>
 
 		<!-- Jquery Form -->
-		<script type="text/javascript" charset="utf-8" src="js/jquery.form.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="/js/jquery.form.min.js"></script>
 
 		<!-- Jquery UI -->
 		<link rel="stylesheet" type="text/css" href="http://cdn.staticfile.org/jqueryui/1.10.3/css/base/jquery.ui.all.css">

@@ -3,6 +3,11 @@ local m_path = os.getenv('CAD_DIR') or "."
 local m_package_path = package.path  
 package.path = string.format("%s;%s/?.lua;%s/?/init.lua", m_package_path, m_path, m_path)  
 
+--[[
+local pp = require 'shared.PrettyPrint'
+io.write('CGILUA:'..pp(cgilua)..'\n')
+]]--
+
 local function auth_user()
 	local username = cgilua.authentication.username()
 	if not username then
@@ -58,14 +63,22 @@ env.debug = function(...)
 end
 
 env.url = function(url, args)
-	local args = args or {}
-	args['_path']=url
-	--return '"/?'..urlcode.encodetable(args)..'"'
-	local url = {}
-	for k,v in pairs(args) do
-		url[#url+1] = k..'='..v
+	if not args then
+		if url:sub(1,1) == '/' then
+			return '/core'..url
+		else
+			return '/core/'..url
+		end
 	end
-	return '/?'..table.concat(url, '&')
+	local args = args or {}
+	--args['_path']=url
+	--return '"/?'..urlcode.encodetable(args)..'"'
+	local urls = {}
+	for k,v in pairs(args) do
+		urls[#urls+1] = k..'='..v
+	end
+	--return '/?'..table.concat(urls, '&')
+	return '/core/'..url..'?'..table.concat(urls, '&')
 end
 
 env.rurl = function(url, args)
