@@ -1,6 +1,10 @@
 <script>
 	$(document).ready(function() {
 		query_status();
+
+		newtimer = setInterval( function () {
+			query_status();
+		}, 3000 );
 	});
 	function query_status() {
 		$.get("<?=rurl('apps.lua')?>", {from : "web" }, function(data){
