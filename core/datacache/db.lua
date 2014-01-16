@@ -63,8 +63,13 @@ function class:enum(pattern)
 	if pattern == "*" then
 		return self.fake
 	end
-	-- TODO:
-	return {}
+	local matches = {}
+	for k, v in pairs(self.fake) do
+		if k:match(pattern) then
+			matches[k] = v
+		end
+	end
+	return matches
 end
 
 function class:close()
