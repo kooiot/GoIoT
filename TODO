@@ -1,5 +1,7 @@
 - Debug [DONE]
 	Using mobdebug for remote debug, using the ZeroBrane as the IDE/Debuger UI
+- Device template in Store
+	Save the templete file with application in store
 - MVC framwork
 	Make the framework for application to easy's its web development?
 - I18N
@@ -8,4 +10,4 @@
 	Question and Anwser online link
 - Tag online editor
 - Online debugger?
-	
+- Modbus TCP server	

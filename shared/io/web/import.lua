@@ -1,4 +1,4 @@
-local tmp_folder = os.getenv('CAD_TEMP_DIR') or '/tmp/apps/_upload'
+local platform = require 'shared.platform'
 
 local name = cgilua.POST.name
 local port = cgilua.POST.port
@@ -13,7 +13,7 @@ else
 		local _, name = cgilua.splitonlast(f.filename)
 		local file = f.file
 
-		local tmp_file = tmp_folder..'/'..name
+		local tmp_file = platform.path.temp..'/'..name
 		local dest, err = io.open(tmp_file, "wb")
 		if dest then
 			local filelen = 0

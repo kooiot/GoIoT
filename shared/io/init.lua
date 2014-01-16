@@ -5,6 +5,8 @@ local setting = require 'shared.io.setting'
 local ztimer = require 'lzmq.timer'
 local cjson = require 'cjson.safe'
 local pp = require 'shared.PrettyPrint'
+local platform = require 'shared.platform'
+local log = require 'shared.log'
 
 local app = nil
 
@@ -103,6 +105,21 @@ function _M.set_tags(tags)
 	_M.tags = tags
 end
 
+local function import_default_conf()
+	if _M.handlers.on_import then
+		local path = platform.path.appdefconf..'/'..app.name..'.csv'
+		local file, err = io.open(path, 'r')
+		if file then
+			file:close()
+			local r, err = handlers.on_import(app, vars.filename)
+			if not r then
+				log:error(app.name, 'Load default configuration failure:', err)
+			end
+			assert(os.execute('mv '..path..' '..path..'.bak'))
+		end
+	end
+end
+
 function _M.init(name, handlers)
 	config = load_config(name)
 	_M.handlers = handlers
@@ -138,6 +155,8 @@ function _M.init(name, handlers)
 		app.server:send(cjson.encode(reply))
 	end)
 
+	-- Import the configuration
+	import_default_conf()
 	--TODO: export
 	
 	return app

@@ -1,8 +1,5 @@
 local delay_exec = require 'shared.delay_exec'
-
-local apps_folder = os.getenv('CAD_APPS_DIR') or '/tmp/apps'
-local core_folder = os.getenv('CAD_CORE_DIR') or '/tmp/core'
-local tmp_folder = os.getenv('CAD_TEMP_DIR') or '/tmp/apps/_upload'
+local platform = require 'shared.platform'
 
 local filetype = cgilua.POST.filetype
 
@@ -15,7 +12,7 @@ else
 		local _, name = cgilua.splitonlast(f.filename)
 		local file = f.file
 
-		local tmp_file = tmp_folder..'/'..name
+		local tmp_file = platform.path.temp..'/'..name
 		local dest, err = io.open(tmp_file, "wb")
 		if dest then
 			local bytes = file:read("*a")
@@ -25,7 +22,7 @@ else
 			cgilua.print("<br> Uploaded "..name.." ("..string.len(bytes).." bytes)")
 
 			if filetype == 'sys' then
-				local mv = 'mv '..tmp_file..' '..core_folder..'/'..name
+				local mv = 'mv '..tmp_file..' '..platform.path.core..'/'..name
 				delay_exec('upgrade.sh', {'cd /', '$CAD_DIR/run.sh stop', 'umount /tmp/cad2', mv, 'sleep 3', 'reboot'})
 				cgilua.print('<br> Device is rebooting to upgrade the system....')
 			elseif filetype == 'app' then
@@ -36,7 +33,7 @@ else
 					appname = "example"
 				end
 				local install = require 'shared.app.install'
-				install(tmp_file, apps_folder, appname)
+				install(tmp_file, platform.path.apps, appname)
 
 				-- remove temp file
 				os.remove(tmp_file)
