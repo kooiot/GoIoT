@@ -1,7 +1,5 @@
 local unzip = require 'shared.unzip'
 local download = require 'shared.cloud.download'
-local install = require 'shared.app.install'
-local uninstall = require 'shared.app.uninstall'
 local list = require 'shared.app.list'
 local log = require 'shared.log'
 local pp = require 'shared.PrettyPrint'
@@ -140,6 +138,17 @@ _M.search = function(key)
 end
 
 --
+-- Find application by its name
+_M.find = function (name)
+	for k,v in pairs(_M.apps) do
+		if v.name == name then
+			return v
+		end
+	end
+	return nil
+end
+
+--
 -- Install one application
 _M.install = function(name, lname)
 	log:info('CLOUD', "Installing "..name.." as "..lname)
@@ -151,30 +160,13 @@ _M.install = function(name, lname)
 	end
 
 	-- Find the cloud app information
-	local app = nil
-	for k, v in pairs(_M.apps) do
-		if v.name == name then
-			app = v
-			break
-		end
-	end
+	local app = _M.find(name)
 	if not app then
 		return nil, "no such app "..name
 	end
 
-	-- Download the applcation from server
-	local src = cfg.srvurl..app.path..'/latest.zip'
-	local dest = cfg.cachefolder..'/'..name..'.zip'
-	log:info('CLOUD', "Download "..name.." from "..src.." to "..dest)
-	local r, err = download(src, dest)
-	if not r then
-		log:warn('CLOUD', "Download fails", err)
-		return nil, err
-	end
-
-	-- INstall the application
-	log:info('CLOUD', "Install "..lname.." to "..cfg.appsfolder)
-	return install(dest, cfg.appsfolder, lname, app)
+	local install = require 'shared.cloud.install'
+	return install(cfg, app, lname)
 end
 
 --
@@ -187,7 +179,8 @@ _M.remove = function(lname, mode)
 	for k,v in pairs(load_installed()) do
 		if v.lname == lname then
 			-- TODO: for clean the configuration
-			return uninstall(cfg.appsfolder, v.name, lname)
+			local uninstall = require 'shared.cloud.uninstall'
+			return uninstall(cfg, v, lname)
 		end
 	end
 	return nil, "No such application instance"

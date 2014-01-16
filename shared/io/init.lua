@@ -107,11 +107,12 @@ end
 
 local function import_default_conf()
 	if _M.handlers.on_import then
-		local path = platform.path.appdefconf..'/'..app.name..'.csv'
+		local path = platform.path.appdefconf..'/'..app.name..'/config.csv'
 		local file, err = io.open(path, 'r')
 		if file then
 			file:close()
-			local r, err = handlers.on_import(app, vars.filename)
+			log:info(app.name, 'Import the defconf install with application')
+			local r, err = _M.handlers.on_import(app, path)
 			if not r then
 				log:error(app.name, 'Load default configuration failure:', err)
 			end

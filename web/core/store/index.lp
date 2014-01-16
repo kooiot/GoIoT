@@ -108,7 +108,7 @@ end
 				<% if mode == 'a' then %>
 				<a href="<?=rurl('details.lp', {name=v.name}) ?>"><?=v.name?></a>
 				<% else %>
-				<a href="<?=rurl('details.lp', {lname=v.lname}) ?>"><?=v.name?></a>
+				<a href="<?=rurl('details.lp', {lname=v.lname}) ?>"><?=v.lname?></a>
 				<% end %>
 			</div>
 			<div class="name" title="<?=v.manufactor?>"><?=v.manufactor?></div>

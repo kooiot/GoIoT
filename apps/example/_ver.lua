@@ -1,9 +1,12 @@
-return {
-	version = "1.0",
-	build = 'build01',
+return	{
 	name = 'example',
 	desc = 'example io application',
-	web = true,
+	version = "1.0",
+	build = 'build01',
 	author='cch',
 	manufactor = 'OpenGate',
+	path='master/example',
+	type = 'app.io',
+	depends = {},
+	web = true,
 }
