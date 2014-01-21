@@ -37,7 +37,7 @@ function obj:send(log)
 	assert(log.src)
 	assert(log.level)
 	log.timestamp = log.timestamp or ztimer.absolute_time()
-	print(os.date('%c', log.timestamp), log.level, log.content)
+	print(os.date('%c', log.timestamp / 1000), log.level, log.content)
 	-- We will not wait for event done
 	return self.client:send(cjson.encode(log))
 end

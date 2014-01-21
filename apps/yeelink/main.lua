@@ -39,7 +39,7 @@ local function build_dtree()
 
 		local dev = dtree[devname]
 		dev.tags = dev.tags or {}
-		dev.tags[tagname] = dev.tags[tagname] or {info = v, id=nil, sub=false, vals = {}, last=os.time() - 11}
+		dev.tags[tagname] = dev.tags[tagname] or {info = v, id=nil, sub=false, vals = {}, last=os.time() - 1}
 	end
 
 	return dtree
@@ -139,13 +139,14 @@ local function send_tag_data(devid, tag, val)
 	table.insert(tag.vals, val)
 
 	local now = os.time()
-	if now - tag.last > 10 then
+	if now - tag.last > 11 then
 		print('SAVING', tag.info.name, tag.vals[1].value)
 		local r, err = yapi.dp.adds(devid, tag.id, tag.vals)
 		if r then
 			tag.last = now
 			tag.vals = {}
 		else
+			print(os.date('%c', now), os.date('%c', tag.last))
 			log:error(ioname, err)
 		end
 	end
