@@ -48,7 +48,7 @@ function _M.recv()
 	-- receive the filter
 	local filter = _M.subscriber:recv()
 	if filter then
-		print('FILTER', filter, _M.filter)
+		assert(filter==_M.filter)
 	else
 		return nil, nil
 	end
