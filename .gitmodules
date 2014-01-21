@@ -4,3 +4,6 @@
 [submodule "oe/bitbake"]
 	path = oe/bitbake
 	url = git://git.openembedded.org/bitbake
+[submodule "oe/meta-dirk"]
+	path = oe/meta-dirk
+	url = https://github.com/srdgame/meta-dirk.git
