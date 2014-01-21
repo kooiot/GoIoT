@@ -130,17 +130,15 @@ local function yxx_map()
 	end
 end
 
-local function send_tag_data(devid, tag, val)
+local function send_tag_data(devid, tag)
 	if not tag.id then
 		log:debug(ioname, 'Tag not created')
 		return
 	end
-	val.timestamp = val.timestamp / 1000
-	table.insert(tag.vals, val)
 
 	local now = os.time()
 	if now - tag.last > 11 then
-		print('SAVING', tag.info.name, tag.vals[1].value)
+		log:debug(ioname, 'SAVING', tag.info.name, tag.vals[1].value, 'COUNT', #tag.vals)
 		local r, err = yapi.dp.adds(devid, tag.id, tag.vals)
 		if r then
 			tag.last = now
@@ -152,24 +150,35 @@ local function send_tag_data(devid, tag, val)
 	end
 end
 
+local function save_all(callback)
+	for name, dev in pairs(dtree) do
+		local devid = dev.id
+		for name, tag in pairs(dev.tags) do
+			send_tag_data(devid, tag)
+			callback()
+		end
+	end
+end
 
 local function init_sub()
 	sub.open(ioname, info.ctx, info.poller, function(filter, data)
 		if data then
-			local vals = cjson.decode(data)
+			local val = cjson.decode(data)
 			--[[
 			for k,v in pairs(tag) do
 			print('PUB', k,v)
 			end
 			]]--
 
-			local devname, tagname = vals.name:match('([^%.]+)%.(.+)$')
+			local devname, tagname = val.name:match('([^%.]+)%.(.+)$')
 			if devname and tagname then
 				if dtree[devname] and dtree[devname].id then
 					local tags = dtree[devname].tags
 
 					if tags and tags[tagname] then
-						send_tag_data(dtree[devname].id, tags[tagname], vals)
+						local tag = tags[tagname]
+						val.timestamp = val.timestamp / 1000
+						table.insert(tag.vals, val)
 					else
 						log:debug(ioname, 'No such tag')
 					end
@@ -193,7 +202,6 @@ end
 app = require('shared.app').new(info, {on_start = on_start})
 app:init()
 
-
 local ms = 3000
 while not aborting do
 	while not aborting do
@@ -202,6 +210,7 @@ while not aborting do
 		while timer:rest() > 0 do
 			app:run(timer:rest())
 		end
+		save_all(function() app:run(50) end)
 	end
 end
 
