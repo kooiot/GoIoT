@@ -86,7 +86,7 @@ local function yxx_map_tags(dev)
 			end
 		end
 		if not tag.id  then
-			local r, err = yapi.sensors.create(dev.id, 'value', tag.info.name, tag.info.desc, {}, {name="Unknown", symbol='N/A'})
+			local r, err = yapi.sensors.create(dev.id, 'value', name, tag.info.desc, {}, {name="Unknown", symbol='N/A'})
 			if not r then
 				log:error(ioname, err)
 			else
