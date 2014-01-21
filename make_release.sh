@@ -15,6 +15,7 @@ cp -r scripts __install/scripts
 cp run.sh __install/run.sh
 # remove the release the script
 rm __install/scripts/release*
+rm __install/scripts/code_backup.sh
 # remove the web test files
 rm -rf __install/web/test 
 # Correct the the soft link in web core
