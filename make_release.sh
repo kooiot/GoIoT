@@ -18,7 +18,7 @@ ln -s /tmp/apps apps
 cd ../../..
 
 sudo chown -R root:root __install
-mkfs.cramfs __install cad2.cramfs
+mkfs.cramfs __install __release/cad2.cramfs
 sudo rm -rf __install
 
 ./scripts/release_app.sh example

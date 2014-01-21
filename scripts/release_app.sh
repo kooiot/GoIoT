@@ -5,7 +5,7 @@ if [ $# != 1 ] ; then
 fi
 
 cd ./apps/$1
-zip -r ../../$1.zip *
+zip -r ../../__release/$1.zip *
 cd ../../
 mkdir -p /var/www/master/$1
-cp $1.zip /var/www/master/$1/latest.zip
+cp __release/$1.zip /var/www/master/$1/latest.zip
