@@ -16,7 +16,7 @@ return function(src, dest)
 	u.sink = ltn12.sink.file(io.open(dest, "wb"))
 
 	if u.scheme == 'http' then
-		local r, code, headers, status = http.request(u, dest)
+		local r, code, headers, status = http.request(u)
 		if not r or code ~= 200 then
 			return nil, status
 		end
@@ -24,7 +24,7 @@ return function(src, dest)
 	end
 	if u.scheme == 'ftp' then
 		u.type = u.type or 'i'
-		return ftp.get(u, dest)
+		return ftp.get(u)
 	end
 
 	return nil, "Not support url type :"..u.scheme

@@ -35,4 +35,16 @@ return {
 		path='master/s5500',
 		web = true,
 	},
+	{
+		name = "YeeLink",
+		desc = "将数据采集转发到YeeLink数据平台",
+		build = "build01",
+		version = "0.1",
+		author = 'dirk',
+		manufactor = 'SymTech Inc.',
+		type = 'app',
+		depends = {},
+		path='master/yeelink',
+		web = true,
+	},
 }

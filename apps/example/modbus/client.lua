@@ -36,7 +36,8 @@ function class:request (unit, name, ...)
 
 	local _, err = parser(pdu)
 	if _ ~= pdu then
-		log:error('P: '..err)
+		--log:error('MODBUS', 'P: '..err)
+		return nil, err
 	end
 	return pdu, err
 --[[

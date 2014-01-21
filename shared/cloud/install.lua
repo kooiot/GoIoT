@@ -34,4 +34,5 @@ return function(cfg, app, lname)
 	if app.type:match('^app%.io') then
 		return io_install(app, cfg.appsfolder, lname, downcb)
 	end
+	return nil, "Incorrect application type found "..app.type
 end

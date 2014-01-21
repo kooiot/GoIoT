@@ -7,4 +7,5 @@ fi
 cd ./apps/$1
 zip -r ../../$1.zip *
 cd ../../
+mkdir -p /var/www/master/$1
 cp $1.zip /var/www/master/$1/latest.zip

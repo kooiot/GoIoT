@@ -5,12 +5,14 @@ local m_package_path = package.path
 package.path = string.format("%s;%s/?.lua;%s/?/init.lua", m_package_path, m_path, m_path)  
 
 local api = require 'shared.api.data'
-local sub = require 'shared.api.data.sub'
+local sub = require 'shared.api.data_sub'
 local cjson = require 'cjson.safe'
-local poller =  require 'lzmq.poller'
+local zpoller =  require 'lzmq.poller'
+local zmq = require 'lzmq'
 require 'shared.zhelpers'
 
 local ctx = zmq.context()
+local poller = zpoller.new()
 
 sub.open("999", ctx, poller, function(filter, data)
 	if data then
@@ -22,7 +24,7 @@ sub.open("999", ctx, poller, function(filter, data)
 	end
 end)
 
-api.subscribe(999, {"test.tag1", "test.tag9"})
+api.subscribe(999, {"modbus.tag1", "modbus.tag2"})
 
 poller:start()
 

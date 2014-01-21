@@ -1,6 +1,5 @@
 #!/usr/bin/env lua
 
-local info = require '_ver'
 local io = require('shared.io')
 local pp = require('shared.PrettyPrint')
 local modbus = require('modbus.init')
@@ -146,6 +145,7 @@ handlers.on_run = function(app)
 	--log:info(ioname, 'RUN TIME')
 	--print(os.date(), 'RUN TIME')
 	
+	api.set('example.tag1', 1, ztimer.absolute_time())
 	if err_count > 5 then
 		err_count = 1
 		log:warn(ioname, 'Error reach the max count, wait for 30 seconds for retry')

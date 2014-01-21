@@ -1,7 +1,9 @@
 - Debug [DONE]
 	Using mobdebug for remote debug, using the ZeroBrane as the IDE/Debuger UI
-- Device template in Store
+- Device template in Store [DONE]
 	Save the templete file with application in store
+- Device object appears in datacache
+	Do not only saving the plat tags, but also the devices->tags->attributes
 - MVC framwork
 	Make the framework for application to easy's its web development?
 - I18N

@@ -22,4 +22,5 @@ mkfs.cramfs __install cad2.cramfs
 sudo rm -rf __install
 
 ./scripts/release_app.sh example
+./scripts/release_app.sh yeelink
 

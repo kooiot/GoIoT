@@ -8,6 +8,7 @@ require 'shared.zhelpers'
 local zmq = require 'lzmq'
 local zpoller = require 'lzmq.poller'
 local cjson = require 'cjson.safe'
+local log = require 'shared.log'
 
 local db = require('db').new()
 db:open('db.sqlite3')
@@ -24,7 +25,6 @@ zassert(publisher, err)
 function send_err(err)
 	local reply = {'error', {err=err}}
 	local rep_json = cjson.encode(reply)
-	print(rep_json)
 	server:send(rep_json)
 end
 
@@ -84,6 +84,7 @@ mpft['set'] = function(vars)
 				-- publish changes
 				if ptable[vars.name] then
 					for k, v in pairs(ptable[vars.name]) do
+						--log:debug('DATACACHE', 'Publish data changes for '..vars.name)
 						publisher:send(k..' ', zmq.SNDMORE)
 						publisher:send(cjson.encode(vars))
 					end
@@ -106,14 +107,15 @@ mpft['sets'] = function(vars)
 				local r = true
 				r, err = db:set(v.name, v.value, v.timestamp)
 				if not r then
-					print('ERR', err)
+					log:error('DATACACHE', 'SETS ERR', err)
 					result = false
 				else
 					table.insert(names, v.name)
 					-- publish changes
 					if ptable[v.name] then
 						for client_id, sub in pairs(ptable[v.name]) do
-							publisher:send(k..' ', zmq.SNDMORE)
+							--log:debug('DATACACHE', 'Publish the notification to '..v.name)
+							publisher:send(client_id..' ', zmq.SNDMORE)
 							publisher:send(cjson.encode(v))
 						end
 					end
@@ -158,7 +160,7 @@ mpft['subscribe'] = function(vars)
 	local id = vars.id
 	local tags = vars.tags
 	for k,v in pairs(tags) do
-		print('subscribe '..v..' for '..id)
+		log:info('DATACACHE', 'subscribe '..v..' for '..id)
 		ptable[v] = ptable[v] or {}
 		ptable[v][id] = true
 	end
@@ -171,7 +173,7 @@ mpft['unsubscribe'] = function(vars)
 	local id = vars.id
 	for k,v in pairs(ptable) do
 		if ptable[v] and ptable[v][id] then
-			print('unsubscribe '..v..' for '..id)
+			log:info('DATACACHE', 'unsubscribe '..v..' for '..id)
 			ptable[v][id] = nil
 		end
 	end
