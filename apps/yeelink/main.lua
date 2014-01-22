@@ -88,9 +88,11 @@ local function yxx_map_tags(dev)
 		end
 		if not tag.id  then
 			if #ids == 0 then
-				local sensors = yapi.sensors.enum(dev.id)
-				for k, v in pairs(sensors) do
-					ids[v.title] = v.id
+				local sensors, err = yapi.sensors.enum(dev.id)
+				if sensors then
+					for k, v in pairs(sensors) do
+						ids[v.title] = v.id
+					end
 				end
 			end
 			tag.id = ids[name]
@@ -128,9 +130,11 @@ local function yxx_map()
 		end
 		if not dev.id then
 			if #ids == 0 then
-				local devices = yapi.devices.enum()
-				for k, v in pairs(devices) do
-					ids[v.title] = v.id
+				local devices, err = yapi.devices.enum()
+				if devices then
+					for k, v in pairs(devices) do
+						ids[v.title] = v.id
+					end
 				end
 			end
 			dev.id = ids[name]
