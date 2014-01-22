@@ -2,6 +2,8 @@
 	Using mobdebug for remote debug, using the ZeroBrane as the IDE/Debuger UI
 - Device template in Store [DONE]
 	Save the templete file with application in store
+- YeeLink data publisher [DONE]
+	Publish the data to yeelink platform
 - Device object appears in datacache
 	Do not only saving the plat tags, but also the devices->tags->attributes
 - MVC framwork

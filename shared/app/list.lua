@@ -16,7 +16,7 @@ local function load()
 					local app = json and cjson.decode(json) or {}
 					list[name] = {name=name, insts={}, app=app}
 				end
-				table.insert(list[name].insts, name)
+				table.insert(list[name].insts, insname)
 			end
 		end
 		file:close()
