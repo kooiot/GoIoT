@@ -120,6 +120,9 @@ function class:init()
 		-- DO NOTHING on return
 	end)
 
+	-- Send the notice once before calling on_start, because it may take a few seconds for application initialization
+	self:send_notice()
+
 	if self.handlers.on_start then
 		self.handlers.on_start(self)
 	end
