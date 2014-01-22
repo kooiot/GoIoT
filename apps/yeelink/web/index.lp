@@ -7,7 +7,8 @@
 </style>
 
 <form action="<?=rurl('api.lua')?>" method="post" enctype="multipart/form-data">
-	<label>API KEY (app-<?=cgilua.QUERY.name?>):</label>
+	<label> <h2>APP(<?=cgilua.QUERY.name?>)</h2> </label>
+	<label> API KEY: </label>
 	<input type="hidden" name="app" value="<?=cgilua.QUERY.name?>">
 	<input type="text" name="key" value="">
 	<input type="submit" value="SET">
