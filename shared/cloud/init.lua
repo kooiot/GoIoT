@@ -54,12 +54,12 @@ local function load_installed()
 	local inst_apps = {}
 	local apps = list.list()
 	for k, v in pairs(apps) do
-		for i, insname in pairs(v.insts) do
+		for i, node in pairs(v.insts) do
 			local app = {}
-			for k,v in pairs(v.app) do
+			for k,v in pairs(node.app) do
 				app[k] = v
 			end
-			app.lname = insname
+			app.lname = node.insname
 			table.insert(inst_apps, app)
 		end
 	end
