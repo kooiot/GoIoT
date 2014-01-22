@@ -37,7 +37,7 @@ end
 
 --TODO: Windows is not supported!!
 --
-return function(zip_file, apps_folder, dest_name, app)
+return function(zip_file, apps_folder, dest_name, app, local_app)
 	assert(zip_file, 'No application packe file specified')
 	assert(apps_folder, 'No installation folder specified')
 	assert(dest_name, 'No installation name specified')
@@ -68,6 +68,7 @@ return function(zip_file, apps_folder, dest_name, app)
 		list.add(app, dest_name, dest_name)
 	else
 		newinst(apps_folder, app, dest_name)
+		list.add(local_app or app, app.name, dest)
 	end
 	lock:free()
 	log:info("APP", "Install application "..dest_name.." done!!!")

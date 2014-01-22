@@ -6,6 +6,4 @@ return function(apps_folder, app, dest)
 		local new_folder = apps_folder..'/'..dest
 		assert(os.execute('ln -s '..org_folder..' '..new_folder))
 	end
-	
-	list.add(app, app.name, dest)
 end
