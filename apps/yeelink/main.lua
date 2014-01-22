@@ -72,6 +72,13 @@ end
 
 local function yxx_map_tags(dev)
 	log:debug(ioname, 'Mapping device', dev.name, 'id', dev.id)
+	local sensors = yapi.sensors.enum(dev.id)
+	local ids = {}
+
+	for k, v in pairs(sensors) do
+		ids[v.title] = v.id
+	end
+
 	for name, tag in pairs(dev.tags) do
 		if tag.id then
 			local r, err = yapi.sensors.get(dev.id, tag.id)
@@ -80,10 +87,7 @@ local function yxx_map_tags(dev)
 			end
 		end
 		if not tag.id  then
-			local ids, err = yapi.sensors.find(dev.id, tag.info.name)
-			if ids then
-				tag.id = ids[1]
-			end
+			tag.id = ids[name]
 		end
 		if not tag.id  then
 			local r, err = yapi.sensors.create(dev.id, 'value', name, tag.info.desc, {}, {name="Unknown", symbol='N/A'})
@@ -98,6 +102,12 @@ local function yxx_map_tags(dev)
 end
 
 local function yxx_map()
+	local devices = yapi.devices.enum()
+	local ids = {}
+	for k, v in pairs(devices) do
+		ids[v.title] = v.id
+	end
+
 	for name, dev in pairs(dtree) do
 		if dev.id then
 			local dev, err = yapi.devices.get(dev.id)
@@ -108,10 +118,7 @@ local function yxx_map()
 			end
 		end
 		if not dev.id then
-			local ids = yapi.devices.find(dev.name)
-			if ids then
-				dev.id = ids[1]
-			end
+			dev.id = ids[name]
 		end
 		if not dev.id then
 			local devid, err = yapi.devices.create(dev.name)
