@@ -82,9 +82,9 @@ end
 
 _M.config = function(c)
 	if type(c) == 'table' then
-		cfg.srvurl = cfg.srvurl or cfg.srvurl
-		cfg.cachefolder = cfg.cachefolder or cfg.cachefolder
-		cfg.appsfolder = cfg.appsfolder or cfg.appsfolder
+		cfg.srvurl = c.srvurl or cfg.srvurl
+		cfg.cachefolder = c.cachefolder or cfg.cachefolder
+		cfg.appsfolder = c.appsfolder or cfg.appsfolder
 		return save_after_success(_M.update())
 	end
 	if type(c) == 'string' then

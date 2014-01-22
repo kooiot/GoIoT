@@ -6,7 +6,7 @@ local log = require 'shared.log'
 local function create_cb(cfg)
 	return function (app)
 		-- Download the applcation from server
-		local src = cfg.srvurl..app.path..'/latest.zip'
+		local src = cfg.srvurl..'/'..app.path..'/latest.zip'
 		local dest = cfg.cachefolder..'/'..app.name..'.zip'
 		log:info('CLOUD', "Download", app.name, "from", src, "to", dest)
 		local r, err = download(src, dest)
