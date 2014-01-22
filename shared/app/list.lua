@@ -27,7 +27,7 @@ local function save()
 		for name, node in pairs(list) do
 			for k, v in pairs(node.insts) do
 				local json = v.app and cjson.encode(v.app) or ''
-				assert(file:write("NAME='"..node.name.."' INSNAME='"..v.."' APPJSON='"..json.."'\n"))
+				assert(file:write("NAME='"..node.name.."' INSNAME='"..v.insname.."' APPJSON='"..json.."'\n"))
 			end
 		end
 		file:close()
