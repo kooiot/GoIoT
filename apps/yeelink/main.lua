@@ -8,6 +8,7 @@ local zmq = require 'lzmq'
 local ztimer = require 'lzmq.timer'
 local yapi = require 'yapi'
 local log = require 'shared.log'
+local config = require 'shared.api.config'
 
 require 'shared.zhelpers'
 
@@ -21,8 +22,8 @@ info.poller = zpoller.new()
 info.name = ioname
 
 local function load_key()
-	local KEY = "6015c744795762df41e9ebfa25fd625c"
-	return KEY
+	local config_key = config.get(ioname..'.key')
+	return config_key or "6015c744795762df41e9ebfa25fd625c"
 end
 local KEY = load_key()
 assert(KEY, "No Yeelink key")
@@ -31,6 +32,7 @@ yapi.init(KEY)
 local dtree = {}
 
 local function build_dtree()
+	log:debug(ioname, 'Building the data tree')
 	local tags = api.enum('*')
 	for k, v in pairs(tags) do
 		local devname, tagname = v.name:match('([^%.]+)%.(.+)$')
@@ -46,6 +48,7 @@ local function build_dtree()
 end
 
 local function sub_dtree()
+	log:debug(ioname, 'Subscribe data changes')
 	local stags = {}
 	local stags_t = {}
 	for name, dev in pairs(dtree) do
@@ -72,21 +75,24 @@ end
 
 local function yxx_map_tags(dev)
 	log:debug(ioname, 'Mapping device', dev.name, 'id', dev.id)
-	local sensors = yapi.sensors.enum(dev.id)
 	local ids = {}
 
-	for k, v in pairs(sensors) do
-		ids[v.title] = v.id
-	end
-
 	for name, tag in pairs(dev.tags) do
+		log:debug(ioname, 'Mapping tag', name)
 		if tag.id then
 			local r, err = yapi.sensors.get(dev.id, tag.id)
 			if not r then
+				print('GET_DEVICE_TAG', err)
 				tag.id = nil 
 			end
 		end
 		if not tag.id  then
+			if #ids == 0 then
+				local sensors = yapi.sensors.enum(dev.id)
+				for k, v in pairs(sensors) do
+					ids[v.title] = v.id
+				end
+			end
 			tag.id = ids[name]
 		end
 		if not tag.id  then
@@ -102,22 +108,31 @@ local function yxx_map_tags(dev)
 end
 
 local function yxx_map()
-	local devices = yapi.devices.enum()
+	log:debug(ioname, 'Map the data tree')
 	local ids = {}
-	for k, v in pairs(devices) do
-		ids[v.title] = v.id
-	end
 
 	for name, dev in pairs(dtree) do
 		if dev.id then
-			local dev, err = yapi.devices.get(dev.id)
-			if not dev then
-				dev.id = nil
+			log:debug(ioname, 'Get device name', name, 'id', dev.id)
+			local r, err = yapi.devices.get(dev.id)
+			if not r then
+				print('GET_DEVICE', err)
+				if not err:match('.+timed out.+') then
+					dev.id = nil
+				else
+					print('TIMEOUT ')
+				end
 			else
 				log:debug(ioname, 'Device exist id is', dev.id)
 			end
 		end
 		if not dev.id then
+			if #ids == 0 then
+				local devices = yapi.devices.enum()
+				for k, v in pairs(devices) do
+					ids[v.title] = v.id
+				end
+			end
 			dev.id = ids[name]
 		end
 		if not dev.id then
@@ -144,7 +159,8 @@ local function send_tag_data(devid, tag)
 	end
 
 	local now = os.time()
-	if now - tag.last > 11 then
+	if now - tag.last > 11 and #tag.vals > 0 then
+		assert(ioname, tag.info.name, tag.vals[1].value, tag.vals)
 		log:debug(ioname, 'SAVING', tag.info.name, tag.vals[1].value, 'COUNT', #tag.vals)
 		local r, err = yapi.dp.adds(devid, tag.id, tag.vals)
 		if r then
@@ -199,9 +215,35 @@ local function init_sub()
 	end)
 end
 
+local function load_yxx_map()
+	local jstr = config.get(ioname..'.config')
+	if not jstr then
+		return {}
+	end
+	local ctree, err = cjson.decode(jstr)
+	if ctree then
+		return ctree
+	else
+		log:error(ioname, 'Parsing config string error:', err)
+	end
+	return {}	
+end
+
+local function save_yxx_map(ctree)
+	local jstr, err = cjson.encode(ctree)
+	if jstr then
+		config.set(ioname..'.config', jstr)
+	else
+		log:error(ioname, 'Encode config string error:', err)
+	end
+end
+
 local function on_start()
+	dtree = load_yxx_map()
 	build_dtree()
 	yxx_map()
+
+	save_yxx_map(dtree)
 
 	init_sub()
 	sub_dtree()

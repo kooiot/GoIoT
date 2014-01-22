@@ -5,6 +5,8 @@ local url = require 'socket.url'
 local pp = require 'shared.PrettyPrint'
 local cjson = require 'cjson.safe'
 
+http.TIMEOUT = 2
+
 local KEY = ''
 local function api(method, obj, path)
 	local path = path or '/v1.0/devices'
