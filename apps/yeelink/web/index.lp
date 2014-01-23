@@ -5,12 +5,16 @@
 <style>
 	form { display: block; margin: 20px auto; background: #eee; border-radius: 10px; padding: 15px }
 </style>
+<%
 
+local config = require 'shared.api.config'
+local key = config.get(cgilua.QUERY.name..'.key')
+%>
 <form action="<?=rurl('api.lua')?>" method="post" enctype="multipart/form-data">
 	<label> <h2>APP(<?=cgilua.QUERY.name?>)</h2> </label>
 	<label> API KEY: </label>
 	<input type="hidden" name="app" value="<?=cgilua.QUERY.name?>">
-	<input type="text" name="key" value="">
+	<input type="text" name="key" value="<?=key?>">
 	<input type="submit" value="SET">
 </form>
 
@@ -44,8 +48,10 @@
 		else
 			for k, v in pairs(reply.devs) do
 			%>
-			<label> Device: <?=v.name?> </label>
-			<a href='http://www.yeelink.net/devices/<?=v.id?>'> Open in YeeLink </a>
+			<div class='YeeLinkDevice'>
+				<label><b> Device: <i><?=v.name?> </i></b></label>
+				<a href='http://www.yeelink.net/devices/<?=v.id?>'> <u><span>Open in YeeLink</span></u> </a>
+			</div>
 			<%
 			end
 		end
