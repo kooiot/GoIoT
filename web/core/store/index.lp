@@ -16,7 +16,7 @@
 				.fail(function() {
 					alert("Failed to install application");
 				});
-				} else {
+			} else {
 				alert('uninstall app');
 				$.post("<?=rurl("store.lua")?>", {from:"web", action:"remove", name:this.id, lname:this.id}, function(data) {
 						alert(data);
@@ -97,10 +97,10 @@ end
 	%>
 		<li>
 		<div class="left">
-			<% if mode == 'a' then %>
-			<a href="<?=rurl('details.lp', {name=v.name}) ?>"><img src="/images/app.png" alt="<?=v.name?>"></a>
-			<% else %>
+			<% if mode == 'i' then %>
 			<a href="<?=rurl('details.lp', {lname=v.lname}) ?>"><img src="/images/app.png" alt="<?=v.lname?>"></a>
+			<% else %>
+			<a href="<?=rurl('details.lp', {name=v.name}) ?>"><img src="/images/app.png" alt="<?=v.name?>"></a>
 			<% end %>
 		</div>
 		<div class="right">
@@ -113,10 +113,10 @@ end
 			</div>
 			<div class="name" title="<?=v.manufactor?>"><?=v.manufactor?></div>
 			<div class="starcls star41" sysver="Android4.2、Android4.1、Android4.0"></div>
-			<% if mode == 'a' then %>
-			<div title="安装此应用" isin="1" class="appCLKCls feebtn symBtnGray" id="<?=v.name?>">安装</div>
+			<% if mode == 'i' then %>
+			<div title="删除此应用" isin="0" class="appCLKCls feebtn symBtnGray" id="<?=v.lname?>">删除</div>
 			<% else %>
-			<div title="删除此应用" isin="0" class="appCLKCls feebtn symBtnGray" id="<?=v.lname?>" lname="<?=v.lname?>">删除</div>
+			<div title="安装此应用" isin="1" class="appCLKCls feebtn symBtnGray" id="<?=v.name?>">安装</div>
 			<% end %>
 		</div>
 		</li>

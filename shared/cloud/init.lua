@@ -53,13 +53,14 @@ end
 local function load_installed()
 	local inst_apps = {}
 	local apps = list.list()
-	for k, v in pairs(apps) do
+	for name, v in pairs(apps) do
 		for i, node in pairs(v.insts) do
 			local app = {}
 			for k,v in pairs(node.app) do
 				app[k] = v
 			end
 			app.lname = node.insname
+			app.name = name
 			table.insert(inst_apps, app)
 		end
 	end
@@ -180,7 +181,7 @@ _M.remove = function(lname, mode)
 		if v.lname == lname then
 			-- TODO: for clean the configuration
 			local uninstall = require 'shared.cloud.uninstall'
-			return uninstall(cfg, v, lname)
+			return uninstall(cfg, v.name, lname)
 		end
 	end
 	return nil, "No such application instance"
