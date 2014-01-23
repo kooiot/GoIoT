@@ -8,7 +8,7 @@
 <%
 
 local config = require 'shared.api.config'
-local key = config.get(cgilua.QUERY.name..'.key')
+local key = config.get(cgilua.QUERY.name..'.key') or '6015c744795762df41e9ebfa25fd625c'
 %>
 <form action="<?=rurl('api.lua')?>" method="post" enctype="multipart/form-data">
 	<label> <h2>APP(<?=cgilua.QUERY.name?>)</h2> </label>
