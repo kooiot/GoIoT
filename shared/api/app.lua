@@ -65,12 +65,17 @@ function class:meta()
 end
 
 function class:import(filename)
-	local req = {'import', {filename=filename}}
+	local vars = {filename=filename}
+	return self:request('import', vars)
+end
+
+function class:request(msg, vars)
+	local req = {msg, vars}
 	local reply, err = self.client:request(cjson.encode(req), true)
 	if reply then
 		reply = cjson.decode(reply)[2]
 		if reply.result then
-			reply = true
+			return true, reply
 		else
 			err = reply.err
 			reply = reply.result

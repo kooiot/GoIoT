@@ -254,6 +254,14 @@ local function on_start()
 end
 app = require('shared.app').new(info, {on_start = on_start})
 app:init()
+app:reg_request_handler('list_devices', function(app, vars)
+	local devs = {}
+	for name, dev in pairs(dtree) do
+		table.insert(devs, {name=name, id=dev.id})
+	end
+	local reply = {'list_devices',  {result=true, devs=devs}}
+	app.server:send(cjson.encode(reply))
+end)
 
 local ms = 3000
 while not aborting do

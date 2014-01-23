@@ -34,4 +34,20 @@
 	})();       
 </script>
 
-
+<%
+	local port = cgilua.QUERY.port
+	if port then
+		local api = require('shared.api.app').new(port)
+		local r, reply = api:request('list_devices')
+		if not r  or not reply.devs then
+			put('<br>', reply)
+		else
+			for k, v in pairs(reply.devs) do
+			%>
+			<label> Device: <?=v.name?> </label>
+			<a href='http://www.yeelink.net/devices/<?=v.id?>'> Open in YeeLink </a>
+			<%
+			end
+		end
+	end
+%>

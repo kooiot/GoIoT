@@ -35,6 +35,13 @@ else
 	put('<br> Author:', app.author)
 	put('<br> Version:', app.version)
 	put('<br> Build:', app.build)
+	if app.depends and #app.depends > 0 then
+		put('<br> Depends {')
+		for k, v in pairs(app.depends) do
+			put(v)
+		end
+		put('}')
+	end
 end
 %>
 </div>
