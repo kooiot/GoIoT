@@ -6,6 +6,8 @@
 	Publish the data to yeelink platform
 - Device object appears in datacache
 	Do not only saving the plat tags, but also the devices->tags->attributes
+- Limit the connection to applications
+	Using the 'tcp://127.0.0.1:5555' instead of 'tcp://*:5555' which will enable all connections from not only this device but all devices in network, which is a security issue!!!!
 - MVC framwork
 	Make the framework for application to easy's its web development?
 - I18N

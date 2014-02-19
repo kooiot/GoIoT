@@ -156,6 +156,10 @@ function _M.init(name, handlers)
 		app.server:send(cjson.encode(reply))
 	end)
 
+	app:reg_request_handler('data', function(app, vars)
+		-- Handle the data request
+	end)
+
 	-- Import the configuration
 	import_default_conf()
 	--TODO: export

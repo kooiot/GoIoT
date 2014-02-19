@@ -1,6 +1,4 @@
--- Lazy Pirate client
--- Use ZMQ_RCVTIMEO to do a safe request-reply
--- To run, start lpserver and then randomly kill/restart it
+-- Data api access the datacache
 
 require "shared.zhelpers"
 local zmq = require "lzmq"
