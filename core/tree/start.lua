@@ -93,7 +93,7 @@ mpft['update'] = function(vars)
 			if tree then
 				tree:update(json)
 				-- TODO: Update notice?
-				local rep = {'add', {result=true, namespace=vars.namespace}}
+				local rep = {'update', {result=true, namespace=vars.namespace}}
 				server:send(cjson.encode(rep))
 				return
 			else

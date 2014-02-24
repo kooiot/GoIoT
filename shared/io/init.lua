@@ -167,8 +167,8 @@ function _M.init(name, handlers)
 		-- Handle the data request
 	end)
 
-	app.create_device = function(self, name, desc, typ)
-		local api = _M.devapi.new(name, desc, typ)
+	app.create_device = function(self, name, desc, virtual)
+		local api = _M.devapi.new(name, desc, virtual)
 		return api
 	end
 
