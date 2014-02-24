@@ -1,4 +1,5 @@
-function deepcopy(orig)
+
+local function deepcopy (orig)
 	local orig_type = type(orig)
 	local copy
 	if orig_type == 'table' then
@@ -12,3 +13,22 @@ function deepcopy(orig)
 	end
 	return copy
 end
+
+local function inplacecopy(from, to)
+	if type(from) == 'table' then
+		for k, v in pairs(to) do
+			to[k] = nil
+		end
+
+		for k, v in pairs(from) do
+			to[k] = v
+		end
+	else
+		to = from 
+	end
+end
+
+return {
+	deep = deepcopy,
+	inplace = inplacecopy,
+}

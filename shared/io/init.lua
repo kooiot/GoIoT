@@ -7,6 +7,8 @@ local cjson = require 'cjson.safe'
 local pp = require 'shared.PrettyPrint'
 local platform = require 'shared.platform'
 local log = require 'shared.log'
+local data = require 'shared.io.data'
+local devapi = require 'devapi'
 
 local app = nil
 
@@ -30,6 +32,8 @@ _M.ports = {}
 _M.settings = {}
 _M.tags = {}
 _M.commands = {}
+_M.tree = nil
+_M.devs = {}
 
 local function  app_meta()
 	return {
@@ -123,6 +127,7 @@ end
 
 function _M.init(name, handlers)
 	config = load_config(name)
+	_M.tree = data.new(name, '')
 	_M.handlers = handlers
 	handlers.app_meta = app_meta
 
@@ -141,6 +146,7 @@ function _M.init(name, handlers)
 
 	app:init()
 
+	-- Register the import function handler
 	app:reg_request_handler('import', function(app, vars)
 		print('import message received')
 		local re = false
@@ -156,9 +162,15 @@ function _M.init(name, handlers)
 		app.server:send(cjson.encode(reply))
 	end)
 
+	-- Register the data function handler
 	app:reg_request_handler('data', function(app, vars)
 		-- Handle the data request
 	end)
+
+	app.create_device = function(self, name, desc, typ)
+		local api = _M.devapi.new(name, desc, typ)
+		return api
+	end
 
 	-- Import the configuration
 	import_default_conf()
