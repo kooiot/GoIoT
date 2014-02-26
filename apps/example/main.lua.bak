@@ -4,6 +4,7 @@ local io = require('shared.io')
 local pp = require('shared.PrettyPrint')
 local modbus = require('modbus.init')
 local port = require('shared.io.port')
+local api = require('shared.api.data')
 local log = require('shared.log')
 local ztimer = require 'lzmq.timer'
 
@@ -23,52 +24,35 @@ stream.buf = ''
 
 -- Load tags from file
 local packets = {}
-local tags = {}
 
 local function remove_tags()
 	for k, v in pairs(packets) do
 		for k,v in pairs(v.names) do
 			if v ~= '' then
-				-- TODO:
-				--api.erase(ioname..'.'..v, 'Modebus Tag '..v, 0)
+				api.erase(ioname..'.'..v, 'Modebus Tag '..v, 0)
 			end
 		end
 	end
 end
 
-local function load_tags_conf(app, reload)
+local function load_tags_conf(reload)
 	if reload then
 		-- Remove previous tags first when doing import
 		remove_tags()
 	end
 
-	if not reload then
-		local vdev = app.devices:add('ts', 'Time station device (virtual) used to sending the time sync commands', true)
-		if not vdev then
-			log:error(ioname, 'Failed to create virtual device for time station')
-		else
-			-- create timesync command
-			vdev.commands:add('timesync', 'Time sync command', {time = { name='time', desc='time in ms', optional=true}})
-		end
-	end
-
 	packets = require('tags').load_tags()
 
+	local tags = {}
 	for k, v in pairs(packets) do
-		local unit = v.unit -- one unit is one device
-		local dev = app.devices:get('unit.'..unit) 
-		dev = dev or app.devices:add('unit.'..unit, 'Modbus device (unit:'..unit..')')
-
-		log:debug(ioname, 'Create inputs for device "unit.'..unit..'"')
 		for k,v in pairs(v.names) do
 			if v ~= '' then
-				local input = dev.inputs:add(v, 'Input tag '..v)
-				local prop = input.props:add('high', 'alarm high condition', 100)
-				prop = input.props:add('low', 'alarm low condition', 20)
-				tags[v] = input
+				api.add(ioname..'.'..v, 'Modebus Tag '..v, 0)
+				table.insert(tags, {name=ioname..'.'..v, desc='Modebus Tag '..v})
 			end
 		end
 	end
+	io.set_tags(tags)
 
 	return true
 end
@@ -137,7 +121,7 @@ handlers.on_start = function(app)
 			print(err)
 		end
 
-		load_tags_conf(app)
+		load_tags_conf()
 
 		return true
 	end
@@ -154,7 +138,7 @@ handlers.on_reload = function(app)
 	--print(os.date(), "On Reload")
 	log:info(ioname, 'Received event [RELOAD]')
 
-	return load_tags_conf(app, true)
+	return load_tags_conf(true)
 end
 
 handlers.on_run = function(app)
@@ -175,12 +159,10 @@ handlers.on_run = function(app)
 				local vals = {}
 				for i, val in pairs(pa:data()) do
 					if v.names[i] and v.names[i] ~= '' then
-						tags[v.names[i]]:set(val, ts, 1)
 						vals[#vals+1] = {name = ioname..'.'..v.names[i], value = val, timestamp=ts}
 					end
 				end
-				-- TODO:
-				--api.sets(vals)
+				api.sets(vals)
 				err_count = 0
 			else
 				err_count = err_count + 1
