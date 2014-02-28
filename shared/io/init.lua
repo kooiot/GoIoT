@@ -139,7 +139,7 @@ function _M.init(name, handlers)
 
 	app.devices = require('shared.io.devtree').new(name)
 	app.devices:bindcov(function(path, value)
-		print('COV', path, value.value, value.timestamp)
+		print('COV', path, value.value, value.timestamp, value.quality)
 	end)
 
 	assert(app)
@@ -163,7 +163,7 @@ function _M.init(name, handlers)
 	end)
 
 	-- Register the data function handler
-	app:reg_request_handler('data', function(app, vars)
+	app:reg_request_handler('devtree', function(app, vars)
 		-- Handle the data request
 	end)
 

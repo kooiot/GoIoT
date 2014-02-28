@@ -4,8 +4,8 @@ local m_path = os.getenv('CAD_DIR') or "."
 local m_package_path = package.path  
 package.path = string.format("%s;%s/?.lua;%s/?/init.lua", m_package_path, m_path, m_path)  
 
-local api = require 'shared.api.data'
-local sub = require 'shared.api.data_sub'
+local api = require 'shared.api.iobus'
+local sub = require 'shared.api.iobus_sub'
 local cjson = require 'cjson.safe'
 local zpoller =  require 'lzmq.poller'
 local zmq = require 'lzmq'

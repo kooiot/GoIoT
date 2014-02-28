@@ -1,7 +1,7 @@
 #!/usr/bin/env lua
 
-local api = require 'shared.api.data'
-local sub = require 'shared.api.data_sub'
+local api = require 'shared.api.iobus'
+local sub = require 'shared.api.iobus_sub'
 local cjson = require 'cjson.safe'
 local zpoller =  require 'lzmq.poller'
 local zmq = require 'lzmq'
