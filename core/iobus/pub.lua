@@ -19,12 +19,16 @@ local function getsub(path)
 end
 
 local function cov(path, value)
+	log:debug('IOBUS', 'Publish data changes for '..path)
+	local devpath = path:match('([^/]-/[^/]-)$')
+	local t = ptable[devpath]
 	-- publish changes
-	if ptable[path] then
-		for k, v in pairs(ptable[vars.name]) do
-			--log:debug('DATACACHE', 'Publish data changes for '..vars.name)
-			publisher:send(k..' ', zmq.SNDMORE)
-			publisher:send(cjson.encode(vars))
+	if t then
+		for k, v in pairs(t) do
+			if k ~= devpath then
+				publisher:send(k..' ', zmq.SNDMORE)
+				publisher:send(cjson.encode(vars))
+			end
 		end
 	end
 end
@@ -33,21 +37,21 @@ local function sub(path, from)
 	local err =  'Invalid/Unsupported subscribe request'
 	if path and from then
 		ptable[path] = ptable[path] or {}
-		ptable[path][id] = true
+		ptable[path][from] = true
 		return true
 	end
 	return false, err
 end
 
-local function unsub(from)
+local function unsub(path, from)
 	local err =  'Invalid/Unsupported unsubscribe request'
 	if not from then 
 		return false, err
 	end
-	for k,v in pairs(ptable) do
-		if ptable[v] and ptable[v][from] then
-			log:info('DATACACHE', 'unsubscribe '..v..' for '..from)
-			ptable[v][from] = nil
+	if path and from then
+		if ptable[path] and ptable[path][from] then
+			log:info('IOBUS', 'unsubscribe '..path..' for '..from)
+			ptable[path][from] = nil
 		end
 	end
 	return true

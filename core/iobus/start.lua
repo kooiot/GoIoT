@@ -42,15 +42,15 @@ mpft['login'] = function(vars)
 	server:send(cjson.encode(rep))
 end
 
-mpft['set'] = function(vars)
-	local err = 'Invalid/Unsupported set request'
+mpft['publish'] = function(vars)
+	local err = 'Invalid/Unsupported publish request'
 	--- valid the request
 	if vars and type(vars) == 'table' then
 		if vars.path and vars.value and vars.timestamp then
 			local r = true
 			r, err = db:set(vars.path, vars.value, vars.timestamp, vars.quality)
 			if r then
-				local rep = {'set', {result=true, path=vars.path}}
+				local rep = {'publish', {result=true, path=vars.path}}
 				server:send(cjson.encode(rep))
 				pub.cov(vars.path, vars)
 				return
@@ -60,13 +60,13 @@ mpft['set'] = function(vars)
 	send_err(err)
 end
 
-mpft['sets'] = function(vars)
-	local err = 'Invalid/Unsupported sets request'
+mpft['batch_publish'] = function(vars)
+	local err = 'Invalid/Unsupported batch_publish request'
 	--- valid the request
 	if vars and type(vars) == 'table' then
 		local result = false
 		local paths = {}
-		for k,v in pairs(vars) do
+		for k,v in pairs(vars.pvs) do
 			if v.path and v.value and v.timestamp then
 				local r = true
 				r, err = db:set(v.path, v.value, v.timestamp)
@@ -81,27 +81,43 @@ mpft['sets'] = function(vars)
 				result = false
 			end
 		end
-		local rep = {'sets', {result=result, paths=paths}}
+		local rep = {'batch_publish', {result=result, paths=paths}}
 		server:send(cjson.encode(rep))
 		return
 	end
 	send_err(err)
 end
 
-mpft['get'] = function(vars)
+mpft['read'] = function(vars)
 	local err = 'Invalid/Unsupported get request'
 	--- valid the request
 	if vars and type(vars) == 'table' then
 		if vars.path then
 			local r, value, timestamp = db:get(vars.path)
 			if r then
-				local rep = {'get', {path=vars.path, value=value, timestamp=timestamp}}
+				local rep = {'read', {path=vars.path, value=value, timestamp=timestamp}}
 				server:send(cjson.encode(rep))
 				return
 			else
 				err = value
 			end
 		end
+	end
+	send_err(err)
+end
+
+mpft['write'] = function(vars)
+	local err = 'Invalid/Unsupported write request'
+	if vars and type(vars) == 'table' and vars.path then
+		-- TODO: write operation to application
+	end
+	send_err(err)
+end
+
+mpft['command'] = function(vars)
+	local err = 'Invalid/Unsupported command request'
+	if vars and type(vars) == 'table' and vars.path then
+		-- TODO: command operation to application
 	end
 	send_err(err)
 end
@@ -153,14 +169,14 @@ mpft['tree'] = function(vars)
 end
 
 mpft['subscribe'] = function(vars)
-	local result, err = pub.sub(vars.path, vars.id)
-	local rep = {'subscribe', {result=result, id=vars.id, err=err}}
+	local result, err = pub.sub(vars.path, vars.from)
+	local rep = {'subscribe', {result=result, err=err}}
 	server:send(cjson.encode(rep))
 end
 
 mpft['unsubscribe'] = function(vars)
-	local result, err = pub.unsub(vars.path)
-	local rep = {'unsubscribe', {result=result, id=id, err=err}}
+	local result, err = pub.unsub(vars.path, vars.from)
+	local rep = {'unsubscribe', {result=result, err=err}}
 	server:send(cjson.encode(rep))
 end
 

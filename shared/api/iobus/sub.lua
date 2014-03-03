@@ -1,67 +1,83 @@
--- Weather update client
+-- iobus client
 -- Connects SUB socket to tcp://localhost:5556
--- Collects weather updates and finds avg temp in zipcode
+-- Collects data updates 
 
 require "shared.zhelpers"
 local zmq = require "lzmq"
 
-local _M = {}
+local class = {}
 
-function _M.open(filter, ctx, poller, cb)
-	assert(ctx)
-	assert(poller)
-	assert(cb)
-	-- Subscribe to filter 
-	_M.filter = filter or ""
-	_M.filter = _M.filter..' '
-	_M.poller = poller
-	_M.callback = cb
+function class:bind(path, cb)
+	assert(not self.callbacks[path])
+	self.callbacks[path] = cb
+end
 
+function class:unbind(path)
+	self.callbacks[path] = nil
+end
+
+function class:open()
 	printf("Collecting updates from publish server ...\n")
-
-	_M.context = ctx
-	_M.option = {
-		zmq.SUB,
-		subscribe = _M.filter,
-		connect   = "tcp://localhost:5566",
-		rcvtimeo = 1000;
-	}
-	assert(_M.option[1] == zmq.SUB)
-
 	-- Socket to talk to server
-	local subscriber, err = _M.context:socket(_M.option)
+	local subscriber, err = self.context:socket(self.option)
 	zassert(subscriber, err)
-	_M.subscriber = subscriber
+	self.subscriber = subscriber
 
 	poller:add(subscriber, zmq.POLLIN, function()
-		local filter, data = _M.recv()
+		local filter, data = self.recv()
 		if filter and data then
-			cb(filter, data)
+			if data.path and self.callbacks[data.path] then
+				-- Call backs
+				self.callbacks[data.path](filter, data)
+			end
 		end
 	end)
 end
 
-function _M.recv()
-	if not _M.subscriber then
+function class:recv()
+	if not self.subscriber then
 		return nil, nil
 	end
 	-- receive the filter
-	local filter = _M.subscriber:recv()
+	local filter = self.subscriber:recv()
 	if filter then
-		assert(filter==_M.filter)
+		assert(filter==self.filter)
 	else
 		return nil, nil
 	end
 
 	-- receive content
-	local data, err = _M.subscriber:recv()
+	local data, err = self.subscriber:recv()
 	return filter, data, err
 end
 
-function _M.close()
-	_M.poller:remove(_M.subscriber)
-	_M.subscriber:close()
-	_M.subscriber = nil
+function class:close()
+	self.poller:remove(self.subscriber)
+	self.subscriber:close()
+	self.subscriber = nil
 end
 
-return _M
+return function(filter, ctx, poller)
+	local obj = {}
+	assert(ctx)
+	assert(poller)
+	-- Subscribe to filter 
+	local filter = filter or ""
+	obj.filter = filter..' '
+	obj.poller = poller
+	obj.callbacks = {}
+
+
+	obj.context = ctx
+	obj.option = {
+		zmq.SUB,
+		subscribe = obj.filter,
+		connect   = "tcp://localhost:5566",
+		rcvtimeo = 1000;
+	}
+	assert(obj.option[1] == zmq.SUB)
+	
+	local c = setmetatable(obj, {__index=class})
+	c:open()
+	return c
+end
