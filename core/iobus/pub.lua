@@ -1,6 +1,7 @@
 
 require 'shared.zhelpers'
 local zmq = require 'lzmq'
+local log = require 'shared.log'
 
 local ptable = {}
 

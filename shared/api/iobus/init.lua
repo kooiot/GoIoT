@@ -6,7 +6,7 @@ local zpoller = require 'lzmq.poller'
 local cjson = require "cjson.safe"
 local ztimer = require 'lzmq.timer'
 
-local _M = {}
+local class = {}
 
 local function reply(json, err)
 	local reply = nil
@@ -24,8 +24,8 @@ local function reply(json, err)
 	return reply, err
 end
 
-function class:login(user, pass)
-	local req = {"login", {user=user, pass=pass, from=self.from}}
+function class:login(user, pass, port)
+	local req = {"login", {user=user, pass=pass, from=self.from, port=port}}
 	return reply(self.client:request(cjson.encode(req), true))
 end
 
@@ -44,13 +44,13 @@ end
 -- Input sensor change the value
 function class:publish(path, value, timestamp, quality)
 	local timestamp = timestamp or ztimer.absolute_time()
-	local req = {'set', {path=path, value=value, timestamp=timestamp, quality=quality, from=self.from}}
+	local req = {'publish', {path=path, value=value, timestamp=timestamp, quality=quality, from=self.from}}
 	return reply(self.client:request(cjson.encode(req), true))
 end
 
 -- vals is the table that path, value(value, timestamp, quality)
 function class:batch_publish(vals)
-	local req = {'sets', {pvs=vals, from=self.from}}
+	local req = {'batch_publish', {pvs=vals, from=self.from}}
 	return reply(self.client:request(cjson.encode(req), true))
 end
 

@@ -32,17 +32,17 @@ local mpft = {} -- message process function table
 
 -- hanlde login
 mpft['login'] = function(vars)
-	local namespace = vars.namespace
-	local id = vars.id
+	local namespace = vars.from
 	local user = vars.user
 	local pass = vars.pass
 	local port = vars.port
-	clients[namespace] = { id=id, user=user, pass=pass, port=port }
+	clients[namespace] = { user=user, pass=pass, port=port }
 	local rep = {"login", { ver="1" }}
 	server:send(cjson.encode(rep))
 end
 
 mpft['publish'] = function(vars)
+	log:debug('IOBUS', 'PUBLISH', vars.path)
 	local err = 'Invalid/Unsupported publish request'
 	--- valid the request
 	if vars and type(vars) == 'table' then
@@ -71,7 +71,7 @@ mpft['batch_publish'] = function(vars)
 				local r = true
 				r, err = db:set(v.path, v.value, v.timestamp)
 				if not r then
-					log:error('DATACACHE', 'SETS ERR', err)
+					log:error('IOBUS', 'SETS ERR', err)
 					result = false
 				else
 					table.insert(paths, v.path)
@@ -210,7 +210,7 @@ poller:add(server, zmq.POLLIN, function()
 			if fun then
 				fun(req[2])
 			else
-				send_err('Unsupported message operation'..req[1])
+				send_err('Unsupported message operation: '..req[1])
 			end
 		end
 	end

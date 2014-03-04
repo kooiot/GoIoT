@@ -7,6 +7,7 @@ local cjson = require 'cjson.safe'
 local pp = require 'shared.PrettyPrint'
 local platform = require 'shared.platform'
 local log = require 'shared.log'
+local iobus = require 'shared.api.iobus'
 
 local app = nil
 
@@ -139,12 +140,22 @@ function _M.init(name, handlers)
 
 	app.devices = require('shared.io.devtree').new(name)
 	app.devices:bindcov(function(path, value)
-		print('COV', path, value.value, value.timestamp, value.quality)
+		log:debug(name, 'Publish data changes at '..path)
+		local r, err = app.iobus:publish(path, value.value, value.timestamp, value.quality)
+		if not r then
+			log:error(name, err)
+		end
 	end)
 
 	assert(app)
 
 	app:init()
+	-- Login to iobus
+	app.iobus = iobus.new(name, app.ctx, app.poller)
+	local r, err = app.iobus:login('user', 'pass', app.port)
+	if not r then
+		log:error(name, err)
+	end
 
 	-- Register the import function handler
 	app:reg_request_handler('import', function(app, vars)
