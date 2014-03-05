@@ -21,38 +21,53 @@ end
 
 local function cov(path, value)
 	log:debug('IOBUS', 'Publish data changes for '..path)
-	local devpath = path:match('([^/]-/[^/]-)$')
+	local devpath = path:match('^([^/]-/[^/]-)')
 	local t = ptable[devpath]
 	-- publish changes
 	if t then
 		for k, v in pairs(t) do
 			if k ~= devpath then
 				publisher:send(k..' ', zmq.SNDMORE)
-				publisher:send(cjson.encode(vars))
+				publisher:send(cjson.encode('cov', {devpath=devpath, path=path, value=value}))
 			end
 		end
 	end
 end
 
-local function sub(path, from)
+local function write(path, value, from)
+	-- TODO: send to 
+	local namespace = path:match('^([^/]+)/')
+	publisher:send(namespace..' ', zmq.SNDMORE)
+	publisher:send(cjson.encode('write', {path=path, value=value, from=from}))
+	return true
+end
+
+local function command(path, args, from)
+	local namespace = path:match('^([^/]+)/')
+	publisher:send(namespace..' ', zmq.SNDMORE)
+	publisher:send(cjson.encode('command', {path=path, args=args, from=from}))
+	return true
+end
+
+local function sub(devpath, from)
 	local err =  'Invalid/Unsupported subscribe request'
-	if path and from then
-		ptable[path] = ptable[path] or {}
-		ptable[path][from] = true
+	if devpath and from then
+		ptable[devpath] = ptable[devpath] or {}
+		ptable[devpath][from] = true
 		return true
 	end
 	return false, err
 end
 
-local function unsub(path, from)
+local function unsub(devpath, from)
 	local err =  'Invalid/Unsupported unsubscribe request'
 	if not from then 
 		return false, err
 	end
-	if path and from then
-		if ptable[path] and ptable[path][from] then
-			log:info('IOBUS', 'unsubscribe '..path..' for '..from)
-			ptable[path][from] = nil
+	if devpath and from then
+		if ptable[devpath] and ptable[devpath][from] then
+			log:info('IOBUS', 'unsubscribe '..devpath..' for '..from)
+			ptable[devpath][from] = nil
 		end
 	end
 	return true

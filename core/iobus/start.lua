@@ -109,7 +109,10 @@ end
 mpft['write'] = function(vars)
 	local err = 'Invalid/Unsupported write request'
 	if vars and type(vars) == 'table' and vars.path then
-		-- TODO: write operation to application
+		-- write operation to application
+		local r, err = pub.write(vars.path, vars.value, vars.from)
+		local reply = {'write', {result=r, err=err}}
+		server:send(cjson.encode(reply))
 	end
 	send_err(err)
 end
@@ -117,7 +120,10 @@ end
 mpft['command'] = function(vars)
 	local err = 'Invalid/Unsupported command request'
 	if vars and type(vars) == 'table' and vars.path then
-		-- TODO: command operation to application
+		-- command operation to application
+		local r, err = pub.command(vars.path, vars.args, vars.from)
+		local reply = {'command', {result=r, err=err}}
+		server:send(cjson.encode(reply))
 	end
 	send_err(err)
 end
@@ -169,13 +175,13 @@ mpft['tree'] = function(vars)
 end
 
 mpft['subscribe'] = function(vars)
-	local result, err = pub.sub(vars.path, vars.from)
+	local result, err = pub.sub(vars.devpath, vars.from)
 	local rep = {'subscribe', {result=result, err=err}}
 	server:send(cjson.encode(rep))
 end
 
 mpft['unsubscribe'] = function(vars)
-	local result, err = pub.unsub(vars.path, vars.from)
+	local result, err = pub.unsub(vars.devpath, vars.from)
 	local rep = {'unsubscribe', {result=result, err=err}}
 	server:send(cjson.encode(rep))
 end

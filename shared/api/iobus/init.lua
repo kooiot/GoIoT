@@ -5,6 +5,7 @@ local zmq = require "lzmq"
 local zpoller = require 'lzmq.poller'
 local cjson = require "cjson.safe"
 local ztimer = require 'lzmq.timer'
+local iobussub = require 'shared.api.iobus.sub'
 
 local class = {}
 
@@ -77,36 +78,42 @@ function class:tree(path)
 	return reply(self.client:request(cjson.encode(req), true))
 end
 
-function class:subscribe(path, cb)
+-- subscribe to a device tree path, to get notice when data changed
+function class:subscribe(devpath, cb)
 	-- assert the callback, and create the subclient
 	assert(cb)
-	if not self.subclient then
-		local sub = require 'shared.api.iobus.sub'
-		self.subclient, err = sub.new(self.from, self.ctx, self.poller)
-		assert(self.subsclient, err)
-	end
+	assert(self.subclient)
 
-	local req = {'subscribe', {path=path, from=self.from}}
+	local req = {'subscribe', {devpath=devpath, from=self.from}}
 	local reply, err = self.client:request(cjson.encode(req), true)
 	if reply then
 		reply = cjson.decode(reply)[2]
 		-- Only bind the callbacks when subscribe successfully
-		self.subclient:bind(path, cb)
+		self.subclient:bind(devpath, cb)
 	end
 	return reply, err
 end
 
-function class:unsubscribe(path)
-	if not self.subclient then
-		return true
-	end
-	self.subclient:unbind(path)
-	local req = {'unsubscribe', {path=path, from=self.from}}
+-- unsubscribe
+function class:unsubscribe(devpath)
+	assert(self.subclient)
+	self.subclient:unbind(devpath)
+	local req = {'unsubscribe', {devpath=devpath, from=self.from}}
 	local reply, err = self.client:request(cjson.encode(req), true)
 	if reply then
 		reply = cjson.decode(reply)[2]
 	end
 	return reply, err
+end
+
+function class:onwrite(cb)
+	assert(self.subclient)
+	self.subclient.onwrite = cb
+end
+
+function class:oncommand(cb)
+	assert(self.subclient)
+	self.subclient.oncommand = cb
 end
 
 function class:version()
@@ -116,9 +123,6 @@ function class:version()
 		reply = cjson.decode(reply)[2]
 	end
 	return reply, err
-end
-
-function class:set_subscribe_cb(cb)
 end
 
 -- Create iobus access api
@@ -132,11 +136,15 @@ local function new(from, ctx, poller)
 
 	client:open()
 
+	local subclient, err = iobussub.new(from, ctx, poller)
+	assert(subsclient, err)
+
 	local obj = {
 		ctx = ctx,
 		poller = poller,
 		client = client,
-		from = from
+		subclient = subclient,
+		from = from,
 	}
 	
 	return setmetatable(obj, {__index=class})

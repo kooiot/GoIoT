@@ -4,6 +4,7 @@
 
 require "shared.zhelpers"
 local zmq = require "lzmq"
+local log = require 'shared.log'
 
 local class = {}
 
@@ -24,11 +25,33 @@ function class:open()
 	self.subscriber = subscriber
 
 	poller:add(subscriber, zmq.POLLIN, function()
-		local filter, data = self.recv()
+		local filter, data, err = self.recv()
 		if filter and data then
-			if data.path and self.callbacks[data.path] then
-				-- Call backs
-				self.callbacks[data.path](filter, data)
+			if data[1] == 'cov' then
+				local cb = self.callbacks[data[2].devpath]
+				if cb then
+					-- Call backs
+					cb(data[2].path, data[2].value)
+				end
+			elseif data[1] == 'write' then
+				if self.onwrite then
+					self.onwrite(data[2].path, data[2].value, data[2].from)
+				else
+					log:error('IOBUS_API', 'No onwrite implemented')
+				end
+			elseif data[1] == 'command' then
+				if self.oncommand then
+					self.oncommand(data[2].path, data[2].args, data[2].from)
+				else
+					log:error('IOBUS_API', 'No oncommand implemented')
+				end
+			else
+				-- No support one?
+			end
+			if data.namespace == filter then
+				-- a write request, or a comommand request
+			else
+				-- Nothing to do
 			end
 		end
 	end)
@@ -48,6 +71,12 @@ function class:recv()
 
 	-- receive content
 	local data, err = self.subscriber:recv()
+	if data then
+		data, err = cjson.decode(data)
+		if not data then
+			log:debug('IOBUS_API', 'Cannot decode the data', err)
+		end
+	end
 	return filter, data, err
 end
 
