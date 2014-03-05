@@ -15,11 +15,6 @@ local _ver = require '_ver'
 
 local class = {}
 
-function class:log(level, cate, msg)
-	-- TODO:
-	print(level, cate, self.name, msg)
-end
-
 function class:firevent(dest, name, vars)
 	local event = {src=self.name, dest=dest, name=name, vars=vars}
 	--print('fire EVENT('..name..') to '..dest )
