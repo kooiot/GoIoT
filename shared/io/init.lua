@@ -125,10 +125,10 @@ end
 function _M.init(name, handlers)
 	config = load_config(name)
 	_M.handlers = handlers
-	handlers.app_meta = app_meta
+	_M.handlers.app_meta = app_meta
 
-	if not handlers.on_close then
-		handlers.on_close = function(app)
+	if not _M.handlers.on_close then
+		_M.handlers.on_close = function(app)
 			_M.abort()
 		end
 	end
@@ -136,7 +136,7 @@ function _M.init(name, handlers)
 	local info = {}
 	info.name = name
 	info.port = config.port
-	app = require('shared.app').new(info, handlers)
+	app = require('shared.app').new(info, _M.handlers)
 
 	app.devices = require('shared.io.devs').new(name)
 	app.devices:bindcov(function(path, value)
@@ -152,6 +152,18 @@ function _M.init(name, handlers)
 	app:init()
 	-- Login to iobus
 	app.iobus = iobus.new(name, app.ctx, app.poller)
+	-- register the command and write handlers
+	app.iobus.oncommand(function(path, args, from)
+		if _M.handlers.on_command then
+			_M.handlers.on_command(app, path, args, from)
+		end
+	end)
+	app.iobus.onwrite(function(path, value, from)
+		if _M.handlers.on_write then
+			_M.handlers.on_write(app, path, value, from)
+		end
+	end)
+
 	local r, err = app.iobus:login('user', 'pass', app.port)
 	if not r then
 		log:error(name, err)
@@ -163,8 +175,8 @@ function _M.init(name, handlers)
 		local re = false
 		local err = 'Incorrect request found for msg:import'
 		if vars.filename  then
-			if handlers.on_import then
-				re, err = handlers.on_import(app, vars.filename)
+			if _M.handlers.on_import then
+				re, err = _M.handlers.on_import(app, vars.filename)
 			else
 				err = 'Import not implemented'
 			end

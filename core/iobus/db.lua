@@ -1,5 +1,6 @@
 
 local sql = require 'luasql.sqlite3'
+local log = require 'shared.log'
 
 local sqlite3 = sql.sqlite3()
 
@@ -26,7 +27,7 @@ function class:open(path)
 	check_sql = assert(self.conn:escape(check_sql))
 	local cur = assert(self.conn:execute(check_sql))
 	if not cur:fetch() then
-		print('tags table not exist, create new')
+		log:info('IOBUS', 'tags table not exist, create new')
 		create(path)
 	end
 end
