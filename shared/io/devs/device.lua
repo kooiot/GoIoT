@@ -1,8 +1,8 @@
 
-local map = require 'shared.io.devtree.map'
-local prop = require 'shared.io.devtree.prop'
-local command =  require 'shared.io.devtree.command'
-local object = require 'shared.io.devtree.object'
+local map = require 'shared.io.devs.map'
+local prop = require 'shared.io.devs.prop'
+local command =  require 'shared.io.devs.command'
+local object = require 'shared.io.devs.object'
 
 local class = {}
 

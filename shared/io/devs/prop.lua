@@ -1,4 +1,4 @@
-local pub = require 'shared.io.devtree.pub'
+local pub = require 'shared.io.devs.pub'
 local class = {}
 
 function class:set(value, timestamp, quality)

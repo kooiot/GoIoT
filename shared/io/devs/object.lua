@@ -1,7 +1,7 @@
 
-local map = require 'shared.io.devtree.map'
-local prop = require 'shared.io.devtree.prop'
-local pub = require 'shared.io.devtree.pub'
+local map = require 'shared.io.devs.map'
+local prop = require 'shared.io.devs.prop'
+local pub = require 'shared.io.devs.pub'
 local props = map(prop)
 
 local class = {}

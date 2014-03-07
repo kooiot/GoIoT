@@ -138,7 +138,7 @@ function _M.init(name, handlers)
 	info.port = config.port
 	app = require('shared.app').new(info, handlers)
 
-	app.devices = require('shared.io.devtree').new(name)
+	app.devices = require('shared.io.devs').new(name)
 	app.devices:bindcov(function(path, value)
 		log:debug(name, 'Publish data changes at '..path)
 		local r, err = app.iobus:publish(path, value.value, value.timestamp, value.quality)
@@ -174,7 +174,7 @@ function _M.init(name, handlers)
 	end)
 
 	-- Register the data function handler
-	app:reg_request_handler('devtree', function(app, vars)
+	app:reg_request_handler('devs', function(app, vars)
 		-- Handle the data request
 	end)
 

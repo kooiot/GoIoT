@@ -134,17 +134,17 @@ mpft['enum'] = function (vars)
 	server:send(cjson.encode(rep))
 end
 
-local function getdevtree(path)
+local function get_devices_tree(path)
 	local ns, dev = path:match('([^/]-)/(.-)$')
 	if not ns then
 		ns = path
 	end
 	if ns and clients[ns] and clients[ns].port then
-		-- Query devtree
+		-- Query devvices tree
 		if not clients[ns].tree then
 			local api = require('shared.api.app').new(clients[ns].port)
 			local err = nil
-			local tree, err = api.request('devtree')
+			local tree, err = api.request('devs')
 			if not tree then
 				return nil, err
 			end
@@ -162,7 +162,7 @@ mpft['tree'] = function(vars)
 	-- TODO: Ask application for its io tree
 	local path = vars.path
 	if path then
-		local obj, err = getdevtree(path)	
+		local obj, err = get_devices_tree(path)	
 		if obj then
 			server:send(cjson.encode(rep))
 		else

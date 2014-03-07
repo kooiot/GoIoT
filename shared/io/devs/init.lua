@@ -1,6 +1,6 @@
 
-local device = require 'shared.io.devtree.device'
-local pub = require 'shared.io.devtree.pub'
+local device = require 'shared.io.devs.device'
+local pub = require 'shared.io.devs.pub'
 local cjson = require 'cjson.safe'
 
 local class = {}
