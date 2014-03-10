@@ -159,8 +159,14 @@ function _M.init(name, handlers)
 		end
 	end)
 	app.iobus.onwrite(function(path, value, from)
-		if _M.handlers.on_write then
-			_M.handlers.on_write(app, path, value, from)
+		-- Disable writing on inputs and commands path
+		if path:match('.+/inputs/[^/]+$') or path:match('.+/commands/[^/]+$') then
+			log:error('IO', 'Write only could perform on output/value objects', path)
+			return false, 'Invalid path'
+		else
+			if _M.handlers.on_write then
+				return _M.handlers.on_write(app, path, value, from)
+			end
 		end
 	end)
 
