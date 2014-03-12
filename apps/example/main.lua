@@ -192,6 +192,17 @@ handlers.on_run = function(app)
 	return coroutine.yield(false, 1000)
 end
 
+-- Onwrite
+handlers.on_write = function(app, path, value, from)
+	log:debug(ioname, 'on_write called')
+	return nil, 'FIXME'
+end
+
+handlers.on_command = function(app, path, value, from)
+	log:debug(ioname, 'on_command called')
+	return nil, 'FIXME'
+end
+
 handlers.on_import = require('import').import
 
 io.add_port('main', {port.tcp_client, port.serial}, port.tcp_client) 

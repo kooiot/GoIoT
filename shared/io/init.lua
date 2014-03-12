@@ -154,18 +154,37 @@ function _M.init(name, handlers)
 	app.iobus = iobus.new(name, app.ctx, app.poller)
 	-- register the command and write handlers
 	app.iobus.oncommand(function(path, args, from)
+		log:info(name, 'Command operation received')
+		if not path:match('.+/commands/[^/]+$') then
+			log:error(name, 'Command operation could only perform on commands object')
+			return nil, 'Invalid path'
+		end
 		if _M.handlers.on_command then
-			_M.handlers.on_command(app, path, args, from)
+			local r, err = _M.handlers.on_command(app, path, args, from)
+			if not r then
+				log:error(name, 'Write operation failed', err)
+			end
+			return r, err
+		else
+			log:error(name, 'on_command not implemented')
+			return nil, 'Not implemented'
 		end
 	end)
 	app.iobus.onwrite(function(path, value, from)
+		log:info(name, 'Write operation received')
 		-- Disable writing on inputs and commands path
 		if path:match('.+/inputs/[^/]+$') or path:match('.+/commands/[^/]+$') then
-			log:error('IO', 'Write only could perform on output/value objects', path)
-			return false, 'Invalid path'
+			log:error(name, 'Write only could perform on output/value objects', path)
+			return nil, 'Invalid path'
 		else
 			if _M.handlers.on_write then
-				return _M.handlers.on_write(app, path, value, from)
+				local r, err = _M.handlers.on_write(app, path, value, from)
+				if not r then 
+					log:error(name, 'Write operation failed', err)
+				end
+			else
+				log:error(name, 'on_write not implemented')
+				return nil, 'Not implemented'
 			end
 		end
 	end)
