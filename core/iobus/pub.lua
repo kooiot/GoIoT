@@ -2,6 +2,7 @@
 require 'shared.zhelpers'
 local zmq = require 'lzmq'
 local log = require 'shared.log'
+local cjson = require 'cjson.safe'
 
 local ptable = {}
 
@@ -28,7 +29,7 @@ local function cov(path, value)
 		for k, v in pairs(t) do
 			if k ~= devpath then
 				publisher:send(k..' ', zmq.SNDMORE)
-				publisher:send(cjson.encode('cov', {devpath=devpath, path=path, value=value}))
+				publisher:send(cjson.encode({'cov', {devpath=devpath, path=path, value=value}}))
 			end
 		end
 	end
@@ -38,14 +39,14 @@ local function write(path, value, from)
 	-- TODO: send to 
 	local namespace = path:match('^([^/]+)/')
 	publisher:send(namespace..' ', zmq.SNDMORE)
-	publisher:send(cjson.encode('write', {path=path, value=value, from=from}))
+	publisher:send(cjson.encode({'write', {path=path, value=value, from=from}}))
 	return true
 end
 
 local function command(path, args, from)
 	local namespace = path:match('^([^/]+)/')
 	publisher:send(namespace..' ', zmq.SNDMORE)
-	publisher:send(cjson.encode('command', {path=path, args=args, from=from}))
+	publisher:send(cjson.encode({'command', {path=path, args=args, from=from}}))
 	return true
 end
 
@@ -77,5 +78,7 @@ return {
 	init = init,
 	cov = cov,
 	sub = sub,
-	unsub = unsub
+	unsub = unsub,
+	write = write,
+	command = command
 }

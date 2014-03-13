@@ -110,10 +110,16 @@ mpft['write'] = function(vars)
 	local err = 'Invalid/Unsupported write request'
 	if vars and type(vars) == 'table' and vars.path then
 		-- write operation to application
-		local r, err = pub.write(vars.path, vars.value, vars.from)
-		local reply = {'write', {result=r, err=err}}
-		server:send(cjson.encode(reply))
+		local ns, dev = vars.path:match('^([^/]+)/([^/]+)/.+')
+		if clients[ns] then
+			local r, err = pub.write(vars.path, vars.value, vars.from)
+			local reply = {'write', {result=r, err=err}}
+			server:send(cjson.encode(reply))
+		else
+			err = 'Device path incorrect, no such namespace'
+		end
 	end
+	log:error('IOBUS', 'Error on write', err)
 	send_err(err)
 end
 
@@ -121,10 +127,16 @@ mpft['command'] = function(vars)
 	local err = 'Invalid/Unsupported command request'
 	if vars and type(vars) == 'table' and vars.path then
 		-- command operation to application
-		local r, err = pub.command(vars.path, vars.args, vars.from)
-		local reply = {'command', {result=r, err=err}}
-		server:send(cjson.encode(reply))
+		local ns, dev = vars.path:match('^([^/]+)/([^/]+)/.+')
+		if clients[ns] then
+			local r, err = pub.command(vars.path, vars.args, vars.from)
+			local reply = {'command', {result=r, err=err}}
+			server:send(cjson.encode(reply))
+		else
+			err = 'Device path incorrect, no such namespace'
+		end
 	end
+	log:error('IOBUS', 'Error on command', err)
 	send_err(err)
 end
 

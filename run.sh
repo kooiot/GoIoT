@@ -19,7 +19,7 @@ if [ $1 = "start" ] ; then
 	#start-stop-daemon --start --oknodo --name rdb --pidfile /var/run/rdb.pid --chdir ~/cad2/app/rdb --background --startas /usr/bin/lua5.2 -- start.lua
 	start-stop-daemon --start --oknodo --make-pidfile --pidfile $PID_FOLDER/core_config.pid --chdir $CAD_DIR/core/config --background --startas /usr/bin/lua -- start.lua
 	start-stop-daemon --start --oknodo --make-pidfile --pidfile $PID_FOLDER/core_monitor.pid --chdir $CAD_DIR/core/monitor --background --startas /usr/bin/lua -- start.lua
-	start-stop-daemon --start --oknodo --make-pidfile --pidfile $PID_FOLDER/core_datacache.pid --chdir $CAD_DIR/core/datacache --background --startas /usr/bin/lua -- start.lua
+	start-stop-daemon --start --oknodo --make-pidfile --pidfile $PID_FOLDER/core_iobus.pid --chdir $CAD_DIR/core/iobus --background --startas /usr/bin/lua -- start.lua
 	start-stop-daemon --start --oknodo --make-pidfile --pidfile $PID_FOLDER/logs.pid --chdir $CAD_DIR/core/logs --background --startas /usr/bin/lua -- start.lua
 	start-stop-daemon --start --oknodo --make-pidfile --pidfile $PID_FOLDER/web.pid --chdir $CAD_DIR/web --background --startas /usr/local/bin/wsapi -- --config=xavante.conf.lua --cgilua
 else
@@ -27,7 +27,7 @@ else
 	rm $PID_FOLDER/web.pid
 	start-stop-daemon --stop --oknodo --pidfile $PID_FOLDER/logs.pid --retry 5
 	rm $PID_FOLDER/logs.pid
-	start-stop-daemon --stop --oknodo --pidfile $PID_FOLDER/core_datacache.pid --retry 5
+	start-stop-daemon --stop --oknodo --pidfile $PID_FOLDER/core_iobus.pid --retry 5
 	rm $PID_FOLDER/core_datacache.pid
 	start-stop-daemon --stop --oknodo --pidfile $PID_FOLDER/core_monitor.pid --retry 5
 	rm $PID_FOLDER/core_monitor.pid

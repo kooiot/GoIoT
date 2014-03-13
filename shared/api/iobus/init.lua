@@ -1,8 +1,6 @@
 -- Data api access the datacache
 
 require "shared.zhelpers"
-local zmq = require "lzmq"
-local zpoller = require 'lzmq.poller'
 local cjson = require "cjson.safe"
 local ztimer = require 'lzmq.timer'
 local iobussub = require 'shared.api.iobus.sub'
@@ -127,17 +125,15 @@ end
 
 -- Create iobus access api
 local function new(from, ctx, poller)
-	assert(from)
-	local ctx = ctx or zmq.context()
-	local poller = poller or zpoller.new(1)
+	assert(from and ctx and poller)
 
 	local req = require "shared.req"
 	local client = req.new(ctx)
 
 	client:open()
 
-	local subclient, err = iobussub.new(from, ctx, poller)
-	assert(subsclient, err)
+	local subclient, err = iobussub(from, ctx, poller)
+	assert(subclient, err)
 
 	local obj = {
 		ctx = ctx,

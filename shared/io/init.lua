@@ -153,7 +153,7 @@ function _M.init(name, handlers)
 	-- Login to iobus
 	app.iobus = iobus.new(name, app.ctx, app.poller)
 	-- register the command and write handlers
-	app.iobus.oncommand(function(path, args, from)
+	app.iobus:oncommand(function(path, args, from)
 		log:info(name, 'Command operation received')
 		if not path:match('.+/commands/[^/]+$') then
 			log:error(name, 'Command operation could only perform on commands object')
@@ -170,7 +170,7 @@ function _M.init(name, handlers)
 			return nil, 'Not implemented'
 		end
 	end)
-	app.iobus.onwrite(function(path, value, from)
+	app.iobus:onwrite(function(path, value, from)
 		log:info(name, 'Write operation received')
 		-- Disable writing on inputs and commands path
 		if path:match('.+/inputs/[^/]+$') or path:match('.+/commands/[^/]+$') then

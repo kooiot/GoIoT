@@ -24,7 +24,7 @@ function class:open()
 	zassert(subscriber, err)
 	self.subscriber = subscriber
 
-	poller:add(subscriber, zmq.POLLIN, function()
+	self.poller:add(subscriber, zmq.POLLIN, function()
 		local filter, data, err = self.recv()
 		if filter and data then
 			if data[1] == 'cov' then
