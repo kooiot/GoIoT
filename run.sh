@@ -28,7 +28,7 @@ else
 	start-stop-daemon --stop --oknodo --pidfile $PID_FOLDER/logs.pid --retry 5
 	rm $PID_FOLDER/logs.pid
 	start-stop-daemon --stop --oknodo --pidfile $PID_FOLDER/core_iobus.pid --retry 5
-	rm $PID_FOLDER/core_datacache.pid
+	rm $PID_FOLDER/core_iobus.pid
 	start-stop-daemon --stop --oknodo --pidfile $PID_FOLDER/core_monitor.pid --retry 5
 	rm $PID_FOLDER/core_monitor.pid
 	start-stop-daemon --stop --oknodo --pidfile $PID_FOLDER/core_config.pid --retry 5
