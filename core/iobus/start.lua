@@ -37,7 +37,7 @@ mpft['login'] = function(vars)
 	local pass = vars.pass
 	local port = vars.port
 	clients[namespace] = { user=user, pass=pass, port=port }
-	local rep = {"login", { ver="1" }}
+	local rep = {"login", { result = true, ver="1" }}
 	server:send(cjson.encode(rep))
 end
 
@@ -142,7 +142,7 @@ end
 
 mpft['enum'] = function (vars)
 	local tags = db:enum(vars.pattern or "*")
-	local rep = {'enum', tags}
+	local rep = {'enum', {result=ture, tags=tags}}
 	server:send(cjson.encode(rep))
 end
 

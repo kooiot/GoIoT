@@ -67,7 +67,7 @@ function class:enum(pattern)
 	local req = {'enum', {pattern=pattern, from=self.from}}
 	local reply, err = self.client:request(cjson.encode(req), true)
 	if reply then
-		reply = cjson.decode(reply)[2]
+		reply = cjson.decode(reply)[2].tags
 	end
 	return reply, err
 end
@@ -76,9 +76,11 @@ end
 function class:tree(path)
 	local req = {'tree', {path=path, from=self.from}}
 	local reply, err = self.client:request(cjson.encode(req), true)
-	print(reply)
 	if reply then
-		reply = cjson.decode(reply)[2]
+		reply, err = cjson.decode(reply)
+		if type(reply) == 'table' then
+			reply = reply[2].tree
+		end
 	end
 	return reply, err
 end

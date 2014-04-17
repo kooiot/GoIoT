@@ -16,7 +16,6 @@ end
 
 local pwd = os.getenv('PWD')
 local log = require('shared.log')
-local ztimer = require('lzmq.timer')
 
 local f, err =  loadfile('main.lua')
 if not f then
@@ -31,4 +30,5 @@ else
 	end
 end
 
+local ztimer = require('lzmq.timer')
 ztimer.sleep(1000)
