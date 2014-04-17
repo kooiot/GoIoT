@@ -156,15 +156,17 @@ local function get_devices_tree(path)
 		if not clients[ns].tree then
 			local api = require('shared.api.app').new(clients[ns].port)
 			local err = nil
-			local tree, err = api.request('devs')
-			if not tree then
-				return nil, err
+			local r, tree = api:request('devs')
+			if not r then
+				return nil, tree
+			else
+				tree = tree.devices
 			end
 
 			clients[ns].tree = tree
-			return tree[dev]
+			return dev and tree[dev] or tree
 		else
-			return clients[ns].tree[dev]
+			return dev and clients[ns].tree[dev] or clients[ns].tree
 		end
 	end
 	return nil, 'Incorrect namespace specified'
@@ -176,7 +178,7 @@ mpft['tree'] = function(vars)
 	if path then
 		local obj, err = get_devices_tree(path)	
 		if obj then
-			server:send(cjson.encode(rep))
+			server:send(cjson.encode({'tree', {result=true, tree=obj}}))
 		else
 			send_err(err)
 		end

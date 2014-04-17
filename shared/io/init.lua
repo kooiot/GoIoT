@@ -212,7 +212,9 @@ function _M.init(name, handlers)
 
 	-- Register the data function handler
 	app:reg_request_handler('devs', function(app, vars)
-		-- Handle the data request
+		local reply = {'devs', {result=true, devices=app.devices.devices}}
+		print(cjson.encode(reply))
+		app.server:send(cjson.encode(reply))
 	end)
 
 	-- Import the configuration

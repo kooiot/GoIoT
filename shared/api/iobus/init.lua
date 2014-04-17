@@ -75,7 +75,12 @@ end
 -- Read the device tree meta from iobus
 function class:tree(path)
 	local req = {'tree', {path=path, from=self.from}}
-	return reply(self.client:request(cjson.encode(req), true))
+	local reply, err = self.client:request(cjson.encode(req), true)
+	print(reply)
+	if reply then
+		reply = cjson.decode(reply)[2]
+	end
+	return reply, err
 end
 
 -- subscribe to a device tree path, to get notice when data changed
