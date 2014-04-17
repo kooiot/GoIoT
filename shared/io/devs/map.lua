@@ -5,6 +5,7 @@ return function (factory)
 	local class = {}
 
 	function class:add(name, desc, ...)
+		assert(not self[name], 'The sub node exists for '..name)
 		self[name] = factory(name, desc, ...)
 
 		return self[name]
