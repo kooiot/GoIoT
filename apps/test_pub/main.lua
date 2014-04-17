@@ -19,6 +19,13 @@ local cov = function(path, value)
 	print(path, value.value, value.timestamp, value.quality)
 end
 
+local tags = client:enum('eeee/unit.1')
+for path, v in pairs(tags) do
+	for k, v in pairs(v) do
+		print(path, k, v)
+	end
+end
+
 -- Subscribe the device in eeee namespace, named as unit1
 client:subscribe('eeee/unit.1', cov)
 

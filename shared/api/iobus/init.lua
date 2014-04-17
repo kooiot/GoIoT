@@ -62,6 +62,7 @@ function class:read(path)
 	return reply, err
 end
 
+-- Enum devices according to pattern
 function class:enum(pattern)
 	local req = {'enum', {pattern=pattern, from=self.from}}
 	local reply, err = self.client:request(cjson.encode(req), true)
@@ -71,6 +72,7 @@ function class:enum(pattern)
 	return reply, err
 end
 
+-- Read the device tree meta from iobus
 function class:tree(path)
 	local req = {'tree', {path=path, from=self.from}}
 	return reply(self.client:request(cjson.encode(req), true))

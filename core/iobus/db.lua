@@ -32,10 +32,10 @@ function class:open(path)
 	end
 end
 
-function class:set(name, value, timestamp)
+function class:set(name, value, timestamp, quality)
 	local obj = self.fake[name]
 	if not obj then
-		obj = {value=value, timestamp=timestap, quality=quality}
+		obj = {value=value, timestamp=timestamp, quality=quality}
 		self.fake[name]  = obj
 	else
 		self.fake[name].value = value

@@ -69,7 +69,7 @@ mpft['batch_publish'] = function(vars)
 		for k,v in pairs(vars.pvs) do
 			if v.path and v.value and v.timestamp then
 				local r = true
-				r, err = db:set(v.path, v.value, v.timestamp)
+				r, err = db:set(v.path, v.value, v.timestamp, v.quality)
 				if not r then
 					log:error('IOBUS', 'SETS ERR', err)
 					result = false
