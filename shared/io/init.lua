@@ -140,7 +140,7 @@ function _M.init(name, handlers)
 
 	app.devices = require('shared.io.devs').new(name)
 	app.devices:bindcov(function(path, value)
-		log:debug(name, 'Publish data changes at '..path)
+		--log:debug(name, 'Publish data changes at '..path)
 		local r, err = app.iobus:publish(path, value.value, value.timestamp, value.quality)
 		if not r then
 			log:error(name, err)

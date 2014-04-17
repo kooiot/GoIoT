@@ -77,6 +77,7 @@ function class:tree(path)
 end
 
 -- subscribe to a device tree path, to get notice when data changed
+--		the devpath cannot be a sensor path, as we only accept subscribes for device only
 function class:subscribe(devpath, cb)
 	-- assert the callback, and create the subclient
 	assert(cb)

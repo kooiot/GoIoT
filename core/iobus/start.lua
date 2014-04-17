@@ -42,7 +42,7 @@ mpft['login'] = function(vars)
 end
 
 mpft['publish'] = function(vars)
-	log:debug('IOBUS', 'PUBLISH', vars.path)
+	--log:debug('IOBUS', 'PUBLISH', vars.path)
 	local err = 'Invalid/Unsupported publish request'
 	--- valid the request
 	if vars and type(vars) == 'table' then

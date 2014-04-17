@@ -14,20 +14,17 @@ local ctx = zmq.context()
 local poller = zpoller.new()
 local client = api.new(arg[1], ctx, poller)
 
+-- Change of Values callback
 local cov = function(path, value)
-	if data then
-		print(data)
-		local tag = cjson.decode(data)
-		for k,v in pairs(tag) do
-			print(k,v)
-		end
-	end
+	print(path, value.value, value.timestamp, value.quality)
 end
 
-client:subscribe('eeee/unit1', cov)
+-- Subscribe the device in eeee namespace, named as unit1
+client:subscribe('eeee/unit.1', cov)
 
-for v = 1, 100 do
+for v = 1, 1000000000 do
 	poller:poll(1000)
+	--[[
 	print('write inputs data1')
 	print(client:write('eeee/unit1/inputs/data1', {value=1}))
 	print('write outputs tag1')
@@ -35,6 +32,6 @@ for v = 1, 100 do
 
 	print('command timesync')
 	print(client:command('eeee/ts/commands/timesync', {time=os.time()}))
+	]]--
 end
 
-sub.close()

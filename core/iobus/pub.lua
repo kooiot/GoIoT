@@ -21,13 +21,13 @@ local function getsub(path)
 end
 
 local function cov(path, value)
-	log:debug('IOBUS', 'Publish data changes for '..path)
-	local devpath = path:match('^([^/]-/[^/]-)')
+	local devpath = path:match('^([^/]+/[^/]+)')
 	local t = ptable[devpath]
 	-- publish changes
 	if t then
 		for k, v in pairs(t) do
 			if k ~= devpath then
+				--log:debug('IOBUS', 'Publish data changes for '..path..':'..k)
 				publisher:send(k..' ', zmq.SNDMORE)
 				publisher:send(cjson.encode({'cov', {devpath=devpath, path=path, value=value}}))
 			end
@@ -53,6 +53,7 @@ end
 local function sub(devpath, from)
 	local err =  'Invalid/Unsupported subscribe request'
 	if devpath and from then
+		log:info('IOBUS', 'subscribe '..devpath..' for '..from)
 		ptable[devpath] = ptable[devpath] or {}
 		ptable[devpath][from] = true
 		return true

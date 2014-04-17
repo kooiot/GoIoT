@@ -5,6 +5,7 @@
 require "shared.zhelpers"
 local zmq = require "lzmq"
 local log = require 'shared.log'
+local cjson = require 'cjson.safe'
 
 local class = {}
 
@@ -25,13 +26,15 @@ function class:open()
 	self.subscriber = subscriber
 
 	self.poller:add(subscriber, zmq.POLLIN, function()
-		local filter, data, err = self.recv()
+		local filter, data, err = self:recv()
 		if filter and data then
 			if data[1] == 'cov' then
 				local cb = self.callbacks[data[2].devpath]
 				if cb then
 					-- Call backs
 					cb(data[2].path, data[2].value)
+				else
+					log:error('No callback specified for device:', data[2].devpath)
 				end
 			elseif data[1] == 'write' then
 				if self.onwrite then
