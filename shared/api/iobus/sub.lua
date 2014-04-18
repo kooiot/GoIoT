@@ -29,12 +29,12 @@ function class:open()
 		local filter, data, err = self:recv()
 		if filter and data then
 			if data[1] == 'cov' then
-				local cb = self.callbacks[data[2].devpath]
+				local cb = self.callbacks[data[2].pattern]
 				if cb then
 					-- Call backs
 					cb(data[2].path, data[2].value)
 				else
-					log:error('No callback specified for device:', data[2].devpath)
+					log:error('IOBUS_API', 'No callback specified for device:', data[2].pattern)
 				end
 			elseif data[1] == 'write' then
 				if self.onwrite then
@@ -47,6 +47,12 @@ function class:open()
 					self.oncommand(data[2].path, data[2].args, data[2].from)
 				else
 					log:error('IOBUS_API', 'No oncommand implemented')
+				end
+			elseif data[1] == 'update' then
+				if self.onupdate then
+					self.onupdate(data[2].namespace)
+				else
+					log:error('IOBUS_API', 'No onupdate implemented')
 				end
 			else
 				-- No support one?

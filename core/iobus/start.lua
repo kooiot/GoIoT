@@ -30,7 +30,7 @@ end
 local clients = {} -- contains clients information
 local mpft = {} -- message process function table
 
--- hanlde login
+-- hanlde login from data generator, TODO: handler the login from data subscribers
 mpft['login'] = function(vars)
 	local namespace = vars.from
 	local user = vars.user
@@ -39,6 +39,11 @@ mpft['login'] = function(vars)
 	clients[namespace] = { user=user, pass=pass, port=port }
 	local rep = {"login", { result = true, ver="1" }}
 	server:send(cjson.encode(rep))
+
+	if port and port ~= 0 then
+		-- Tell all client there possiably an updated application back online
+		pub.update(ns)
+	end
 end
 
 mpft['publish'] = function(vars)
@@ -140,13 +145,35 @@ mpft['command'] = function(vars)
 	send_err(err)
 end
 
+local get_devices_tree
+
+-- Enumrate all avaiable namespaces
 mpft['enum'] = function (vars)
-	local tags = db:enum(vars.pattern or "*")
-	local rep = {'enum', {result=ture, tags=tags}}
+	local devs = {}
+	local pattern = vars.pattern or ".+"
+	for ns, c in pairs(clients) do
+		if c.port and c.port ~= 0 then
+			-- query tree is not queried
+			if not c.tree then
+				get_devices_tree(ns)
+			end
+
+			-- Get the tree
+			local devices = c.tree and c.tree.devices or {}
+			for name, device in pairs(devices) do
+				if device.path:match(vars.pattern) then
+					devs[ns] = devs[ns] or {}
+					table.insert(devs[ns], name)
+				end
+			end
+		end
+	end
+
+	local rep = {'enum', {result=ture, devices=devs}}
 	server:send(cjson.encode(rep))
 end
 
-local function get_devices_tree(path)
+get_devices_tree = function(path)
 	local ns, dev = path:match('([^/]-)/(.-)$')
 	if not ns then
 		ns = path
@@ -196,13 +223,13 @@ mpft['tree'] = function(vars)
 end
 
 mpft['subscribe'] = function(vars)
-	local result, err = pub.sub(vars.devpath, vars.from)
+	local result, err = pub.sub(vars.pattern, vars.from)
 	local rep = {'subscribe', {result=result, err=err}}
 	server:send(cjson.encode(rep))
 end
 
 mpft['unsubscribe'] = function(vars)
-	local result, err = pub.unsub(vars.devpath, vars.from)
+	local result, err = pub.unsub(vars.pattern, vars.from)
 	local rep = {'unsubscribe', {result=result, err=err}}
 	server:send(cjson.encode(rep))
 end

@@ -23,6 +23,10 @@ local function reply(json, err)
 	return reply, err
 end
 
+-- Send login to iobus:
+--   user - username
+--   pass - password
+--   port - application service port, nil or 0 won't accept device tree querying
 function class:login(user, pass, port)
 	local req = {"login", {user=user, pass=pass, from=self.from, port=port}}
 	return reply(self.client:request(cjson.encode(req), true))
@@ -62,12 +66,18 @@ function class:read(path)
 	return reply, err
 end
 
--- Enum devices according to pattern
+-- Enum devices according to pattern( refer to string.match pattern )
 function class:enum(pattern)
 	local req = {'enum', {pattern=pattern, from=self.from}}
 	local reply, err = self.client:request(cjson.encode(req), true)
 	if reply then
-		reply = cjson.decode(reply)[2].tags
+		reply = cjson.decode(reply)[2].devices
+		--[[
+			devices = {
+				'namespace' = { 'device1', 'device2' }，
+				'namespace2' = { 'device2', 'devices' },
+			}
+		]]--
 	end
 	return reply, err
 end
@@ -85,28 +95,27 @@ function class:tree(path)
 	return reply, err
 end
 
--- subscribe to a device tree path, to get notice when data changed
---		the devpath cannot be a sensor path, as we only accept subscribes for device only
-function class:subscribe(devpath, cb)
+-- subscribe to a path, to get notice when data changed
+function class:subscribe(pattern, cb)
 	-- assert the callback, and create the subclient
 	assert(cb)
 	assert(self.subclient)
 
-	local req = {'subscribe', {devpath=devpath, from=self.from}}
+	local req = {'subscribe', {pattern=pattern, from=self.from}}
 	local reply, err = self.client:request(cjson.encode(req), true)
 	if reply then
 		reply = cjson.decode(reply)[2]
 		-- Only bind the callbacks when subscribe successfully
-		self.subclient:bind(devpath, cb)
+		self.subclient:bind(pattern, cb)
 	end
 	return reply, err
 end
 
 -- unsubscribe
-function class:unsubscribe(devpath)
+function class:unsubscribe(pattern)
 	assert(self.subclient)
-	self.subclient:unbind(devpath)
-	local req = {'unsubscribe', {devpath=devpath, from=self.from}}
+	self.subclient:unbind(pattern)
+	local req = {'unsubscribe', {pattern=pattern, from=self.from}}
 	local reply, err = self.client:request(cjson.encode(req), true)
 	if reply then
 		reply = cjson.decode(reply)[2]

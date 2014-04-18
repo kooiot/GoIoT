@@ -21,16 +21,26 @@ local function getsub(path)
 end
 
 local function cov(path, value)
-	local devpath = path:match('^([^/]+/[^/]+)')
-	local t = ptable[devpath]
-	-- publish changes
-	if t then
-		for k, v in pairs(t) do
-			if k ~= devpath then
-				--log:debug('IOBUS', 'Publish data changes for '..path..':'..k)
-				publisher:send(k..' ', zmq.SNDMORE)
-				publisher:send(cjson.encode({'cov', {devpath=devpath, path=path, value=value}}))
+	for pattern, v in pairs(ptable) do
+		local from = path:match('^([^/]+)/.+')
+		-- publish changes
+		if path:match(pattern) then
+			for k, v in pairs(v) do
+				if k ~= from then
+					--log:debug('IOBUS', 'Publish data changes for '..path..':'..k)
+					publisher:send(k..' ', zmq.SNDMORE)
+					publisher:send(cjson.encode({'cov', {pattern=pattern, path=path, value=value}}))
+				end
 			end
+		end
+	end
+end
+
+local function update(ns)
+	for pattern, v in pairs(ptable) do
+		for from, _ in pairs(v) do
+			publisher:send(from..' ', zmq.SNDMORE)
+			publisher:send(cjson.encode({'update', {pattern=pattern, namespace=ns}}))
 		end
 	end
 end
@@ -50,26 +60,26 @@ local function command(path, args, from)
 	return true
 end
 
-local function sub(devpath, from)
+local function sub(pattern, from)
 	local err =  'Invalid/Unsupported subscribe request'
-	if devpath and from then
-		log:info('IOBUS', 'subscribe '..devpath..' for '..from)
-		ptable[devpath] = ptable[devpath] or {}
-		ptable[devpath][from] = true
+	if pattern and from then
+		log:info('IOBUS', 'subscribe '..pattern..' for '..from)
+		ptable[pattern] = ptable[pattern] or {}
+		ptable[pattern][from] = true
 		return true
 	end
 	return false, err
 end
 
-local function unsub(devpath, from)
+local function unsub(pattern, from)
 	local err =  'Invalid/Unsupported unsubscribe request'
 	if not from then 
 		return false, err
 	end
-	if devpath and from then
-		if ptable[devpath] and ptable[devpath][from] then
-			log:info('IOBUS', 'unsubscribe '..devpath..' for '..from)
-			ptable[devpath][from] = nil
+	if pattern and from then
+		if ptable[pattern] and ptable[pattern][from] then
+			log:info('IOBUS', 'unsubscribe '..pattern..' for '..from)
+			ptable[pattern][from] = nil
 		end
 	end
 	return true
@@ -81,5 +91,6 @@ return {
 	sub = sub,
 	unsub = unsub,
 	write = write,
-	command = command
+	command = command,
+	update = update,
 }

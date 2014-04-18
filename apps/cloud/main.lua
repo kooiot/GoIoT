@@ -24,14 +24,17 @@ local function load_key()
 	local config_key = config.get(ioname..'.key')
 	return config_key or "6015c744795762df41e9ebfa25fd625c"
 end
+
 local KEY = load_key()
 assert(KEY, "No Cloud Auth key")
 cloudapi.init(KEY)
 
 local client = api.new(arg[1], info.ctx, info.poller)
-local function on_start()
+
+local function query_tree(ns)
+	local trees, err = client:tree(ns)
+
 	local pp = require 'shared.PrettyPrint'
-	local trees, err = client:tree('eeee')
 	if trees then
 		local verinfo = trees.verinfo
 		print(pp(verinfo))
@@ -41,6 +44,18 @@ local function on_start()
 		end
 	else
 		assert(false, 'failureeeeeeeeee')
+	end
+end
+
+local function on_start()
+	client:subscribe('^.+', function()  end)
+	local devs, err = client:enum('.+')
+	if not devs then
+		assert(false, err)
+	else
+		for ns, dlist in pairs(devs) do
+			query_tree(ns)
+		end
 	end
 end
 
