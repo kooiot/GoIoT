@@ -14,6 +14,7 @@ local app = nil
 local function load_config(name)
 	local config = {
 		port = 5515,
+		revision = 1,
 	}
 
 	local ports, err = configs.get(name..'.ports')
@@ -196,7 +197,7 @@ function _M.init(name, handlers)
 
 	-- Register the import function handler
 	app:reg_request_handler('import', function(app, vars)
-		print('import message received')
+		log:warn('import message received')
 		local re = false
 		local err = 'Incorrect request found for msg:import'
 		if vars.filename  then
@@ -212,8 +213,16 @@ function _M.init(name, handlers)
 
 	-- Register the data function handler
 	app:reg_request_handler('devs', function(app, vars)
-		local reply = {'devs', {result=true, devices=app.devices.devices}}
-		print(cjson.encode(reply))
+		local name = app.name
+		local version = app.version
+		local verinfo = {
+			app = {
+				name = name,
+				verion = version
+			},
+			revision = config.revision,
+		}
+		local reply = {'devs', {result=true, devices=app.devices.devices, verinfo=verinfo}}
 		app.server:send(cjson.encode(reply))
 	end)
 

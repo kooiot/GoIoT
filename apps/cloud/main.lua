@@ -33,7 +33,12 @@ local function on_start()
 	local pp = require 'shared.PrettyPrint'
 	local trees, err = client:tree('eeee')
 	if trees then
-		print(pp(trees))
+		local verinfo = trees.verinfo
+		print(pp(verinfo))
+		for k, v in pairs(trees.devices) do
+			-- Create devices in cloud
+			--print(pp(v))
+		end
 	else
 		assert(false, 'failureeeeeeeeee')
 	end
@@ -43,12 +48,18 @@ app = require('shared.app').new(info, {on_start = on_start})
 app:init()
 app:reg_request_handler('list_devices', function(app, vars)
 	local devs = {}
+	--[[
 	for name, dev in pairs(dtree) do
 		table.insert(devs, {name=name, id=dev.id})
 	end
+	]]
 	local reply = {'list_devices',  {result=true, devs=devs}}
 	app.server:send(cjson.encode(reply))
 end)
+
+local function save_all(cb)
+	cb()
+end
 
 local ms = 3000
 while not aborting do
@@ -62,4 +73,3 @@ while not aborting do
 	end
 end
 
-sub.close()

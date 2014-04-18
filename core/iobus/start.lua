@@ -159,14 +159,21 @@ local function get_devices_tree(path)
 			local r, tree = api:request('devs')
 			if not r then
 				return nil, tree
-			else
-				tree = tree.devices
 			end
 
 			clients[ns].tree = tree
-			return dev and tree[dev] or tree
+			if dev then
+				return {verinfo = tree.verinfo, device = tree.devices[dev]}
+			else
+				return tree
+			end
 		else
-			return dev and clients[ns].tree[dev] or clients[ns].tree
+			local tree = clients[ns].tree
+			if dev then
+				return {verinfo = tree.verinfo, device = tree.devices[dev]}
+			else
+				return tree
+			end
 		end
 	end
 	return nil, 'Incorrect namespace specified'
