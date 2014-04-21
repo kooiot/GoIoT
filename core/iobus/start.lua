@@ -42,7 +42,7 @@ mpft['login'] = function(vars)
 
 	if port and port ~= 0 then
 		-- Tell all client there possiably an updated application back online
-		pub.update(ns)
+		pub.update(namespace)
 	end
 end
 

@@ -32,6 +32,7 @@ cloudapi.init(KEY)
 local client = api.new(arg[1], info.ctx, info.poller)
 
 local function query_tree(ns)
+	assert(ns, 'Namespace cannot be nil')
 	local trees, err = client:tree(ns)
 
 	local pp = require 'shared.PrettyPrint'
@@ -41,14 +42,23 @@ local function query_tree(ns)
 		for k, v in pairs(trees.devices) do
 			-- Create devices in cloud
 			--print(pp(v))
+			cloudapi.call('POST', v, 'Device')
 		end
 	else
-		assert(false, 'failureeeeeeeeee')
+		assert(false, err)
 	end
 end
 
+client:onupdate(function(namespace) 
+	query_tree(namespace)
+end)
+
+local function cov(path, value)
+	print('data changed on ', path)
+end
+
 local function on_start()
-	client:subscribe('^.+', function()  end)
+	client:subscribe('^.+', cov)
 	local devs, err = client:enum('.+')
 	if not devs then
 		assert(false, err)

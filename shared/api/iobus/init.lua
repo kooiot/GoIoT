@@ -123,14 +123,22 @@ function class:unsubscribe(pattern)
 	return reply, err
 end
 
+-- Register the callback function for data writing
 function class:onwrite(cb)
 	assert(self.subclient)
 	self.subclient.onwrite = cb
 end
 
+-- Register the callback function for command handing
 function class:oncommand(cb)
 	assert(self.subclient)
 	self.subclient.oncommand = cb
+end
+
+-- Register the udpate event callback handler
+function class:onupdate(cb)
+	assert(self.subclient)
+	self.subclient.onupdate = cb
 end
 
 function class:version()
