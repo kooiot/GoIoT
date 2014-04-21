@@ -11,6 +11,8 @@ local config = require 'shared.api.config'
 
 require 'shared.zhelpers'
 
+local buf = require 'dbuf'
+
 local ioname = arg[1]
 assert(ioname, 'Applicaiton needs to have a name')
 
@@ -43,6 +45,8 @@ local function query_tree(ns)
 			-- Create devices in cloud
 			--print(pp(v))
 			cloudapi.call('POST', v, 'Device')
+			-- FIXME: check the create device return
+			buf.add_dev(v)
 		end
 	else
 		assert(false, err)
@@ -54,7 +58,8 @@ client:onupdate(function(namespace)
 end)
 
 local function cov(path, value)
-	print('data changed on ', path)
+	--print('data changed on ', path)
+	buf.add_cov(path, value)
 end
 
 local function on_start()
@@ -83,6 +88,7 @@ app:reg_request_handler('list_devices', function(app, vars)
 end)
 
 local function save_all(cb)
+	buf.send_all(cloudapi)
 	cb()
 end
 
