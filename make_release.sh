@@ -26,7 +26,8 @@ cd ../../..
 
 # Create the cramfs image
 sudo chown -R root:root __install
-mkfs.cramfs __install __release/cad2.cramfs
+#mkfs.cramfs __install __release/cad2.cramfs
+mksquashfs __install __release/cad2.sfs
 # Clean up the rootfs files
 sudo rm -rf __install
 
@@ -34,6 +35,8 @@ sudo rm -rf __install
 ./scripts/release_app.sh example
 # Release the yeelink
 ./scripts/release_app.sh yeelink
+# Release cloud 
+./scripts/release_app.sh cloud
 
 # Done
 echo 'DONE'

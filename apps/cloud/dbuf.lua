@@ -45,7 +45,9 @@ function _M.send_all(api)
 		local pp = require 'shared.PrettyPrint'
 		print(pp(all))
 		]]--
-		api.call('POST', all, 'Data')
+		if #all ~= 0 then
+			api.call('POST', all, 'Data')
+		end
 	end
 end
 

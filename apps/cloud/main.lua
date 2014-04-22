@@ -92,15 +92,17 @@ local function save_all(cb)
 	cb()
 end
 
-local ms = 3000
+local ms = 1000 * 60 * 2
 while not aborting do
 	while not aborting do
+		save_all(function() app:run(50) end)
 		local timer = ztimer.monotonic(ms)
 		timer:start()
 		while timer:rest() > 0 do
 			app:run(timer:rest())
 		end
-		save_all(function() app:run(50) end)
+		-- For testing
+		-- aborting = true
 	end
 end
 

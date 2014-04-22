@@ -10,3 +10,4 @@ web/io
 *.sqlite3
 *.cramfs
 *.zip
+*.bak
