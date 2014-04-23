@@ -29,6 +29,12 @@ local function api(method, obj, path)
 	print(r, code)--, pp(headers), status)
 
 	if r and code == 200 then
+		return true
+	else
+		return nil, 'Error'
+	end
+	--[[
+	if r and code == 200 then
 		if #re == 0 then
 			return r, code, headers, status
 		end
@@ -42,6 +48,7 @@ local function api(method, obj, path)
 		end
 	end
 	return nil, code, headers, status
+	]]--
 end
 
 return {

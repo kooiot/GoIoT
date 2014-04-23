@@ -30,6 +30,7 @@ end
 local KEY = load_key()
 assert(KEY, "No Cloud Auth key")
 cloudapi.init(KEY)
+buf.set_api(cloudapi)
 
 local client = api.new(arg[1], info.ctx, info.poller)
 
@@ -42,10 +43,6 @@ local function query_tree(ns)
 		local verinfo = trees.verinfo
 		print(pp(verinfo))
 		for k, v in pairs(trees.devices) do
-			-- Create devices in cloud
-			--print(pp(v))
-			cloudapi.call('POST', v, 'Device')
-			-- FIXME: check the create device return
 			buf.add_dev(v)
 		end
 	else
@@ -88,8 +85,7 @@ app:reg_request_handler('list_devices', function(app, vars)
 end)
 
 local function save_all(cb)
-	buf.send_all(cloudapi)
-	cb()
+	buf.on_send(cb)
 end
 
 local ms = 1000 * 60 * 2
