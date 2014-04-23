@@ -85,9 +85,11 @@ app:reg_request_handler('list_devices', function(app, vars)
 end)
 
 local function save_all(cb)
+	buf.on_create(cb)
 	buf.on_send(cb)
 end
 
+-- The mail loop
 local ms = 1000 * 60 * 2
 while not aborting do
 	while not aborting do
@@ -97,8 +99,6 @@ while not aborting do
 		while timer:rest() > 0 do
 			app:run(timer:rest())
 		end
-		-- For testing
-		-- aborting = true
 	end
 end
 

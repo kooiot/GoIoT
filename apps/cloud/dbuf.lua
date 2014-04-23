@@ -46,9 +46,7 @@ function _M.add_cov(path, value)
 	end
 end
 
-function _M.on_send(cb)
-
-	print('on_send')
+function _M.on_create(cb)
 	for k, v in pairs(devlist) do
 		if not v.sync then
 			print('Create device:'..v.device.name..' in cloud')
@@ -61,13 +59,20 @@ function _M.on_send(cb)
 			cb()
 		end
 	end
+end
 
+function _M.on_send(cb)
+	print('on_send')
 	for ns, t in pairs(buf) do
 		local all = {}
 		for path, vt in pairs(t) do
 
-			if devlist[vt.devpath].sync and #vt.values ~= 0 then
-				all[#all + 1] = {path = vt.path, values = vt.values}
+			if #vt.values ~= 0 then
+				-- If not created then data will be droped for memory 
+				if devlist[vt.devpath].sync then
+					all[#all + 1] = {path = vt.path, values = vt.values}
+				end
+
 				vt.values = nil
 				vt.values = {}
 			end
