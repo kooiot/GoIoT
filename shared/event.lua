@@ -10,23 +10,54 @@ local cjson = require 'cjson'
 local zpoller = require 'lzmq.poller'
 
 local CONN_METHOD = "tcp://"
-local PUBS_PORT = ":5519"
-local REPS_PORT = ":5518"
+local PUB_SERVER_PORT = ":5519"
+local REP_SERVER_PORT = ":5518"
 local SERVER_ENDPOINT = "localhost"
 
+
+--- Event Object Type
+-- @table event
+-- @field src the event source
+-- @field name the event's name
+-- @field dest the target event receiver name, nil will send to ALL
+
+--- Callback function
+-- @function callback
+-- @tparam event event
+
 --- A client class
---@type C
+-- @type C
 local C = {}
 
+--- Create a new client object
+-- @tparam lzmq.context ctx 
+-- @tparam lzmq.poller poller 
+-- @tparam callback cb callback function
+-- @treturn C a new server object
+function C.new(ctx, poller, cb)
+	local poller = poller or zpoller.new()
+	local ctx = ctx or zmq.context()
+	return setmetatable(
+	{
+		ctx = ctx,
+		poller = poller,
+		client = nil,
+		subscriber = nil,
+		option = nil,
+		callback = cb,
+	}, {__index = C})
+end
+
 --- Open connection 
---@tparam string ip remote ip
---@treturn nil no return
+-- @tparam string ip remote ip
+-- @treturn nil
+-- @raise assert on binding failure
 function C:open(ip)
 
 	local SOCKET_OPTION = {
 		zmq.SUB,
 		subscribe = 'EVENT ',
-		connect  = CONN_METHOD..(endpoint or SERVER_ENDPOINT)..PUBS_PORT,
+		connect  = CONN_METHOD..(endpoint or SERVER_ENDPOINT)..PUB_SERVER_PORT,
 	}
 
 	local subscriber, err = self.ctx:socket(SOCKET_OPTION)
@@ -55,7 +86,7 @@ function C:open(ip)
 	local REQ_SOCKET_OPTION = {
 		zmq.REQ,
 		linger   = 0,
-		connect  = CONN_METHOD..(endpoint or SERVER_ENDPOINT)..REPS_PORT,
+		connect  = CONN_METHOD..(endpoint or SERVER_ENDPOINT)..REP_SERVER_PORT,
 	}
 
 	local client, err = self.ctx:socket(REQ_SOCKET_OPTION)
@@ -68,7 +99,7 @@ function C:open(ip)
 	end)
 end
 
---- Open connection 
+--- Close connection 
 --@treturn bool result
 --@treturn string error
 function C:close()
@@ -87,6 +118,10 @@ function C:close()
 	return true
 end
 
+--- Send event to server
+-- @tparam event event object
+-- @treturn boolean ok
+-- @treturn string error
 function C:send(event)
 	assert(event.src)
 	assert(event.name)
@@ -95,29 +130,37 @@ function C:send(event)
 	return self.client:send(cjson.encode(event))
 end
 
-function C.new(ctx, poller, cb)
-	local poller = poller or zpoller.new()
+--- A server class
+-- @type S
+local S = {}
+
+--- Create a new server object
+-- @tparam lzmq.context ctx
+-- @tparam lzmq.poller poller
+-- @treturn S a new server object
+function S.new(ctx, poller)
 	local ctx = ctx or zmq.context()
+	local poller = poller or zpoller.new()
 	return setmetatable(
 	{
 		ctx = ctx,
 		poller = poller,
-		client = nil,
-		subscriber = nil,
+		server = nil,
+		publisher = nil,
 		option = nil,
-		callback = cb,
-	}, {__index = C})
+	}, {__index = S})
 end
 
---- A client class
---@type C
-local S = {}
 
+--- Open the service
+-- @tparam string ip local ip address, nil or '*' for any ethernet address
+-- @treturn nil
+-- @raise assert on binding failure
 function S:open(ip)
 	local ip = ip or "*"
 	local SOCKET_OPTION = {
 		zmq.PUB,
-		bind  = CONN_METHOD..ip..PUBS_PORT,
+		bind  = CONN_METHOD..ip..PUB_SERVER_PORT,
 	}
 
 	local publisher, err = self.ctx:socket(SOCKET_OPTION)
@@ -132,7 +175,7 @@ function S:open(ip)
 
 	local REP_SOCKET_OPT = {
 		zmq.REP,
-		bind = CONN_METHOD..ip..REPS_PORT,
+		bind = CONN_METHOD..ip..REP_SERVER_PORT,
 	}
 	local server, err = self.ctx:socket(REP_SOCKET_OPT)
 	zassert(server, err)
@@ -153,19 +196,9 @@ function S:open(ip)
 	end)
 end
 
-function S.new(ctx, poller)
-	local ctx = ctx or zmq.context()
-	local poller = poller or zpoller.new()
-	return setmetatable(
-	{
-		ctx = ctx,
-		poller = poller,
-		server = nil,
-		publisher = nil,
-		option = nil,
-	}, {__index = S})
-end
-
+--- Close the server
+-- @return ok result
+-- @treturn string error error message
 function S:close()
 	if not server then
 		return nil, "not initialized"
@@ -185,5 +218,5 @@ end
 ---@export
 return  {
 	C = C,
-	S = S
+	S = S,
 }

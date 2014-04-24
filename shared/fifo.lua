@@ -1,7 +1,17 @@
+--- Fifo module 
+-- provides an class fifo
+-- @module shared.fifo
+--
+
 local select , setmetatable = select , setmetatable
 local print = print
 
+--- The fifo class
+-- @type fifo
 local fifo = {}
+
+--- The fifo metatable table
+--
 local fifo_mt = {
 	__index = fifo ;
 	__newindex = function ( f , k , v )
@@ -15,23 +25,34 @@ local fifo_mt = {
 
 local empty_default = function ( self ) error ( "Fifo empty" ) end
 
+--- Create a fifo class object
+-- @param ... objects initial pushed to fifo
+-- @treturn fifo
 function fifo.new ( ... )
 	return setmetatable ( { empty = empty_default , head = 1 , tail = select("#",...) , ... } , fifo_mt )
 end
 
+--- Get the fifo length
+-- @treturn number the fifo length as number
 function fifo:length ( )
 	return self.tail - self.head + 1
 end
 
-function fifo:peek ( n )
+--- Peek one from fifo's head
+-- the element not removed
+function fifo:peek ( )
 	return self [ self.head ]
 end
 
+--- Push on to fifo's tail
 function fifo:push ( v )
 	self.tail = self.tail + 1
 	self [ self.tail ] = v
 end
 
+--- Pop the fifo's head
+-- element removed from head
+-- @return element
 function fifo:pop ( )
 	local head , tail = self.head , self.tail
 	if head > tail then return self:empty() end
@@ -42,6 +63,9 @@ function fifo:pop ( )
 	return v
 end
 
+--- insert one element at specified position
+-- @tparam number n the specified position
+-- @param v new element
 function fifo:insert ( n , v )
 	local head , tail = self.head , self.tail
 
@@ -61,6 +85,9 @@ function fifo:insert ( n , v )
 	end
 end
 
+--- remove element at specified postion
+-- @tparam number n the specified position
+-- @return the removed element
 function fifo:remove ( n )
 	local head , tail = self.head , self.tail
 
@@ -84,6 +111,8 @@ function fifo:remove ( n )
 	return v
 end
 
+--- Clean the fifo
+-- remove all element from fifo
 function fifo:clean( )
 	local head , tail = self.head , self.tail
 	for i = head, tail do
@@ -93,6 +122,8 @@ function fifo:clean( )
 	self.tail = 0
 end
 
+--- Specify the empty element constructor function
+-- @tparam function func
 function fifo:setempty ( func )
 	self.empty = func
 end
@@ -103,10 +134,14 @@ local iter_helper = function ( f , last )
 	return last+1 , f[nexti]
 end
 
+--- Get the iterator of fifo
+-- @return interator
 function fifo:iter ( )
 	return iter_helper , self , 0
 end
 
+--- Process the element with func for each elements
+-- @tparam function func
 function fifo:foreach ( func )
 	for k,v in self:iter() do
 		func(k,v)
@@ -115,4 +150,5 @@ end
 
 fifo_mt.__len = fifo.length
 
+--- Return fifo.new function as the module
 return fifo.new

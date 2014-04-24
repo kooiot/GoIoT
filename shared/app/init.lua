@@ -1,7 +1,6 @@
---
+---
 -- Base interface for application
---    based on event system?
---
+-- @module shared.app
 
 local zmq = require 'lzmq'
 local event = require 'shared.event'
@@ -13,8 +12,13 @@ local empft = require 'shared.app.empft'
 
 local _ver = require '_ver'
 
+--- Application class
+-- @type class
 local class = {}
 
+--- Fire event
+-- @tparam string dest the event target application
+-- @tparam string 
 function class:firevent(dest, name, vars)
 	local event = {src=self.name, dest=dest, name=name, vars=vars}
 	--print('fire EVENT('..name..') to '..dest )

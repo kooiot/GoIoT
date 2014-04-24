@@ -1,9 +1,12 @@
 -------------------------------------------------------------------------------
---  ZIP functions (Info-ZIP)
--------------------------------------------------------------------------------
-
+---  ZIP functions (Info-ZIP)
+--
 -- Info-ZIP UnZip Error Code list:
 -- http://www.info-zip.org/FAQ.html#error-codes  
+-- @module shared.unzip
+-------------------------------------------------------------------------------
+
+--- Error codes
 local code = {}
 
 code[0] =
@@ -65,9 +68,11 @@ code[82] =
 [[No files were found due to bad decryption password(s). (If even one
 file is successfully processed, however, the exit status is 1.)]]
 
+--- unzip function 
 -- Unzips the file at the given path to the given destination.
 -- Depends on Info-ZIP UnZip, which is included with Unix/Linux/MacOSX.
 -- This Tool contains an UnZip executable for Windows.
+-- @function return
 return function (path, destination, force)
   local cmd = "unzip %s -d %s"
   if force then

@@ -1,6 +1,5 @@
--- Lazy Pirate client
--- Use ZMQ_RCVTIMEO to do a safe request-reply
--- To run, start lpserver and then randomly kill/restart it
+--- ZeroMQ Request object
+-- @module shared.req
 
 require "shared.zhelpers"
 local zmq = require "lzmq"
@@ -9,8 +8,27 @@ local REQUEST_TIMEOUT = 500 -- msecs, (> 1000!)
 local REQUEST_RETRIES = 3    -- Before we abandon
 local SERVER_ENDPOINT = "tcp://localhost:5555"
 
+--- Option table
+-- @table Option
+-- @field 0 =zmq.REQ
+-- @field linger
+-- @field connect connect string
+-- @field rcvtimeo receive timeout in (ms)
+
+--- request class
+--@type class
 local class = {}
 
+--- Open the request connection
+-- @tparam[opt] Option option default is
+-- {
+--		lzmq.REQ,
+--		linger = 0,
+--		connection = "tcp://localhost:5555",
+--		rcvtimeo = 500,
+-- }
+-- @tparam number retry the max retry count, default is 3
+-- @treturn nil
 function class:open(option, retry)
 	self.max_retry = retry or REQUEST_RETRIES
 
@@ -29,13 +47,17 @@ function class:open(option, retry)
 	self.option = SOCKET_OPTION
 end
 
+--- Close the request connection
 function class:close()
 	self.clent:close()
 	self.client = nil
 	self.option = nil
 end
 
--- return reply object
+--- Send request and get the reply
+-- @tparam string request the request string
+-- @tparam boolean expect_reply whether expect for reply
+-- @treturn string reply  the replied string from server
 function class:request(request, expect_reply)
 	local reply = expect_reply and nil or true
 	local err = nil
@@ -86,8 +108,13 @@ function class:request(request, expect_reply)
 	return reply, tostring(err)
 end
 
-local _M = {}
-function _M.new(ctx)
+---
+--@type shared.req
+
+--- Create new request object
+-- @tparam lzmq.context ctx
+-- @treturn class request object
+local function new(ctx)
 	local ctx = ctx or zmq.context()
 	return setmetatable(
 	{
@@ -98,4 +125,8 @@ function _M.new(ctx)
 	}, {__index = class})
 end
 
-return _M
+---
+-- @export
+return {
+	new = new
+}
