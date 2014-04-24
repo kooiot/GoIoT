@@ -1,5 +1,15 @@
+---- Table copy helper.
+-- The helper functions for you to copy table easily.
+-- @author Dirk Chang
+-- @copyright SymTech Inc 2014
+-- @module shared.copy
 
-local function deepcopy (orig)
+local _M = {}
+
+--- Create copy deeply, thus each key, value is been copied.
+-- @tparam table orig	the original source table
+-- @treturn table  the copied table
+_M.deep = function (orig)
 	local orig_type = type(orig)
 	local copy
 	if orig_type == 'table' then
@@ -14,7 +24,11 @@ local function deepcopy (orig)
 	return copy
 end
 
-local function inplacecopy(from, to)
+--- Copy the table to destination table, but not create a new table for destination
+-- @tparam table from the source table
+-- @tparam table to destination table
+--
+_M.inplace = function(from, to)
 	if type(from) == 'table' then
 		for k, v in pairs(to) do
 			to[k] = nil
@@ -28,7 +42,4 @@ local function inplacecopy(from, to)
 	end
 end
 
-return {
-	deep = deepcopy,
-	inplace = inplacecopy,
-}
+return _M

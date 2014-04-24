@@ -1,3 +1,8 @@
+--- Event classes
+-- includes C(client) and S(server)
+-- @module shared.event
+-- @author Dirk Chang
+--
 
 require "shared.zhelpers"
 local zmq = require "lzmq"
@@ -5,18 +10,23 @@ local cjson = require 'cjson'
 local zpoller = require 'lzmq.poller'
 
 local CONN_METHOD = "tcp://"
-local PUB_SERVER_PORT = ":5519"
-local REP_SERVER_PORT = ":5518"
+local PUBS_PORT = ":5519"
+local REPS_PORT = ":5518"
 local SERVER_ENDPOINT = "localhost"
 
-local _CLIENT = {}
+--- A client class
+--@type C
+local C = {}
 
-function _CLIENT:open(ip)
+--- Open connection 
+--@tparam string ip remote ip
+--@treturn nil no return
+function C:open(ip)
 
 	local SOCKET_OPTION = {
 		zmq.SUB,
 		subscribe = 'EVENT ',
-		connect  = CONN_METHOD..(endpoint or SERVER_ENDPOINT)..PUB_SERVER_PORT,
+		connect  = CONN_METHOD..(endpoint or SERVER_ENDPOINT)..PUBS_PORT,
 	}
 
 	local subscriber, err = self.ctx:socket(SOCKET_OPTION)
@@ -45,7 +55,7 @@ function _CLIENT:open(ip)
 	local REQ_SOCKET_OPTION = {
 		zmq.REQ,
 		linger   = 0,
-		connect  = CONN_METHOD..(endpoint or SERVER_ENDPOINT)..REP_SERVER_PORT,
+		connect  = CONN_METHOD..(endpoint or SERVER_ENDPOINT)..REPS_PORT,
 	}
 
 	local client, err = self.ctx:socket(REQ_SOCKET_OPTION)
@@ -58,7 +68,10 @@ function _CLIENT:open(ip)
 	end)
 end
 
-function _CLIENT:close()
+--- Open connection 
+--@treturn bool result
+--@treturn string error
+function C:close()
 	if not self.client then
 		return nil, "not connected"
 	end
@@ -74,7 +87,7 @@ function _CLIENT:close()
 	return true
 end
 
-function _CLIENT:send(event)
+function C:send(event)
 	assert(event.src)
 	assert(event.name)
 	event.dest = event.dest or "ALL"
@@ -82,7 +95,7 @@ function _CLIENT:send(event)
 	return self.client:send(cjson.encode(event))
 end
 
-function _CLIENT.new(ctx, poller, cb)
+function C.new(ctx, poller, cb)
 	local poller = poller or zpoller.new()
 	local ctx = ctx or zmq.context()
 	return setmetatable(
@@ -93,16 +106,18 @@ function _CLIENT.new(ctx, poller, cb)
 		subscriber = nil,
 		option = nil,
 		callback = cb,
-	}, {__index = _CLIENT})
+	}, {__index = C})
 end
 
-local _SERVER = {}
+--- A client class
+--@type C
+local S = {}
 
-function _SERVER:open(ip)
+function S:open(ip)
 	local ip = ip or "*"
 	local SOCKET_OPTION = {
 		zmq.PUB,
-		bind  = CONN_METHOD..ip..PUB_SERVER_PORT,
+		bind  = CONN_METHOD..ip..PUBS_PORT,
 	}
 
 	local publisher, err = self.ctx:socket(SOCKET_OPTION)
@@ -117,7 +132,7 @@ function _SERVER:open(ip)
 
 	local REP_SOCKET_OPT = {
 		zmq.REP,
-		bind = CONN_METHOD..ip..REP_SERVER_PORT,
+		bind = CONN_METHOD..ip..REPS_PORT,
 	}
 	local server, err = self.ctx:socket(REP_SOCKET_OPT)
 	zassert(server, err)
@@ -138,7 +153,7 @@ function _SERVER:open(ip)
 	end)
 end
 
-function _SERVER.new(ctx, poller)
+function S.new(ctx, poller)
 	local ctx = ctx or zmq.context()
 	local poller = poller or zpoller.new()
 	return setmetatable(
@@ -148,10 +163,10 @@ function _SERVER.new(ctx, poller)
 		server = nil,
 		publisher = nil,
 		option = nil,
-	}, {__index = _SERVER})
+	}, {__index = S})
 end
 
-function _SERVER:close()
+function S:close()
 	if not server then
 		return nil, "not initialized"
 	end
@@ -167,7 +182,8 @@ function _SERVER:close()
 	return true
 end
 
+---@export
 return  {
-	C = _CLIENT,
-	S = _SERVER
+	C = C,
+	S = S
 }

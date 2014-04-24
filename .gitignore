@@ -1,6 +1,7 @@
 /oe/build
 __install
 __release
+doc/doc
 build*/
 web/io
 *.swp

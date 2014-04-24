@@ -21,7 +21,7 @@ if [ $1 = "start" ] ; then
 	start-stop-daemon --start --oknodo --make-pidfile --pidfile $PID_FOLDER/core_monitor.pid --chdir $CAD_DIR/core/monitor --background --startas /usr/bin/lua -- start.lua
 	start-stop-daemon --start --oknodo --make-pidfile --pidfile $PID_FOLDER/core_iobus.pid --chdir $CAD_DIR/core/iobus --background --startas /usr/bin/lua -- start.lua
 	start-stop-daemon --start --oknodo --make-pidfile --pidfile $PID_FOLDER/logs.pid --chdir $CAD_DIR/core/logs --background --startas /usr/bin/lua -- start.lua
-	start-stop-daemon --start --oknodo --make-pidfile --pidfile $PID_FOLDER/web.pid --chdir $CAD_DIR/web --background --startas /usr/local/bin/wsapi -- --config=xavante.conf.lua --cgilua
+	#start-stop-daemon --start --oknodo --make-pidfile --pidfile $PID_FOLDER/web.pid --chdir $CAD_DIR/web --background --startas /usr/local/bin/wsapi -- --config=xavante.conf.lua --cgilua
 else
 	start-stop-daemon --stop --oknodo --pidfile $PID_FOLDER/web.pid --retry 5
 	rm $PID_FOLDER/web.pid

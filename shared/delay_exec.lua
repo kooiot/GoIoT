@@ -1,5 +1,16 @@
+--- Execute commands with delayed method
+-- delay three seconds then execute the commands, function returned before commands been executed
+-- @module shared.delay_exec
+-- 
+
+--- The default temperate file saving path
 local temp_folder = '/tmp'
 
+--- Execute function 
+--@export
+--@tparam string filename the filename saved the temperatly shell file
+--@tparam table cmds the commands table
+--@return nil
 return function (filename, cmds)
 	if type(cmds) == 'string' then
 		cmds = {cmds}

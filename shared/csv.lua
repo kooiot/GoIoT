@@ -1,6 +1,19 @@
 --[[
 	ParserCSVLine:http://lua-users.org/wiki/LuaCsv
 ]]-- 
+
+--- CSV parser module
+-- csv parsing helper
+-- @module shared.csv
+-- @author Dirk Chang
+--
+local _M = {}
+
+--- Parse CSV Line function
+-- It is copied from: http://lua-users.org/wiki/LuaCsv
+-- @tparam string line one csv string line
+-- @tparam string sep the csv seperator
+-- @treturn table the csv content for line
 local function ParseCSVLine (line,sep) 
 	local res = {}
 	local pos = 1
@@ -41,7 +54,10 @@ local function ParseCSVLine (line,sep)
 	return res
 end
 
-local function from_file(path)
+--- read csv content from file
+-- @tparam string path the cvs file path
+-- @treturn table the parsed csv table object
+_M.file = function(path)
 	local file, err = io.open(path)
 	if not file then
 		return nil, err
@@ -60,11 +76,8 @@ local function from_file(path)
 	return res
 end
 
-local function from_buffer(buf)
+_M.buffer = function(buf)
 	-- TODO:
 end
 
-return {
-	file = from_file,
-	buffer = from_buffer,
-}
+return _M
