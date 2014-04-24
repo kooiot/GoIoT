@@ -1,6 +1,12 @@
+--- zhelpers
+-- The helper function for lzmq
+-- Copied form lzmq
+-- @local
+
 local zmq     = require "lzmq"
 local ztimer  = require "lzmq.timer"
 
+--- Check whether is it windows
 IS_WINDOWS = package.config:sub(1,1) == "\\"
 
 zassert = zmq.assert

@@ -147,4 +147,7 @@ local PrettyPrint do
 	end
 end
 
+--- The function
+-- @function PrettyPrint
+-- @local
 return PrettyPrint

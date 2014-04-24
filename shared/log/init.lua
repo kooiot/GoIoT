@@ -11,7 +11,7 @@ local ztimer = require 'lzmq.timer'
 -- @local
 -- @table log
 -- @field src log rouce
--- @filed desc log description
+-- @field desc log description
 -- @field level log level
 -- @field content log content
 -- @field timestamp log timestamp in ms

@@ -1,12 +1,16 @@
--- Data api access the datacache
+--- Data api access the datacache
+--
 
 require "shared.zhelpers"
 local cjson = require "cjson.safe"
 local ztimer = require 'lzmq.timer'
 local iobussub = require 'shared.api.iobus.sub'
 
+--- metatable class 
+-- @type class
 local class = {}
 
+--- Process reply message
 local function reply(json, err)
 	local reply = nil
 	if json then
@@ -23,40 +27,59 @@ local function reply(json, err)
 	return reply, err
 end
 
--- Send login to iobus:
---   user - username
---   pass - password
---   port - application service port, nil or 0 won't accept device tree querying
+--- Send login to iobus:
+-- @tparam string user username
+-- @tparam string pass password
+-- @tparam number port application service port, nil or 0 won't accept device tree querying
+-- @return ok
+-- @treturn string error message
 function class:login(user, pass, port)
 	local req = {"login", {user=user, pass=pass, from=self.from, port=port}}
 	return reply(self.client:request(cjson.encode(req), true))
 end
 
--- Update value
+--- Update/Write value by path
+-- @tparam string path The object/prop path
+-- @param value Value
+-- @return ok
+-- @treturn string error message
 function class:write(path, value)
 	local req = {'write', {path=path, value=value, from=self.from}}
 	return reply(self.client:request(cjson.encode(req), true))
 end
 
--- Send  one command
+--- Send one command
+-- @tparam strint path The path of command object
+-- @tparam table args The command arguments
+-- @return ok
+-- @treturn string error message
 function class:command(path, args)
 	local req = {'command', {path=path, args=args, from=self.from}}
 	return reply(self.client:request(cjson.encode(req), true))
 end
 
--- Input sensor change the value
+--- Publish the values changes
+-- @tparam string path Object/Property path
+-- @param  value Object value
+-- @tparam number timestamp Timestamp
+-- @tparam number quality Quality
 function class:publish(path, value, timestamp, quality)
 	local timestamp = timestamp or ztimer.absolute_time()
 	local req = {'publish', {path=path, value=value, timestamp=timestamp, quality=quality, from=self.from}}
 	return reply(self.client:request(cjson.encode(req), true))
 end
 
--- vals is the table that path, value(value, timestamp, quality)
+--- Publish value changes for few object/property
+-- @tparam table vals The table contains path, value(value, timestamp, quality)
 function class:batch_publish(vals)
 	local req = {'batch_publish', {pvs=vals, from=self.from}}
 	return reply(self.client:request(cjson.encode(req), true))
 end
 
+--- Read object/property value
+-- @tparam strint path The path of object/property
+-- @treturn table value object
+-- @treturn string error message
 function class:read(path)
 	local req = {'read', {path=path, from=self.from}}
 	local reply, err = self.client:request(cjson.encode(req), true)
@@ -66,7 +89,9 @@ function class:read(path)
 	return reply, err
 end
 
--- Enum devices according to pattern( refer to string.match pattern )
+--- Enum devices according to pattern
+-- @tparam string pattern( refer to string.match pattern  )
+-- @treturn table device name list
 function class:enum(pattern)
 	local req = {'enum', {pattern=pattern, from=self.from}}
 	local reply, err = self.client:request(cjson.encode(req), true)
@@ -82,7 +107,9 @@ function class:enum(pattern)
 	return reply, err
 end
 
--- Read the device tree meta from iobus
+--- Read the device tree meta from iobus
+-- @tparam string path the device path
+-- @treturn table the device tree table
 function class:tree(path)
 	local req = {'tree', {path=path, from=self.from}}
 	local reply, err = self.client:request(cjson.encode(req), true)
@@ -95,7 +122,11 @@ function class:tree(path)
 	return reply, err
 end
 
--- subscribe to a path, to get notice when data changed
+--- Subscribe to a path, to get notice when data changed
+-- @tparam string pattern The match pattern (refer to string.match)
+-- @tparam function cb Callback function when changes happen
+-- @return ok
+-- @treturn string error message
 function class:subscribe(pattern, cb)
 	-- assert the callback, and create the subclient
 	assert(cb)
@@ -111,7 +142,10 @@ function class:subscribe(pattern, cb)
 	return reply, err
 end
 
--- unsubscribe
+--- Unsubscribe cov
+-- @tparam string pattern The match pattern (refer to string.match)
+-- @return ok
+-- @treturn string error message
 function class:unsubscribe(pattern)
 	assert(self.subclient)
 	self.subclient:unbind(pattern)
@@ -123,24 +157,29 @@ function class:unsubscribe(pattern)
 	return reply, err
 end
 
--- Register the callback function for data writing
+--- Register the callback function for data writing
+-- @tparam function cb Callback function
 function class:onwrite(cb)
 	assert(self.subclient)
 	self.subclient.onwrite = cb
 end
 
--- Register the callback function for command handing
+--- Register the callback function for command handing
+-- @tparam function cb Callback function
 function class:oncommand(cb)
 	assert(self.subclient)
 	self.subclient.oncommand = cb
 end
 
--- Register the udpate event callback handler
+--- Register the udpate event callback handler
+-- @tparam function cb Callback function
 function class:onupdate(cb)
 	assert(self.subclient)
 	self.subclient.onupdate = cb
 end
 
+--- Get the IOBUS service version
+-- 
 function class:version()
 	local req = {'version', {from=self.from}}
 	local reply, err = self.client:request(cjson.encode(req), true)
@@ -150,7 +189,15 @@ function class:version()
 	return reply, err
 end
 
--- Create iobus access api
+--- Module functions
+-- @section
+
+
+--- Create iobus access api
+-- @tparam string from Your application namespace
+-- @tparam lzmq.context ctx
+-- @tparam lzmq.poller poller
+-- @treturn class the api object
 local function new(from, ctx, poller)
 	assert(from and ctx and poller)
 
@@ -173,7 +220,8 @@ local function new(from, ctx, poller)
 	return setmetatable(obj, {__index=class})
 end
 
-
+---
+--@export
 return {
 	new = new
 }

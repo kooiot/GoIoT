@@ -1,4 +1,4 @@
--- iobus client
+--- IOBUS subscribe client (internal using only)
 -- Connects SUB socket to tcp://localhost:5556
 -- Collects data updates 
 
@@ -7,17 +7,22 @@ local zmq = require "lzmq"
 local log = require 'shared.log'
 local cjson = require 'cjson.safe'
 
+--- Subscribe class
+-- @type class
 local class = {}
 
+--- Bind the path with callback
 function class:bind(path, cb)
 	assert(not self.callbacks[path])
 	self.callbacks[path] = cb
 end
 
+--- Unbind the path
 function class:unbind(path)
 	self.callbacks[path] = nil
 end
 
+--- Open the connection
 function class:open()
 	printf("Collecting updates from publish server ...\n")
 	-- Socket to talk to server
@@ -66,6 +71,7 @@ function class:open()
 	end)
 end
 
+--- Calling the recv function to get message
 function class:recv()
 	if not self.subscriber then
 		return nil, nil
@@ -89,22 +95,32 @@ function class:recv()
 	return filter, data, err
 end
 
+--- Close connection
 function class:close()
 	self.poller:remove(self.subscriber)
 	self.subscriber:close()
 	self.subscriber = nil
 end
 
+--- Module functions
+-- @section
+
+--- Create subscribe api
+-- @function module
+-- @tparam string filter Your application namespace
+-- @tparam lzmq.context ctx
+-- @tparam lzmq.poller poller
+-- @treturn class object
 return function(filter, ctx, poller)
 	local obj = {}
 	assert(ctx)
 	assert(poller)
+
 	-- Subscribe to filter 
 	local filter = filter or ""
 	obj.filter = filter..' '
 	obj.poller = poller
 	obj.callbacks = {}
-
 
 	obj.context = ctx
 	obj.option = {

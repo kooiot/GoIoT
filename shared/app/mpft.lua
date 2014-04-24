@@ -1,7 +1,11 @@
+--- Message process fucntion table
+-- @local
+--
 local cjson = require 'cjson.safe'
 
 local mpft = {}
 
+----
 local function call_handler(name, app, vars)
 	if app.handlers[name] then
 		return app.handlers[name](app, vars)

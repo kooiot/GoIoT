@@ -1,7 +1,11 @@
+--- Port module
+-- @local
+--
 local log = require 'shared.log'
 
 local class={}
 
+----
 local function serial_conf()
 	return {type='serial', props = {
 		index={type='number', value=''},

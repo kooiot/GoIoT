@@ -1,6 +1,6 @@
--- Lazy Pirate client
--- Use ZMQ_RCVTIMEO to do a safe request-reply
--- To run, start lpserver and then randomly kill/restart it
+------
+-- Configuration service interface
+--
 
 require "shared.zhelpers"
 local zmq = require "lzmq"
@@ -11,8 +11,10 @@ local client = req.new()
 
 client:open({zmq.REQ, linger = 0, connect="tcp://localhost:5522", rcvtimeo = 300}, 3)
 
+--- Module
 local _M = {}
 
+--- Process the reply from server
 local function reply(json, err)
 	local reply = nil
 	if json then
@@ -29,21 +31,33 @@ local function reply(json, err)
 	return reply, err
 end
 
+--- Add configuration with key and value
+-- @tparam string key configuration key
+-- @param vals value or value table
 _M.add = function(key, vals)
 	local req = {"add", {key=key, vals=vals}}
 	return reply(client:request(cjson.encode(req), true))
 end
 
+--- Erase configuration by key
+-- @tparam string key configuration key
 _M.erase = function(key)
 	local req = {"erase", {key=key}}
 	return reply(client:request(cjson.encode(req), true))
 end
 
+--- Set configuration with key and value
+-- @tparam string key configuration key
+-- @param vals value or value table
 _M.set = function(key, vals)
 	local req = {'set', {key=key, vals=vals}}
 	return reply(client:request(cjson.encode(req), true))
 end
 
+--- Get configuration by key
+-- @tparam string key configuration key
+-- @return value or value table, nil for failure
+-- @treturn string error message
 _M.get = function(key)
 	local req = {'get', {key=key}}
 	local reply, err = client:request(cjson.encode(req), true)
@@ -61,6 +75,8 @@ _M.get = function(key)
 	return reply, err
 end
 
+--- Get the configuration service version
+-- 
 _M.version = function()
 	local req = {'version'}
 	local reply, err = client:request(cjson.encode(req), true)

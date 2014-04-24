@@ -1,10 +1,13 @@
-
+---- IO application install module
+-- @local
+--
 local log  = require 'shared.log'
 local install = require 'shared.app.install'
 local unzip = require 'shared.unzip'
 local platform = require 'shared.platform'
 
 
+----
 local function install_app(app, apps_folder, dest_name, downcb, config_app)
 	local path, err = downcb(app)
 	if path then

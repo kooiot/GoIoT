@@ -1,5 +1,9 @@
+--- Event message process fucntion table
+-- @local
+--
 local empft = {}
 
+----
 local function call_handler(name, app, vars)
 	if app.handlers[name] then
 		return app.handlers[name](app, vars)

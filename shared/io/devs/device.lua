@@ -63,5 +63,4 @@ local new = function (namespace, name, desc, virtual)
 end
 
 --- 
---@export
 return new

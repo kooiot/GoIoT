@@ -215,6 +215,7 @@ end
 
 --- Create new applicatoin instance
 -- @tparam Info info the application information table
+-- @tparam table handlers the list of handler functions
 -- @treturn class the application instance
 -- @raise asserts failures for binding port
 local function new(info, handlers)
