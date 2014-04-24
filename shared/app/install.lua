@@ -2,6 +2,9 @@
 application install lua script
 ]]--
 
+--- Application install helper
+--
+
 local cjson = require 'cjson.safe'
 local lfs = require 'lfs'
 local unzip = require 'shared.unzip'
@@ -10,6 +13,10 @@ local newinst = require 'shared.app.newinst'
 local pp = require 'shared.PrettyPrint'
 local log  = require 'shared.log'
 
+--- Update the version lua file
+-- @tparam string apps_folder the folder path for installed applications
+-- @tparam string dest_name the destination application name
+-- @treturn table the version table
 local function update_ver(apps_folder, dest_name)
 	local _ver = nil
 	local file, err = io.open(apps_folder..'/'..dest_name..'/_ver.lua', 'r')
@@ -35,7 +42,16 @@ local function update_ver(apps_folder, dest_name)
 	return _ver
 end
 
---TODO: Windows is not supported!!
+--- install function 
+-- @function return 
+-- @tparam string zip_file the zipped application file path
+-- @tparam string apps_folder the folder path for installed applications
+-- @tparam string dest_name the destination application name
+-- @tparam table app the application information table
+-- @tparam table local_app the local application information table
+-- @return ok
+-- @treturn string error
+-- @todo TODO: Windows is not supported!!
 --
 return function(zip_file, apps_folder, dest_name, app, local_app)
 	assert(zip_file, 'No application packe file specified')

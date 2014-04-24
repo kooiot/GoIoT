@@ -3,7 +3,6 @@
 --
 -- Info-ZIP UnZip Error Code list:
 -- http://www.info-zip.org/FAQ.html#error-codes  
--- @module shared.unzip
 -------------------------------------------------------------------------------
 
 --- Error codes

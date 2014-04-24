@@ -1,5 +1,4 @@
 --- Zeromq publish helper module
--- @module shared.pub
 
 
 require "shared.zhelpers"

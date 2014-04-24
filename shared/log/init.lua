@@ -1,3 +1,5 @@
+--- Logger client class
+--
 
 require "shared.zhelpers"
 local zmq = require "lzmq"
@@ -5,11 +7,25 @@ local cjson = require 'cjson'
 local zpoller = require 'lzmq.poller'
 local ztimer = require 'lzmq.timer'
 
+---Log object
+-- @local
+-- @table log
+-- @field src log rouce
+-- @filed desc log description
+-- @field level log level
+-- @field content log content
+-- @field timestamp log timestamp in ms
+
+--- The ipc channel
 local IPC = "ipc:///tmp/og.log.ipc"
 --local IPC = "tcp://localhost:5593"
 
+--- Logger clent object
 local obj = {}
 
+--- Open logger client
+-- @tparam lzmq.context ctx
+-- @treturn nil
 local function open(ctx)
 	assert(not obj.cleint)
 	obj.ctx = ctx or zmq.context()
@@ -23,6 +39,9 @@ local function open(ctx)
 	obj.client = client
 end
 
+--- Close the logger
+-- @treturn boolean ok
+-- @treturn[opt] string error message
 function obj:close()
 	if not self.client then
 		return nil, "not connected"
@@ -33,6 +52,11 @@ function obj:close()
 	return true
 end
 
+--- Send log object
+-- @local
+-- @tparam log log object
+-- @return ok
+-- @treturn[opt] string error message
 function obj:send(log)
 	assert(log.src)
 	assert(log.level)
@@ -42,6 +66,9 @@ function obj:send(log)
 	return self.client:send(cjson.encode(log))
 end
 
+--- Fire an error log
+-- @tparam string src log source
+-- @param ... log content refer to print
 function obj:error(src, ...)
 	local info = {...}
 	local log = {
@@ -52,6 +79,8 @@ function obj:error(src, ...)
 	return self:send(log)
 end
 
+--- Fire an warn log
+-- @see obj:error
 function obj:warn(src, ...)
 	local info = {...}
 	local log = {
@@ -62,6 +91,8 @@ function obj:warn(src, ...)
 	return self:send(log)
 end
 
+--- Fire an info log
+-- @see obj:error
 function obj:info(src, ...)
 	local info = {...}
 	local log = {
@@ -72,6 +103,8 @@ function obj:info(src, ...)
 	return self:send(log)
 end
 
+--- Fire an debug log
+-- @see obj:error
 function obj:debug(src, ...)
 	local info = {...}
 	local log = {
@@ -82,6 +115,10 @@ function obj:debug(src, ...)
 	return self:send(log)
 end
 
+--- Fire an protocol packet
+-- @tparam string src packet source
+-- @tparam string desc packet description
+-- @param ... the packet content
 function obj:packet(src, desc, ...)
 	local info = {...}
 	local log = {
@@ -95,4 +132,6 @@ end
 
 open()
 
+---
+-- export
 return obj

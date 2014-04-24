@@ -1,9 +1,16 @@
+--- Install helpers
+-- @local
+--
 local app_install = require 'shared.app.install'
 local io_install = require 'shared.io.install'
 local download = require 'shared.cloud.download'
 local log = require 'shared.log'
 
+--- Create callback function for intalling an application
+-- @tparam table cfg configureation table
+-- @return function callback function
 local function create_cb(cfg)
+	--- The callback function
 	return function (app)
 		-- Download the applcation from server
 		local src = cfg.srvurl..'/'..app.path..'/latest.zip'
@@ -18,6 +25,11 @@ local function create_cb(cfg)
 	end
 end
 
+--- Install helper function
+-- @function module
+-- @tparam table cfg Configuration
+-- @tparam Application app Application object
+-- @tparam string lname Local install name
 return function(cfg, app, lname)
 	local downcb = create_cb(cfg)
 	-- INstall the application

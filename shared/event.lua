@@ -1,6 +1,5 @@
 --- Event classes
 -- includes C(client) and S(server)
--- @module shared.event
 -- @author Dirk Chang
 --
 

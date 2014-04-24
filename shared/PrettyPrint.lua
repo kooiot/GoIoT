@@ -12,7 +12,6 @@ Usage
 ]]
 
 --- Pretty Print helper module
--- @module shared.PrettyPrint
 -- @usage 
 -- local prettyprint = require 'shared.PrettyPrint'
 -- pretty_output = prettyprint(table)

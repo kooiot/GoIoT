@@ -2,7 +2,6 @@
 -- The helper functions for you to copy table easily.
 -- @author Dirk Chang
 -- @copyright SymTech Inc 2014
--- @module shared.copy
 
 local _M = {}
 

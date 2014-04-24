@@ -1,3 +1,5 @@
+--- Logger server module
+--
 
 require "shared.zhelpers"
 local zmq = require "lzmq"
@@ -7,8 +9,29 @@ local zpoller = require 'lzmq.poller'
 local IPC = "ipc:///tmp/og.log.ipc"
 --local IPC = "tcp://*:5593"
 
+--- Server metatable
+-- @type class
 local class = {}
 
+--- Create the server object
+-- @tparam lzmq.context ctx
+-- @tparam lzmq.poller poller
+-- @tparam function cb callback function
+-- @treturn class object
+function class.new(ctx, poller, cb)
+	local ctx = ctx or zmq.context()
+	local poller = poller or zpoller.new()
+	return setmetatable(
+	{
+		ctx = ctx,
+		poller = poller,
+		server = nil,
+		callback = cb,
+	}, {__index = class})
+end
+
+--- Open logger server
+-- @raise asserts when zeromq bind failure
 function class:open()
 	local SOCKET_OPT = {
 		zmq.PULL,
@@ -32,18 +55,8 @@ function class:open()
 	end)
 end
 
-function class.new(ctx, poller, cb)
-	local ctx = ctx or zmq.context()
-	local poller = poller or zpoller.new()
-	return setmetatable(
-	{
-		ctx = ctx,
-		poller = poller,
-		server = nil,
-		callback = cb,
-	}, {__index = class})
-end
-
+--- Close the server
+--
 function class:close()
 	if not server then
 		return nil, "not initialized"
@@ -57,9 +70,16 @@ function class:close()
 	return true
 end
 
+--- Module function
+-- @section
+
+--- Create new server object
+-- @function module
+-- @see class.new
 return function(ctx, poller, cb)
 	if not cb then
 		return nil, "need have callback as the par"
 	end
 	return class.new(ctx, poller, cb)
 end
+

@@ -1,5 +1,4 @@
 --- ZeroMQ Request object
--- @module shared.req
 
 require "shared.zhelpers"
 local zmq = require "lzmq"
@@ -108,8 +107,8 @@ function class:request(request, expect_reply)
 	return reply, tostring(err)
 end
 
----
---@type shared.req
+--- Module functions
+--@section
 
 --- Create new request object
 -- @tparam lzmq.context ctx

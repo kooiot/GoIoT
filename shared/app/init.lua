@@ -1,6 +1,5 @@
 ---
 -- Base interface for application
--- @module shared.app
 
 local zmq = require 'lzmq'
 local event = require 'shared.event'
@@ -16,21 +15,34 @@ local _ver = require '_ver'
 -- @type class
 local class = {}
 
---- Fire event
+--- Fire event to target
 -- @tparam string dest the event target application
--- @tparam string 
+-- @tparam string name the event name
+-- @tparam table vars the varaiables used by this event
+-- @return ok
+-- @treturn string error
 function class:firevent(dest, name, vars)
 	local event = {src=self.name, dest=dest, name=name, vars=vars}
 	--print('fire EVENT('..name..') to '..dest )
 	return self.event:send(event)
 end
 
+--- Send error reply
+-- @tparam Server server the server object
+-- @tparam string err the error message
+-- @return ok
+-- @treturn string error
 local function send_err(server, err)
 	local reply = {'error', {err=err}}
 	local rep_json = cjson.encode(reply)
 	return server:send(rep_json)
 end
 
+--- Register request handler
+-- @tparam stirng name the request method name
+-- @tparam function handler the request handler function
+-- @return ok
+-- @treturn string error
 function class:reg_request_handler(name, handler)
 	if not self.mpft[name] then
 		self.mpft[name] = handler
@@ -39,6 +51,10 @@ function class:reg_request_handler(name, handler)
 	return false, 'MSG '..name..' already registered!!'
 end
 
+--- Request Handler Internal helper
+-- @local
+-- @tparam string msg string in json
+-- @treturn nil
 function class:on_request(msg)
 	local json, err = cjson.decode(msg)
 	if not json then
@@ -55,6 +71,11 @@ function class:on_request(msg)
 	end
 end
 
+--- Register event handler
+-- @tparam stirng name the event name
+-- @tparam function handler the event handler function
+-- @return ok
+-- @treturn string error
 function class:reg_event_handler(name, handler)
 	if not self.empft[name] then
 		self.empft[name] = handler
@@ -63,6 +84,10 @@ function class:reg_event_handler(name, handler)
 	return false, 'Event '..name..' already registered!!'
 end
 
+--- Event Handler Internal helper
+-- @local
+-- @tparam string event message string in json
+-- @treturn nil
 function class:on_event(event)
 	print('on_event', event.name, event.dest)
 	if event.dest ~= self.name and event.dest ~= 'ALL' then
@@ -77,6 +102,8 @@ function class:on_event(event)
 	end
 end
 
+--- Initialize the application object
+-- @raise asserts on binding failure
 function class:init()
 	if self.port then
 		local server, err = self.ctx:socket({
@@ -127,12 +154,16 @@ function class:init()
 	end
 end
 
+--- Send notice to monitor services tells it we are aliving
 function class:send_notice()
 	--print(os.date(), 'send notice')
 	local req = {'notice', {name=self.name, desc=self.desc, port=self.port}}
 	self.monclient:send(cjson.encode(req))
 end
 
+--- Application run loop
+-- @tparam number ms the maxmium time running inside this loop
+-- @treturn nil
 function class:run(ms)
 	-- make sure there will no longger than 3 second blocked in poller
 	if ms > 3000 then
@@ -149,6 +180,8 @@ function class:run(ms)
 	end
 end
 
+--- Get application meta table
+-- @treturn table the meta table
 function class:meta()
 	return {
 		name = self.name,
@@ -163,9 +196,28 @@ function class:meta()
 	}
 end
 
-local _M = {}
+--- Module functions
+-- @section
 
-function _M.new(info, handlers)
+--- Application infomation table
+-- @table Info
+-- @field version Version number 
+-- @field build Version build number
+-- @field name Appliation name
+-- @field desc Application description
+-- @field web (deleted)
+-- @field manufactor Application manufactor
+-- @field port Application management service port
+-- @field port_retry Whether retry with port inscrease to solve the bind failures
+-- @field handlers The request handlers table
+-- @field ctx lzmq.context
+-- @field poller lzmq.poller
+
+--- Create new applicatoin instance
+-- @tparam Info info the application information table
+-- @treturn class the application instance
+-- @raise asserts failures for binding port
+local function new(info, handlers)
 	assert(info.name, 'App port must be specified')
 
 	local obj = {}
@@ -205,5 +257,9 @@ function _M.new(info, handlers)
 	return setmetatable(obj, {__index = class})
 end
 
-return _M
+---
+-- @export
+return {
+	new = new
+}
 

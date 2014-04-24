@@ -1,12 +1,20 @@
+--- Cloud module
+-- The cloud helper functions
+
 local unzip = require 'shared.unzip'
 local download = require 'shared.cloud.download'
 local list = require 'shared.app.list'
 local log = require 'shared.log'
 local pp = require 'shared.PrettyPrint'
 
+--- Module 
 local _M = {}
+
+--- Application list (cached)
+-- @local
 _M.apps = {}
 
+--- The default cloud configuration
 local cfg = {
 	--srvurl = 'ftp://cloud.opengate.com',
 	srvurl = 'http://localhost/',
@@ -14,8 +22,10 @@ local cfg = {
 	appsfolder = '/tmp/apps',
 }
 
+--- The configuration file path
 local cfg_file = '/tmp/apps/_store.cfg'
 
+--- Load the configuration from disk
 local function load_config()
 	local chunk, err = loadfile(cfg_file)
 
@@ -27,6 +37,7 @@ local function load_config()
 	end
 end
 
+--- Save configuration to disk
 local function save_config()
 	local file, err = io.open(cfg_file, 'w')
 	if not file then
@@ -37,6 +48,7 @@ local function save_config()
 	file:close()
 end
 
+--- Load cached application lists
 local function load_cache()
 	local cache = cfg.cachefolder..'/release'
 
@@ -50,6 +62,7 @@ local function load_cache()
 	return _M.apps, err
 end
 
+--- Load the installed application list
 local function load_installed()
 	local inst_apps = {}
 	local apps = list.list()
@@ -74,6 +87,7 @@ local function init ()
 	load_installed()
 end
 
+--- Save configuration when success
 local function save_after_success(r, err)
 	if r then
 		save_config()
@@ -81,6 +95,10 @@ local function save_after_success(r, err)
 	return r, err
 end
 
+--- Change the configuration
+-- @tparam table c Cloud configuration { srvurl=xxx, cachefolder=xxx, appsfolder=xxx }
+-- @treturn boolean ok
+-- @treturn[opt] string error message
 _M.config = function(c)
 	if type(c) == 'table' then
 		cfg.srvurl = c.srvurl or cfg.srvurl
@@ -96,8 +114,10 @@ _M.config = function(c)
 	return nil, 'Incorrect config parameter'
 end
 
---
+--- Update the local cache
 -- Fetch the release.gz from server
+-- @return ok
+-- @treturn string error message
 _M.update = function()
 	local src = cfg.srvurl..'/release.zip'
 	local dest = cfg.cachefolder..'/release.zip'
@@ -121,8 +141,9 @@ _M.update = function()
 	return load_cache()
 end
 
---
--- Search one application
+--- Search one application
+-- @tparam string key the search key
+-- @treturn table matched names
 _M.search = function(key)
 	local matches = {}
 	local pattern = '.-'..key..'.-'
@@ -138,8 +159,10 @@ _M.search = function(key)
 	return matches
 end
 
---
+---
 -- Find application by its name
+-- @tparam string name Application name
+-- @treturn table application information table, nil when name cannot found in cache
 _M.find = function (name)
 	for k,v in pairs(_M.apps) do
 		if v.name == name then
@@ -149,8 +172,12 @@ _M.find = function (name)
 	return nil
 end
 
---
+---
 -- Install one application
+-- @tparam string name Application name
+-- @tparam string lname Application local install name
+-- @treturn boolean ok
+-- @treturn string error message
 _M.install = function(name, lname)
 	log:info('CLOUD', "Installing "..name.." as "..lname)
 	-- Check for unique local name
@@ -170,10 +197,14 @@ _M.install = function(name, lname)
 	return install(cfg, app, lname)
 end
 
---
+---
 -- Remove one application
--- Mode: 'a' -- purge all stuff includes configuration
---       'n' -- only remove application, keep the configuration
+-- @tparam string lname Application local install name
+-- @tparam string mode Mode:
+--		'a' -- purge all stuff includes configuration
+--      'n' -- only remove application, keep the configuration
+-- @return  ok
+-- @treturn string error message
 _M.remove = function(lname, mode)
 	local mode = mode or 'n'
 	log:info("CLOUD", "Uninstalling application", lname)
@@ -187,9 +218,9 @@ _M.remove = function(lname, mode)
 	return nil, "No such application instance"
 end
 
---
+---
 -- List all avaiable/installed application
--- mode:
+-- @tparam string mode
 --	'a' - all avaiable applications
 --	'i' - all installed applications
 _M.list = function(mode)

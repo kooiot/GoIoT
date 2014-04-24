@@ -1,5 +1,4 @@
 --- All platform related constants 
--- @module shared.platform
 --
 
 local _M = {}

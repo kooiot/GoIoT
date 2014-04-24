@@ -1,6 +1,5 @@
 --- Execute commands with delayed method
 -- delay three seconds then execute the commands, function returned before commands been executed
--- @module shared.delay_exec
 -- 
 
 --- The default temperate file saving path

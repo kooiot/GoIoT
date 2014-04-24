@@ -1,3 +1,6 @@
+--- Uninstall helper function
+-- the wrapper of app.uninstall
+-- @local
 
 local uninstall = require 'shared.app.uninstall'
 

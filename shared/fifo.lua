@@ -1,6 +1,5 @@
 --- Fifo module 
 -- provides an class fifo
--- @module shared.fifo
 --
 
 local select , setmetatable = select , setmetatable

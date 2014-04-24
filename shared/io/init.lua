@@ -1,4 +1,6 @@
 #!/usr/bin/env lua
+--- IO Application base helper
+--
 
 local configs = require 'shared.api.config'
 local setting = require 'shared.io.setting'
@@ -27,27 +29,34 @@ end
 
 local config = nil
 
+--- Module 
 local _M = {}
+--- port list
 _M.ports = {}
+--- setting list
 _M.settings = {}
-_M.tags = {}
-_M.commands = {}
 
+--- Get the applicaiton meta information
 local function  app_meta()
 	return {
 		type = "IO",
 		config = config,
 		ports = _M.ports,
 		settings = _M.settings,
-		tags = _M.tags,
-		commands = _M.commands,
 	}
 end
 
+--- Add settings item
+-- @tparam table item Setting item
+-- @treturn nil
 function _M.add_setting(item)
 	table.insert(_M.settings, item:meta())
 end
 
+--- Get settings item according to name
+-- @tparam string name The setting name
+-- @treturn table item or nil
+-- @treturn string error message
 function _M.get_setting(name)
 	if config.settings then
 		for k, v in config.settings do 
@@ -63,15 +72,20 @@ function _M.get_setting(name)
 	return nil, 'no such setting'
 end
 
-function _M.add_command(cmd)
-	table.insert(_M.commands, cmd:meta())
-end
-
+--- Add ports item
+-- @tparam string name Port item
+-- @tparam table types Port Types in string table
+-- @tparam table default Default port object table
+-- @treturn nil
 function _M.add_port(name, types, default)
 	local port = require 'shared.io.port'
 	_M.ports[#_M.ports + 1] = {name=name, types = types, default = port[default..'_conf']()}
 end
 
+--- Get port settings
+-- @tparam string name Port name
+-- @treturn table Port configuration
+-- @treturn string error message
 local function get_port_conf(name)
 	local conf = nil
 	for k,v in pairs(_M.ports) do
@@ -92,6 +106,10 @@ local function get_port_conf(name)
 	return conf, 'no such port'
 end
 
+--- Get port object
+-- @tparam string name Port name
+-- @treturn table Port object 
+-- @treturn string error message
 function _M.get_port(name)
 	local conf, err = get_port_conf(name)
 	if not conf then
@@ -103,10 +121,7 @@ function _M.get_port(name)
 	return port.create(app, conf), conf
 end
 
-function _M.set_tags(tags)
-	_M.tags = tags
-end
-
+--- Import the default configration
 local function import_default_conf()
 	if _M.handlers.on_import then
 		local path = platform.path.appdefconf..'/'..app.name..'/config.csv'
@@ -123,6 +138,11 @@ local function import_default_conf()
 	end
 end
 
+--- Initialize the IO application
+-- @tparam string name IO application name
+-- @tparam table handlers IO handler function table
+-- @treturn app IO Application object
+-- @see app
 function _M.init(name, handlers)
 	config = load_config(name)
 	_M.handlers = handlers
@@ -139,6 +159,8 @@ function _M.init(name, handlers)
 	info.port = config.port
 	app = require('shared.app').new(info, _M.handlers)
 
+	--- devcies Interface
+	-- @see io.devs
 	app.devices = require('shared.io.devs').new(name)
 	app.devices:bindcov(function(path, value)
 		--log:debug(name, 'Publish data changes at '..path)
@@ -151,7 +173,9 @@ function _M.init(name, handlers)
 	assert(app)
 
 	app:init()
-	-- Login to iobus
+	--- IOBus interface
+	-- @local
+	-- @see api.iobus
 	app.iobus = iobus.new(name, app.ctx, app.poller)
 	-- register the command and write handlers
 	app.iobus:oncommand(function(path, args, from)
@@ -233,13 +257,17 @@ function _M.init(name, handlers)
 	return app
 end
 
+--- Aborting flag
 local aborting = false
+--- Abort the application running
 function _M.abort()
 	aborting = true
 end
 
+--- The minimum running time for application run loop
 local MIN_MS = 50
 
+--- The IO Application running loop
 function _M.run()
 	aborting = false
 

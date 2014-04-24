@@ -4,7 +4,6 @@
 
 --- CSV parser module
 -- csv parsing helper
--- @module shared.csv
 -- @author Dirk Chang
 --
 local _M = {}
