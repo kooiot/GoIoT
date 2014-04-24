@@ -24,6 +24,9 @@ rm -f apps
 ln -s /tmp/apps apps
 cd ../../..
 
+# Compile lua files
+./scripts/compile_lua.sh 
+
 # Create the cramfs image
 sudo chown -R root:root __install
 #mkfs.cramfs __install __release/cad2.cramfs
