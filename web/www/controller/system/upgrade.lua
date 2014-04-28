@@ -4,7 +4,7 @@ return {
 		if lwf.ctx.user then
 			res:ltp('system/upgrade.html')
 		else
-			lwf.exit(404)
+			res:redirect('/login')
 		end
 	end,
 }

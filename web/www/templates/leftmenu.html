@@ -2,6 +2,7 @@
 	<a class="hide item">
 		<i class="close icon"></i> Close Menu
 	</a>
+	<? if lwf.ctx.user then ?>
 	<a class="item" href="/">
 		<i class="inverted circular blue awesome download cloud icon"></i> <b>Install New</b>
 	</a>
@@ -29,6 +30,7 @@
 			<a class="item" href="/system/backup">Backup</a>
 		</div>
 	</div>
+	<? end ?>
 
 	<div class="item">
 		<b>Help</b>
