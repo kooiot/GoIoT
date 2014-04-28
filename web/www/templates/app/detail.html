@@ -1,20 +1,35 @@
 <? extend 'layout.html' ?>
-<? include('app/top.html', {info=info}) ?>
-<div class="main container">
-	<div style="" class="sticky-wrapper"><div class="peek">
-			<div class="ui vertical pointing secondary menu">
-				<a class="item active">Cards</a>
-				<a class="item">Feeds</a>
-				<a class="item">FQA</a>
-				<a class="item">Links</a>
-				<a class="item">Comments</a>
-			</div>
+<div class="segment">
+	<div class="container">
+		<div class="introduction">
+			<h3 class="ui diving header"><? =appname ?> </h3>
+			Application <? =appname ?> 
 		</div>
 	</div>
-	<? include 'widget/rating.html' ?>
-	<? include 'widget/cards.html' ?>
-	<? include 'widget/feeds.html' ?>
-	<? include 'widget/answers.html' ?>
-	<? include 'widget/links.html' ?>
-	<? include 'widget/comments.html' ?>
+</div>
+<div class="main container">
+	<div class="ui icon buttons">
+		<a class="ui button" href="/system/stop/<?=appname?>">
+			<i class="stop icon"></i> Stop
+		</a>
+		<a class="ui button" href="/apps/<?=appname?>">
+			<i class="settings icon"></i> Settings
+		</a>
+		<div class="or"></div>
+		<a class="ui teal button" href="/system/remove/<?=appname?>">
+			<i class="remove icon"></i> Remove
+		</a>
+	</div>
+
+	<? include('widget/events.html', {title="Events"}) ?>
+	<?
+	include('widget/sevents.html', {title="Logs", 
+	events={
+	'<a href="/user/admin"> admin </a> has upgrade the system to <a>1.2.1</a>',
+	'<a> 1.2.1 </a> has released, please upgrade your system from <a>here</a>',
+	'<a href="/user/admin"> admin </a> has upgrade the system to <a>1.2.0</a>',
+	'<a> 1.2.0 </a> has released, please upgrade your system from <a>here</a>',
+	}
+	})
+	?>
 </div>
