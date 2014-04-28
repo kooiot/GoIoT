@@ -3,7 +3,6 @@
 <? include('app/top.html') ?>
 <div class="main container">
 
-	<script src="/static/js/library/jquery.form.min.js"> </script>
 	<h2 class="ui dividing header">Information:</h2>
 
 	<? if info then ?>
@@ -72,23 +71,21 @@
 	<div id="status"></div>
 
 	<script>
-(function() {
+		(function() {
+			var status = $('#status');
 
- var status = $('#status');
-
- $('form').ajaxForm({
-beforeSend: function() {
-status.empty();
-},
-uploadProgress: function(event, position, total, percentComplete) {
-},
-success: function() {
-},
-complete: function(xhr) {
-status.html(xhr.responseText);
-}
-}); 
- })();       
+			$('form').ajaxForm({
+				beforeSend: function() {
+					status.empty();
+				},
+				uploadProgress: function(event, position, total, percentComplete) {
+				},
+				success: function() {
+				},
+				complete: function(xhr) {
+					status.html(xhr.responseText);
+				}
+			}); 
+		})();       
 	</script>
-
 </div>

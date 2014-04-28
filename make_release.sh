@@ -19,7 +19,7 @@ rm __install/scripts/code_backup.sh
 # remove the web test files
 rm -rf __install/web/test 
 # Correct the the soft link in web core
-cd __install/web/core
+cd __install/web/www
 rm -f apps
 ln -s /tmp/apps apps
 cd ../../..

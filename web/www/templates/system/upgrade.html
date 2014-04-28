@@ -1,0 +1,73 @@
+<? extend 'layout.html' ?>
+
+<div class="tab segment">
+	<div class="container">
+	</div>
+</div>
+<div class="main container">
+	<div id="btn_reboot" class="ui small blue button">Reboot</div>
+
+	<div class="ui segment">
+		<form action="/system/upload" method="post" enctype="multipart/form-data">
+			<label>System Upgrade:</label>
+			<input type="hidden" name="filetype" value="sys">
+			<input type="file" name="file">
+			<input type="submit" value="Upload">
+			<br>
+		</form>
+
+		<div class="progress">
+			<div class="bar"></div >
+			<div class="percent">0%</div >
+		</div>
+	</div>
+	<div class="ui floating message">
+		<div class="header">
+			OUTPUT:
+		</div>
+		<div id="status"></div>
+	</div>
+
+<script>
+	(function() {
+
+		var bar = $('.bar');
+		var percent = $('.percent');
+		var status = $('#status');
+
+		$('form').ajaxForm({
+			beforeSend: function() {
+				status.empty();
+				var percentVal = '0%';
+				bar.width(percentVal);
+				percent.html(percentVal);
+			},
+			uploadProgress: function(event, position, total, percentComplete) {
+				var percentVal = percentComplete + '%';
+				bar.width(percentVal);
+				percent.html(percentVal);
+			},
+			success: function() {
+				var percentVal = '100%';
+				bar.width(percentVal)
+				percent.html(percentVal);
+			},
+			complete: function(xhr) {
+				status.html(xhr.responseText);
+			}
+		}); 
+
+		$( "#btn_reboot" ).click(function() {
+			$.post("/system/reboot", {from:"web"}, function(data) {
+				status.html(data);
+			})
+			.done(function() {
+			})
+			.fail(function() {
+				alert("Failed to reboot");
+			});
+		});
+	})();       
+</script>
+
+</div>
