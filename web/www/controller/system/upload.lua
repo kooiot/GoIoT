@@ -31,7 +31,7 @@ return {
 						delay_exec('upgrade.sh', {'cd /', '$CAD_DIR/run.sh stop', 'umount /tmp/cad2', mv, 'sleep 3', 'reboot'})
 						res:write('<br> Device is rebooting to upgrade the system....')
 					elseif filetype == 'app' then
-						local appname = req.get_post_args('appname', '')
+						local appname = req.get_post_arg('appname', '')
 
 						if not appname or string.len(appname) == 0 then
 							res:write('<br> Incorrect POST found, we need the appname')
