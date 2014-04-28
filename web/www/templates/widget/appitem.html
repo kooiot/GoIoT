@@ -1,0 +1,57 @@
+<?
+	local items = {
+		{
+			title = 'Industial',
+			items = {
+				{
+					version = '1.2.1',
+					lname = 'Room1',
+					name = 'S5500',
+					desc = 'S5500 Meters',
+				},
+				{
+					version = '1.2.1',
+					lname = 'Room2',
+					name = 'S5500',
+					desc = 'S5500 Meters',
+				},
+			},
+		},
+		{
+			title = 'Home Automation',
+			items = {
+				{
+					version = '1.0.1',
+					lname = 'Room1',
+					name = 'BACNET',
+					desc = 'BACNET',
+				},
+				{
+					version = '1.2.1',
+					lname = 'Room2',
+					name = 'BACNET',
+					desc = 'BACNET',
+				},
+			},
+		},
+	}
+?>
+<script src="/static/js/app.js"></script> 
+<? for _, kl in pairs(items) do ?>
+
+<h2 class="ui dividing header"> <?=kl.title ?></h2>
+<div class="ui items">
+	<? for k, v in pairs(kl.items) do ?>
+	<div class="app item" lname="<?=v.lname?>">
+		<div class="ui circular segment">
+			<img src="/static/img/demo/avatar.jpg">
+		</div>
+		<div class="content">
+			<div class="meta"><?=v.version ?></div>
+			<div class="name"><?=v.lname ?></div>
+			<p class="description"><?=v.desc ?></p>
+		</div>
+	</div>
+	<? end ?>
+</div>
+<? end ?>

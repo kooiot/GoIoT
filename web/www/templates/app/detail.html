@@ -1,0 +1,20 @@
+<? extend 'layout.html' ?>
+<? include('app/top.html', {info=info}) ?>
+<div class="main container">
+	<div style="" class="sticky-wrapper"><div class="peek">
+			<div class="ui vertical pointing secondary menu">
+				<a class="item active">Cards</a>
+				<a class="item">Feeds</a>
+				<a class="item">FQA</a>
+				<a class="item">Links</a>
+				<a class="item">Comments</a>
+			</div>
+		</div>
+	</div>
+	<? include 'widget/rating.html' ?>
+	<? include 'widget/cards.html' ?>
+	<? include 'widget/feeds.html' ?>
+	<? include 'widget/answers.html' ?>
+	<? include 'widget/links.html' ?>
+	<? include 'widget/comments.html' ?>
+</div>

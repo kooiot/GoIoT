@@ -1,0 +1,13 @@
+
+<div class="ui small piled feed segment">
+	<h4 class="ui header"><?=title ?></h4>
+	<? for _, ev in pairs(events) do ?>
+	<div class="event">
+		<div class="content">
+			<div class="summary">
+				<?=ev ?>
+			</div>
+		</div>
+	</div>
+	<? end ?>
+</div>

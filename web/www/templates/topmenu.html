@@ -1,0 +1,45 @@
+<script src="/static/js/topmenu.js"></script>
+<div class="ui fixed transparent inverted main menu">
+	<div class="container">
+		<a class="launch item"><i class="icon list layout"></i> Menu</a>
+
+		<a class="active item" href="/">
+			<i class="home icon"></i> Home
+		</a>
+
+		<? if lwf.ctx.user then ?>
+		<a class="item" href="/app/new">
+			<i class="cloud download icon"></i> Cloud
+		</a>
+		<? end ?>
+
+		<div class="right menu">
+			<div class="ui dropdown item">
+				<i class="icon globe"></i>
+				<div class="menu">
+					<a class="item" href="/lang/en">English</a>
+					<a class="item" href="/lang/zh">中文</a>
+				</div>
+			</div>
+			<? if not lwf.ctx.user then ?>
+			<div class="item">
+				<div id="btn_login" class="ui teal button"><i class="sign in icon"></i>Sign In</div>
+			</div>
+			<? else ?>
+			<div class="ui dropdown item">
+				<i class="icon user"></i> <?=lwf.ctx.user.username ?>
+				<div class="menu">
+					<a class="item" href="/advance">
+						<i class="grid layout icon"></i> Advance
+					</a>
+					<a class="item" href="/user">
+						<i class="settings icon"></i> Settings
+					</a>
+					<a class="item" href="/logout"><i class="sign out icon"></i> Logout</a>
+				</div>
+			</div>
+			<? end ?>
+
+		</div>
+	</div>
+</div>

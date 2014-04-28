@@ -1,0 +1,70 @@
+<?
+	local events = {
+		{
+			label = {
+				--[[img = "/static/img/demo/avatar2.jpg",]]--
+				icon = 'ok sign',
+			},
+			date = "Just moments ago",
+			summary = "<a>Meter S5500</a> has close the power connection",
+		},
+		{
+			label = {
+				icon = 'warning',
+			},
+			date = "3 days ago",
+			summary = "One error log from <a> Meter S5500 </a>",
+			extra = {
+				text = 'IA is higher than 270V',
+			},
+		},
+		{
+			label = {
+				icon = "attention",
+			},
+			date = "3 days ago",
+			summary = "<a>Camera Front</a> has capture <a>2 new photos</a> as power is lost",
+			extra = {
+				imgs = {
+					'/static/img/demo/item1.jpg',
+					'/static/img/demo/item2.jpg',
+				}
+			}
+		},
+	}
+?>
+<div class="ui small piled feed segment">
+	<h4 class="ui header"><?=title ?></h4>
+	<? for _, ev in pairs(events) do ?>
+	<div class="event">
+		<div class="label">
+			<? if ev.label.img then ?>
+			<img src="<?=ev.label.img ?>">
+			<? else ?>
+			<i class="circular <?=ev.label.icon?> icon"></i>
+			<? end ?>
+		</div>
+		<div class="content">
+			<div class="date">
+				<?=ev.date ?>
+			</div>
+			<div class="summary">
+				<?=ev.summary ?>
+			</div>
+			<? if ev.extra and ev.extra.text then?>
+			<div class="extra text">
+				<? = ev.extra.text ?>
+			</div>
+			<? end ?>
+			<? if ev.extra and ev.extra.imgs then?>
+			<div class="extra images">
+				<? for _, u in pairs(ev.extra.imgs) do ?>
+				<img src="<?=u ?>">
+				<? end ?>
+			</div>
+			<? end ?>
+		</div>
+
+	</div>
+	<? end ?>
+</div>

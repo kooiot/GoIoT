@@ -1,0 +1,16 @@
+<? extend 'layout.html' ?>
+<? include 'top.html' ?>
+<div class="main container">
+	<div class="ui tab active" data-tab="overview">
+		<? include 'overview.html' ?>	
+	</div>
+	<? if lwf.ctx.user then ?>
+	<div class="ui tab" data-tab="apps">
+		<? include('widget/sticky.html', {items = { 'Industrial', 'Home Automation'}}) ?>
+		<? include('apps.html', {apps=apps}) ?>
+	</div>
+	<div class="ui tab" data-tab="settings">
+		<? include('settings.html', {apps=apps}) ?>
+	</div>
+	<? end ?>
+</div>

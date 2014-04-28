@@ -1,0 +1,152 @@
+<div class="ui fluid accordion">
+	<div class="accordion">
+		<div class="active title">
+			<i class="dropdown icon"></i>
+			SYSTEM
+		</div>
+
+		<div class="active content">
+			<div class="active title">
+				<i class="dropdown icon"></i>
+				TIME
+			</div>
+			<div class="active content">
+				<table class="ui table segment">
+					<thead>
+						<tr>
+							<th>DATETIME</th>
+							<th>LOCALE</th>
+						</tr>
+					</thead>
+					<tbody>
+					<tr>
+						<td><?=os.date() ?> </td>
+						<td><?=os.getenv('LANG') ?> </td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="title">
+				<i class="dropdown icon"></i>
+				HARDWARE
+			</div>
+			<div class="content">
+				<table class="ui table segment">
+					<thead>
+						<tr>
+							<th>CPU</th>
+							<th>HOSTNAME</th>
+							<th>OS</th>
+							<th>VERSION</th>
+						</tr>
+					</thead>
+					<tbody>
+					<?
+					local mem = sysinfo.meminfo()
+					?>
+					<tr>
+						<td><?=sysinfo.cpu_model() ?> </td>
+						<td><?=sysinfo.uname('-n') ?> </td>
+						<td><?=sysinfo.uname('-s') ?> </td>
+						<td><?=sysinfo.uname('-r') ?> </td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="title">
+				<i class="dropdown icon"></i>
+				MEMOERY
+			</div>
+			<div class="content">
+				<table class="ui table segment">
+					<thead>
+						<tr>
+							<th>Total</th>
+							<th>Used</th>
+							<th>Free</th>
+						</tr>
+					</thead>
+					<tbody>
+					<?
+					local mem = sysinfo.meminfo()
+					?>
+					<tr>
+						<td><?=mem.total/1000 ?> M </td>
+						<td><?=mem.used/1000 ?> M</td>
+						<td><?=mem.free/1000 ?> M</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="title">
+				<i class="dropdown icon"></i>
+				CPU LOAD
+			</div>
+			<div class="content">
+				<table class="ui table segment">
+					<thead>
+						<tr>
+							<th>Name</th>
+							<th>Value</th>
+						</tr>
+					</thead>
+
+					<tbody>
+					<?
+					local avg = sysinfo.loadavg()
+					for k, v in pairs(avg) do
+					?>
+					<tr>
+						<td><?=tostring(k):upper() ?> </td>
+						<td><?=v ?> </td>
+					</tr>
+					<?
+					end
+					?>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div class="title">
+		<i class="dropdown icon"></i>
+		NETWORK
+	</div>
+	<div class="content">
+		<div class="accordion">
+		<?
+		local ninfo = sysinfo.network()
+		for ifname, v in pairs(ninfo) do
+		?>
+		<div class="active title">
+			<i class="dropdown icon"></i>
+			<?=ifname:upper() ?>
+		</div>
+		<div class="active content">
+			<table class="ui table segment">
+				<thead>
+					<tr><th>Name</th>
+						<th>Value</th>
+					</tr>
+				</thead>
+
+				<tbody>
+
+				<?
+				for key, val in pairs(v) do
+				?>
+				<tr>
+					<td><?=tostring(key):upper() ?> </td>
+					<td><?=tostring(val):upper() ?> </td>
+				</tr>
+				<?
+				end
+				?>
+				</tbody>
+			</table>
+		</div>
+		<?
+		end
+		?>
+	</div>
+</div>

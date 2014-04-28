@@ -1,0 +1,65 @@
+<? extend 'layout.html' ?>
+<script src="/static/js/login.js"></script>
+<? if not lwf.ctx.user then ?>
+<div class="ui two column middle aligned relaxed grid basic segment">
+
+	<div class="center aligned column">
+		<div id="btn_signup" class="huge green ui labeled icon button">
+			<i class="signup icon"></i>
+			Sign Up
+		</div>
+	</div>
+	<div class="ui vertical divider">
+		Or
+	</div>
+	<div class="column">
+		<? if err then ?>
+		<div class="ui red message"><?=err ?></div>
+		<? end ?>
+		<form class="ui form segment" action="login" method="post">
+			<div class="field">
+				<label>Username</label>
+				<div class="ui left labeled icon input">
+					<input placeholder="Username" name="username" type="text">
+					<i class="user icon"></i>
+					<div class="ui corner label">
+						<i class="asterisk icon"></i>
+					</div>
+				</div>
+			</div>
+			<div class="field">
+				<label>Password</label>
+				<div class="ui left labeled icon input">
+					<input type="password" name="password">
+					<i class="lock icon"></i>
+					<div class="ui corner label">
+						<i class="asterisk icon"></i>
+					</div>
+				</div>
+			</div>
+			<div class="ui field">
+			<input type="submit" class="ui blue submit button" value="Submit"></input>
+		</div>
+		</form>
+	</div>
+</div>
+<? else ?>
+<div class="ui two column middle aligned relaxed grid basic segment">
+	<div class="center aligned column">
+		<div class="ui blue message">Welcome <?=lwf.ctx.user.username ?></div>
+		<a class="ui blue button" href="/"><i class="home icon"></i> Home </a>
+	</div>
+
+	<div class="ui vertical divider">
+		Or
+	</div>
+
+	<div class="center aligned column">
+		<a class="huge red ui labeled icon button ", href="/logout">
+			<i class="help icon"></i>
+			Logout
+		</a>
+	</div>
+</div>
+<? end ?>
+
