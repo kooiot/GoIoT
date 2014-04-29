@@ -3,7 +3,7 @@
 	<div class="container">
 		<a class="launch item"><i class="icon list layout"></i> Menu</a>
 
-		<a class="active item" href="/">
+		<a class="item" href="/">
 			<i class="home icon"></i> Home
 		</a>
 
@@ -14,12 +14,21 @@
 		<? end ?>
 
 		<? if lwf.ctx.session:get('advance') == 'true' then ?>
-		<a class="item" href="/data">
-			<i class="table icon"></i> Data
-		</a>
-		<a class="item" href="/log">
-			<i class="reorder icon"></i> Log
-		</a>
+		<div class="ui dropdown item">
+			<i class="list layout icon"></i>
+			More
+			<div class="menu">
+				<a class="item" href="/data">
+					<i class="table icon"></i> Data
+				</a>
+				<a class="item" href="/log">
+					<i class="reorder icon"></i> Log
+				</a>
+				<a class="item" href="/packets">
+					<i class="tasks icon"></i> Packets
+				</a>
+			</div>
+		</div>
 		<? end ?>
 
 		<div class="right menu">

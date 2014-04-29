@@ -1,11 +1,6 @@
 <? extend 'layout.html' ?>
-<? include 'log/top.html' ?>
 <div class="segment">
 	<div class="container">
-		<div class="introduction">
-			<h3 class="ui dividing header"> Logs</h3>
-			Show logs
-		</div>
 	</div>
 </div>
 
@@ -75,9 +70,21 @@
 </script>
 
 <div class="main container">
-	<input type="button" id="clear" name="clear" value="Clear">
-	<input type="button" id="stop" name="stop" value="Stop Refresh">
-	<input type="button" id="start" name="start" value="Start Refresh">
+	<div class=" ui tiny icon button" id="start">
+		<i class="play teal icon" ></i>
+		开始刷新
+	</div>
+	<div class="ui tiny icon button" id="stop">
+		<i class="stop red icon" ></i>
+		停止刷新
+	</div>
+	<div class="ui tiny icon button" id="clear">
+		<i class="trash red icon" ></i>
+		清除
+	</div>
+
+	<div class="ui divider"></div>
+
 
 	<table cellpadding="0" cellspacing="0" border="0" class="display" id="logstable">
 		<thead>
