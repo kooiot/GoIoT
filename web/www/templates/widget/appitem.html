@@ -1,5 +1,9 @@
 <script src="/static/js/app.js"></script> 
-<? for cate, lst in pairs(apps) do ?>
+<?
+local has_app = false
+for cate, lst in pairs(apps) do
+	has_app = true
+?>
 
 <h2 class="ui dividing header"> <?=cate ?></h2>
 <div class="ui items">
@@ -16,4 +20,21 @@
 	</div>
 	<? end ?>
 </div>
+<? end ?>
+
+
+<? if not has_app then ?>
+<div class="ui icon large warning message">
+	<i class="info icon"></i>
+	<div class="content">
+		<div class="header">
+			No application?! Install ONE
+			<a href="/app/new" class="ui blue link">
+				<b> </b>
+				<i class="cloud download large icon"></i>
+			</a>
+		</div>
+	</div>
+</div>
+
 <? end ?>
