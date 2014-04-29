@@ -31,18 +31,22 @@ return {
 						delay_exec('upgrade.sh', {'cd /', '$CAD_DIR/run.sh stop', 'umount /tmp/cad2', mv, 'sleep 3', 'reboot'})
 						res:write('<br> Device is rebooting to upgrade the system....')
 					elseif filetype == 'app' then
-						local appname = req.get_post_arg('appname', '')
+						local appname = req:get_post_arg('appname')
 
 						if not appname or string.len(appname) == 0 then
 							res:write('<br> Incorrect POST found, we need the appname')
 							appname = "example"
 						end
-						local install = app.model:get('install')
-						install(tmp_file, platform.path.apps, appname)
+						local install = shared.require('app.install')
+						local r, err = install(tmp_file, platform.path.apps, appname)
 
 						-- remove temp file
 						os.remove(tmp_file)
-						res:write('<br> Installed finished!')
+						if r then
+							res:write('<br> Installed finished!')
+						else
+							res:write('<br> Install error: '..err)
+						end
 					else
 						res:write('<br> Incorrect file type')
 						-- remove temp file
