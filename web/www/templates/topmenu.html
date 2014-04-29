@@ -13,6 +13,15 @@
 		</a>
 		<? end ?>
 
+		<? if lwf.ctx.session:get('advance') == 'true' then ?>
+		<a class="item" href="/data">
+			<i class="table icon"></i> Data
+		</a>
+		<a class="item" href="/log">
+			<i class="reorder icon"></i> Log
+		</a>
+		<? end ?>
+
 		<div class="right menu">
 			<div class="ui dropdown item">
 				<i class="icon globe"></i>
@@ -29,9 +38,15 @@
 			<div class="ui dropdown item">
 				<i class="icon user"></i> <?=lwf.ctx.user.username ?>
 				<div class="menu">
+					<? if lwf.ctx.session:get('advance') == 'true' then ?>
+					<a class="item" href="/simple">
+						<i class="block layout icon"></i> Simple
+					</a>
+					<? else ?>
 					<a class="item" href="/advance">
 						<i class="grid layout icon"></i> Advance
 					</a>
+					<? end ?>
 					<a class="item" href="/user">
 						<i class="settings icon"></i> Settings
 					</a>
