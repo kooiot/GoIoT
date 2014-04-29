@@ -8,7 +8,7 @@ local cjson = require 'cjson.safe'
 http.TIMEOUT = 2
 
 local KEY = 'bablbababab'
-local base_url = 'http://172.30.11.172:8000/RestService/'
+local base_url = 'http://172.30.0.115:8000/RestService/'
 
 local function api(method, obj, path)
 	assert(path)

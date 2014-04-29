@@ -43,6 +43,7 @@ local function query_tree(ns)
 		local verinfo = trees.verinfo
 		print(pp(verinfo))
 		for k, v in pairs(trees.devices) do
+			v.version = verinfo
 			buf.add_dev(v)
 		end
 	else
@@ -90,7 +91,7 @@ local function save_all(cb)
 end
 
 -- The mail loop
-local ms = 1000 * 60 * 2
+local ms = 1000 * 3
 while not aborting do
 	while not aborting do
 		save_all(function() app:run(50) end)

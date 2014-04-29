@@ -209,15 +209,10 @@ io.add_port('main', {port.tcp_client, port.serial}, port.tcp_client)
 io.add_port('backup', {port.tcp_client, port.serial}, port.tcp_client) 
 
 local setting = require('shared.io.setting')
-local command = require('shared.io.command')
 
 local t1 = setting.new('t1')
 t1:add_prop('prop1', 'test prop 1', 'number', 11, {min=1, max=99})
 io.add_setting(t1)
-
-local c1 = command.new('c1')
-c1:add_arg('arg1', 'test arg 1', 'number', 10, {min=1, max=99})
-io.add_command(c1)
 
 app = io.init(ioname, handlers)
 assert(app)

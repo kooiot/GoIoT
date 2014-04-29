@@ -49,6 +49,7 @@ end
 function _M.on_create(cb)
 	for k, v in pairs(devlist) do
 		if not v.sync then
+			assert(v.device.version)
 			print('Create device:'..v.device.name..' in cloud')
 			local r, err = api.call('POST', v.device, 'Device')
 			if r then
