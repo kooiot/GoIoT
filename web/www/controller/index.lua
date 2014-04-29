@@ -3,15 +3,19 @@ return {
 		local applist = {}
 		local apps = {}
 		local user = lwf.ctx.user
-		--[[
-		local db = app.model:get('db')
-		if db:init() then
-			if user then
-				applist = db:list_apps(user.username)
+		local list = require 'shared.app.list'
+		local l = list.list()
+		for name, v in pairs(l) do
+			for _, info in pairs(v.insts) do
+				apps[info.app.type] = apps[info.app.type]  or {}
+				apps[info.app.type][#apps[info.app.type]+1] = {
+					lname = info.insname,
+					version = info.app.version,
+					desc = info.app.desc,
+					name = info.app.name,
+				}
 			end
-			apps = db:list_all()
 		end
-		]]--
-		res:ltp('index.html', {app=app, lwf=lwf, applist=applist, apps=apps})
+		res:ltp('index.html', {app=app, lwf=lwf, apps=apps})
 	end
 }
