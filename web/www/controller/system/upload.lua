@@ -1,7 +1,8 @@
 return {
 	post = function(req, res)
 		if not lwf.ctx.user then
-			res:write('Not logined')
+			res:redirect('/login')
+			return
 		end
 		req:read_body()
 

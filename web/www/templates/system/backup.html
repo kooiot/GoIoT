@@ -3,37 +3,22 @@
 <div class="segment">
 	<div class="container">
 		<div class="introduction">
-			<h3 class="ui dividing header"> System Upgrade</h3>
+			<h3 class="ui dividing header"> Backup &amp; Restore</h3>
 		</div>
 	</div>
 </div>
 <div class="main container">
 	<div class="ui primary segment">
-		<div class="ui teal ribbon label">System Management</div>
+		<div class="ui teal ribbon label">Backup System</div>
 		<p>
-		<div id="btn_reboot" class="ui small button">Reboot</div>
+		<a href="/system/backup/sys" class="ui small green button"> Backup System </a>
 		</p>
-		<div class="ui teal ribbon label">Upgrade System</div>
+		<div class="ui teal ribbon label">Restore System</div>
 		<p>
-		<form action="/system/upload" method="post" enctype="multipart/form-data">
-			<input type="hidden" name="filetype" value="sys" />
-			<input type="file" name="file" />
-			<input type="submit" class="ui small submit button" value="upgrade"></input>
-		</form>
-		</p>
-		<div class="ui teal ribbon label">Install Application</div>
-		<p>
-		<form action="/system/upload" method="post" enctype="multipart/form-data">
+		<form action="/system/restore" method="post" enctype="multipart/form-data">
 			<input type="hidden" name="filetype" value="app" />
 			<input type="file" name="file" />
-			<div class="ui small label"><b>Instance Name</b></div>
-			<div class="ui small left labeled input">
-				<input type="text" name="appname" value="" />
-				<div class="ui corner label">
-					<i class="asterisk icon"></i>
-				</div>
-			</div>
-			<input type="submit" class="ui small submit button" value="install"></input>
+			<input type="submit" class="ui small red submit button" value="Restore"></input>
 		</form>
 		</p>
 
