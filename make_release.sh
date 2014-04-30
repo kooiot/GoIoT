@@ -33,6 +33,8 @@ cd ../..
 cd __install/web/www
 rm -f apps
 ln -s /tmp/apps apps
+rm -rf static/backups
+ln -s /tmp/backups static/backups
 cd ../../..
 
 # Compile lua files

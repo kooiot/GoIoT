@@ -11,7 +11,7 @@
 	<div class="ui primary segment">
 		<div class="ui teal ribbon label">Backup System</div>
 		<p>
-		<a href="/system/backup/sys" class="ui small green button"> Backup System </a>
+		<a id="btn_backup_sys" class="ui small green button">Pack System</a>
 		</p>
 		<div class="ui teal ribbon label">Restore System</div>
 		<p>
@@ -38,6 +38,7 @@
 
 		var bar = $('.bar');
 		var status = $('#status');
+		var btnbaksys = $('#btn_backup_sys');
 
 		$('form').ajaxForm({
 			beforeSend: function() {
@@ -68,6 +69,35 @@
 				alert("Failed to reboot");
 			});
 		});
+		$( "#btn_backup_sys" ).click(function() {
+			if (btnbaksys.text() != 'Download') {
+				btnbaksys.text('Please wait...');
+				btnbaksys.addClass('loading');
+				btnbaksys.addClass('disabled');
+				$.post("/system/backup/sys", {from:"web"}, function(data) {
+					status.html("<br> Done. You can download the file now");
+					btnbaksys.attr('href', data);
+					})
+				.done(function() {
+					btnbaksys.removeClass('disabled');
+					btnbaksys.removeClass('loading');
+					btnbaksys.text('Download');
+					})
+				.fail(function(data) {
+					status.html(data);
+					btnbaksys.removeClass('disabled');
+					btnbaksys.removeClass('loading');
+					btnbaksys.text('Pack System');
+					});
+			} else {
+				window.open(btnbaksys.attr('href'));
+				btnbaksys.text('Pack System');
+				btnbaksys.removeClass('disabled');
+				btnbaksys.removeClass('loading');
+				btnbaksys.attr('href', '');
+			}
+		});
+
 	})();       
 </script>
 
