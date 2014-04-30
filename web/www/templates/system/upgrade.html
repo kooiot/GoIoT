@@ -14,28 +14,28 @@
 		<div id="btn_reboot" class="ui small button">Reboot</div>
 		</p>
 		<div class="ui teal ribbon label">Upgrade System</div>
-		<p>
-		<form action="/system/upload" method="post" enctype="multipart/form-data">
-			<input type="hidden" name="filetype" value="sys" />
-			<input type="file" name="file" />
-			<input type="submit" class="ui small submit button" value="upgrade"></input>
-		</form>
-		</p>
+		<div class="ui segment">
+			<form action="/system/upload" method="post" enctype="multipart/form-data">
+					<input type="hidden" name="filetype" value="sys" />
+					<input type="file" name="file" />
+				<input type="submit" class="ui small submit button" value="upgrade"></input>
+			</form>
+		</div>
 		<div class="ui teal ribbon label">Install Application</div>
-		<p>
-		<form action="/system/upload" method="post" enctype="multipart/form-data">
-			<input type="hidden" name="filetype" value="app" />
-			<input type="file" name="file" />
-			<div class="ui small label"><b>Instance Name</b></div>
-			<div class="ui small left labeled input">
-				<input type="text" name="appname" value="" />
-				<div class="ui corner label">
-					<i class="asterisk icon"></i>
+		<div class="ui segment">
+			<form class="ui form" action="/system/upload" method="post" enctype="multipart/form-data">
+				<div class="two fields">
+					<div class="inline field">
+						<div class="ui pointing right label"><b>Instance Name</b></div>
+						<input type="text" name="appname" value="" />
+					</div>
+
+					<input type="hidden" name="filetype" value="app" />
+					<input type="file" name="file" />
+					<input type="submit" class="ui small submit button" value="install"></input>
 				</div>
-			</div>
-			<input type="submit" class="ui small submit button" value="install"></input>
-		</form>
-		</p>
+			</form>
+		</div>
 
 		<div class="ui teal ribbon label">Progress and Output</div>
 		<p>

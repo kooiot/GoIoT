@@ -35,8 +35,12 @@
 			<div class="ui dropdown item">
 				<i class="icon globe"></i>
 				<div class="menu">
-					<a class="item" href="/lang/en">English</a>
-					<a class="item" href="/lang/zh">中文</a>
+					<a class="item" href="/lang/en">
+						<i class="leaf icon"></i> English
+					</a>
+					<a class="item" href="/lang/zh">
+						<i class="leaf icon"></i> 中文(简体)
+					</a>
 				</div>
 			</div>
 			<? if not lwf.ctx.user then ?>
@@ -49,11 +53,11 @@
 				<div class="menu">
 					<? if lwf.ctx.session:get('advance') == 'true' then ?>
 					<a class="item" href="/simple">
-						<i class="block layout icon"></i> Simple
+						<i class="teal hide icon"></i> Simple
 					</a>
 					<? else ?>
 					<a class="item" href="/advance">
-						<i class="grid layout icon"></i> Advance
+						<i class="unhide icon"></i> Advance
 					</a>
 					<? end ?>
 					<a class="item" href="/user">

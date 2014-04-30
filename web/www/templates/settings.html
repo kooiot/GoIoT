@@ -1,91 +1,83 @@
 <h2 > Settings </h2>
 <div class="ui fluid accordion">
 	<div class="active title">
-		<i class="dropdown icon"></i>
-		Level 1
+		<i class="dropdown icon"></i> System Settings
 	</div>
 	<div class="active content">
-		<p>Welcome to level 1 where sub content formatted as its own accordion.</p>
-		<div class="accordion">
-			<div class="active title">
-				<i class="dropdown icon"></i>
-				Level 1A
-			</div>
-			<div class="active content">
-				<p>Level 1A Contents</p>
-				<div class="accordion">
+		<p>System wide settings.</p>
+
+		<div class="active title">
+			<i class="dropdown icon"></i>
+			Management
+		</div>
+		<div class="active content">
+			<a href="/system/upgrade" class="ui small button">Upgrade & Install</a>
+			<a href="/system/backup" class="ui small button">Backup & Restore</a>
+		</div>
+
+		<div class="title">
+			<i class="dropdown icon"></i> Device Settings
+		</div>
+		<div class="content">
+			<div class="ui segment">
+				<form action="login" method="post" class="ui fluid form">
+					<input type="hidden" name="type" value="device" />
+					<div class="two fields">
+						<div class="field">
+							<label>Device Name</label>
+							<input name="devname" placeholder="Name" type="text">
+						</div>
+						<div class="field">
+							<label>Device SN</label>
+							<input name="sn" placeholder="SN" type="text">
+						</div>
+					</div>
 					<div class="title">
-						<i class="dropdown icon"></i>
-						Level 1A-A
+						<i class="icon dropdown"></i>
+						More
 					</div>
-					<div class="content">
-						Level 1A-A Contents
+					<div class="content field">
+						<label>Auth Key</label>
+						<input name="authkey" placeholder="KEY" type="text">
 					</div>
-					<div class="title">
-						<i class="dropdown icon"></i>
-						Level 1A-B
-					</div>
-					<div class="content">
-						Level 1A-B Contents
-					</div>
-				</div>
-			</div>
-			<div class="title">
-				<i class="dropdown icon"></i>
-				Level 1B
-			</div>
-			<div class="content">
-				Level 1B Contents
-			</div>
-			<div class="title">
-				<i class="dropdown icon"></i>
-				Level 1C
-			</div>
-			<div class="content">
-				Level 1C Contents
+					<input type="submit" class="ui tiny blue submit button" value="Apply"/>
+				</form>
 			</div>
 		</div>
 	</div>
 	<div class="title">
 		<i class="dropdown icon"></i>
-		Level 2
+		Cloud Settings
 	</div>
 	<div class="content">
-		<p>Welcome to level 2 where content is formatted without nested accordions</p>
-		<div class="active title">
-			<i class="dropdown icon"></i>
-			Level 2A
-		</div>
-		<div class="active content">
-			<p>Level 2A Contents</p>
-			<div class="title">
-				<i class="dropdown icon"></i>
-				Level 2A-A
-			</div>
-			<div class="content">
-				Level 2A-A Contents
-			</div>
-			<div class="title">
-				<i class="dropdown icon"></i>
-				Level 2A-B
-			</div>
-			<div class="content">
-				Level 2A-B Contents
-			</div>
-		</div>
-		<div class="title">
-			<i class="dropdown icon"></i>
-			Level 2B
-		</div>
-		<div class="content">
-			Level 2B Contents
-		</div>
-		<div class="title">
-			<i class="dropdown icon"></i>
-			Level 2C
-		</div>
-		<div class="content">
-			Level 2C Contents
+		<div class="ui segment">
+			<form action="login" method="post" class="ui fluid form">
+				<input type="hidden" name="type" value="device" />
+				<div class="two fields">
+					<div class="inline field">
+						<div class="ui pointing right label"><b>Device Name</b></div>
+						<input name="devname" placeholder="Name" type="text">
+					</div>
+					<div class="inline field">
+						<div class="ui pointing right label"><b>Device SN</b></div>
+						<input name="sn" placeholder="SN" type="text">
+					</div>
+				</div>
+				<div class="ui toggle checkbox field">
+					<input name="enable" type="checkbox">
+					<label><b>Enable cloud</b></label>
+				</div>
+				<div class="title">
+					<i class="icon dropdown"></i><b> More </b>
+				</div>
+				<div class="content field">
+					<div class="ui label"><b>Auth Key</b></div>
+					<div class="ui small left labeled input">
+						<input name="authkey" placeholder="KEY" type="text">
+					</div>
+				</div>
+				<input type="submit" class="ui tiny blue submit button" value="Apply"/>
+			</form>
 		</div>
 	</div>
 </div>
