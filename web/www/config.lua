@@ -2,6 +2,16 @@
 -- This is a LWF Application Config file
 -- 
 --
+local function get_sub_apps()
+	--[[
+	local f = io.open('/tmp/apps/_list')
+	assert(f)
+	]]--
+	return {
+		demo3 = {path="/home/cch/kooweb/apps/subapp", config={}},
+	}
+end
+
 return {
 	static = 'static',
 	session={
@@ -17,6 +27,5 @@ return {
 		to = "response", -- "logger"
 	},
 
-	subapps={
-	},
+	subapps = get_sub_apps()
 }

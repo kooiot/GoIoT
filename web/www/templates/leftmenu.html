@@ -13,21 +13,33 @@
 		<i class="inverted circular blue awesome download cloud icon"></i><b> Install New</b>
 	</a>
 
+	<? if lwf.ctx.session:get('advance') == 'true' then ?>
+	<? if apps then  ?>
 	<div class="item">
-		<b> Devices</b>
+		<b> Applications</b>
 		<div class="menu">
-			<div id="inst_devs_list"> </div>
-			<a class="item" href="/more"> More</a>
+			<?	 for cate, lst in pairs(apps) do ?>
+				 <div class="item">
+					 <b> <? = cate:upper() ?> </b>
+					 <div class="menu">
+						 <? for _, v in pairs(lst) do ?>
+						 <a class="item" href="/app/<?=v.lanem?>"> <?=v.lname?></a>
+						 <? end ?>
+					 </div>
+				 </div>
+			 <? end ?>
 		</div>
 	</div>
-
+	<? end ?>
 	<div class="item">
-		<b> Services</b>
+		<b> Utilies</b>
 		<div class="menu">
-			<div id="insta_app_list"> </div>
-			<a class="item" href="/more"> More</a>
+			<a class="item" href="/data"> Data</a>
+			<a class="item" href="/log"> Log</a>
+			<a class="item" href="/packets"> Packets</a>
 		</div>
 	</div>
+	<? end ?>
 
 	<div class="item">
 		<b> System</b>
