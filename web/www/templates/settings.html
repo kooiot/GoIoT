@@ -11,8 +11,11 @@
 			Management
 		</div>
 		<div class="active content">
-			<a href="/system/upgrade" class="ui small button">Upgrade & Install</a>
-			<a href="/system/backup" class="ui small button">Backup & Restore</a>
+			<div class="ui small buttons">
+			<a href="/system/upgrade" class="ui button">Upgrade</a>
+			<div class="or"> </div>
+			<a href="/system/backup" class="ui button">Backup</a>
+		</div>
 		</div>
 
 		<div class="title">
@@ -23,12 +26,12 @@
 				<form action="login" method="post" class="ui fluid form">
 					<input type="hidden" name="type" value="device" />
 					<div class="two fields">
-						<div class="field">
-							<label>Device Name</label>
+						<div class="inline field">
+							<div class="ui pointing right label"><b>Name</b></div>
 							<input name="devname" placeholder="Name" type="text">
 						</div>
-						<div class="field">
-							<label>Device SN</label>
+						<div class="inline field">
+							<div class="ui pointing right label"><b>SN</b></div>
 							<input name="sn" placeholder="SN" type="text">
 						</div>
 					</div>
@@ -40,7 +43,7 @@
 						<label>Auth Key</label>
 						<input name="authkey" placeholder="KEY" type="text">
 					</div>
-					<input type="submit" class="ui tiny blue submit button" value="Apply"/>
+					<input type="submit" class="ui right floated tiny blue submit button" value="Apply"/>
 				</form>
 			</div>
 		</div>
@@ -53,30 +56,26 @@
 		<div class="ui segment">
 			<form action="login" method="post" class="ui fluid form">
 				<input type="hidden" name="type" value="device" />
-				<div class="two fields">
-					<div class="inline field">
-						<div class="ui pointing right label"><b>Device Name</b></div>
-						<input name="devname" placeholder="Name" type="text">
-					</div>
-					<div class="inline field">
-						<div class="ui pointing right label"><b>Device SN</b></div>
-						<input name="sn" placeholder="SN" type="text">
-					</div>
-				</div>
 				<div class="ui toggle checkbox field">
-					<input name="enable" type="checkbox">
-					<label><b>Enable cloud</b></label>
+					<input name="enable" type="checkbox" value="checked">
+					<label><b>Enable</b></label>
 				</div>
 				<div class="title">
 					<i class="icon dropdown"></i><b> More </b>
 				</div>
 				<div class="content field">
-					<div class="ui label"><b>Auth Key</b></div>
-					<div class="ui small left labeled input">
-						<input name="authkey" placeholder="KEY" type="text">
+					<div class="two fields">
+						<div class="inline field">
+							<div class="ui pointing right label"><b>Namespace</b></div>
+							<input name="devname" placeholder="Name" type="text">
+						</div>
+						<div class="inline field">
+							<div class="ui pointing right label"><b>Auth Key</b></div>
+							<input name="authkey" placeholder="KEY" type="text">
+						</div>
 					</div>
 				</div>
-				<input type="submit" class="ui tiny blue submit button" value="Apply"/>
+				<input type="submit" class="ui right floated tiny blue submit button" value="Apply"/>
 			</form>
 		</div>
 	</div>
