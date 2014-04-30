@@ -1,5 +1,4 @@
 <? extend 'layout.html' ?>
-<? include 'log/top.html' ?>
 <div class="segment">
 	<div class="container">
 	</div>
@@ -90,13 +89,16 @@
 </script>
 
 <div class="main container">
-	<div class=" ui tiny icon button" id="start">
-		<i class="play teal icon" ></i>
-		开始刷新
-	</div>
-	<div class="ui tiny icon button" id="stop">
-		<i class="stop red icon" ></i>
-		停止刷新
+	<div class="ui icon buttons tiny">
+		<div class=" ui icon button" id="start">
+			<i class="play teal icon" ></i>
+			开始刷新
+		</div>
+		<div class="or"></div>
+		<div class="ui icon button" id="stop">
+			<i class="stop red icon" ></i>
+			停止刷新
+		</div>
 	</div>
 	<div class="ui divider"></div>
 
