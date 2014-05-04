@@ -261,6 +261,7 @@ end
 local aborting = false
 --- Abort the application running
 function _M.abort()
+	log:warn(app.name, 'Aborting application')
 	aborting = true
 end
 

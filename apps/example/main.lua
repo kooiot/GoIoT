@@ -145,7 +145,7 @@ handlers.on_start = function(app)
 end
 
 handlers.on_pause = function(app)
-	--print(os.date(), 'Received Stop Event')
+	--print(os.date(), 'Received pause Event')
 	log:info(ioname, 'Received event [PAUSE]')
 	pause = true
 end

@@ -51,7 +51,7 @@
 
 		$("#btn_stop").click(function() {
 			var appname = btnstop.attr("appname");
-			$.post("/app/ctrl", {action:"stop",app:appname}, function(data) {
+			$.post("/app/ctrl", {action:"close",app:appname}, function(data) {
 				status.text(data);
 			})
 			.done(function() {

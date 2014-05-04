@@ -10,16 +10,16 @@ local m_package_path = package.path
 package.path = string.format("%s;%s/?.lua;%s/?/init.lua", m_package_path, m_path, m_path)  
 
 local zmq = require 'lzmq'
+local zpoller = require 'lzmq.poller'
 local ztimer = require 'lzmq.timer'
 local cjson = require 'cjson.safe'
 local config_api = require 'shared.api.config'
 local fifo = require 'shared.fifo'
-local pub = require 'shared.pub'
+
+local App = {}
 
 local cache = fifo({timestamp = ztimer.absolute_time(), src="CORE", level="info", content="Log Start"})
 local pcache = fifo()
-
-local app = nil
 
 local function load_config()
 	local debug = true
@@ -37,65 +37,17 @@ local function load_config()
 	return config 
 end
 
-local config = nil
-
 local function  app_meta()
 	return {
-		type = "APP",
+		type = "App",
 		config = config,
 	}
 end
 
-local function init()
-	config = load_config()
-	local info = {}
-	info.name = '__logs'
-	info.port = config.port
-	info.no_port_retry = true
+-- The handler table
+App.mpft = {}
 
-	app = require('shared.app').new(info, {app_meta=app_meta})
-	assert(app)
-	app:init()
-
-	return app
-end
-
-local function run(app)
-	while true do
-		app:run(1000)
-	end
-end
-
-app = init()
-
-pub.create(app.ctx, {
-	zmq.PUB, 
-	bind = "tcp://*:5577"
-})
-
-local srv = require('shared.log.server')(app.ctx, app.poller, function(log)
-	local pp = require 'shared.PrettyPrint'
-	--print(pp(log))
-
-	pub.pub(log.level, cjson.encode(log))
-
-	-- Do not save the packet to cache
-	if log.level == 'packet' then
-		pcache:push(log)
-		if pcache:length() > 512 then
-			pcache:pop()
-		end
-	else
-		cache:push(log)
-		if cache:length() > 512 then
-			cache:pop()
-		end
-	end
-end)
-srv:open()
-
-app:reg_request_handler('logs', function(app, vars)
-	print('logs request received')
+App.mpft['logs'] = function(app, vars)
 	--assert(false)
 	local caches = {}
 
@@ -110,10 +62,9 @@ app:reg_request_handler('logs', function(app, vars)
 	end
 	local reply = {'logs', {result=true, logs=caches}}	
 	app.server:send(cjson.encode(reply))
-end)
+end
 
-app:reg_request_handler('packets', function(app, vars)
-	print('logs request received')
+App.mpft['packets'] = function(app, vars)
 	--assert(false)
 	local caches = {}
 	if pcache:length() > 0 then
@@ -129,6 +80,81 @@ app:reg_request_handler('packets', function(app, vars)
 
 	local reply = {'packets', {result=true, logs=caches}}	
 	app.server:send(cjson.encode(reply))
-end)
+end
 
-run(app)
+local function send_err(server, err)
+	local reply = {'error', {err=err}}
+	local rep_json = cjson.encode(reply)
+	return server:send(rep_json)
+end
+
+
+local function on_request(msg)
+	print('on_request')
+	local json, err = cjson.decode(msg)
+	if not json then
+		print('JSON DECODE ERR', err)
+		send_err(App.server, 'Unsupported message format')
+		return
+	end
+
+	local msgtype = json[1]
+	if App.mpft[msgtype] then
+		App.mpft[msgtype](App, json[2])
+	else
+		send_err(App.server, 'No handler for message '..msgtype)
+	end
+end
+
+local function init()
+	-- Loading the configuration from db
+	App.config = load_config()
+	-- Initialize zmq
+	App.ctx = zmq.context()
+	App.poller = zpoller.new(2)
+	-- Create the handler
+	local server, err = App.ctx:socket({zmq.REP, bind="tcp://127.0.0.1:"..App.config.port or 5500})
+	zassert(server, err)
+	App.server = server
+	App.poller:add(server, zmq.POLLIN, function()
+		local msg, err = App.server:recv()
+		if msg then
+			on_request(msg)
+		end
+	end)
+
+	local pub = require 'shared.pub'
+	pub.create(App.ctx, {
+		zmq.PUB, 
+		bind = "tcp://*:5577"
+	})
+
+	local logsrv = require('shared.log.server')(App.ctx, App.poller, function(log)
+		--local pp = require 'shared.PrettyPrint'
+		--print(pp(log))
+
+		pub.pub(log.level, cjson.encode(log))
+
+		-- Do not save the packet to cache
+		if log.level == 'packet' then
+			pcache:push(log)
+			if pcache:length() > 512 then
+				pcache:pop()
+			end
+		else
+			cache:push(log)
+			if cache:length() > 512 then
+				cache:pop()
+			end
+		end
+	end)
+	logsrv:open()
+
+	App.pub = pub
+	App.logsrv = logsrv
+end
+
+init()
+while true do
+	App.poller:poll(1000)
+end
