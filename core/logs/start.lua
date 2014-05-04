@@ -16,8 +16,6 @@ local cjson = require 'cjson.safe'
 local config_api = require 'shared.api.config'
 local fifo = require 'shared.fifo'
 
-local App = {}
-
 local cache = fifo({timestamp = ztimer.absolute_time(), src="CORE", level="info", content="Log Start"})
 local pcache = fifo()
 
@@ -39,15 +37,21 @@ end
 
 local function  app_meta()
 	return {
-		type = "App",
+		type = "app",
 		config = config,
 	}
 end
 
--- The handler table
-App.mpft = {}
+-- Initialize zmq
+local ctx = zmq.context()
+local poller = zpoller.new(2)
+-- The REQ server
+local server = nil
 
-App.mpft['logs'] = function(app, vars)
+-- The handler table
+local mpft = {}
+
+mpft['logs'] = function(vars)
 	--assert(false)
 	local caches = {}
 
@@ -61,10 +65,10 @@ App.mpft['logs'] = function(app, vars)
 		end
 	end
 	local reply = {'logs', {result=true, logs=caches}}	
-	app.server:send(cjson.encode(reply))
+	server:send(cjson.encode(reply))
 end
 
-App.mpft['packets'] = function(app, vars)
+mpft['packets'] = function(vars)
 	--assert(false)
 	local caches = {}
 	if pcache:length() > 0 then
@@ -79,7 +83,7 @@ App.mpft['packets'] = function(app, vars)
 	end
 
 	local reply = {'packets', {result=true, logs=caches}}	
-	app.server:send(cjson.encode(reply))
+	server:send(cjson.encode(reply))
 end
 
 local function send_err(server, err)
@@ -94,42 +98,39 @@ local function on_request(msg)
 	local json, err = cjson.decode(msg)
 	if not json then
 		print('JSON DECODE ERR', err)
-		send_err(App.server, 'Unsupported message format')
+		send_err(server, 'Unsupported message format')
 		return
 	end
 
 	local msgtype = json[1]
-	if App.mpft[msgtype] then
-		App.mpft[msgtype](App, json[2])
+	if mpft[msgtype] then
+		mpft[msgtype](json[2])
 	else
-		send_err(App.server, 'No handler for message '..msgtype)
+		send_err(server, 'No handler for message '..msgtype)
 	end
 end
 
 local function init()
 	-- Loading the configuration from db
-	App.config = load_config()
-	-- Initialize zmq
-	App.ctx = zmq.context()
-	App.poller = zpoller.new(2)
+	local config = load_config()
 	-- Create the handler
-	local server, err = App.ctx:socket({zmq.REP, bind="tcp://127.0.0.1:"..App.config.port or 5500})
+	local server, err = ctx:socket({zmq.REP, bind="tcp://127.0.0.1:"..config.port or 5500})
 	zassert(server, err)
-	App.server = server
-	App.poller:add(server, zmq.POLLIN, function()
-		local msg, err = App.server:recv()
+	server = server
+	poller:add(server, zmq.POLLIN, function()
+		local msg, err = server:recv()
 		if msg then
 			on_request(msg)
 		end
 	end)
 
 	local pub = require 'shared.pub'
-	pub.create(App.ctx, {
+	pub.create(ctx, {
 		zmq.PUB, 
 		bind = "tcp://*:5577"
 	})
 
-	local logsrv = require('shared.log.server')(App.ctx, App.poller, function(log)
+	local logsrv = require('shared.log.server')(ctx, poller, function(log)
 		--local pp = require 'shared.PrettyPrint'
 		--print(pp(log))
 
@@ -149,12 +150,9 @@ local function init()
 		end
 	end)
 	logsrv:open()
-
-	App.pub = pub
-	App.logsrv = logsrv
 end
 
 init()
 while true do
-	App.poller:poll(1000)
+	poller:poll(1000)
 end
