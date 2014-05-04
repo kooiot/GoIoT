@@ -7,9 +7,12 @@ local function get_sub_apps()
 	local f = io.open('/tmp/apps/_list')
 	assert(f)
 	]]--
+	return {}
+--[[
 	return {
 		demo3 = {path="/home/cch/kooweb/apps/subapp", config={}},
 	}
+	]]--
 end
 
 return {

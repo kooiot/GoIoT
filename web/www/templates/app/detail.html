@@ -9,20 +9,21 @@
 </div>
 <div class="main container">
 	<div class="ui icon buttons">
-		<a class="ui button" href="/system/stop/<?=appname?>">
+		<div class="ui button" appname="<?=appname?>" id="btn_start">
 			<i class="teal play icon"></i> Start
-		</a>
-		<a class="ui button" href="/system/stop/<?=appname?>">
+		</div>
+		<div class="ui button" appname="<?=appname?>" id="btn_stop">
 			<i class="red stop icon"></i> Stop
-		</a>
+		</div>
 		<a class="ui button" href="/apps/<?=appname?>">
 			<i class="teal settings icon"></i> Settings
 		</a>
 		<div class="or"></div>
-		<a class="ui button" href="/system/remove/<?=appname?>">
+		<div class="ui button" appname="<?=appname?>" id="btn_remove">
 			<i class="orange trash icon"></i> Remove
-		</a>
+		</div>
 	</div>
+	<div id="status"> </div>
 
 	<? include('widget/events.html', {title="Events"}) ?>
 	<?
@@ -36,3 +37,86 @@
 	})
 	?>
 </div>
+
+<script>
+	$(document).ready(function() {
+		newtimer = setInterval( function () {
+			query_events();
+		}, 2000 );
+
+		var status = $('#status');
+		var btnstart = $('#btn_start');
+		var btnstop = $('#btn_stop');
+		var btnremove = $('#btn_remove');
+
+		$("#btn_stop").click(function() {
+			var appname = btnstop.attr("appname");
+			$.post("/app/ctrl", {action:"stop",app:appname}, function(data) {
+				status.text(data);
+			})
+			.done(function() {
+				//alert("Application Started!!");
+			})
+			.fail(function() {
+				alert("Failed to send stop request!!");
+			});
+			btnstop.removeClass("active");
+		});
+
+		$("#btn_start").click(function() {
+			var appname = btnstart.attr("appname");
+			$.post("/app/ctrl", {action:"start",app:appname}, function(data) {
+				status.text(data);
+			})
+			.done(function() {
+				//alert("Application Started!!");
+			})
+			.fail(function() {
+				alert("Failed to send start request!!");
+			});
+			btnstart.removeClass("active");
+		});
+
+		$("#btn_remove").click(function() {
+			var appname = btnremove.attr("appname");
+			$.post("/system/remove", {app:appname}, function(data) {
+				status.text(data);
+			})
+			.done(function() {
+			})
+			.fail(function() {
+				alert("Failed to send remove request!!");
+			});
+			btnremove.removeClass("active");
+		});
+
+		query_events();
+	});
+	function query_events() {
+		var btnstart = $('#btn_start');
+		var appname = btnstart.attr("appname");
+		$.get("/app/events", { type:'events', from:'web', app:appname}, function(data){
+			var jdata = data;
+			if (typeof(jdata) != "object") {
+				jdata = JSON.parse(data);
+			}
+			for (var i in jdata)
+			{
+				var log = jdata[i];
+
+				var unixTimestamp = new Date(log.timestamp);
+				var commonTime = unixTimestamp.toLocaleString() + ' ' +  (log.timestamp % 1000);
+				
+			};
+		})
+		.done(function() {
+			//alert("Data Saved successfully!!");
+		})
+		.fail(function() {
+			//alert("Failed to save content to file!!");
+		});
+
+	};
+	function query_logs() {
+	};
+</script>

@@ -14,15 +14,15 @@
 		<div id="btn_reboot" class="ui small button">Reboot</div>
 		</p>
 		<div class="ui teal ribbon label">Upgrade System</div>
-		<div class="ui segment">
-			<form action="/system/upload" method="post" enctype="multipart/form-data">
+		<p>
+			<form class="ui form" action="/system/upload" method="post" enctype="multipart/form-data">
 					<input type="hidden" name="filetype" value="sys" />
 					<input type="file" name="file" />
-				<input type="submit" class="ui small submit button" value="upgrade"></input>
+				<input type="submit" class="ui tiny submit button" value="upgrade"></input>
 			</form>
-		</div>
+		</p>
 		<div class="ui teal ribbon label">Install Application</div>
-		<div class="ui segment">
+		<p>
 			<form class="ui form" action="/system/upload" method="post" enctype="multipart/form-data">
 				<div class="two fields">
 					<div class="inline field">
@@ -32,10 +32,9 @@
 
 					<input type="hidden" name="filetype" value="app" />
 					<input type="file" name="file" />
-					<input type="submit" class="ui small submit button" value="install"></input>
+					<input type="submit" class="ui tiny submit button" value="install"></input>
 				</div>
 			</form>
-		</div>
 
 		<div class="ui teal ribbon label">Progress and Output</div>
 		<p>
