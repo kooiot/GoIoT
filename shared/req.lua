@@ -48,7 +48,7 @@ end
 
 --- Close the request connection
 function class:close()
-	self.clent:close()
+	self.client:close()
 	self.client = nil
 	self.option = nil
 end

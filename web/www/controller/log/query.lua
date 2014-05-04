@@ -1,6 +1,5 @@
 return {
 	get = function(req, res)
-		local log = require 'shared.log'
 		local cjson = require 'cjson.safe'
 		local typ = req:get_arg('type', 'logs')
 		local logs = app.model:get('logs')

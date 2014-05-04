@@ -27,7 +27,10 @@ local obj = {}
 -- @tparam lzmq.context ctx
 -- @treturn nil
 local function open(ctx)
-	assert(not obj.cleint)
+	if obj.client then
+		return
+	end
+
 	obj.ctx = ctx or zmq.context()
 	local SOCKET_OPTION = {
 		zmq.PUSH,

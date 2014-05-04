@@ -114,9 +114,9 @@ local function init()
 	-- Loading the configuration from db
 	local config = load_config()
 	-- Create the handler
-	local server, err = ctx:socket({zmq.REP, bind="tcp://127.0.0.1:"..config.port or 5500})
-	zassert(server, err)
-	server = server
+	local srv, err = ctx:socket({zmq.REP, bind="tcp://127.0.0.1:"..config.port or 5500})
+	zassert(srv, err)
+	server = srv
 	poller:add(server, zmq.POLLIN, function()
 		local msg, err = server:recv()
 		if msg then
