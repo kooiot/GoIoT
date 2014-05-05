@@ -12,7 +12,7 @@
 
 		newtimer = setInterval( function () {
 			query_logs();
-		}, 1000 );
+		}, 200 );
 		var timer_running = true;
 
 		$("#clear").click(function() {
@@ -29,7 +29,7 @@
 			if(!timer_running) {
 				newtimer = setInterval( function () {
 					query_logs();
-				}, 1000 );
+				}, 200 );
 				timer_running = true;
 			}
 		});

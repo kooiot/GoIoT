@@ -48,6 +48,10 @@ end
 
 --- Close the request connection
 function class:close()
+	if self.self_ctx then
+		self.ctx:shutdown()
+		self.ctx:destroy()
+	end
 	self.client:close()
 	self.client = nil
 	self.option = nil
@@ -114,9 +118,13 @@ end
 -- @tparam lzmq.context ctx
 -- @treturn class request object
 local function new(ctx)
+	local self_ctx = nil
+	if ctx then self_ctx = true end
+
 	local ctx = ctx or zmq.context()
 	return setmetatable(
 	{
+		self_ctx = self_ctx,
 		ctx=ctx,
 		max_retry = REQUEST_RETRIES, 
 		client = nil,

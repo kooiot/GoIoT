@@ -4,9 +4,9 @@ local cjson = require 'cjson.safe'
 
 local _M = {}
 
-function _M.new()
+function _M.new(m, ctx)
 	if not _M.client then
-		_M.client = req.new()
+		_M.client = req.new(ctx)
 		_M.client:open({zmq.REQ, connect='tcp://localhost:5500', linger=0, rcvtimeo=500}, 1)
 	end
 	return _M
@@ -25,6 +25,11 @@ function _M:query(typ)
 	else
 		return nil, err
 	end
+end
+
+function _M:close()
+	self.client:close()
+	self.client = nil
 end
 
 return _M
