@@ -37,7 +37,7 @@
 		query_logs();
 	});
 	function query_logs() {
-		$.get("log/query", { type : 'logs' }, function(data){
+		$.get("log/query", { type : 'logs', clean : true }, function(data){
 			var jdata = data;
 			if (typeof(jdata) != "object") {
 				jdata = JSON.parse(data);

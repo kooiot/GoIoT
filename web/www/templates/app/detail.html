@@ -26,16 +26,12 @@
 	<div id="status"> </div>
 
 	<? include('widget/events.html', {title="Events"}) ?>
-	<?
-	include('widget/sevents.html', {title="Logs", 
-	events={
-	'<a href="/user/admin"> admin </a> has upgrade the system to <a>1.2.1</a>',
-	'<a> 1.2.1 </a> has released, please upgrade your system from <a>here</a>',
-	'<a href="/user/admin"> admin </a> has upgrade the system to <a>1.2.0</a>',
-	'<a> 1.2.0 </a> has released, please upgrade your system from <a>here</a>',
-	}
-	})
-	?>
+
+	<div class="ui small piled feed segment">
+		<h3 class="ui dividing header">Logs</h3>
+		<div id="logs_place">
+		</div>
+	</div>
 </div>
 
 <script>
@@ -43,6 +39,7 @@
 		newtimer = setInterval( function () {
 			query_events();
 			query_status();
+			query_logs();
 		}, 2000 );
 
 		var status = $('#status');
@@ -147,5 +144,26 @@
 
 	};
 	function query_logs() {
+		var btnstart = $('#btn_start');
+		var appname = btnstart.attr("appname");
+		$.get("/log/query", { type:'logs', from:'web', src:appname, clean : false, limit : 5}, function(data){
+			var text = '';
+			for (var i in data)
+			{
+				var log = data[i];
+				var unixTimestamp = new Date(log.timestamp);
+				var commonTime = unixTimestamp.toLocaleString() + ' ' +  (log.timestamp % 1000);
+				var msg = '<div class="event"> <div class="content"> <div class="summary"><div class="date">' + commonTime  + '</div>' + log.content + "</div> </div> </div>";
+				text = msg + text;
+			};
+			var logs_place = $('#logs_place');
+			logs_place.html(text);
+		})
+		.done(function() {
+			//alert("Data Saved successfully!!");
+		})
+		.fail(function() {
+			//alert("Failed to save content to file!!");
+		});
 	};
 </script>

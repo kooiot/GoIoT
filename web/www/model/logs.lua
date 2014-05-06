@@ -12,13 +12,13 @@ function _M.new(m, ctx)
 	return _M
 end
 
-function _M:query(typ)
-	local req = {typ, {from='web', clean=true}}
+function _M:query(typ, clean)
+	local req = {typ, {from='web', clean=clean}}
 	local reply, err = self.client:request(cjson.encode(req), true)
 	if reply then
 		local reply = cjson.decode(reply)
 		if reply and #reply == 2 and reply[1] == typ and reply[2].result == true then
-			return cjson.encode(reply[2].logs)
+			return reply[2].logs
 		else
 			return nil, reply[2].err
 		end

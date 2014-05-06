@@ -36,7 +36,7 @@
 		query_logs();
 	});
 	function query_logs() {
-		$.get("log/query", { type : 'packets' }, function(data){
+		$.get("log/query", { type : 'packets', clean : true }, function(data){
 			var jdata = JSON.parse(data);
 			var oTable = $('#logstable').dataTable();
 			for (var i in jdata)

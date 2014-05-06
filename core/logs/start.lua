@@ -60,7 +60,7 @@ mpft['logs'] = function(vars)
 			table.insert(caches, cjson.encode(v))
 		end)
 		if vars.clean == true then
-			print('clean logs...')
+			--print('clean logs...')
 			cache:clean()
 		end
 	end
@@ -77,7 +77,7 @@ mpft['packets'] = function(vars)
 		end)
 
 		if vars.clean == true then
-			print('clean packets...')
+			--print('clean packets...')
 			pcache:clean()
 		end
 	end
@@ -94,7 +94,7 @@ end
 
 
 local function on_request(msg)
-	print('on_request')
+	--print('on_request')
 	local json, err = cjson.decode(msg)
 	if not json then
 		print('JSON DECODE ERR', err)
