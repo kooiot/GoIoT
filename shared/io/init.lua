@@ -297,6 +297,7 @@ function _M.run()
 			end
 		end
 	end
+	app:close()
 end
 
 return _M

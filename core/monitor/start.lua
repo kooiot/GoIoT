@@ -37,9 +37,9 @@ mpft['notice'] = function(vars)
 	local err = 'Invalid/Unsupported add request'
 	if vars and type(vars) == 'table' then
 		if vars.name then
+			vars.run = vars.run or true
 			running[vars.name] = vars 
 			running[vars.name].last = os.time()
-			running[vars.name].run = true
 			local rep = {'notice', {result=true}}
 			server:send(cjson.encode(rep))
 			return
@@ -55,9 +55,16 @@ mpft['query'] = function(vars)
 		return
 	end
 
+	local names = {}
+	if vars then
+		for _, name in pairs(vars) do
+			names[name] = true
+		end
+	end
+
 	local st = {}
 	for k, v in pairs(running) do
-		if not vars or vars[k] then
+		if not vars or names[k] then
 			st[k] = v
 		end
 	end

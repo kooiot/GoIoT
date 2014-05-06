@@ -9,10 +9,10 @@
 </div>
 <div class="main container">
 	<div class="ui icon buttons">
-		<div class="ui button" appname="<?=appname?>" id="btn_start">
+		<div type="hidden" class="ui button" appname="<?=appname?>" id="btn_start">
 			<i class="teal play icon"></i> Start
 		</div>
-		<div class="ui button" appname="<?=appname?>" id="btn_stop">
+		<div type="hidden" class="ui button" appname="<?=appname?>" id="btn_stop">
 			<i class="red stop icon"></i> Stop
 		</div>
 		<a class="ui button" href="/apps/<?=appname?>">
@@ -42,6 +42,7 @@
 	$(document).ready(function() {
 		newtimer = setInterval( function () {
 			query_events();
+			query_status();
 		}, 2000 );
 
 		var status = $('#status');
@@ -90,8 +91,36 @@
 			btnremove.removeClass("active");
 		});
 
+		query_status();
 		query_events();
+		query_logs();
 	});
+	function query_status() {
+		var btnstart = $('#btn_start');
+		var btnstop = $('#btn_stop');
+		var appname = btnstart.attr("appname");
+		$.get("/app/query", { type:'events', from:'web', app:appname}, function(data){
+			if (typeof(data) != "object") {
+				var status = $('#status');
+				status.text(data);
+			} else {
+				var s = data[appname];
+				if ( s && s.run)  {
+					btnstart.hide();
+					btnstop.show();
+				} else {
+					btnstart.show();
+					btnstop.hide();
+				}
+			};
+		})
+		.done(function() {
+			//alert("Data Saved successfully!!");
+		})
+		.fail(function() {
+			//alert("Failed to save content to file!!");
+		});
+	};
 	function query_events() {
 		var btnstart = $('#btn_start');
 		var appname = btnstart.attr("appname");

@@ -155,9 +155,9 @@ function class:init()
 end
 
 --- Send notice to monitor services tells it we are aliving
-function class:send_notice()
+function class:send_notice(run)
 	--print(os.date(), 'send notice')
-	local req = {'notice', {name=self.name, desc=self.desc, port=self.port}}
+	local req = {'notice', {name=self.name, desc=self.desc, port=self.port, run=run}}
 	self.monclient:send(cjson.encode(req))
 end
 
@@ -194,6 +194,11 @@ function class:meta()
 		web = self.web,
 		app = self.handlers.app_meta(self)
 	}
+end
+
+--- Application exit/close/destroy
+function class:close()
+	self:send_notice(false)
 end
 
 --- Module functions
