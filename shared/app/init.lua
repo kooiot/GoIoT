@@ -155,16 +155,23 @@ function class:init()
 end
 
 --- Send notice to monitor services tells it we are aliving
-function class:send_notice(run)
-	--print(os.date(), 'send notice')
-	local req = {'notice', {name=self.name, desc=self.desc, port=self.port, run=run}}
-	self.monclient:send(cjson.encode(req))
+-- @tparam string typ the notice type, current only support to be nil or 'exit'
+function class:send_notice(typ)
+	if not self.closed then
+		--print(os.date(), 'send notice')
+		local req = {'notice', {name=self.name, desc=self.desc, port=self.port, typ=typ}}
+		self.monclient:send(cjson.encode(req))
+	end
 end
 
 --- Application run loop
 -- @tparam number ms the maxmium time running inside this loop
 -- @treturn nil
 function class:run(ms)
+	if self.closed then
+		return
+	end
+
 	-- make sure there will no longger than 3 second blocked in poller
 	if ms > 3000 then
 		ms = 3000
@@ -198,7 +205,8 @@ end
 
 --- Application exit/close/destroy
 function class:close()
-	self:send_notice(false)
+	self:send_notice('exit')
+	self.closed = true
 end
 
 --- Module functions
@@ -259,6 +267,9 @@ local function new(info, handlers)
 	-- Monitor application interfaces, which will be updated automatically
 	obj.monlast = 0
 	obj.monclient = nil
+
+	-- Closed flag
+	obj.closed = false
 
 	return setmetatable(obj, {__index = class})
 end

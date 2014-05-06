@@ -37,7 +37,12 @@ mpft['notice'] = function(vars)
 	local err = 'Invalid/Unsupported add request'
 	if vars and type(vars) == 'table' then
 		if vars.name then
-			vars.run = vars.run or true
+			if vars.typ and vars.typ == 'exit' then
+				log:warn('MONITOR', 'Application ['..vars.name..'] exited normally!!!')
+				vars.run = false
+			else
+				vars.run = true
+			end
 			running[vars.name] = vars 
 			running[vars.name].last = os.time()
 			local rep = {'notice', {result=true}}

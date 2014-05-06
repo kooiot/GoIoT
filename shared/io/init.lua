@@ -150,6 +150,8 @@ function _M.init(name, handlers)
 
 	if not _M.handlers.on_close then
 		_M.handlers.on_close = function(app)
+			log:warn(app.name, "Received on_close event")
+			app:close()
 			_M.abort()
 		end
 	end
@@ -297,7 +299,6 @@ function _M.run()
 			end
 		end
 	end
-	app:close()
 end
 
 return _M
