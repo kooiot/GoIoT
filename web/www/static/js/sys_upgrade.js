@@ -11,7 +11,7 @@ semantic.sysupgrade.ready = function() {
 
 	$reboot
 		.on('click', function() {
-			window.location = "/login";
+			window.location = "/user/login";
 		});
 	;
 };

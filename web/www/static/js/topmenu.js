@@ -28,7 +28,7 @@ semantic.button.ready = function() {
 
 	$login
 		.on('click', function() {
-			window.location = "/login";
+			window.location = "/user/login";
 		});
 	;
 };
