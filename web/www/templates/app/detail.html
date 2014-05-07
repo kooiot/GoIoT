@@ -1,10 +1,17 @@
 <? extend 'layout.html' ?>
-<div class="segment">
+<div class="tab segment">
 	<div class="container">
 		<div class="introduction">
 			<h2 class="ui diving header"><? =appname ?> </h2>
-			<? =appname ?> 
 		</div>
+		<div class="ui breadcrumb">
+			<a class="section" href="/">Home</a>
+			<i class="right arrow icon divider"></i>
+			<a class="section" href="/#/apps">Applications</a>
+			<i class="right arrow icon divider"></i>
+			<div class="active section"><?=appname?></div>
+		</div>
+
 	</div>
 </div>
 <div class="main container">

@@ -4,11 +4,7 @@
 <table class="ui sortable table segment">
 	<thead>
 		<tr>
-			<th>Status</th>
-			<th>Instance</th>
-			<th>Application</th>
-			<th>Author</th>
-			<th>Version</th>
+			<th>Name</th>
 			<th>Description</th>
 		</tr>
 	</thead>
@@ -23,16 +19,20 @@
 		for _, v in pairs(lst) do 
 			counts = counts + 1
 		?>
-		<tr class="<?=v.run and '' or 'warning' ?>" >
-			<td>
+		<tr>
+			<td class="<?=v.run and '' or 'warning' ?>" >
 				<i class="<?=v.run and '' or 'attention icon' ?>"></i>
-				<a href="/apps/<? =escape_url(v.lname) ?>" class="ui mini button"> View </a>
+				<a href="/apps/<? =escape_url(v.lname) ?>"><b><?=v.lname?></b></a>
 			</td>
-			<td><?=v.lname?></td>
-			<td><?=v.name?></td>
-			<td><?=v.author?></td>
-			<td><?=v.version?></td>
-			<td><?=v.desc?></td>
+			<td>
+				<i> <?=v.desc?> </i> - 
+				<a href="/sssss">
+					<b><?=v.name?></b>
+				</a> 
+				<i> v<?=v.version?> by 
+					<b><a href="dddd"><?=v.author?></a></b>
+				</i>
+			</td>
 		</tr>
 		<? end ?>
 	<? end ?>
@@ -42,10 +42,6 @@
 		<tr>
 			<th>Total <?=counts?></th>
 			<th>In <?= cates?> types</th>
-			<th></th>
-			<th></th>
-			<th></th>
-			<th></th>
 		</tr>
 	</tfoot>
 </table>

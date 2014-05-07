@@ -8,17 +8,17 @@
 	</div>
 </div>
 <div class="main container">
-	<div class="ui primary segment">
+	<div class="ui segment">
 		<div class="ui teal ribbon label">System Management</div>
 		<p>
-		<div id="btn_reboot" class="ui small button">Reboot</div>
+		<div id="btn_reboot" class="ui small red button">Reboot</div>
 		</p>
 		<div class="ui teal ribbon label">Upgrade System</div>
 		<p>
 			<form class="ui form" action="/system/upload" method="post" enctype="multipart/form-data">
 					<input type="hidden" name="filetype" value="sys" />
 					<input type="file" name="file" />
-				<input type="submit" class="ui tiny submit button" value="upgrade"></input>
+				<input type="submit" class="ui tiny submit red button" value="upgrade"></input>
 			</form>
 		</p>
 		<div class="ui teal ribbon label">Install Application</div>
@@ -32,7 +32,7 @@
 
 					<input type="hidden" name="filetype" value="app" />
 					<input type="file" name="file" />
-					<input type="submit" class="ui tiny submit button" value="install"></input>
+					<input type="submit" class="ui tiny submit green button" value="install"></input>
 				</div>
 			</form>
 
