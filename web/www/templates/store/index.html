@@ -2,21 +2,16 @@
 <div class="tab segment">
 	<div class="container">
 		<div class="introduction">
-			<h3 class="ui dividing header"> Application Store</h3>
-			<form>
-				<div class="ui secondary fluid menu">
+			<h2 class="ui dividing header"> Application Store</h2>
+			<form class="form fluid basic">
+				<div class="ui secondary fluid two item menu">
 					<a class="item" href="/store/settings">
-						<i class="settings icon"></i> Settings
+						<i class="settings teal icon"></i> Settings
 					</a>
-					<a class="item" href="/store/account">
-						<i class="user icon"></i> Account
-					</a>
-					<div class="right menu">
-						<div class="item">
-							<div class="ui icon input">
-								<input id="search_key" placeholder="Search..." type="text">
-								<i class="search link icon"></i>
-							</div>
+					<div class="item">
+						<div class="ui icon input">
+							<input id="search_key" placeholder="Search..." type="text">
+							<i id="search_icon" class="teal search link icon"></i>
 						</div>
 					</div>
 				</div>
@@ -42,12 +37,19 @@
 		$('form').ajaxForm({
 			beforeSend : function() {
 				var key = $('#search_key').val();
+				query_apps('popular', key);
 				query_apps('recent', key);
 				return false;
 			}
 		});
-		//query_pop_apps();
+		query_apps('popular', '');
 		query_apps('recent', '');
+	});
+
+	$("#search_icon").click(function() {
+		var key = $('#search_key').val();
+		query_apps('popular', key);
+		query_apps('recent', key);
 	});
 
 	function jump_app(obj) {
@@ -56,8 +58,13 @@
 		window.location = "/store/view/" + path;	
 	};
 
-	function deal_json(data) {
-		var rec_place = $('#rec_list');
+	function deal_json(data, typ) {
+		var list_place;
+		if (typ == 'recent'){
+			list_place = $('#rec_list');
+		} else {
+			list_place = $('#pop_list');
+		}
 		var text = '<div class="ui stackable items">'
 		for (var user in data)
 		{
@@ -66,7 +73,7 @@
 				var app = list[i];
 				var msg = '<div class="app item" id="' + app.name + '" path="' + app.info.path + '" onclick="jump_app(this);">'
 							+ '<div class="image">'
-							+ '<img src="http://localhost:8081/static/'+app.info.path+'/icon.jpg">'
+							+ '<img src="http://172.30.11.169:8081/static/'+app.info.path+'/icon.jpg">'
 							+ '</div>'
 							+ '<div class="content">'
 							+ '<div class="meta">' + app.info.version + '</div>'
@@ -78,14 +85,14 @@
 			}
 		};
 		text = text + '</div>';
-		rec_place.html(text);
+		list_place.html(text);
 	};
 
 	function query_apps(typ, key) {
 		$.ajax({
 			type: "GET",
 			dataType: "jsonp",
-			url: "http://localhost:8081/app/repo",
+			url: "http://172.30.11.169:8081/app/search",
 			data:{ type:typ, key : key, limit : 10 },
 			error: function(jqXHR, textStatus, errorThrown) {
 				if (textStatus == "error") {
@@ -95,7 +102,7 @@
 				}
 			},
 			success: function(data, textStatus, jqXHR) {
-				deal_json(data);
+				deal_json(data, typ);
 			}
 		});
 	};

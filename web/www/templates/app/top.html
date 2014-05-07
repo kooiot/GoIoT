@@ -2,17 +2,17 @@
 	<div class="container">
 		<div class="introduction">
 			<? if info then ?>
-			<h1 class="ui dividing header">
+			<h2 class="ui dividing header">
 				Application <?=info.name or 'Unkonwn' ?>
-			</h1>
+			</h2>
 			<p>by <a class="ui tiny blue" href="/user/<?=info.username ?>" > <?=info.username ?> </a> </p>
 			<p> <i><?=info.desc ?></i> </p>
 			<a href="/install" class="ui button blue">Install</a>
 			<a href="/static/releases/<?=info.path ?>/latest.lpk" class="ui button red">Download</a>
 			<? else ?>
-			<h1 class="ui dividing header">
+			<h2 class="ui dividing header">
 				Creating Application
-			</h1>
+			</h2>
 			<? end ?>
 		</div>
 	</div>
