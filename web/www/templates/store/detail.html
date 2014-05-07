@@ -1,0 +1,18 @@
+<? extend 'layout.html' ?>
+<div class="tab segment">
+	<div class="container">
+		<div class="introduction">
+		</div>
+	</div>
+</div>
+
+<div class="main container">
+	<? local info = {name=appname, username="aaaa", desc = 'dddddddddd', path="ddddddddddd"} ?>
+	<h1 class="ui dividing header">
+		Application <?=info.name or 'Unkonwn' ?>
+	</h1>
+	<p>by <a class="ui tiny blue" href="/user/<?=info.username ?>" > <?=info.username ?> </a> </p>
+	<p> <i><?=info.desc ?></i> </p>
+	<a href="/install" class="ui button blue">Install</a>
+	<a href="/static/releases/<?=info.path ?>/latest.lpk" class="ui button red">Download</a>
+</div>

@@ -1,0 +1,103 @@
+<? extend 'layout.html' ?>
+<div class="tab segment">
+	<div class="container">
+		<div class="introduction">
+			<h3 class="ui dividing header"> Application Store</h3>
+			<form>
+				<div class="ui secondary fluid menu">
+					<a class="item" href="/store/settings">
+						<i class="settings icon"></i> Settings
+					</a>
+					<a class="item" href="/store/account">
+						<i class="user icon"></i> Account
+					</a>
+					<div class="right menu">
+						<div class="item">
+							<div class="ui icon input">
+								<input id="search_key" placeholder="Search..." type="text">
+								<i class="search link icon"></i>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<div class="main container">
+
+	<? include('widget/sticky.html', {items = { 'Populars', 'Recents' }}) ?>
+
+	<h2 class="ui dividing header"> Populars</h2>
+	<div id="pop_list"></div>
+	<h2 class="ui dividing header"> Recents</h2>
+	<div id="rec_list"></div>
+
+	<div id="status"></div>
+</div>
+
+<script>
+	$(document).ready(function() {
+		$('form').ajaxForm({
+			beforeSend : function() {
+				var key = $('#search_key').val();
+				query_apps('recent', key);
+				return false;
+			}
+		});
+		//query_pop_apps();
+		query_apps('recent', '');
+	});
+
+	function jump_app(obj) {
+		var path = $(obj).attr('path');
+		var name = obj.id;
+		window.location = "/store/view/" + path;	
+	};
+
+	function deal_json(data) {
+		var rec_place = $('#rec_list');
+		var text = '<div class="ui stackable items">'
+		for (var user in data)
+		{
+			var list = data[user];
+			for (var i in list) {
+				var app = list[i];
+				var msg = '<div class="app item" id="' + app.name + '" path="' + app.info.path + '" onclick="jump_app(this);">'
+							+ '<div class="image">'
+							+ '<img src="http://localhost:8081/static/'+app.info.path+'/icon.jpg">'
+							+ '</div>'
+							+ '<div class="content">'
+							+ '<div class="meta">' + app.info.version + '</div>'
+							+ '<div class="name">' + app.name + '</div>'
+							+ '<div class="extra right">' + app.info.desc + '</div>'
+							+ '</div>'
+							+ '</div>'
+				text = text + msg;
+			}
+		};
+		text = text + '</div>';
+		rec_place.html(text);
+	};
+
+	function query_apps(typ, key) {
+		$.ajax({
+			type: "GET",
+			dataType: "jsonp",
+			url: "http://localhost:8081/app/repo",
+			data:{ type:typ, key : key, limit : 10 },
+			error: function(jqXHR, textStatus, errorThrown) {
+				if (textStatus == "error") {
+					alert(textStatus + " : " +errorThrown);
+				} else {
+					alert(textStatus);
+				}
+			},
+			success: function(data, textStatus, jqXHR) {
+				deal_json(data);
+			}
+		});
+	};
+</script>
+
