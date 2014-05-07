@@ -27,7 +27,7 @@ return {
 		if lwf.ctx.user then
 			res:ltp('app/new.html')
 		else
-			lwf.exit(404)
+			res:redirect('/user/login')
 		end
 	end,
 	post = function(req, res)
