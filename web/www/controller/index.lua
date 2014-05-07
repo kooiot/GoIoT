@@ -13,6 +13,7 @@ return {
 					version = info.app.version,
 					desc = info.app.desc,
 					name = info.app.name,
+					author = info.app.author,
 				}
 			end
 		end

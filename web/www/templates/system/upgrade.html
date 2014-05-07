@@ -62,6 +62,7 @@
 			uploadProgress: function(event, position, total, percentComplete) {
 				var percentVal = percentComplete + '%';
 				bar.width(percentVal);
+				status.text(percentVal);
 			},
 			success: function() {
 				var percentVal = '100%';

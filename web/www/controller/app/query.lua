@@ -15,6 +15,6 @@ return {
 		if reply then
 			res.headers['Content-Type'] = 'application/json'
 		end
-		res:write(cjson.encode(reply.status or err))
+		res:write(cjson.encode(reply and reply.status or err))
 	end
 }

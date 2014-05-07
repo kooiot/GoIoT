@@ -1,0 +1,67 @@
+<script src="/static/js/app.js"></script> 
+<script src="/static/js/table.js"></script>
+
+<table class="ui sortable table segment">
+	<thead>
+		<tr>
+			<th>Status</th>
+			<th>Instance</th>
+			<th>Application</th>
+			<th>Author</th>
+			<th>Version</th>
+			<th>Description</th>
+		</tr>
+	</thead>
+	<tbody>
+	<?
+	local has_app = false
+	local cates = 0
+	local counts = 0
+	for cate, lst in pairs(apps) do
+		cates = cates + 1
+		has_app = true
+		for _, v in pairs(lst) do 
+			counts = counts + 1
+		?>
+		<tr class="<?=v.run and '' or 'warning' ?>" >
+			<td>
+				<i class="<?=v.run and '' or 'attention icon' ?>"></i>
+				<a href="/apps/<? =escape_url(v.lname) ?>" class="ui mini button"> View </a>
+			</td>
+			<td><?=v.lname?></td>
+			<td><?=v.name?></td>
+			<td><?=v.author?></td>
+			<td><?=v.version?></td>
+			<td><?=v.desc?></td>
+		</tr>
+		<? end ?>
+	<? end ?>
+
+	</tbody>
+	<tfoot>
+		<tr>
+			<th>Total <?=counts?></th>
+			<th>In <?= cates?> types</th>
+			<th></th>
+			<th></th>
+			<th></th>
+			<th></th>
+		</tr>
+	</tfoot>
+</table>
+
+<? if not has_app then ?>
+<div class="ui icon large green message">
+	<i class="info icon"></i>
+	<div class="content">
+		<div class="header">
+			No application?! Install ONE
+			<a href="/app/new" class="ui blue link">
+				<b> </b>
+				<i class="cloud download large icon"></i>
+			</a>
+		</div>
+	</div>
+</div>
+
+<? end ?>

@@ -6,15 +6,7 @@
 	</div>
 	<? if lwf.ctx.user then ?>
 	<div class="ui tab" data-tab="apps">
-		<?
-		local items = {}
-		local apps = apps or {}
-		for k, v in pairs(apps) do
-			items[#items + 1] = k
-		end
-		?>
-		<? include('widget/sticky.html', {items = items}) ?>
-		<? include('widget/appitem.html', {apps=apps}) ?>
+		<? include('widget/applist.html', {apps=apps}) ?>
 	</div>
 	<div class="ui tab" data-tab="settings">
 		<? include('settings.html', {apps=apps}) ?>
