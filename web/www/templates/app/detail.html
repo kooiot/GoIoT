@@ -25,7 +25,7 @@
 	</div>
 	<div id="status"> </div>
 
-	<? include('widget/events.html', {title="Events"}) ?>
+	<? --[[include('widget/events.html', {title="Events"}) ]]--?>
 
 	<div class="ui small piled feed segment">
 		<h3 class="ui dividing header">Logs</h3>
@@ -146,7 +146,7 @@
 	function query_logs() {
 		var btnstart = $('#btn_start');
 		var appname = btnstart.attr("appname");
-		$.get("/log/query", { type:'logs', from:'web', src:appname, clean : false, limit : 5}, function(data){
+		$.get("/log/query", { type:'logs', from:'web', src:appname, clean : false, limit : 10}, function(data){
 			var text = '';
 			for (var i in data)
 			{
