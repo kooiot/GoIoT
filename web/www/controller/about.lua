@@ -2,7 +2,7 @@
 return {
 	get = function(req, res)
 		if not lwf.ctx.user then
-			res:redirect('login')
+			res:redirect('/user/login')
 		else
 			local shared = app.model:get('shared')
 			assert(shared)

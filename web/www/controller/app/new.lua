@@ -72,7 +72,7 @@ return {
 			res:ltp('app/new.html', {app=app, lwf=lwf, info=info})
 			--
 		else
-			res:redirect('/login')
+			res:redirect('/user/login')
 		end
 	end
 }

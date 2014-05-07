@@ -29,13 +29,13 @@ semantic.button.ready = function() {
 
 	$signup
 		.on('click', function() {
-			window.location = "/register";
+			window.location = "/user/register";
 		});
 	;
 
 	$logout
 		.on('click', function() {
-			window.location = "/logout";
+			window.location = "/user/logout";
 		});
 	;
 };

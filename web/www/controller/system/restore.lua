@@ -4,7 +4,7 @@ return {
 	end,
 	post = function(req, res)
 		if not lwf.ctx.user then
-			res:redirect('/login')
+			res:redirect('/user/login')
 			return
 		end
 		req:read_body()
