@@ -27,7 +27,7 @@
 
 	<? --[[include('widget/events.html', {title="Events"}) ]]--?>
 
-	<div class="ui small piled feed segment">
+	<div class="ui basic feed segment">
 		<h3 class="ui dividing header">Logs</h3>
 		<div id="logs_place">
 		</div>
@@ -153,7 +153,19 @@
 				var log = data[i];
 				var unixTimestamp = new Date(log.timestamp);
 				var commonTime = unixTimestamp.toLocaleString() + ' ' +  (log.timestamp % 1000);
-				var msg = '<div class="event"> <div class="content"> <div class="summary"><div class="date">' + commonTime  + '</div> <a>' +log.level + '</a>' + log.content + "</div> </div> </div>";
+				var msg = '<div class="event">'
+							+ '<div class="content">'
+							+ '<div class="date">' 
+							+ commonTime  
+							+ '</div> '
+							+ '<div class="summary">'
+							+log.level 
+							+ '</div>' 
+							+ '<div class="extra text">' 
+							+ log.content.replace(/\"/g,'&quot;') 
+							+ '</div>'
+							+ '</div>'
+							+ '</div>';
 				text = msg + text;
 			};
 			var logs_place = $('#logs_place');
