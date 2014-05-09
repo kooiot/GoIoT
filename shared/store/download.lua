@@ -1,4 +1,4 @@
---- Cloud applicaton download module
+--- Store (cloud) applicaton download module
 -- the download helper function implemented using luasocket
 
 local ftp = require("socket.ftp")

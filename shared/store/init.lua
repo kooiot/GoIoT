@@ -1,65 +1,48 @@
---- Cloud module
--- The cloud helper functions
+--- Store module
+-- The store helper functions
 
 local unzip = require 'shared.unzip'
-local download = require 'shared.cloud.download'
+local download = require 'shared.store.download'
 local list = require 'shared.app.list'
 local log = require 'shared.log'
 local pp = require 'shared.PrettyPrint'
+local cjson = require 'shared.cjson'
 
 --- Module 
 local _M = {}
 
---- Application list (cached)
--- @local
-_M.apps = {}
-
---- The default cloud configuration
+--- The default store configuration
 local cfg = {
-	--srvurl = 'ftp://cloud.opengate.com',
+	--srvurl = 'ftp://store.opengate.com',
 	srvurl = 'http://localhost/',
 	cachefolder = '/tmp',
 	appsfolder = '/tmp/apps',
 }
 
---- The configuration file path
-local cfg_file = '/tmp/apps/_store.cfg'
-
 --- Load the configuration from disk
 local function load_config()
-	local chunk, err = loadfile(cfg_file)
-
-	if chunk then
-		local c = chunk()
+	local config = require 'shared.api.config'
+	local c, err = config.get('store.config')
+	if c then
+		local c, err = cjson.decode(c)
 		if c then
 			cfg = c
+		else
+			return nil, err
 		end
+	else
+		return nil, err
 	end
 end
 
 --- Save configuration to disk
 local function save_config()
-	local file, err = io.open(cfg_file, 'w')
-	if not file then
-		log:error('CLOUD', 'Failed to open the configuration file', err)
-		return nil, err
+	local c, err = cjson.encode(cfg)
+	if c then
+		local config = require 'shared.api.config'
+		return config.set('store.config', c)
 	end
-	file:write('return '..pp(cfg)..'\n')
-	file:close()
-end
-
---- Load cached application lists
-local function load_cache()
-	local cache = cfg.cachefolder..'/release'
-
-	-- load the lua file
-	local chunk, err = loadfile(cache..'/apps.lua')
-	if not chunk then
-		return nil, err
-	end
-
-	_M.apps, err = chunk()
-	return _M.apps, err
+	return nil, err
 end
 
 --- Load the installed application list
@@ -83,8 +66,7 @@ end
 --
 -- Initialize the server url and cache folder
 local function init ()
-	load_cache()
-	load_installed()
+	load_config()
 end
 
 --- Save configuration when success
@@ -96,7 +78,7 @@ local function save_after_success(r, err)
 end
 
 --- Change the configuration
--- @tparam table c Cloud configuration { srvurl=xxx, cachefolder=xxx, appsfolder=xxx }
+-- @tparam string c Store server url or an table(advanced) { srvurl=xxx, cachefolder=xxx, appsfolder=xxx }
 -- @treturn boolean ok
 -- @treturn[opt] string error message
 _M.config = function(c)
@@ -114,62 +96,11 @@ _M.config = function(c)
 	return nil, 'Incorrect config parameter'
 end
 
---- Update the local cache
--- Fetch the release.gz from server
--- @return ok
--- @treturn string error message
-_M.update = function()
-	local src = cfg.srvurl..'/release.zip'
-	local dest = cfg.cachefolder..'/release.zip'
-	local cache = cfg.cachefolder..'/release'
-
-	-- Remove the previous cache
-	os.remove(dest)
-
-	-- Downoad the release.zip
-	local r, err = download(src, dest)
-	if not r then
-		return nil, err
-	end
-
-	-- unzip the file
-	r, err = unzip(dest, cache, true)
-	if not r then
-		return nil, err
-	end
-
-	return load_cache()
-end
-
 --- Search one application
 -- @tparam string key the search key
 -- @treturn table matched names
 _M.search = function(key)
-	local matches = {}
-	local pattern = '.-'..key..'.-'
-	for k,v in pairs(_M.apps) do
-		if v.name:match(pattern) then
-			table.insert(matches, v)
-		else
-			if v.desc:match(pattern) then
-				table.insert(matches, v)
-			end
-		end
-	end
-	return matches
-end
-
----
--- Find application by its name
--- @tparam string name Application name
--- @treturn table application information table, nil when name cannot found in cache
-_M.find = function (name)
-	for k,v in pairs(_M.apps) do
-		if v.name == name then
-			return v
-		end
-	end
-	return nil
+	-- TODO: Implement it with socket's http
 end
 
 ---
@@ -187,13 +118,13 @@ _M.install = function(name, lname)
 		end
 	end
 
-	-- Find the cloud app information
+	-- Find the store app information
 	local app = _M.find(name)
 	if not app then
 		return nil, "no such app "..name
 	end
 
-	local install = require 'shared.cloud.install'
+	local install = require 'shared.store.install'
 	return install(cfg, app, lname)
 end
 
@@ -211,7 +142,7 @@ _M.remove = function(lname, mode)
 	for k,v in pairs(load_installed()) do
 		if v.lname == lname then
 			-- TODO: for clean the configuration
-			local uninstall = require 'shared.cloud.uninstall'
+			local uninstall = require 'shared.store.uninstall'
 			return uninstall(cfg, v.name, lname)
 		end
 	end
@@ -219,19 +150,9 @@ _M.remove = function(lname, mode)
 end
 
 ---
--- List all avaiable/installed application
--- @tparam string mode
---	'a' - all avaiable applications
---	'i' - all installed applications
+-- List all installed application
 _M.list = function(mode)
-	local mode = mode or 'a'
-	if mode == 'a' then
-		return _M.apps
-	end
-	if mode == 'i' then
-		return load_installed()
-	end
-	return nil, 'incorrect mode'
+	return load_installed()
 end
 
 init()
