@@ -1,11 +1,12 @@
 <script src="/static/js/app.js"></script> 
 <script src="/static/js/table.js"></script>
 
-<table class="ui sortable table segment">
+<table id="applist" class="ui sortable table segment">
 	<thead>
 		<tr>
 			<th>Name</th>
 			<th>Description</th>
+			<th>Description2</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -20,7 +21,8 @@
 			counts = counts + 1
 		?>
 		<tr>
-			<td class="<?=v.run and '' or 'warning' ?>" >
+			<!--<td class="<?=v.run and '' or 'warning' ?>" > -->
+			<td>
 				<i class="<?=v.run and '' or 'attention icon' ?>"></i>
 				<a href="/apps/<? =escape_url(v.lname) ?>"><b><?=v.lname?></b></a>
 			</td>
@@ -33,6 +35,7 @@
 					<b><a href="dddd"><?=v.author?></a></b>
 				</i>
 			</td>
+			<td>aaaaaaaaaaa</td>
 		</tr>
 		<? end ?>
 	<? end ?>
@@ -42,6 +45,7 @@
 		<tr>
 			<th>Total <?=counts?></th>
 			<th>In <?= cates?> types</th>
+			<th></th>
 		</tr>
 	</tfoot>
 </table>
@@ -61,3 +65,15 @@
 </div>
 
 <? end ?>
+
+
+<script type="text/javascript">
+/*
+	$(document).ready(function () {
+			var oTable = $('#applist').editableTableWidget({
+				editor: $('<textarea>'),
+				cloneProperties: ['background', 'border', 'outline'],
+			});
+	});
+	*/
+</script>

@@ -1,0 +1,106 @@
+
+<? extend 'layout.html' ?>
+
+<script src="/static/js/table.js"></script>
+
+<div class="segment">
+	<div class="container">
+		<div class="introduction">
+			<h3 class="ui dividing header"> System Upgrade</h3>
+		</div>
+	</div>
+</div>
+<div class="main container">
+<table class="ui sortable table segment">
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Status</th>
+			<th>PID</th>
+		</tr>
+	</thead>
+	<tbody>
+	<?
+	local counts = 0
+	local status = status or {}
+	for _, v in pairs(status) do 
+		counts = counts + 1
+	?>
+	<tr>
+		<!--<td class="<?=v.run and '' or 'warning' ?>" > -->
+		<td>
+			<? = v.name ?>
+		</td>
+		<td>
+			<? = v.status ?>
+		</td>
+		<td>
+			<? = v.pid ?>
+		</td>
+	</tr>
+	<? end ?>
+
+	</tbody>
+	<tfoot>
+		<tr>
+			<th>Total <?=counts?></th>
+			<th>In <?= cates?> types</th>
+			<th></th>
+		</tr>
+	</tfoot>
+</table>
+
+<div class="ui icon message">
+	<i class="inbox icon"></i>
+	<div class="content">
+		<div class="header">
+			<div id="status">
+				<? = err ?>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<form class="ui form segment" action="" method="post">
+	<div class="field">
+		<label>Name</label>
+		<div class="ui left labeled icon input">
+			<input id="appname" placeholder="name..." name="name" type="text" />
+		</div>
+	</div>
+	<div class="field">
+		<textarea name="dostr" id="dostr" >os.execute('sleep 10')</textarea>
+	</div>
+
+	<div class="field">
+		<input type="submit" class="ui blue submit button" value="Submit"/>
+	</div>
+</form>
+
+</div>
+
+<script>
+	$(document).ready(function() {
+		$('form').ajaxForm({
+			beforeSend : function() {
+				var name = $('#appname').val();
+				var dostr = $('#dostr').val();
+				var status = $('#status');
+				$.post("/system/services", {name:name, dostr:dostr}, function(data) {
+					status.text(data);
+					})
+				.done(function() {
+					//alert("Application Started!!");
+					})
+				.fail(function() {
+					alert("Failed to send start request!!");
+					});
+
+				return false;
+			}
+		});
+	});
+
+</script>
+
