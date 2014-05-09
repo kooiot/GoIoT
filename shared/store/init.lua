@@ -106,10 +106,12 @@ end
 ---
 -- Install one application
 -- @tparam string name Application name
+-- @tparam string path Application path in store server
+-- @tparam string typ Application type
 -- @tparam string lname Application local install name
 -- @treturn boolean ok
 -- @treturn string error message
-_M.install = function(name, lname)
+_M.install = function(name, path, typ, lname)
 	log:info('CLOUD', "Installing "..name.." as "..lname)
 	-- Check for unique local name
 	for k, v in pairs(load_installed()) do
@@ -118,8 +120,11 @@ _M.install = function(name, lname)
 		end
 	end
 
-	-- Find the store app information
-	local app = _M.find(name)
+	local app = {
+		name = name, 
+		path = path, 
+		['type'] = typ,
+	}
 	if not app then
 		return nil, "no such app "..name
 	end

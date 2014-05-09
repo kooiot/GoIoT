@@ -28,7 +28,7 @@ end
 --- Install helper function
 -- @function module
 -- @tparam table cfg Configuration
--- @tparam Application app Application object
+-- @tparam Application app Application object {name, path, type}
 -- @tparam string lname Local install name
 return function(cfg, app, lname)
 	local downcb = create_cb(cfg)
