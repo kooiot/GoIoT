@@ -21,6 +21,7 @@ echo $1
 PID_FOLDER=/tmp/
 if [ $1 = "start" ] ; then
 	#start-stop-daemon --start --oknodo --name rdb --pidfile /var/run/rdb.pid --chdir ~/cad2/app/rdb --background --startas /usr/bin/lua5.2 -- start.lua
+	start-stop-daemon --start --oknodo --make-pidfile --pidfile $PID_FOLDER/core_services.pid --chdir $CAD_DIR/core/services --background --startas /usr/bin/lua -- start.lua
 	start-stop-daemon --start --oknodo --make-pidfile --pidfile $PID_FOLDER/core_config.pid --chdir $CAD_DIR/core/config --background --startas /usr/bin/lua -- start.lua
 	start-stop-daemon --start --oknodo --make-pidfile --pidfile $PID_FOLDER/core_monitor.pid --chdir $CAD_DIR/core/monitor --background --startas /usr/bin/lua -- start.lua
 	start-stop-daemon --start --oknodo --make-pidfile --pidfile $PID_FOLDER/core_iobus.pid --chdir $CAD_DIR/core/iobus --background --startas /usr/bin/lua -- start.lua
@@ -37,6 +38,8 @@ else
 	rm $PID_FOLDER/core_monitor.pid
 	start-stop-daemon --stop --oknodo --pidfile $PID_FOLDER/core_config.pid --retry 5
 	rm $PID_FOLDER/core_config.pid
+	start-stop-daemon --stop --oknodo --pidfile $PID_FOLDER/core_services.pid --retry 5
+	rm $PID_FOLDER/core_services.pid
 fi
 
 if [ -f /tmp/apps/_list ]; then

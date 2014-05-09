@@ -32,7 +32,6 @@ local mpft = {} -- message process function table
 function send_err(err)
 	local reply = {'error', {err=err}}
 	local rep_json = cjson.encode(reply)
-	print(rep_json)
 	server:send(rep_json)
 end
 
@@ -84,15 +83,14 @@ mpft['add'] = function(vars)
 		if name and dostr then
 			local result = false
 			local file, pid = nil, nil
-			print('before save file')
 			file, err = save_file(dostr)
 			--- Get a tmp file name 
 			if file then
-				print('before running file')
 				pid, err = run_file(name, file)
 				if pid then
 					log:info(NAME, 'Services '..name..' has been started! pid='..pid)
 				else
+					os.remove(file)
 					log:error(NAME, err)
 				end
 			else
@@ -159,8 +157,7 @@ mpft['list'] = function(vars)
 		return
 	end
 
---	local st = {}
-	local st = {{name='dummy', status='RUNNING', pid='0'}}
+	local st = {}
 	for n, v in pairs(running) do
 		st[#st + 1] = {
 			name = n,
@@ -196,7 +193,7 @@ poller:add(server, zmq.POLLIN, function()
 		if type(req) ~= 'table' then
 			send_err('unsupport message type')
 		else
-			print('Received Request -'..req[1])
+			--print('Received Request -'..req[1])
 			-- handle request
 			--server:send(cjson.encode(req))
 			local fun = mpft[req[1]]
@@ -217,13 +214,13 @@ local stop = false
 local function check_timeout()
 	local now = os.time()
 	for k,v in pairs(running) do
-		if v.status == 'RUNNING' and (now - v.last)  > 2 then
-			print('check pid status ', k)
+		if v.status == 'RUNNING' and (now - v.last)  > 1 then
+			v.last = now
 			local result, output = runner.check(k)
 			if not result then
 				v.status = 'DONE'
 			end
-			if v.file then
+			if v.file and v.status ~= 'RUNNING' then
 				os.remove(v.file)
 				v.file = nil
 			end

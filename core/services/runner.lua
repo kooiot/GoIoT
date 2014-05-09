@@ -38,6 +38,7 @@ function _M.check(name)
 	local pidfile = pid_file(name)
 	local r, status, code = os.execute('start-stop-daemon --status --pidfile '..pidfile)
 	if not r or status ~= 'exit' or code ~= 0 then
+		os.remove(pidfile)
 		return nil, code
 	end
 	return true
