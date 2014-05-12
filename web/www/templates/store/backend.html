@@ -18,6 +18,7 @@
 			<th>Application</th>
 			<th>Status</th>
 			<th>Action</th>
+			<th>Result</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -41,6 +42,9 @@
 		<td>
 			<div class="ui tiny button" id="<?=v.name?>" onclick="abort_srv(this);">Abort</div>
 		</td>
+		<td>
+			<? = v.output or '' ?>
+		</td>
 	</tr>
 	<? end ?>
 
@@ -48,6 +52,8 @@
 	<tfoot>
 		<tr>
 			<th>Total <?=counts?></th>
+			<th></th>
+			<th></th>
 			<th></th>
 			<th></th>
 		</tr>

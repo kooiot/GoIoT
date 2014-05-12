@@ -27,7 +27,7 @@ return {
 				local store = require 'shared.store'
 				store.install("]]..name..'","'..path..'","'..typ..'","'..lname..'")'
 			local api = require 'shared.api.services'
-			local r, err = api.add('store.install.'..lname, dostr)
+			local r, err = api.add('store.install.'..lname, dostr, 'Install '..lname..' ('..path..')')
 			if r then
 				res:write('View backend for installation status')
 			else

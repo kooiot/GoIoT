@@ -78,12 +78,31 @@ end
 -- @tparam boolean keepalive keep this services running always, restart it when it quited (not implemented)
 -- @treturn boolean result
 -- @treturn string error
-_M.add = function(name, dostr, keepalive)
-	local req = {'add', {name=name, dostr=dostr, keepalive=keepalive}}
+_M.add = function(name, dostr, desc, keepalive)
+	local req = {'add', {name=name, dostr=dostr, desc=desc, keepalive=keepalive}}
 	local reply, err = client:request(cjson.encode(req), true)
 	print(reply)
 	if reply then
 		reply, err = get_reply(reply, 'add')
+		if reply then
+			err = reply.err
+			reply = reply.result
+		end
+	end
+	return reply, err
+end
+
+--- Set the result(error output)
+-- @tparam string name services name
+-- @tparam boolean result result boolean
+-- @tparam string output output text
+-- @treturn nil
+_M.result = function(name, result, output)
+	local req = {'result', {name=name, result=result, output=output}}
+	local reply, err = client:request(cjson.encode(req), true)
+	print(reply)
+	if reply then
+		reply, err = get_reply(reply, 'result')
 		if reply then
 			err = reply.err
 			reply = reply.result

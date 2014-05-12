@@ -10,6 +10,8 @@ return {
 					name = v.name:match('^store%.install%.(.+)$'),
 					desc = v.desc,
 					status = v.status,
+					result = v.result,
+					output = v.output,
 					pid = v.pid,
 				}
 			end

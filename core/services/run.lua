@@ -14,6 +14,7 @@ local pwd = os.getenv('PWD')
 local log = require('shared.log')
 
 local luafile = arg[1] or 'main.lua'
+local srv_name = arg[2] or 'unknown'
 log:info('SRV_RUNNER', 'Start service process from file: '..luafile)
 
 local f, err =  loadfile(luafile)
@@ -24,7 +25,11 @@ else
 
 	if not r then
 		log:error('SRV_RUNNER', 'Services exit with err[', pwd, ']:', err)
+		local api = require 'shared.api.services'
+		api.result(srv_name, false, err)
 	else
 		log:info('SRV_RUNNER', 'Services exited normally[', pwd, ']')
+		local api = require 'shared.api.services'
+		api.result(srv_name, ture, 'DONE without error')
 	end
 end

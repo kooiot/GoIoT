@@ -112,6 +112,27 @@ mpft['add'] = function(vars)
 	send_err(err)
 end
 
+mpft['result'] = function(vars)
+	local err = 'Invalid/Unsupported result request'
+	if vars and type(vars) == 'table' then
+		local name = vars.name
+		local result = vars.result
+		local output = vars.output
+		log:info(NAME, 'Result from service ['..name..']', output)
+		if running[name] then
+			running[name].result = result
+			running[name].output = output
+			local rep = {'result', {result=true}}
+			server:send(cjson.encode(rep))
+			return
+		else
+			err = "The services not exists "..name
+			log:error(NAME, err)
+		end
+	end
+	send_err(err)
+end
+
 mpft['abort'] = function(vars)
 	if vars and type(vars) ~= 'table' then
 		local err = 'Invalid/Unsupported abort request'
@@ -127,6 +148,8 @@ mpft['abort'] = function(vars)
 		if running[name].status == 'RUNNING' then
 			runner.abort(name)
 			running[name].status = 'ABORTED'
+			running[name].result = false
+			running[name].output = 'Services aborted!!!'
 			result = true
 		else
 			err =  'Service already aborted'
@@ -154,7 +177,7 @@ mpft['query'] = function(vars)
 		status = running[name].status
 	end
 
-	local rep = {'query', {result=true, status = st}}
+	local rep = {'query', {result=true, status = status}}
 	server:send(cjson.encode(rep))
 end
 
@@ -171,12 +194,17 @@ mpft['list'] = function(vars)
 		desc = '/admin/modbus',
 		pid = 0,
 		status = 'RUNNING',
+		result = true,
+		output = 'Done',
 	}}
 	for n, v in pairs(running) do
 		st[#st + 1] = {
 			name = n,
+			desc = v.desc,
 			status = v.status,
 			pid = v.pid,
+			result = v.result,
+			output = v.output,
 		}
 	end
 	local rep = {'list', {result=true, status = st}}
@@ -233,6 +261,7 @@ local function check_timeout()
 			local result, output = runner.check(k)
 			if not result then
 				v.status = 'DONE'
+				v.result = v.result or true
 			end
 			if v.file and v.status ~= 'RUNNING' then
 				os.remove(v.file)
