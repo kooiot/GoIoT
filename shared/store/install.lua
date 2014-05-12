@@ -15,10 +15,10 @@ local function create_cb(cfg)
 		-- Download the applcation from server
 		local src = cfg.srvurl..'/'..app.path..'/latest.lpk'
 		local dest = cfg.cachefolder..'/'..app.name..'.lpk'
-		log:info('CLOUD', "Download", app.name, "from", src, "to", dest)
+		log:info('STORE', "Download", app.name, "from", src, "to", dest)
 		local r, err = download(src, dest)
 		if not r then
-			log:warn('CLOUD', "Download fails", err)
+			log:warn('STORE', "Download fails", err)
 			return nil, err
 		end
 		return dest
@@ -33,7 +33,7 @@ end
 return function(cfg, app, lname)
 	local downcb = create_cb(cfg)
 	-- INstall the application
-	log:info('CLOUD', "Install", lname, "to", cfg.appsfolder)
+	log:info('STORE', "Install", lname, "to", cfg.appsfolder)
 	if not app.type or app.type == 'app' then
 		local dest, err = downcb(app)
 		if dest then

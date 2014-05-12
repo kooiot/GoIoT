@@ -25,9 +25,14 @@ return function(app, apps_folder, dest_name, downcb)
 	elseif app.type == 'app.io.config' then
 		assert(#app.depends == 1)
 
-		-- Find the application from cloud
-		local cloud = require 'shared.cloud'
-		local dapp = cloud.find(app.depends[1])
+		-- Find the application from store
+		local store = require 'shared.store'
+		local dep = app.depends[1]
+		local dapp = {
+			path = dep,
+			name = dep:match('[^/]+/(.+)'),
+			['type'] = 'app.io',
+		}
 		if not dapp then
 			local err = 'Failed to find the application '..app.depends[1]
 			log:error('INSTALL.io', err)

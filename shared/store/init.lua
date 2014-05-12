@@ -92,7 +92,7 @@ _M.config = function(c)
 		cfg.srvurl = c
 		return save_after_success(_M.update())
 	end
-	log:error('CLOUD', 'Incorrect config parameter')
+	log:error('STORE', 'Incorrect config parameter')
 	return nil, 'Incorrect config parameter'
 end
 
@@ -112,7 +112,7 @@ end
 -- @treturn boolean ok
 -- @treturn string error message
 _M.install = function(name, path, typ, lname)
-	log:info('CLOUD', "Installing "..name.." as "..lname)
+	log:info('STORE', "Installing "..name.." as "..lname)
 	-- Check for unique local name
 	for k, v in pairs(load_installed()) do
 		if v.lname == lname then
@@ -143,7 +143,7 @@ end
 -- @treturn string error message
 _M.remove = function(lname, mode)
 	local mode = mode or 'n'
-	log:info("CLOUD", "Uninstalling application", lname)
+	log:info("STORE", "Uninstalling application", lname)
 	for k,v in pairs(load_installed()) do
 		if v.lname == lname then
 			-- TODO: for clean the configuration
