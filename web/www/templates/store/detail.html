@@ -1,9 +1,10 @@
 <? extend 'layout.html' ?>
+<script src="/static/js/modal.js"></script>
+
 <div class="tab segment">
 	<div class="container">
 		<div class="introduction">
 			<? local author, name = appname:match('([^/]-)/(.+)') ?>
-			<? local info = {name=appname, username="aaaa", desc = 'dddddddddd', path="ddddddddddd"} ?>
 			<h2 class="ui dividing header"> <?=name or 'Unkonwn' ?> </h2>
 			<div class="ui breadcrumb">
 				<a class="section" href="/">Home</a>
@@ -15,14 +16,55 @@
 		</div>
 	</div>
 </div>
+<div class="ui basic small modal">
+	<div class="header">
+		Choose a local instance name
+	</div>
+	<div class="content">
+		<div class="left">
+			<i class="blue cloud download icon"></i>
+		</div>
+		<div class="right">
+			<p>Pick up an unique local instance name</p>
+			<div class="ui small input">
+				<input id="app_lname" type="text" placeholder="Instance Name..."></input>
+				<div class="ui corner label">
+					<i class="asterisk icon"></i>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="actions">
+		<div class="two fluid ui buttons">
+			<div class="ui negative labeled icon button">
+				<i class="remove icon"></i>
+				Cancel
+			</div>
+			<div class="ui positive right labeled icon button">
+				Install
+				<i class="checkmark icon"></i>
+			</div>
+		</div>
+	</div>
+</div>
 
 <div class="main container">
 	<i class="ui large user icon"></i>
 	<a href="/user/<?=author or 'symtech' ?>" > <?=author or 'Symtech Inc' ?> </a>
-	<a class="ui button blue right floated" href="/store/get/<?=appname?>" >Install</a>
+	<!--<a class="ui button blue right floated" href="/store/get/<?=appname?>" >Install</a> -->
+	<div class="ui button blue right floated" onclick="ask_for_lname();">Install</div>
 	<div>
-		<i class="ui large hand right icon"></i>
-		<i id="app_desc">...</i>
+		<input id="app_name" hidden="true" type="text" value="<?=name?>"></input>
+		<input id="app_path" hidden="true" type="text" value="<?=appname?>"></input>
+		<input id="app_type_input" hidden="true" type="text" value=""></input>
+		<div>
+			<i class="ui large tag icon"></i>
+			<i id="app_type">...</i>
+		</div>
+		<div>
+			<i class="ui large comment icon"></i>
+			<i id="app_desc">...</i>
+		</div>
 	</div>
 
 	<div class="ui basic fluid segment">
@@ -52,8 +94,12 @@
 	function deal_json(data, typ) {
 		var desc_place = $('#app_desc');
 		var comment_place = $('#app_comments');
+		var type_place = $('#app_type');
+		var type_input_place = $('#app_type');
 		desc_place.html(data.desc);
 		comment_place.html(data.comments);
+		type_place.text(data.type);
+		type_input_place.val(data.type);
 	};
 
 	function query_info(path) {
@@ -73,6 +119,56 @@
 				deal_json(data);
 			}
 		});
+	};
+	function isRegisterUserName(s) { 
+		var patrn=/^[a-zA-Z]{1}([a-zA-Z0-9]|[._]){2,14}$/i; 
+		if (!patrn.exec(s)) {
+			return false; 
+		}
+		return true; 
+	};
+	function ask_for_lname() {
+		$('.ui.modal')
+			.modal('setting', {
+					closable  : false,
+					onDeny    : function(){
+					//window.alert('Wait not yet!');
+					//return false;
+				},
+				onApprove : function() {
+					//window.alert('Approved!');
+					var lname = $('#app_lname').val();
+					lname = lname.trim();
+					if (lname.length == 0) {
+						window.alert('Instance Name cannot be empty');
+						return false;
+					};
+					if (isRegisterUserName(lname)) {
+						install_app(lname);
+						return true
+					};
+					window.alert('只能输入3-15个以字母开头、可带数字、“_”、“.”的字串 ');
+					return false;
+				}
+			})
+			.modal('show')
+			;
+	};
+
+	function install_app(lname) {
+		var type = $('#app_type').val();
+		alert(type);
+		$.post("/store/install", {path:'<?=appname?>', name:'<?=name?>', type:type, lname:lname}, function(data) {
+				window.location.href="/store/backend";
+				//status.text(data);
+				})
+		.done(function() {
+				//alert("Application Started!!");
+				})
+		.fail(function() {
+				alert("Failed to send start request!!");
+				});
+
 	};
 </script>
 

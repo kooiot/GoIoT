@@ -1,13 +1,13 @@
 return {
 	get = function(req, res, appname)
 		if not lwf.ctx.user then
-			lwf.redirect('/')
+			res:redirect('/user/login')
 			return
 		end
 
 		local appname = appname or req:get_arg('app')
 		if not appname then
-			lwf.redirect('/')
+			res:redirect('/store')
 			return
 		end
 

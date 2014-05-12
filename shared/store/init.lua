@@ -6,7 +6,7 @@ local download = require 'shared.store.download'
 local list = require 'shared.app.list'
 local log = require 'shared.log'
 local pp = require 'shared.PrettyPrint'
-local cjson = require 'shared.cjson'
+local cjson = require 'cjson.safe'
 
 --- Module 
 local _M = {}
@@ -14,7 +14,7 @@ local _M = {}
 --- The default store configuration
 local cfg = {
 	--srvurl = 'ftp://store.opengate.com',
-	srvurl = 'http://localhost/',
+	srvurl = 'http://localhost:8081/static/releases',
 	cachefolder = '/tmp',
 	appsfolder = '/tmp/apps',
 }

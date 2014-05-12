@@ -7,7 +7,7 @@ return {
 		if not appname then
 			res:redirect('/store')
 		else
-			res:ltp('/store/install.html')
+			res:ltp('store/detail.html', {app=app, lwf=lwf, appname=appname})
 		end
 	end,
 	post = function(req, res)
@@ -20,11 +20,16 @@ return {
 		local name = req:get_arg('name')
 		local path = req:get_arg('path')
 		local lname = req:get_arg('lname')
+		local typ = req:get_arg('type')
 
 		if name and path and lname then
-			local r, err = cloud.install(path, lname)
+			local dostr = [[
+				local store = require 'shared.store'
+				store.install("]]..name..'","'..path..'","'..typ..'","'..lname..'")'
+			local api = require 'shared.api.services'
+			local r, err = api.add('store.install.'..lname, dostr)
 			if r then
-				res:write('DONE')
+				res:write('View backend for installation status')
 			else
 				res:write('ERROR: ', err)
 			end

@@ -17,7 +17,7 @@ local function load()
 		for line in file:lines() do
 			local name, insname, json = line:match("NAME='(.+)' INSNAME='(.+)' APPJSON='(.-)'")
 			if name and insname then
-				log:info('WEB', "Loading", name, insname, json)
+				--log:info('shared.app', "Loading", name, insname, json)
 				local app = json and cjson.decode(json) or {}
 				list[name] = list[name] or {name=name, insts={}}
 				table.insert(list[name].insts, {insname=insname, app=app})

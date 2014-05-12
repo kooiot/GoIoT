@@ -8,7 +8,7 @@ function _M.run(name, luafile)
 	assert(name, luafile)
 	local pidfile = pid_file(name)
 	local pid = 0
-	local r, status, code = os.execute('start-stop-daemon --start --make-pidfile --pidfile '..pidfile..' --background --chdir $CAD_DIR --startas /usr/bin/lua -- '..luafile)
+	local r, status, code = os.execute('start-stop-daemon --start --make-pidfile --pidfile '..pidfile..' --background --chdir $CAD_DIR/core/services --startas /usr/bin/lua -- run.lua '..luafile)
 	if not r or status ~= 'exit' or code ~= 0 then
 		return nil, 'Same name services has been runned'
 	end
@@ -24,7 +24,7 @@ function _M.run(name, luafile)
 end
 
 function _M.abort(name)
-	assert(neme)
+	assert(name)
 	local pidfile = pid_file(name)
 	local r, status, code = os.execute('start-stop-daemon --stop --pidfile '..pidfile..' --retry 5')
 	if not r or status ~= 'exit' or code ~= 0 then

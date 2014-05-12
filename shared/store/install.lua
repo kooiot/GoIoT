@@ -13,8 +13,8 @@ local function create_cb(cfg)
 	--- The callback function
 	return function (app)
 		-- Download the applcation from server
-		local src = cfg.srvurl..'/'..app.path..'/latest.zip'
-		local dest = cfg.cachefolder..'/'..app.name..'.zip'
+		local src = cfg.srvurl..'/'..app.path..'/latest.lpk'
+		local dest = cfg.cachefolder..'/'..app.name..'.lpk'
 		log:info('CLOUD', "Download", app.name, "from", src, "to", dest)
 		local r, err = download(src, dest)
 		if not r then

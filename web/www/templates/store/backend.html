@@ -6,7 +6,7 @@
 <div class="segment">
 	<div class="container">
 		<div class="introduction">
-			<h3 class="ui dividing header"> Services Management</h3>
+			<h3 class="ui dividing header">Installation list<h3>
 		</div>
 	</div>
 </div>
@@ -15,8 +15,8 @@
 	<thead>
 		<tr>
 			<th>Name</th>
+			<th>Application</th>
 			<th>Status</th>
-			<th>PID</th>
 			<th>Action</th>
 		</tr>
 	</thead>
@@ -33,10 +33,10 @@
 			<? = v.name ?>
 		</td>
 		<td>
-			<? = v.status ?>
+			<? = v.desc ?>
 		</td>
 		<td>
-			<? = v.pid ?>
+			<? = v.status ?>
 		</td>
 		<td>
 			<div class="ui tiny button" id="<?=v.name?>" onclick="abort_srv(this);">Abort</div>
@@ -48,7 +48,6 @@
 	<tfoot>
 		<tr>
 			<th>Total <?=counts?></th>
-			<th>In <?= cates?> types</th>
 			<th></th>
 			<th></th>
 		</tr>
@@ -66,51 +65,13 @@
 	</div>
 </div>
 
-
-<form class="ui form segment" action="" method="post">
-	<div class="field">
-		<label>Name</label>
-		<div class="ui left labeled icon input">
-			<input id="appname" placeholder="name..." name="name" type="text" />
-		</div>
-	</div>
-	<div class="field">
-		<textarea name="dostr" id="dostr" >os.execute('sleep 10')</textarea>
-	</div>
-
-	<div class="field">
-		<input type="submit" class="ui blue submit button" value="Submit"/>
-	</div>
-</form>
-
 </div>
 
 <script>
-	$(document).ready(function() {
-		$('form').ajaxForm({
-			beforeSend : function() {
-				var name = $('#appname').val();
-				var dostr = $('#dostr').val();
-				var status = $('#status');
-				$.post("/system/services", {action:'add', name:name, dostr:dostr}, function(data) {
-					status.text(data);
-					})
-				.done(function() {
-					//alert("Application Started!!");
-					})
-				.fail(function() {
-					alert("Failed to send start request!!");
-					});
-
-				return false;
-			}
-		});
-	});
-
 	function abort_srv(obj) {
 		var status = $('#status');
 		var name = obj.id;
-		$.post("/system/services", {action:'abort', name:name}, function(data) {
+		$.post("", {action:'abort', name:name}, function(data) {
 				status.text(data);
 				})
 		.done(function() {
@@ -120,6 +81,5 @@
 				alert("Failed to send start request!!");
 				});
 	};
-
 </script>
 

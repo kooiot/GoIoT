@@ -47,7 +47,7 @@ local function save_file(str)
 	return file
 end
 
-local function run_file(name, file)
+local function run_file(name, desc, file)
 	if running[name] and running[name].status == 'RUNNING' then
 		return nil, 'Same name service is running'
 	end
@@ -59,6 +59,7 @@ local function run_file(name, file)
 			file = file,
 			last = os.time(),
 			pid = pid,
+			desc = desc,
 		}
 		log:info(NAME, 'One new service added ['..name..']')
 		return pid
@@ -66,6 +67,7 @@ local function run_file(name, file)
 		running[name] = {
 			status = 'ERROR',
 			file = file,
+			desc = desc,
 			last = os.time(),
 			err = err,
 			pid = nil,
@@ -80,13 +82,14 @@ mpft['add'] = function(vars)
 	if vars and type(vars) == 'table' then
 		local name = vars.name
 		local dostr = vars.dostr
+		local desc = vars.desc or ''
 		if name and dostr then
 			local result = false
 			local file, pid = nil, nil
 			file, err = save_file(dostr)
 			--- Get a tmp file name 
 			if file then
-				pid, err = run_file(name, file)
+				pid, err = run_file(name, desc, file)
 				if pid then
 					log:info(NAME, 'Services '..name..' has been started! pid='..pid)
 				else
@@ -110,24 +113,29 @@ mpft['add'] = function(vars)
 end
 
 mpft['abort'] = function(vars)
-	local err = 'Invalid/Unsupported abort request'
 	if vars and type(vars) ~= 'table' then
+		local err = 'Invalid/Unsupported abort request'
 		send_err(err)
 		return
 	end
 
 	local name = vars.name
 	local result = false
+	local err = ''
 
 	if name and running[name] then
 		if running[name].status == 'RUNNING' then
 			runner.abort(name)
+			running[name].status = 'ABORTED'
+			result = true
+		else
+			err =  'Service already aborted'
 		end
-		running[name].status = 'ABORTED'
-		result = true
+	else
+		err = "No such services "..name
 	end
 
-	local rep = {'abort', {result=true, status = running[name]}}
+	local rep = {'abort', {result=result, err=err, status = running[name]}}
 	server:send(cjson.encode(rep))
 end
 
@@ -157,7 +165,13 @@ mpft['list'] = function(vars)
 		return
 	end
 
-	local st = {}
+	--local st = {}
+	local st = { {
+		name = 'store.install.dummy',
+		desc = '/admin/modbus',
+		pid = 0,
+		status = 'RUNNING',
+	}}
 	for n, v in pairs(running) do
 		st[#st + 1] = {
 			name = n,

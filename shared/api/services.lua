@@ -28,6 +28,8 @@ end
 
 --- Abort the services 
 -- @tparam string name services name
+-- @treturn boolean result
+-- @treturn string error
 -- @treturn table services status table {
 --	status = 'xxxx' -- 'DONE' 'ERROR' 'RUNNING'
 --	err = 'xxxx
@@ -35,17 +37,17 @@ end
 _M.abort = function(name)
 	local req = {"abort", {name=name}}
 	local reply, err = client:request(cjson.encode(req), true)
+	print(reply)
 
 	if reply then
 		reply, err = get_reply(reply, 'abort')
-		if reply and reply.result then
-			reply = reply.status
-		else
+
+		if reply then
 			err = reply and reply.err or err
-			reply = nil
+			return reply.result, err, reply.status
 		end
 	end
-	return reply, err
+	return nil, err
 end
 
 --- Query the services running status
