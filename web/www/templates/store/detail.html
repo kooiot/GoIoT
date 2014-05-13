@@ -66,23 +66,23 @@
 			<i id="app_desc">...</i>
 		</div>
 	</div>
+<!-- 多说评论框 start -->
+<div class="ds-thread" data-thread-key="<?=appname?>" data-title="<?=name?>" data-url="http://www.kooiot.com/app/detail/<?=appname?>"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+	var duoshuoQuery = {short_name:"kooiot"};
+	(function() {
+	 var ds = document.createElement('script');
+	 ds.type = 'text/javascript';ds.async = true;
+	 ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+	 ds.charset = 'UTF-8';
+	 (document.getElementsByTagName('head')[0] 
+		  || document.getElementsByTagName('body')[0]).appendChild(ds);
+	 })();
+</script>
+<!-- 多说公共JS代码 end -->
 
-	<div class="ui basic fluid segment">
-		<div class="ui comments">
-			<div class="ui horizontal icon divider">
-				<i class="circular inverted blue comment icon"></i>
-			</div>
-			<div id="app_comments"> </div>
-			<form class="ui reply form">
-				<div class="field">
-					<textarea></textarea>
-				</div>
-				<div class="ui fluid blue labeled submit icon button">
-					<i class="icon edit"></i> Add Reply
-				</div>
-			</form>
-		</div>
-	</div>
 
 </div>
 
@@ -93,11 +93,9 @@
 
 	function deal_json(data, typ) {
 		var desc_place = $('#app_desc');
-		var comment_place = $('#app_comments');
 		var type_place = $('#app_type');
 		var type_input_place = $('#app_type');
 		desc_place.html(data.desc);
-		comment_place.html(data.comments);
 		type_place.text(data.type);
 		type_input_place.val(data.type);
 	};

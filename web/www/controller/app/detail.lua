@@ -14,10 +14,11 @@ return {
 		local list = require 'shared.app.list'
 		local log = require 'shared.log'
 
-		if not list.find(appname) then
+		local info = list.find(appname) 
+		if not info then
 			res:ltp('jump.html', {timeout = 2, contents = 'The application['..appname..'] is not installed!! Will be redirected within three seconds'})
 		else
-			res:ltp('app/detail.html', {app=app, lwf=lwf, appname=appname})
+			res:ltp('app/detail.html', {app=app, lwf=lwf, appname=appname, info=info})
 		end
 	end
 }
