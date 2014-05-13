@@ -106,7 +106,10 @@ local function on_request(msg)
 	if mpft[msgtype] then
 		mpft[msgtype](json[2])
 	else
-		send_err(server, 'No handler for message '..msgtype)
+		if type(msgtype) ~= 'string' then
+			msgtype = 'NOT STRING:'..tostring(msgtype)
+		end
+		send_err(server, 'No handler for message '..(msgtype or 'nil'))
 	end
 end
 

@@ -13,6 +13,8 @@ function _M.new(m, ctx)
 end
 
 function _M:query(typ, clean)
+	assert(typ)
+	assert(typ=='logs' or typ=='packets')
 	local req = {typ, {from='web', clean=clean}}
 	local reply, err = self.client:request(cjson.encode(req), true)
 	if reply then

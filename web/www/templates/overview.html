@@ -3,7 +3,16 @@
 <h2 class="ui dividing header"> Summary</h2>
 <div class="ui grid">
 	<div class="ten wide column">
-		<? include('widget/events.html', {title="Devices"}) ?>
+		<?
+		local sumevs = {} 
+		for _, v in pairs(events) do
+			if #sumevs >= 4 then
+				break
+			end
+			sumevs[#sumevs + 1] = v
+		end
+		?>
+		<? include('widget/events.html', {title="Devices", events=sumevs}) ?>
 	</div>
 	<div class="six wide column">
 		<? 
@@ -17,7 +26,7 @@
 	</div>
 </div>
 <h2 class="ui dividing header"> Device Events</h2>
-<? include('widget/events.html', {title="Devices"}) ?>
+<? include('widget/events.html', {title="Devices", events=events}) ?>
 <h2 class="ui dividing header"> System Events</h2>
 <? 
 include('widget/sevents.html', {title="System", 
