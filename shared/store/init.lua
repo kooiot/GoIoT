@@ -111,7 +111,7 @@ end
 -- @tparam string lname Application local install name
 -- @treturn boolean ok
 -- @treturn string error message
-_M.install = function(name, path, typ, lname)
+_M.install = function(name, path, typ, lname, depends)
 	log:info('STORE', "Installing "..name.." as "..lname)
 	-- Check for unique local name
 	for k, v in pairs(load_installed()) do
@@ -124,6 +124,7 @@ _M.install = function(name, path, typ, lname)
 		name = name, 
 		path = path, 
 		['type'] = typ,
+		depends = depends,
 	}
 	if not app then
 		return nil, "no such app "..name

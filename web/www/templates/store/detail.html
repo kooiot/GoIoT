@@ -57,6 +57,7 @@
 		<input id="app_name" hidden="true" type="text" value="<?=name?>"></input>
 		<input id="app_path" hidden="true" type="text" value="<?=appname?>"></input>
 		<input id="app_type_input" hidden="true" type="text" value=""></input>
+		<input id="depends" hidden="true" type="text" value=""></input>
 		<div>
 			<i class="ui large tag icon"></i>
 			<i id="app_type">...</i>
@@ -94,10 +95,12 @@
 	function deal_json(data, typ) {
 		var desc_place = $('#app_desc');
 		var type_place = $('#app_type');
-		var type_input_place = $('#app_type');
+		var type_input_place = $('#app_type_input');
+		var depends_place = $('#depends');
 		desc_place.html(data.desc);
 		type_place.text(data.type);
-		type_input_place.val(data.type);
+		type_input_place.attr('value', data.type);
+		depends_place.attr('value', JSON.stringify(data.depends));
 	};
 
 	function query_info(path) {
@@ -154,9 +157,10 @@
 	};
 
 	function install_app(lname) {
-		var type = $('#app_type').val();
+		var type = $('#app_type_input').attr('value');
 		alert(type);
-		$.post("/store/install", {path:'<?=appname?>', name:'<?=name?>', type:type, lname:lname}, function(data) {
+		var depends = $('#depends').attr('value');
+		$.post("/store/install", {path:'<?=appname?>', name:'<?=name?>', type:type, lname:lname, depends:depends}, function(data) {
 				window.location.href="/store/backend";
 				//status.text(data);
 				})
