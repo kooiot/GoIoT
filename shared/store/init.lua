@@ -14,7 +14,7 @@ local _M = {}
 --- The default store configuration
 local cfg = {
 	--srvurl = 'ftp://store.opengate.com',
-	srvurl = 'http://localhost:8081/static/releases',
+	srvurl = 'http://172.30.11.169:8081/static/releases',
 	cachefolder = '/tmp',
 	appsfolder = '/tmp/apps',
 }
@@ -136,7 +136,7 @@ end
 ---
 -- Remove one application
 -- @tparam string lname Application local install name
--- @tparam string mode Mode:
+-- @tparam string mode Mode (not implemented):
 --		'a' -- purge all stuff includes configuration
 --      'n' -- only remove application, keep the configuration
 -- @return  ok

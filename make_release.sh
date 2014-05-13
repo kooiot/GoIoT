@@ -37,6 +37,11 @@ rm -rf static/backups
 ln -s /tmp/backups static/backups
 cd ../../..
 
+#################################
+# Count the file sizes
+################################
+du __install -sh
+
 # Compile lua files
 # ./scripts/compile_lua.sh 
 

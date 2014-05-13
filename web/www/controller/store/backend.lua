@@ -4,6 +4,7 @@ return {
 		local cjson = require 'cjson.safe'
 		local r, err = api.list()
 		local status = {}
+		r = r or {}
 		for k, v in pairs(r) do
 			if v.name:match('^store%.install%.') then
 				status[#status + 1] = {
