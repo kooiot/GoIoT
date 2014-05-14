@@ -60,7 +60,8 @@ return {
 					version = info.app.version,
 					desc = info.app.desc,
 					name = info.app.name,
-					author = info.app.author,
+					author = info.app.author or info.app.path:match('([^/]+)/.+'),
+					path = info.app.path,
 				}
 			end
 		end
