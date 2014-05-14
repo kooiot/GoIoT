@@ -49,8 +49,10 @@ return {
 		local apps = {}
 		local user = lwf.ctx.user
 		local list = require 'shared.app.list'
+		list.reload()
 		local l = list.list()
 		for name, v in pairs(l) do
+			print('aaaaaaaaaaaaaa')
 			for _, info in pairs(v.insts) do
 				apps[info.app.type] = apps[info.app.type]  or {}
 				apps[info.app.type][#apps[info.app.type]+1] = {

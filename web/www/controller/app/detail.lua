@@ -14,6 +14,7 @@ return {
 		local list = require 'shared.app.list'
 		local log = require 'shared.log'
 
+		list.reload()
 		local info = list.find(appname) 
 		if not info then
 			res:ltp('jump.html', {timeout = 2, contents = 'The application['..appname..'] is not installed!! Will be redirected within three seconds'})

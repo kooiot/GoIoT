@@ -103,4 +103,10 @@ end
 --- Loading the application when module required
 load()
 
+--- Manually trigger loading from file
+_M.reload = function()
+	list = {}
+	load()
+end
+
 return _M
