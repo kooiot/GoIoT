@@ -67,8 +67,10 @@ return function(zip_file, apps_folder, dest_name, app, local_app)
 
 	local dest_folder = apps_folder..'/'..dest_name
 	if app then
-		dest_folder = apps_folder..'/'..app.name
+		dest_folder = apps_folder..'/'..app.path:gsub('/', '.')
 	end
+	-- TODO: Do not replace the original code. and need to consider about application version append to folder name?
+	log:debug('APP', "Unzip to "..dest_folder)
 
 	assert(os.execute('rm -rf '..dest_folder))
 	assert(os.execute('mkdir '..dest_folder))

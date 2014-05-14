@@ -63,16 +63,20 @@ end
 -- @treturn nil
 _M.del = function(name, insname, on_remove)
 	if list[name] then
+		local info = nil
 		for k, v in pairs(list[name].insts) do
 			if v.insname == insname then
+				info = list[name].insts[k]
 				list[name].insts[k] = nil
 			end
 		end
 		if #list[name].insts == 0 then
 			list[name] = nil
 		end
-		-- name insname keep_app
-		on_remove(name, insname, list[name])
+		if info then
+			-- name insname keep_app
+			on_remove(info.app, insname, list[name])
+		end
 		save()
 	end
 end

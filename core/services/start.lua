@@ -69,7 +69,7 @@ local function run_file(name, desc, file)
 			file = file,
 			desc = desc,
 			last = os.time(),
-			err = err,
+			output = err,
 			pid = nil,
 		}
 	end

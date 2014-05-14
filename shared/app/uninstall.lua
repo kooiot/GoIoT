@@ -8,15 +8,16 @@ local log = require 'shared.log'
 -- @tparam string apps_folder applicatons installed base folder
 -- @treturn function the callback function
 local function on_remove(apps_folder) 
-	return function(name, insname, keep)
+	return function(app, insname, keep)
 		log:warn("APP", "Removing installed application", insname)
-		if name ~= insname then
+		local lpath = app.path:gsub('/', '.')
+		if lpath ~= insname then
 			local dest_folder = apps_folder..'/'..insname
 			assert(os.execute('rm -rf '..dest_folder))
 		end
 		if not keep then
 			log:info("APP", "No instance left, remove whole application")
-			local dest_folder = apps_folder..'/'..name
+			local dest_folder = apps_folder..'/'..lpath
 			assert(os.execute('rm -rf '..dest_folder))
 		end
 	end
