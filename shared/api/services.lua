@@ -75,6 +75,7 @@ end
 --- Add one services
 -- @tparam string name services name
 -- @tparam string dostr services code
+-- @tparam string desc services description
 -- @tparam boolean keepalive keep this services running always, restart it when it quited (not implemented)
 -- @treturn boolean result
 -- @treturn string error

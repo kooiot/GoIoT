@@ -9,7 +9,7 @@ if [ -z $FID_FOLDER ]; then
 fi
 
 if [ $1 = "start" ] ; then
-	start-stop-daemon --start --oknodo --make-pidfile --pidfile $PID_FOLDER/app_$INSNAME.pid --chdir /tmp/apps/$NAME --background --startas /usr/bin/lua -- start.lua $INSNAME $4 $5 $6 $7
+	start-stop-daemon --start --oknodo --make-pidfile --pidfile $PID_FOLDER/app_$INSNAME.pid --chdir /tmp/apps/$INSNAME --background --startas /usr/bin/lua -- start.lua $INSNAME $4 $5 $6 $7
 else
 	start-stop-daemon --stop --oknodo --pidfile $PID_FOLDER/app_$INSNAME.pid --retry 5
 	rm $PID_FOLDER/app_$INSNAME.pid

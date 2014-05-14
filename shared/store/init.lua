@@ -109,6 +109,7 @@ end
 -- @tparam string path Application path in store server
 -- @tparam string typ Application type
 -- @tparam string lname Application local install name
+-- @tparam table depends The depends applications
 -- @treturn boolean ok
 -- @treturn string error message
 _M.install = function(name, path, typ, lname, depends)
