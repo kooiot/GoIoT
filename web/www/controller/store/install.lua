@@ -7,7 +7,8 @@ return {
 		if not appname then
 			res:redirect('/store')
 		else
-			res:ltp('store/detail.html', {app=app, lwf=lwf, appname=appname})
+			local store = require 'shared.store'
+			res:ltp('store/detail.html', {app=app, lwf=lwf, appname=appname, srvurl=store.get_srv()})
 		end
 	end,
 	post = function(req, res)

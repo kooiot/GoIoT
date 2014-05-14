@@ -77,6 +77,11 @@ local function save_after_success(r, err)
 	return r, err
 end
 
+-- TODO: for checking server
+_M.check_server = function()
+	return true
+end
+
 --- Change the configuration
 -- @tparam string c Store server url or an table(advanced) { srvurl=xxx, cachefolder=xxx, appsfolder=xxx }
 -- @treturn boolean ok
@@ -86,14 +91,20 @@ _M.config = function(c)
 		cfg.srvurl = c.srvurl or cfg.srvurl
 		cfg.cachefolder = c.cachefolder or cfg.cachefolder
 		cfg.appsfolder = c.appsfolder or cfg.appsfolder
-		return save_after_success(_M.update())
+		return save_after_success(_M.check_server())
 	end
 	if type(c) == 'string' then
 		cfg.srvurl = c
-		return save_after_success(_M.update())
+		return save_after_success(_M.check_server())
 	end
 	log:error('STORE', 'Incorrect config parameter')
 	return nil, 'Incorrect config parameter'
+end
+
+--- Get the current store srv
+-- @treturn string the server domain:port only
+_M.get_srv = function()
+	return cfg.srvurl:match('://([^/]+)/')
 end
 
 --- Search one application

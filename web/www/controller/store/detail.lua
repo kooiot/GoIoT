@@ -11,6 +11,7 @@ return {
 			return
 		end
 
-		res:ltp('store/detail.html', {app=app, lwf=lwf, appname=appname})
+		local store = require 'shared.store'
+		res:ltp('store/detail.html', {app=app, lwf=lwf, appname=appname, srvurl=store.get_srv()})
 	end
 }
