@@ -15,4 +15,10 @@ _M.path.temp = os.getenv('CAD_TEMP_DIR') or '/tmp/apps/_upload'
 --- The core application fold path
 _M.path.core = os.getenv('CAD_CORE_DIR') or '/tmp/core'
 
+local function init()
+	os.execute('mkdir -p '.._M.path.core)
+end
+
+init()
+
 return _M

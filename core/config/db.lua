@@ -1,8 +1,13 @@
 #!/usr/bin/env lua
 
 local sql = require 'luasql.sqlite3'
+local platform = require 'shared.platform'
+
+local dbpath = platform.path.core..'/config-db.sqlite3'
 local sqlite3 = sql.sqlite3()
-local con = sqlite3:connect('config-db.sqlite3')
+local con, err = sqlite3:connect(dbpath)
+print(dbpath)
+assert(con, err)
 
 local _M = {}
 local _buf = {}
