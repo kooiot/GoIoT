@@ -22,7 +22,7 @@
 		<div type="hidden" class="ui button" appname="<?=appname?>" id="btn_stop">
 			<i class="red stop icon"></i> Stop
 		</div>
-		<a class="ui button" href="/apps/<?=appname?>">
+		<a class="ui button" href="/app/view/<?=appname?>">
 			<i class="teal settings icon"></i> Settings
 		</a>
 		<div class="or"></div>
@@ -61,7 +61,7 @@
 <script>
 	$(document).ready(function() {
 		newtimer = setInterval( function () {
-			query_events();
+			//query_events();
 			query_status();
 			query_logs();
 		}, 2000 );
@@ -113,7 +113,7 @@
 		});
 
 		query_status();
-		query_events();
+		//query_events();
 		query_logs();
 	});
 	function query_status() {
