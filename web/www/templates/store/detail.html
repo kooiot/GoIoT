@@ -107,7 +107,7 @@
 		$.ajax({
 			type: "GET",
 			dataType: "jsonp",
-			url: "http://172.30.11.169:8081/app/queryinfo",
+			url: "http://<?=srvurl or 'store.symid.com'?>/app/queryinfo",
 			data:{ path : path },
 			error: function(jqXHR, textStatus, errorThrown) {
 				if (textStatus == "error") {

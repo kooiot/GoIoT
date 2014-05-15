@@ -96,7 +96,7 @@
 			data:{ type:typ, key : key, limit : 10 },
 			error: function(jqXHR, textStatus, errorThrown) {
 				if (textStatus == "error") {
-					alert(textStatus + " : " +errorThrown);
+					alert("Failed to fetch application information from store server, error : " + errorThrown);
 				} else {
 					alert(textStatus);
 				}
