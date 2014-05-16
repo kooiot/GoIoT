@@ -20,6 +20,7 @@ return {
 		--- TODO: Using a standlone program to do the instllation, as this will block web server
 		local name = req:get_arg('name')
 		local path = req:get_arg('path')
+		local desc = req:get_arg('desc') or 'You are too lazy, my body!'
 		local lname = req:get_arg('lname')
 		local typ = req:get_arg('type')
 		local depends = req:get_arg('depends')
@@ -43,7 +44,7 @@ return {
 
 			local dostr = [[
 				local store = require 'shared.store'
-				store.install("]]..name..'","'..path..'","'..typ..'","'..lname..'"'..depstr..')'
+				store.install("]]..name..'","'..path..'","'..typ..'","'..lname..'",[['..desc..']]'..depstr..')'
 			local api = require 'shared.api.services'
 			local r, err = api.add('store.install.'..lname, dostr, 'Install '..lname..' ('..path..')')
 			if r then

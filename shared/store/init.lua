@@ -123,7 +123,7 @@ end
 -- @tparam table depends The depends applications
 -- @treturn boolean ok
 -- @treturn string error message
-_M.install = function(name, path, typ, lname, depends)
+_M.install = function(name, path, typ, lname, desc, depends)
 	log:info('STORE', "Installing "..name.." as "..lname)
 	-- Check for unique local name
 	for k, v in pairs(load_installed()) do
@@ -135,6 +135,7 @@ _M.install = function(name, path, typ, lname, depends)
 	local app = {
 		name = name, 
 		path = path, 
+		desc = desc,
 		['type'] = typ,
 		depends = depends,
 	}

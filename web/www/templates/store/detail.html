@@ -52,7 +52,7 @@
 	<i class="ui large user icon"></i>
 	<a href="/user/<?=author or 'symtech' ?>" > <?=author or 'Symtech Inc' ?> </a>
 	<!--<a class="ui button blue right floated" href="/store/get/<?=appname?>" >Install</a> -->
-	<div class="ui button blue right floated" onclick="ask_for_lname();">Install</div>
+	<div id="btn_install" class="ui disabled button blue right floated" onclick="ask_for_lname();">Install</div>
 	<div>
 		<input id="app_name" hidden="true" type="text" value="<?=name?>"></input>
 		<input id="app_path" hidden="true" type="text" value="<?=appname?>"></input>
@@ -97,10 +97,12 @@
 		var type_place = $('#app_type');
 		var type_input_place = $('#app_type_input');
 		var depends_place = $('#depends');
-		desc_place.html(data.desc);
+		desc_place.text(data.desc);
 		type_place.text(data.type);
 		type_input_place.attr('value', data.type);
 		depends_place.attr('value', JSON.stringify(data.depends));
+		var btn_install = $('#btn_install');
+		btn_install.removeClass('disabled');
 	};
 
 	function query_info(path) {
@@ -158,9 +160,10 @@
 
 	function install_app(lname) {
 		var type = $('#app_type_input').attr('value');
+		var desc = $('#app_desc').val();
 		alert(type);
 		var depends = $('#depends').attr('value');
-		$.post("/store/install", {path:'<?=appname?>', name:'<?=name?>', type:type, lname:lname, depends:depends}, function(data) {
+		$.post("/store/install", {path:'<?=appname?>', name:'<?=name?>', type:type, lname:lname, desc:desc, depends:depends}, function(data) {
 				window.location.href="/store/backend";
 				//status.text(data);
 				})

@@ -4,7 +4,6 @@
 --
 local function get_sub_apps()
 	return {
-		webs = {path="/tmp/apps/_webs", config={}},
 	}
 end
 
