@@ -1,0 +1,71 @@
+<? extend 'layout.html'?>
+
+<div class="tab segment">
+	<div class="container">
+		<div class="introduction">
+			<h2 class="ui dividing header"> Network - <?=app.appname ?> </h2>
+		</div>
+	</div>
+</div>
+
+<div class="main container">
+	<div class="ui fluid accordion">
+		<div class="accordion">
+			<div class="active title">
+				<i class="dropdown icon"></i>
+				NETWORK
+			</div>
+			<div class="active content">
+				<div class="accordion">
+					<?
+					for ifname, v in pairs(info) do
+					?>
+					<div class="active title">
+						<i class="dropdown icon"></i>
+						<?=ifname:upper() ?>
+					</div>
+					<div class="active content">
+						<table class="ui table segment">
+							<thead>
+								<tr><th>Name</th>
+									<th>Value</th>
+								</tr>
+							</thead>
+
+							<tbody>
+
+							<?
+							for key, val in pairs(v) do
+							?>
+							<tr>
+								<td><?=tostring(key):upper() ?> </td>
+								<td><?=tostring(val):upper() ?> </td>
+							</tr>
+							<?
+							end
+							?>
+							</tbody>
+						</table>
+					</div>
+					<?
+					end
+					?>
+				</div>
+			</div>
+		</div>
+		<div class="accordion">
+			<div class="active title">
+				<i class="dropdown icon"></i>
+				NETWORK Edit
+			</div>
+			<div class="active content">
+				<div class="accordion">
+					<form method="post" class="ui fluid form">
+						<textarea class="ui fluid textarea" name="cfg"><? = filecontent ?></textarea>
+						<input type="submit" class="ui tiny submit button" value="Modify"/>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

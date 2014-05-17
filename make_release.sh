@@ -58,6 +58,8 @@ sudo rm -rf __install
 ./scripts/release_app.sh yeelink
 # Release cloud 
 ./scripts/release_app.sh cloud
+# Release network
+./scripts/release_app.sh network
 
 # Done
 echo 'DONE'
