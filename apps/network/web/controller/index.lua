@@ -14,8 +14,9 @@ return {
 	end,
 	post = function(req, res)
 		local cfg = req:get_arg('cfg')
-		--local file, err = io.open('/etc/network/interfaces', 'w+')
-		local file, err = io.open('/tmp/interfaces', 'w+')
+		os.execute('mv /etc/network/interfaces /etc/network/interfaces.bak')
+		local file, err = io.open('/etc/network/interfaces', 'w+')
+		--local file, err = io.open('/tmp/interfaces', 'w+')
 		if file then
 			file:write(cfg)
 			file:close()
