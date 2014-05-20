@@ -12,8 +12,9 @@ local log = require 'shared.log'
 local function create_cb(cfg)
 	--- The callback function
 	return function (app)
+		local version = app.version or 'latest'
 		-- Download the applcation from server
-		local src = cfg.srvurl..'/'..app.path..'/latest.lpk'
+		local src = cfg.srvurl..'/'..app.path..'/'..version..'.lpk'
 		local dest = cfg.cachefolder..'/'..app.name..'.lpk'
 		log:info('STORE', "Download", app.name, "from", src, "to", dest)
 		local r, err = download(src, dest)

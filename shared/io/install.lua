@@ -29,7 +29,8 @@ return function(app, apps_folder, dest_name, downcb)
 		local store = require 'shared.store'
 		local dep = app.depends[1]
 		local dapp = {
-			path = dep,
+			path = dep:match('(^[^:]+)'),
+			version = dep:match(':(.+)&'),
 			name = dep:match('[^/]+/(.+)'),
 			['type'] = 'app.io',
 		}

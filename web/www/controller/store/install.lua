@@ -23,6 +23,7 @@ return {
 		local desc = req:get_arg('desc') or 'You are too lazy, my body!'
 		local lname = req:get_arg('lname')
 		local typ = req:get_arg('type')
+		local version = req:get_arg('version') or 'latest'
 		local depends = req:get_arg('depends')
 		if depends then
 			local cjson = require 'cjson.safe'
@@ -44,7 +45,7 @@ return {
 
 			local dostr = [[
 				local store = require 'shared.store'
-				store.install("]]..name..'","'..path..'","'..typ..'","'..lname..'",[['..desc..']]'..depstr..')'
+				assert(store.install("]]..name..'","'..path..'","'..typ..'","'..lname..'",[['..desc..']],"'..version..'"'..depstr..'))'
 			local api = require 'shared.api.services'
 			local r, err = api.add('store.install.'..lname, dostr, 'Install '..lname..' ('..path..')')
 			if r then

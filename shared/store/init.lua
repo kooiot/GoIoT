@@ -120,10 +120,11 @@ end
 -- @tparam string path Application path in store server
 -- @tparam string typ Application type
 -- @tparam string lname Application local install name
+-- @tparam string version Application version
 -- @tparam table depends The depends applications
 -- @treturn boolean ok
 -- @treturn string error message
-_M.install = function(name, path, typ, lname, desc, depends)
+_M.install = function(name, path, typ, lname, desc, version, depends)
 	log:info('STORE', "Installing "..name.." as "..lname)
 	-- Check for unique local name
 	for k, v in pairs(load_installed()) do
@@ -136,6 +137,7 @@ _M.install = function(name, path, typ, lname, desc, depends)
 		name = name, 
 		path = path, 
 		desc = desc,
+		version = version,
 		['type'] = typ,
 		depends = depends,
 	}
