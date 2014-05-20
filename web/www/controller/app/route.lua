@@ -12,6 +12,12 @@ return {
 			--- get the insname by req:get_arg('insname') or app.appname or app.app_name
 			req.uri_args['insname'] = req.uri_args['insname'] or insname
 			app.appname = insname
+			--- Get the static file real path
+			app.static = function(self, path)
+				assert(self)
+				assert(path)
+				return '/static/apps/'..(self.appname)..'/web/static/'..path
+			end
 			return app:dispatch(req, res, urlpath)
 		else
 			res:redirect('/#apps')

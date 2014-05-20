@@ -29,13 +29,6 @@ cp -r ../../web/wsapi/* wsapi/
 rm wsapi/shared
 ln -s ../../shared wsapi/shared
 cd ../..
-# Correct the the soft link in web core
-cd __install/web/www
-rm -f apps
-ln -s /tmp/apps apps
-rm -rf static/backups
-ln -s /tmp/backups static/backups
-cd ../../..
 
 #################################
 # Count the file sizes

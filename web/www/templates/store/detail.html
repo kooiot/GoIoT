@@ -161,7 +161,6 @@
 	function install_app(lname) {
 		var type = $('#app_type_input').attr('value');
 		var desc = $('#app_desc').val();
-		alert(type);
 		var depends = $('#depends').attr('value');
 		$.post("/store/install", {path:'<?=appname?>', name:'<?=name?>', type:type, lname:lname, desc:desc, depends:depends}, function(data) {
 				window.location.href="/store/backend";
