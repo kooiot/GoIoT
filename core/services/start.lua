@@ -39,7 +39,7 @@ local function save_file(str)
 	local file = os.tmpname()
 	local f, err = io.open(file, 'w+')
 	if not f then
-		--os.remove(file)
+		os.remove(file)
 		return nil, err
 	end
 	f:write(str)
@@ -93,7 +93,7 @@ mpft['add'] = function(vars)
 				if pid then
 					log:info(NAME, 'Services '..name..' has been started! pid='..pid)
 				else
-					--os.remove(file)
+					os.remove(file)
 					log:error(NAME, err)
 				end
 			else
@@ -264,7 +264,7 @@ local function check_timeout()
 				v.result = v.result or true
 			end
 			if v.file and v.status ~= 'RUNNING' then
-				--os.remove(v.file)
+				os.remove(v.file)
 				v.file = nil
 			end
 		end
