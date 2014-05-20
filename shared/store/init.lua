@@ -114,35 +114,42 @@ _M.search = function(key)
 	-- TODO: Implement it with socket's http
 end
 
+local function get_app_info(path, version)
+	local http = require 'socket.http'
+	http.TIMEOUT = 10
+	local url = 'http://'.._M.get_srv()..'/app/queryinfo?path='..path
+	local json, code = http.request(url)
+	if code == 200 then
+		return cjson.decode(json)
+	end
+	return nil, 'Failed to download, return code: '..code..' url: '..url
+end
+
 ---
 -- Install one application
--- @tparam string name Application name
--- @tparam string path Application path in store server
--- @tparam string typ Application type
 -- @tparam string lname Application local install name
+-- @tparam string path Application path in store server
 -- @tparam string version Application version
--- @tparam table depends The depends applications
 -- @treturn boolean ok
 -- @treturn string error message
-_M.install = function(name, path, typ, lname, desc, version, depends)
-	log:info('STORE', "Installing "..name.." as "..lname)
+_M.install = function(lname, path, version)
+	local app, err = get_app_info(path, version)
+	if not app then
+		return nil, err
+	end
+	app.path = app.path or path
+	assert(app.name)
+	assert(app.path)
+	assert(app['type'])
+	assert(app.desc)
+	assert(app.version)
+	assert(app.depends)
+	log:info('STORE', "Installing "..path.." as "..lname)
 	-- Check for unique local name
 	for k, v in pairs(load_installed()) do
 		if v.lname == lname then
 			return nil, "The application instance name has been used"
 		end
-	end
-
-	local app = {
-		name = name, 
-		path = path, 
-		desc = desc,
-		version = version,
-		['type'] = typ,
-		depends = depends,
-	}
-	if not app then
-		return nil, "no such app "..name
 	end
 
 	local install = require 'shared.store.install'

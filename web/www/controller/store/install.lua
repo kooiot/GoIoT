@@ -18,34 +18,15 @@ return {
 		end
 
 		--- TODO: Using a standlone program to do the instllation, as this will block web server
-		local name = req:get_arg('name')
 		local path = req:get_arg('path')
-		local desc = req:get_arg('desc') or 'You are too lazy, my body!'
 		local lname = req:get_arg('lname')
-		local typ = req:get_arg('type')
 		local version = req:get_arg('version') or 'latest'
-		local depends = req:get_arg('depends')
-		if depends then
-			local cjson = require 'cjson.safe'
-			depends = cjson.decode(depends)
-		end
-		depends = depends or {}
 
-		if name and path and lname then
-			local depstr = ""
-			if #depends then
-				depstr = ", {"
-			end
-			for k, v in pairs(depends) do
-				depstr = depstr..'"'..v..'",'
-			end
-			if #depends then
-				depstr = depstr.."}"
-			end
+		if path and lname then
 
 			local dostr = [[
 				local store = require 'shared.store'
-				assert(store.install("]]..name..'","'..path..'","'..typ..'","'..lname..'",[['..desc..']],"'..version..'"'..depstr..'))'
+				assert(store.install("]]..lname..'","'..path..'","'..version..'"))'
 			local api = require 'shared.api.services'
 			local r, err = api.add('store.install.'..lname, dostr, 'Install '..lname..' ('..path..')')
 			if r then

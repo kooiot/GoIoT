@@ -54,12 +54,6 @@
 	<!--<a class="ui button blue right floated" href="/store/get/<?=appname?>" >Install</a> -->
 	<div id="btn_install" class="ui disabled button blue right floated" onclick="ask_for_lname();">Install</div>
 	<div>
-		<input id="app_name" hidden="true" type="text" value="<?=name?>"/>
-		<input id="app_path" hidden="true" type="text" value="<?=appname?>"/>
-		<input id="app_type_input" hidden="true" type="text" value=""/>
-		<input id="depends" hidden="true" type="text" value=""/>
-		<input id="app_desc_input" hidden="true" type="text" value=""/>
-		<input id="app_version_input" hidden="true" type="text" value=""/>
 		<div>
 			<i class="ui tag icon"></i>
 			<i id="app_type">...</i>
@@ -100,19 +94,11 @@
 
 	function deal_json(data, typ) {
 		var version_place = $('#app_version');
-		var version_input_place = $('#app_version_input');
 		var desc_place = $('#app_desc');
-		var desc_input_place = $('#app_desc_input');
 		var type_place = $('#app_type');
-		var type_input_place = $('#app_type_input');
-		var depends_place = $('#depends');
 		version_place.text(data.version);
-		version_input_place.attr('value', data.version);
 		desc_place.text(data.desc);
-		desc_input_place.attr('value', data.desc)
 		type_place.text(data.type);
-		type_input_place.attr('value', data.type);
-		depends_place.attr('value', JSON.stringify(data.depends));
 		var btn_install = $('#btn_install');
 		btn_install.removeClass('disabled');
 	};
@@ -171,11 +157,7 @@
 	};
 
 	function install_app(lname) {
-		var version = $('#app_version_input').attr('value');
-		var type = $('#app_type_input').attr('value');
-		var desc = $('#app_desc_input').attr('value');
-		var depends = $('#depends').attr('value');
-		$.post("/store/install", {path:'<?=appname?>', name:'<?=name?>', type:type, lname:lname, version:version, desc:desc, depends:depends}, function(data) {
+		$.post("/store/install", {path:'<?=appname?>', lname:lname}, function(data) {
 				window.location.href="/store/backend";
 				//status.text(data);
 				})
