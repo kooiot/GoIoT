@@ -117,7 +117,7 @@ end
 local function get_app_info(path, version)
 	local http = require 'socket.http'
 	http.TIMEOUT = 10
-	local url = 'http://'.._M.get_srv()..'/app/queryinfo?path='..path
+	local url = 'http://'.._M.get_srv()..'/app/queryinfo?path='..path..'&version='..version
 	local json, code = http.request(url)
 	if code == 200 then
 		return cjson.decode(json)
