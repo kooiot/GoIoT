@@ -107,11 +107,64 @@ _M.get_srv = function()
 	return cfg.srvurl:match('://([^/]+)/')
 end
 
---- Search one application
--- @tparam string key the search key
--- @treturn table matched names
+--- Search one application from cache
+-- @tparam string key the search key string, nil will match all
+-- @treturn table matched applications
 _M.search = function(key)
-	-- TODO: Implement it with socket's http
+	local platform = require 'shared.platform'
+	local path = platform.path.temp..'/_store_cache'
+	local file, err = io.open(path)
+	if not file then
+		return nil, err
+	end
+	local str = file:read('*a')
+	file:close()
+	str = str or ""
+	local apps, err =  cjson.decode(str)
+	if not apps then
+		return nil, err
+	end
+
+	if key then
+		key = key:lower()
+		local t = {}
+		for author, list in pairs(apps) do
+			for _, v in pairs(list) do
+				if v.name:lower():match(key) or (v.info.desc and v.info.desc:lower():match(key)) then
+					t[author] = t[author] or {}
+					table.insert(t[author], v)
+				end
+			end
+		end
+		apps = t
+	end
+	return apps
+end
+
+--- Update the store cache file
+-- @return boolean result
+-- @return string error
+_M.update = function()
+	local http = require 'socket.http'
+	http.TIMEOUT = 10
+	local url = 'http://'.._M.get_srv()..'/app/repo'
+	local json, code, headers, status = http.request(url)
+	if code ~= 200 then
+		return nil, status
+	end
+	local r, err = cjson.decode(json)
+	if not r then
+		return nil, err
+	end
+
+	local platform = require 'shared.platform'
+	local path = platform.path.temp..'/_store_cache'
+	local file, err = io.open(path, 'w+')
+	if not file then
+		return nil, err
+	end
+	file:write(json)
+	file:close()
 end
 
 local function get_app_info(path, version)
