@@ -1,0 +1,106 @@
+<? include('widget/sticky.html', {items = { 'Populars', 'Recents' }}) ?>
+
+<form id="cloudform" class="ui form">
+	<div class="three fields">
+		<div class="field">
+			<div class="ui small teal button item" onclick="query_all();">Reload</div>
+		</div>
+		<div class="field">
+			<div class="ui icon small input">
+				<input id="search_key" placeholder="Search..." type="text">
+				<i id="search_icon" class="teal search link icon"></i>
+			</div>
+		</div>
+		<div class="field">
+			<input type="submit" class="ui tiny teal submit button"/>
+		</div>
+	</div>
+</form>
+
+<h2 class="ui dividing header"> Populars</h2>
+<div id="pop_list"></div>
+<h2 class="ui dividing header"> Recents</h2>
+<div id="rec_list"></div>
+
+<div id="status"></div>
+
+<script>
+	$(document).ready(function() {
+		$('#cloudform').ajaxForm({
+			beforeSend : function() {
+				var key = $('#search_key').val();
+				query_apps('popular', key);
+				query_apps('recent', key);
+				return false;
+			}
+		});
+	});
+
+	$("#search_icon").click(function() {
+		var key = $('#search_key').val();
+		query_apps('popular', key);
+		query_apps('recent', key);
+	});
+
+	function query_all() {
+		$('#search_key').val('');
+		query_apps('popular', '');
+		query_apps('recent', '');
+	};
+
+	function jump_app(obj) {
+		var path = $(obj).attr('path');
+		var name = obj.id;
+		window.location = "/store/view/" + path;	
+	};
+
+	function deal_json(data, typ) {
+		var list_place;
+		if (typ == 'recent'){
+			list_place = $('#rec_list');
+		} else {
+			list_place = $('#pop_list');
+		}
+		var text = '<div class="ui stackable items">'
+		for (var user in data)
+		{
+			var list = data[user];
+			for (var i in list) {
+				var app = list[i];
+				var msg = '<div class="app item" id="' + app.name + '" path="' + app.info.path + '" onclick="jump_app(this);">'
+							+ '<div class="image">'
+							+ '<img src="http://<?=srvurl or "store.symid.com"?>/static/releases/'+app.info.path+'/icon.jpg">'
+							+ '</div>'
+							+ '<div class="content">'
+							+ '<div class="meta">' + app.info.version + '</div>'
+							+ '<div class="name">' + app.name + '</div>'
+							+ '<div class="extra right">' + app.info.desc + '</div>'
+							+ '</div>'
+							+ '</div>'
+				text = text + msg;
+			}
+		};
+		text = text + '</div>';
+		list_place.html(text);
+	};
+
+	function query_apps(typ, key) {
+		$.ajax({
+			type: "GET",
+			dataType: "jsonp",
+			url: "http://<?=srvurl or 'store.symid.com'?>/app/search",
+			data:{ type:typ, key : key, limit : 10 },
+			error: function(jqXHR, textStatus, errorThrown) {
+				if (textStatus == "error") {
+					alert("Failed to fetch application information from store server, error : " + errorThrown);
+				} else {
+					alert(textStatus);
+				}
+			},
+			success: function(data, textStatus, jqXHR) {
+				deal_json(data, typ);
+			}
+		});
+	};
+</script>
+

@@ -23,7 +23,8 @@ function _M.run(name, luafile)
 	end
 	if f then
 		local s = f:read('*a')
-		pid = tonumber(s)
+		f:close()
+		pid = tonumber(s) or 0
 		return pid
 	else
 		return nil, err

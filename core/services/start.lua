@@ -73,6 +73,7 @@ local function run_file(name, desc, file)
 			pid = nil,
 		}
 	end
+	assert(err)
 	log:error(NAME, err)
 	return nil, err
 end
@@ -93,8 +94,8 @@ mpft['add'] = function(vars)
 				if pid then
 					log:info(NAME, 'Services '..name..' has been started! pid='..pid)
 				else
-					os.remove(file)
-					log:error(NAME, err)
+					--os.remove(file)
+					log:error(NAME, 'Services '..name..' failed to started '..err)
 				end
 			else
 				err = 'Cannot save the dostr to tempfile'

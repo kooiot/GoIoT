@@ -165,6 +165,7 @@ _M.update = function()
 	end
 	file:write(json)
 	file:close()
+	return true
 end
 
 local function get_app_info(path, version)
