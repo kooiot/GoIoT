@@ -1,19 +1,15 @@
 <form id="cacheform" class="ui form">
-	<div class="four fields">
-		<div class="field">
-			<div class="ui small teal button item" onclick="update_cache();">Update</div>
-		</div>
-		<div class="field">
-			<div class="ui small teal button item" onclick="query_cache('');">Reload</div>
-		</div>
+	<div class="three fields">
 		<div class="field">
 			<div class="ui icon small input">
 				<input id="cache_search_key" placeholder="Search..." type="text">
 				<i id="cache_search_icon" class="teal search link icon"></i>
 			</div>
 		</div>
-		<div class="field">
+		<div class="buttons">
 			<input type="submit" class="ui tiny teal submit button"/>
+			<div class="ui small teal button item" onclick="query_cache('');">Reload</div>
+			<div class="ui small teal button item" onclick="update_cache();">Update</div>
 		</div>
 	</div>
 </form>
