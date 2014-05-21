@@ -13,19 +13,25 @@ function _M.run(name, luafile)
 		return nil, 'Same name services has been runned'
 	end
 
-	local f, err = io.open(pidfile)
 	local count = 32
-	while not f and count > 0 do
+	while count > 0 do
 		--- the pid file may not ready,  right after the start-stop-daemon.
 		os.execute('sleep 0')
-		f, err = io.open(pidfile)
+		local r, status, code = os.execute('cat '..pidfile)
+		if r and status == 'exit' and code == 0 then
+			break
+		end
 		count = count - 1
 	end
+	local f, err = io.open(pidfile)
 	if f then
 		local s = f:read('*a')
 		f:close()
-		pid = tonumber(s) or 0
-		return pid
+		pid = tonumber(s)
+		if not pid then
+			err = 'pid file is empty????'
+		end
+		return pid, err
 	else
 		return nil, err
 	end
