@@ -2,15 +2,19 @@ msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
 
-msgid "Home"
+msgid "Network"
 msgstr ""
 
 
-msgid "Store"
+msgid "Editor"
 msgstr ""
 
 
-msgid "Menu"
+msgid "Name"
+msgstr ""
+
+
+msgid "Value"
 msgstr ""
 
 

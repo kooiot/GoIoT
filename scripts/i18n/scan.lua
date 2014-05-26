@@ -11,13 +11,13 @@ for c in f:lines() do
 	local ff = io.open(c)
 	if ff then
 		for c in ff:lines() do
-			for key in c:gmatch([[translate%(%G*['"](.+)['"]%G*%)]]) do
+			for key in c:gmatch([[translate%(%G*['"](.-)['"]%G*%)]]) do
 				stringtable[key] = true
 			end
-			for key in c:gmatch([[_%(%G*['"](.+)['"]%G*%)]]) do
+			for key in c:gmatch([[_%(%G*['"](.-)['"]%G*%)]]) do
 				stringtable[key] = true
 			end
-			for key in c:gmatch([[translatef%(%G*['"](.+)['"]%G*,]]) do
+			for key in c:gmatch([[translatef%(%G*['"](.-)['"]%G*,]]) do
 				stringtable[key] = true
 			end
 		end
