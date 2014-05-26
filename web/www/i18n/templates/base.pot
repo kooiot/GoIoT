@@ -2,7 +2,63 @@ msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
 
-msgid "Home"
+msgid "Network"
+msgstr ""
+
+
+msgid "Utilies"
+msgstr ""
+
+
+msgid "Packets"
+msgstr ""
+
+
+msgid "Data"
+msgstr ""
+
+
+msgid "Install New"
+msgstr ""
+
+
+msgid "Menu"
+msgstr ""
+
+
+msgid "System"
+msgstr ""
+
+
+msgid "Logout"
+msgstr ""
+
+
+msgid "Services"
+msgstr ""
+
+
+msgid "About"
+msgstr ""
+
+
+msgid "Simple"
+msgstr ""
+
+
+msgid "Backup"
+msgstr ""
+
+
+msgid "Advance"
+msgstr ""
+
+
+msgid "Settings"
+msgstr ""
+
+
+msgid "Upgrade"
 msgstr ""
 
 
@@ -10,7 +66,31 @@ msgid "Store"
 msgstr ""
 
 
-msgid "Menu"
+msgid "Log"
+msgstr ""
+
+
+msgid "Sign In"
+msgstr ""
+
+
+msgid "Home"
+msgstr ""
+
+
+msgid "Login Now"
+msgstr ""
+
+
+msgid "Forum"
+msgstr ""
+
+
+msgid "Help"
+msgstr ""
+
+
+msgid "Close Menu"
 msgstr ""
 
 

@@ -1,16 +1,16 @@
 <div class="ui large vertical inverted labeled icon sidebar menu" id="menu">
 	<a class="hide item">
-		<i class="close icon"></i> Close Menu
+		<i class="close icon"></i> <?=_("Close Menu")?>
 	</a>
 
 	<? if not lwf.ctx.user then ?>
 	<a class="item" href="/user/login">
-		<i class="inverted circular blue awesome sign in icon"></i><b> Login Now</b>
+		<i class="inverted circular blue awesome sign in icon"></i><b> <?=_("Login Now")?></b>
 	</a>
 	<? else ?>
 
 	<a class="item" href="/store">
-		<i class="inverted circular blue awesome download cloud icon"></i><b> Install New</b>
+		<i class="inverted circular blue awesome download cloud icon"></i><b> <?=_("Install New")?></b>
 	</a>
 
 	<? if lwf.ctx.session:get('advance') == 'true' then ?>
@@ -32,31 +32,31 @@
 	</div>
 	<? end ?>
 	<div class="item">
-		<b> Utilies</b>
+		<b> <?=_("Utilies")?></b>
 		<div class="menu">
-			<a class="item" href="/data"> Data</a>
-			<a class="item" href="/log"> Log</a>
-			<a class="item" href="/packets"> Packets</a>
+			<a class="item" href="/data"> <?=_('Data')?></a>
+			<a class="item" href="/log"> <?=_('Log')?></a>
+			<a class="item" href="/packets"> <?=_('Packets')?></a>
 		</div>
 	</div>
 	<? end ?>
 
 	<div class="item">
-		<b> System</b>
+		<b> <?_('System')?></b>
 		<div class="menu">
-			<a class="item" href="/system/network"> Network</a>
-			<a class="item" href="/system/services"> Services</a>
-			<a class="item" href="/system/upgrade"> Upgrade</a>
-			<a class="item" href="/system/backup"> Backup</a>
+			<a class="item" href="/system/network"> <?=_('Network')?></a>
+			<a class="item" href="/system/services"> <?=_('Services')?></a>
+			<a class="item" href="/system/upgrade"> <?=_('Upgrade')?></a>
+			<a class="item" href="/system/backup"> <?=_('Backup')?></a>
 		</div>
 	</div>
 	<? end ?>
 
 	<div class="item">
-		<b> Help</b>
+		<b> <?=_('Help')?></b>
 		<div class="menu">
-			<a class="item" href="/forum"> Forum</a>
-			<a class="item" href="/about"> About</a>
+			<a class="item" href="/forum"> <?=_('Forum')?></a>
+			<a class="item" href="/about"> <?=_('About')?></a>
 		</div>
 	</div>
 	<!--     <div class="item">

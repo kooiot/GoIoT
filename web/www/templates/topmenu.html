@@ -19,13 +19,13 @@
 			More
 			<div class="menu">
 				<a class="item" href="/data">
-					<i class="table icon"></i> Data
+					<i class="table icon"></i> <?=_('Data')?>
 				</a>
 				<a class="item" href="/log">
-					<i class="reorder icon"></i> Log
+					<i class="reorder icon"></i> <?=_('Log')?>
 				</a>
 				<a class="item" href="/packets">
-					<i class="tasks icon"></i> Packets
+					<i class="tasks icon"></i> <?=_('Packets')?>
 				</a>
 			</div>
 		</div>
@@ -45,7 +45,7 @@
 			</div>
 			<? if not lwf.ctx.user then ?>
 			<div class="item">
-				<div id="btn_login" class="ui teal button"><i class="sign in icon"></i>Sign In</div>
+				<div id="btn_login" class="ui teal button"><i class="sign in icon"></i><?=_('Sign In')?></div>
 			</div>
 			<? else ?>
 			<div class="ui dropdown item">
@@ -53,17 +53,17 @@
 				<div class="menu">
 					<? if lwf.ctx.session:get('advance') == 'true' then ?>
 					<a class="item" href="/user/simple">
-						<i class="teal hide icon"></i> Simple
+						<i class="teal hide icon"></i> <?=_('Simple')?>
 					</a>
 					<? else ?>
 					<a class="item" href="/user/advance">
-						<i class="unhide icon"></i> Advance
+						<i class="unhide icon"></i> <?=_('Advance')?>
 					</a>
 					<? end ?>
 					<a class="item" href="/user/settings">
-						<i class="settings icon"></i> Settings
+						<i class="settings icon"></i> <?=_("Settings")?>
 					</a>
-					<a class="item" href="/user/logout"><i class="sign out icon"></i> Logout</a>
+					<a class="item" href="/user/logout"><i class="sign out icon"></i> <?=_("Logout")?></a>
 				</div>
 			</div>
 			<? end ?>
