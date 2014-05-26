@@ -14,6 +14,7 @@ return {
 		pass_salt   = '8C7f8lProgw3U4IvVyDqk38bD0HAD8hBBfHZRMRF',
 		salt		= 'tdzd77zTw3aHW8IqZgQteXUG3s5kFMQZQf2ODSXZ',
 	},
+	i18n = true,
 
 	auth = 'simple',
 

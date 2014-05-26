@@ -1,5 +1,11 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8\n"
 
+msgid "Store"
+msgstr "商店"
+
+msgid "Home"
+msgstr "主页"
+
 msgid "Menu"
 msgstr "菜单"
