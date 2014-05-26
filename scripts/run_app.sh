@@ -9,7 +9,7 @@ if [ -z $FID_FOLDER ]; then
 fi
 
 # Only run the application if main.lua exists
-if [-f /tmp/apps/main.lua ]; then
+if [ -f /tmp/apps/$INSNAME/main.lua ]; then
 	if [ $1 = "start" ] ; then
 		start-stop-daemon --start --oknodo --make-pidfile --pidfile $PID_FOLDER/app_$INSNAME.pid --chdir /tmp/apps/$INSNAME --background --startas /usr/bin/lua -- start.lua $INSNAME $4 $5 $6 $7
 	else
