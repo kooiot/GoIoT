@@ -1,0 +1,52 @@
+<? extend 'layout.html'?>
+
+<div class="tab segment">
+	<div class="container">
+		<div class="introduction">
+			<h2 class="ui dividing header"> <?=_("IR Controller")?> - <?=app.appname ?> </h2>
+		</div>
+	</div>
+</div>
+
+<div class="main container">
+	<a class="ui teal button" href=""><?=_('Restart Learning')?></a>
+	<div class="ui icon green message">
+		<i class="info icon"></i>
+		<div class="content">
+			<div id="status" class="header">
+				<? =info ?>
+			</div>
+		</div>
+	</div>
+
+
+	<form method="post" class="ui fluid form">
+		<textarea class="ui fluid textarea" name="learn_result" id="learn_result"></textarea>
+		<input class="ui teal submit button" type="submit" value="<?=_('Save')?>"/>
+	</form>
+</div>
+
+<script>
+(function() {
+	newtimer = setInterval( function () {
+		query_result();
+		}, 1000 );
+
+})()
+
+function query_result() {
+	$.post("", {action:'result'}, function(data){
+			var result = $('#learn_result');
+			result.val(data);
+			if(data.length != 0) {
+				var status = $('#status');
+				status.text('Learning Done');
+				clearInterval(newtimer);
+			}
+	})
+	.done(function() {
+			})
+	.fail(function() {
+			});
+}
+</script>

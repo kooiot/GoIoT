@@ -4,6 +4,7 @@ local ioapp = require 'shared.io'
 local log = require 'shared.log'
 local ztimer = require 'lzmq.timer'
 local cjson = require 'cjson.safe'
+local hex = require 'shared.util.hex'
 
 local ioname = arg[1]
 assert(ioname, 'Applicaiton needs to have a name')
@@ -48,6 +49,7 @@ local function load_conf(app, reload)
 end
 
 local port = serial.new()
+local learn_table = {}
 
 local handlers = {}
 handlers.on_start = function(app)
@@ -70,13 +72,68 @@ handlers.on_reload = function(app)
 	-- TODO:
 end
 
+local function reading(app)
+	local abort = false
+	local timer = ztimer.monotonic(1000)
+	local len = string.byte(learn_table.result)
+	timer:start()
+	while not abort  and timer:rest() > 0 and learn_table.learning do
+		local r, data, size = port:read(1)
+		if r then
+			print('2', hex.dump(data))
+			learn_table.result = learn_table.result..data
+			if len and string.len(learn_table.result) == len then
+				print('finished reading', len)
+				break
+			end
+		else
+			abort = coroutine.yield(false, 50)
+		end
+	end
+	if port:read(1) then
+		print('SSSSSSSSSSSSSS')
+	end
+	learn_table.learning = false
+end
+
 handlers.on_run = function(app)
+	local abort = false
+	while not abort and learn_table.learning do
+		local r, data, size = port:read(1)
+		if r then
+			print('1', hex.dump(data))
+			if not learn_table.result and  data ~= string.char(0xFF) then
+				print('Start receving learn result')
+				learn_table.result = data
+				reading(app)
+				break
+			end
+		else
+			print('warting...')
+			abort = coroutine.yield(false, 50)
+		end
+	end
 	--
 	return coroutine.yield(false, 1000)
 end
 
 handlers.on_write = function(app, path, value, from)
 	return nil, 'FIXME'
+end
+
+
+local function send_cmd(cmd)
+	print(hex.dump(cmd))
+	port:write(string.char(0xe3))
+	for i = 1, string.len(cmd) do
+		port:write(cmd:sub(i, i))
+		os.execute('sleep 0')
+	end
+	local r, data, size = port:read(1, 500)
+	if r and data then
+		print(hex.dump(data))
+	end
+	return r, err
 end
 
 handlers.on_command = function(app, path, value, from)
@@ -97,8 +154,7 @@ handlers.on_command = function(app, path, value, from)
 
 		local c = commands[cmdobj.name]
 		if c then
-			port:write(c.cmd)
-			return true
+			return send_cmd(c.cmd)
 		else
 			return nil, "No command name"
 		end
@@ -117,6 +173,41 @@ app:reg_request_handler('list_commands', function(app, vars)
 		list[#list + 1] = k
 	end
 	local reply = {'list_commands', {result=true, commands=list}}
+	app.server:send(cjson.encode(reply))
+end)
+local function learn()
+	port:write(string.char(0xe2))
+	port:read(1, 500)
+	local r, err = port:write(string.char(0xe0))
+	if not r then
+		return nil, err
+	end
+	local r, data, size = port:read(1, 500)
+	if not r then
+		return nil, "Start learn failure, err: "..data
+	end
+	if data ~= string.char(0xE0) then
+		return nil, "Start learn failure, returns "..hex.dump(data)
+	end
+	return true
+end
+
+app:reg_request_handler('learn', function(app, vars)
+	local r, err = learn()
+	local reply = {'learn', {result=r, err = err}}
+	if r then
+		learn_table.learning = true
+		learn_table.result = nil
+	end
+	app.server:send(cjson.encode(reply))
+end)
+
+app:reg_request_handler('learn_result', function(app, vars)
+	local learn_result = nil
+	if not learn_table.learning and learn_table.result then
+		learn_result = hex.dump(learn_table.result)
+	end
+	local reply = {'learn_result', {result = learn_result and true or false, learn = learn_result}}
 	app.server:send(cjson.encode(reply))
 end)
 
