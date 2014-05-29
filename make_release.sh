@@ -53,6 +53,8 @@ sudo rm -rf __install
 ./scripts/release_app.sh cloud
 # Release network
 ./scripts/release_app.sh network
+# Release IR Controller
+./scripts/release_app.sh ir
 
 # Done
 echo 'DONE'

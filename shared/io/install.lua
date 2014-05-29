@@ -9,6 +9,7 @@ local platform = require 'shared.platform'
 
 ----
 local function install_app(app, apps_folder, dest_name, downcb, config_app)
+	assert(app.path)
 	local path, err = downcb(app)
 	if path then
 		return install(path, apps_folder, dest_name, app, config_app)
@@ -29,11 +30,12 @@ return function(app, apps_folder, dest_name, downcb)
 		local store = require 'shared.store'
 		local dep = app.depends[1]
 		local dapp = {
-			path = dep:match('(^[^:]+)'),
+			path = dep:match('^([^:]+)'),
 			version = dep:match(':(.+)&'),
 			name = dep:match('[^/]+/(.+)'),
 			['type'] = 'app.io',
 		}
+		log:info('INSTALL.io', 'Installl depends application '..dapp.path..' '..(dapp.version or 'latest'))
 		if not dapp then
 			local err = 'Failed to find the application '..app.depends[1]
 			log:error('INSTALL.io', err)

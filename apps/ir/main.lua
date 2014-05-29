@@ -163,7 +163,15 @@ handlers.on_command = function(app, path, value, from)
 	end
 end
 
-handlers.on_import = require('import').import
+handlers.on_import = function(app, filename)
+	local f, err = io.open(filename)
+	if not f then
+		return nil, err
+	end
+	local c = f:read('*a')
+	local r, err = config.set(ioname..'.commands', c)
+	return r, err
+end
 
 app = ioapp.init(ioname, handlers)
 assert(app)
