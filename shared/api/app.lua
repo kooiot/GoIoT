@@ -93,7 +93,7 @@ function class:request(msg, vars)
 	if reply then
 		reply = cjson.decode(reply)[2]
 		if reply.result then
-			return true, reply
+			return reply
 		else
 			err = reply.err
 			reply = reply.result

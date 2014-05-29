@@ -121,7 +121,7 @@ mpft['write'] = function(vars)
 			local reply = {'write', {result=r, err=err}}
 			server:send(cjson.encode(reply))
 		else
-			err = 'Device path incorrect, no such namespace'
+			err = 'Device path incorrect, no such namespace '..vars.path
 		end
 	end
 	log:error('IOBUS', 'Error on write', err)
@@ -138,7 +138,7 @@ mpft['command'] = function(vars)
 			local reply = {'command', {result=r, err=err}}
 			server:send(cjson.encode(reply))
 		else
-			err = 'Device path incorrect, no such namespace'
+			err = 'Device path incorrect, no such namespace '..vars.path
 		end
 	end
 	log:error('IOBUS', 'Error on command', err)
@@ -182,10 +182,9 @@ get_devices_tree = function(path)
 		-- Query devvices tree
 		if not clients[ns].tree then
 			local api = require('shared.api.app').new(clients[ns].port)
-			local err = nil
-			local r, tree = api:request('devs')
-			if not r then
-				return nil, tree
+			local tree, err = api:request('devs')
+			if not tree then
+				return nil, err
 			end
 
 			clients[ns].tree = tree

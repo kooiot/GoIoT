@@ -1,0 +1,46 @@
+<? extend 'layout.html'?>
+
+<div class="tab segment">
+	<div class="container">
+		<div class="introduction">
+			<h2 class="ui dividing header"> <?=_("IR Controller")?> - <?=app.appname ?> </h2>
+		</div>
+	</div>
+</div>
+
+<div class="main container">
+	<form class="ui form" method="post">
+		<div class="ui label"> <?=_('Command')?>: </div>
+		<div class="ui selection labeled dropdown">
+			<? local def = (#commands ~= 0 and commands[1] or '') ?>
+			<input id="command" name="command" type="hidden" value="<?=def?>"/>
+			<div class="default text"><? = def ?> </div>
+			<i class="dropdown icon"></i>
+			<div class="menu">
+				<? for _, v in pairs(commands) do ?>
+				<div class="item" data-value="<?=v?>"><?=v?></div>
+				<? end ?>
+			</div>
+		</div>
+		<input class="ui teal button submit" type="submit" value="<?=_('Send')?>"></input>
+	</form>
+
+</div>
+
+<div id="status"></div>
+
+<script>
+	(function() {
+		var status = $('#status');
+		$('form').ajaxForm({
+			beforeSend: function() {
+				status.empty();
+			},
+			success: function() {
+			},
+			complete: function(xhr) {
+				status.html(xhr.responseText);
+			}
+		}); 
+	})()
+</script>

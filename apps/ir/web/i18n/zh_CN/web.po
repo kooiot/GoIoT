@@ -1,0 +1,11 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "Command"
+msgstr "命令"
+
+msgid "Send"
+msgstr "发送"
+
+msgid "IR Controller"
+msgstr "红外控制器"
