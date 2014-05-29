@@ -20,10 +20,13 @@ return {
 		local info = 'DONE'
 		local command = req:get_arg('command')
 		if command and string.len(command) ~= 0 then
+			local cjson = require 'cjson.safe'
+			local signal = cjson.decode(command)
+			signal = signal or command
 			local iobus = require 'shared.api.iobus.client'
-			local path = app.appname..'/ir/commands/'..command
+			local path = app.appname..'/ir/commands/send'
 			local client = iobus.new('web')
-			client:command(path, {})
+			client:command(path, signal)
 		else
 			info = "incorrect post"
 		end

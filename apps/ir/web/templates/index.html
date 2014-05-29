@@ -1,4 +1,5 @@
 <? extend 'layout.html'?>
+<script src="/static/js/table.js"></script>
 
 <div class="tab segment">
 	<div class="container">
@@ -24,11 +25,37 @@
 		</div>
 		<input class="ui teal button submit" type="submit" value="<?=_('Send')?>"></input>
 	</form>
-
+	<div class="ui divider"></div>
 	<a class="ui teal button" href="/apps/<?=app.appname?>/learn"><?=_('Learn')?></a>
+
+	<div class="ui divider"></div>
+
+	<table class="ui two column table segment">
+		<thead>
+			<tr>
+				<th class="nine wide">Panel</th>
+				<th class="seven wide">Code</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<th>
+					<div id="panel"><div>
+				</th>
+				<th>
+					<form class="ui form" method="post" action="/apps/<?=app.appname?>/mod">
+						<textarea class="ui full filled fluid textarea" name="user_mod" id="user_mod">
+						</textarea>
+						<div class="ui green button" onclick="set_panel()">Test</div>
+						<input class="ui teal submit button" type="submit" value="Save"/>
+					</form>
+				</th>
+			</tr>
+		</tbody>
+	</table>
+	<div id="status"></div>
 </div>
 
-<div id="status"></div>
 
 <script>
 	(function() {
@@ -43,5 +70,43 @@
 				status.html(xhr.responseText);
 			}
 		}); 
-	})()
+		query_panel();
+	})();
+	function query_panel() {
+		$.get("/apps/<?=app.appname?>/mod", {}, function(data) {
+				var mod = $('#user_mod');
+				mod.val(data);
+				var panel = $('#panel');
+				panel.html(data);
+				})
+		.done(function() {
+				})
+		.fail(function() {
+				alert("Failed to send save mod request!!");
+				});
+	};
+	function set_panel() {
+		var mod = $('#user_mod');
+		var val = mod.val();
+		alert(val);
+		var panel = $('#panel');
+		panel.html(val);
+	};
+	function send_command(cmd) {
+		$.post("", {command:cmd}, function(data) {
+				status.html(data);
+				})
+		.done(function() {
+				//alert("Application Started!!");
+				})
+		.fail(function() {
+				alert("Failed to send command request!!");
+				});
+	};
+
+	function send_commands(str) {
+		alert(str);
+		var cmds = JSON.parse(str);
+		send_command(cmds);
+	};
 </script>

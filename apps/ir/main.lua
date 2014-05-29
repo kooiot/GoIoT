@@ -93,6 +93,11 @@ local function reading(app)
 	if port:read(1) then
 		print('SSSSSSSSSSSSSS')
 	end
+	--[[
+	local f = io.open('/tmp/aaaa', 'w+')
+	f:write(learn_table.result)
+	f:close()
+	]]--
 	learn_table.learning = false
 end
 
@@ -136,31 +141,48 @@ local function send_cmd(cmd)
 	return r, err
 end
 
-handlers.on_command = function(app, path, value, from)
-
-	local match = '^'..ioname..'/([^/]+)/commands/(.+)'
-	print(path, match)
-	local devname, cmd = path:match(match)
-	print(devname, cmd, string.len(cmd))
+local function send_cmds(cmds)
 	local dev = app.devices:get('ir')
 	if dev then
-		local cmdobj = dev.commands:get(cmd)
-		if not cmdobj then
-			for k, v in pairs(dev.commands) do
-				print(k, string.len(k), v)
-			end
-			return nil, "No such commands"
-		end		
+		for _, cmd in pairs(cmds) do
+			cmd = tostring(cmd)
+			local cmdobj = dev.commands:get(cmd)
+			if not cmdobj then
+				for k, v in pairs(dev.commands) do
+					print(k, string.len(k), v)
+				end
+				return nil, "No such command "..cmd
+			end		
 
-		local c = commands[cmdobj.name]
-		if c then
-			return send_cmd(c.cmd)
-		else
-			return nil, "No command name"
+			local c = commands[cmdobj.name]
+			if c then
+				log:info(ioname, string.format('Writing commmand[%s] to devices', cmd))
+				local r, err = send_cmd(c.cmd)
+				if not r then
+					return r, err
+				end
+			else
+				return nil, "No command name"
+			end
 		end
+		return true
 	else
 		return nil, 'No such devices'
 	end
+
+end
+handlers.on_command = function(app, path, value, from)
+	local match = '^'..ioname..'/([^/]+)/commands/(.+)'
+	local devname, cmd = path:match(match)
+	local cjson = require 'cjson.safe'
+
+	local cmds = cjson.decode(tostring(value))
+	print(type(cmds), cmds)
+	cmds = cmds or value
+	if type(cmds) ~= 'table' then
+		cmds = {value}
+	end
+	return send_cmds(cmds)
 end
 
 handlers.on_import = function(app, filename)

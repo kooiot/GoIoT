@@ -120,6 +120,7 @@ mpft['write'] = function(vars)
 			local r, err = pub.write(vars.path, vars.value, vars.from)
 			local reply = {'write', {result=r, err=err}}
 			server:send(cjson.encode(reply))
+			return
 		else
 			err = 'Device path incorrect, no such namespace '..vars.path
 		end
@@ -137,11 +138,12 @@ mpft['command'] = function(vars)
 			local r, err = pub.command(vars.path, vars.args, vars.from)
 			local reply = {'command', {result=r, err=err}}
 			server:send(cjson.encode(reply))
+			return
 		else
 			err = 'Device path incorrect, no such namespace '..vars.path
 		end
 	end
-	log:error('IOBUS', 'Error on command', err)
+	log:error('IOBUS', 'Error on command:', err)
 	send_err(err)
 end
 
