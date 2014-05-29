@@ -6,11 +6,23 @@ msgid "Command"
 msgstr ""
 
 
+msgid "Restart Learning"
+msgstr ""
+
+
 msgid "Send"
 msgstr ""
 
 
+msgid "Save"
+msgstr ""
+
+
 msgid "IR Controller"
+msgstr ""
+
+
+msgid "Learn"
 msgstr ""
 
 

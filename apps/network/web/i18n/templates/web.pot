@@ -2,15 +2,15 @@ msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
 
+msgid "Name"
+msgstr ""
+
+
 msgid "Network"
 msgstr ""
 
 
 msgid "Value"
-msgstr ""
-
-
-msgid "Name"
 msgstr ""
 
 
