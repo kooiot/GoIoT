@@ -88,7 +88,6 @@
 	function set_panel() {
 		var mod = $('#user_mod');
 		var val = mod.val();
-		alert(val);
 		var panel = $('#panel');
 		panel.html(val);
 	};
@@ -105,7 +104,6 @@
 	};
 
 	function send_commands(str) {
-		alert(str);
 		var cmds = JSON.parse(str);
 		send_command(cmds);
 	};
