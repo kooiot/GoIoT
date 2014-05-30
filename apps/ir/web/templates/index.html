@@ -75,7 +75,7 @@
 			success: function() {
 			},
 			complete: function(xhr) {
-				status.html(xhr.responseText);
+				status.text(xhr.responseText);
 			}
 		}); 
 		query_panel();
@@ -100,8 +100,9 @@
 		panel.html(val);
 	};
 	function send_command(cmd) {
+		var status = $('#status');
 		$.post("", {command:cmd}, function(data) {
-				status.html(data);
+				status.text(data);
 				})
 		.done(function() {
 				//alert("Application Started!!");
