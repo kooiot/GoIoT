@@ -11,7 +11,7 @@ local function log_to_event(logs)
 			ev.label = {icon='teal info'}
 		end
 		ev.date = os.date('%c', v.timestamp / 1000)
-		ev.summary = '<a href="/apps/'..v.src..'">'..v.src..'</a> log ['..v.level..']:'
+		ev.summary = '<a href="/apps/'..v.src..'">'..v.src..'</a>'
 		ev.extra = {
 			text = v.content
 		}
