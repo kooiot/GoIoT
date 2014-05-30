@@ -1,0 +1,71 @@
+
+<? extend 'layout.html' ?>
+
+<script src="/static/js/table.js"></script>
+
+<div class="segment">
+	<div class="container">
+		<div class="introduction">
+			<h3 class="ui dividing header">Upgrading <?=lname?><h3>
+		</div>
+	</div>
+</div>
+<div class="main container">
+<table class="ui sortable table segment">
+	<thead>
+		<tr>
+			<th>Instance</th>
+		</tr>
+	</thead>
+	<tbody>
+	<?
+	local counts = 0
+	for _, v in pairs(inslist) do 
+		counts = counts + 1
+	?>
+	<tr>
+		<td>
+			<? = v ?>
+		</td>
+	</tr>
+	<? end ?>
+
+	</tbody>
+	<tfoot>
+		<tr>
+			<th>Total <?=counts?></th>
+		</tr>
+	</tfoot>
+</table>
+
+<? if not err then ?>
+<div class="ui red button" onclick="doitnow();">Confirm</div>
+<? end ?>
+
+<div class="ui message">
+	<div class="content">
+		<div class="header">
+			<div id="status">
+				<? = err or '' ?>
+			</div>
+		</div>
+	</div>
+</div>
+
+</div>
+
+<script>
+	function doitnow() {
+		var status = $('#status');
+		$.post("/store/upgrade", {lname:"<?=lname?>"}, function(data) {
+				status.html(data);
+				})
+		.done(function() {
+				//alert("Application Started!!");
+				})
+		.fail(function() {
+				alert("Failed to send start request!!");
+				});
+	};
+</script>
+

@@ -3,6 +3,7 @@
 
 local list = require 'shared.app.list'
 local log = require 'shared.log'
+local lfs = require 'lfs'
 
 --- Create the on_remove callback function which will really delete files
 -- @tparam string apps_folder applicatons installed base folder

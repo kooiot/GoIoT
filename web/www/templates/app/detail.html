@@ -15,6 +15,7 @@
 	</div>
 </div>
 <div class="main container">
+
 	<div class="ui icon buttons">
 		<div type="hidden" class="ui button" appname="<?=appname?>" id="btn_start">
 			<i class="teal play icon"></i> Start
@@ -30,6 +31,16 @@
 			<i class="orange trash icon"></i> Remove
 		</div>
 	</div>
+
+	<? if new_version then ?>
+	<div class="ui label">
+		<a class="ui tiny teal button" href="/store/upgrade/<?=appname?>">Upgrade</a>
+		<div class="detail">
+			New version [ <?=new_version?> ] found! 
+		</div>
+	</div>
+	<? end ?>
+
 	<div id="status"> </div>
 
 	<? --[[include('widget/events.html', {title="Events"}) ]]--?>

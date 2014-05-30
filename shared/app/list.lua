@@ -100,6 +100,20 @@ _M.find = function(insname)
 	end
 end
 
+--- Find all application instance which is from same applciation (path)
+--
+_M.enum_by_path = function(path)
+	local t = {}
+	for name, v in pairs(list) do
+		for k, node in pairs(v.insts) do
+			if node.app.path == path then
+				t[#t + 1] = node.insname
+			end
+		end
+	end
+	return t
+end
+
 --- Loading the application when module required
 load()
 

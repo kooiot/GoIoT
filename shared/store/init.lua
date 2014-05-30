@@ -107,10 +107,7 @@ _M.get_srv = function()
 	return cfg.srvurl:match('://([^/]+)/')
 end
 
---- Search one application from cache
--- @tparam string key the search key string, nil will match all
--- @treturn table matched applications
-_M.search = function(key)
+local function load_cache()
 	local platform = require 'shared.platform'
 	local path = platform.path.temp..'/_store_cache'
 	local file, err = io.open(path)
@@ -120,11 +117,30 @@ _M.search = function(key)
 	local str = file:read('*a')
 	file:close()
 	str = str or ""
-	local apps, err =  cjson.decode(str)
-	if not apps then
-		return nil, err
+	return cjson.decode(str)
+end
+--- Find the application by path from cache
+--
+_M.find = function(path)
+	if not path then
+		return nil, 'Path is a must'
 	end
+	local apps = load_cache()
+	for author, list in pairs(apps) do
+		for _, v in pairs(list) do
+			if v.info.path == path then
+				return v
+			end
+		end
+	end
+	return nil, 'Not found'
+end
 
+--- Search one application from cache
+-- @tparam string key the search key string, nil will match all
+-- @treturn table matched applications
+_M.search = function(key)
+	local apps = load_cache()
 	if key then
 		key = key:lower()
 		local t = {}
@@ -210,6 +226,41 @@ _M.install = function(lname, path, version)
 	return install(cfg, app, lname)
 end
 
+local function stop_application(lname)
+	local event = require('shared.event').C.new()
+	event:open()
+	log:info('STORE', "Stoping application "..lname)
+	event:send({src='web', name='close', dest=lname})
+	os.execute('sleep 2')
+end
+
+local function start_application(name, lname)
+	local platform = require 'shared.platform'
+	local cmd = platform.path.cad..'/scripts/run_app.sh start '..name..' '..lname
+	log:debug('WEB', "Running application", cmd)
+	os.execute(cmd)
+	res:write('Starting application....')
+end
+
+---
+--Upgrade application
+-- @tparam string path Application path in store server
+-- @tparam string version Application version
+-- @treturn boolean ok
+-- @treturn string error message
+_M.upgrade = function(path, version)
+	--- upgrade all instances
+	local inslist = list.enum_by_path(path)
+	for k, v in pairs(inslist) do
+		log:info('STORE', "Upgrading "..path..",  instance - "..v)
+		assert(_M.remove(v))
+		assert(_M.install(v, path, version))
+		start_application(v)
+	end
+	return true
+end
+	
+
 ---
 -- Remove one application
 -- @tparam string lname Application local install name
@@ -219,6 +270,7 @@ end
 -- @return  ok
 -- @treturn string error message
 _M.remove = function(lname, mode)
+	stop_application(lname)
 	local mode = mode or 'n'
 	log:info("STORE", "Uninstalling application", lname)
 	for k,v in pairs(load_installed()) do

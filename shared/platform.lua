@@ -6,6 +6,7 @@ local _M = {}
 --- The path contants
 _M.path = {}
 
+_M.path.cad = os.getenv('CAD_DIR') or '/tmp/cad2'
 --- The application folder path
 _M.path.apps = os.getenv('CAD_APPS_DIR') or '/tmp/apps'
 --- The application default configuration folder path
