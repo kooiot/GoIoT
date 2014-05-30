@@ -6,11 +6,11 @@ msgid "Name"
 msgstr ""
 
 
-msgid "Network"
+msgid "Value"
 msgstr ""
 
 
-msgid "Value"
+msgid "Network"
 msgstr ""
 
 

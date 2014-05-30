@@ -176,13 +176,12 @@ handlers.on_command = function(app, path, value, from)
 	local devname, cmd = path:match(match)
 	local cjson = require 'cjson.safe'
 
-	local cmds = cjson.decode(tostring(value))
-	print(type(cmds), cmds)
-	cmds = cmds or value
-	if type(cmds) ~= 'table' then
-		cmds = {value}
+	if type(value) ~= 'table' then
+		value = {value}
 	end
-	return send_cmds(cmds)
+	local pp = require 'shared.PrettyPrint'
+	print(pp(value))
+	return send_cmds(value)
 end
 
 handlers.on_import = function(app, filename)

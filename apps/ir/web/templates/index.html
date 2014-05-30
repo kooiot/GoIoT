@@ -10,50 +10,58 @@
 </div>
 
 <div class="main container">
-	<form class="ui form" method="post">
-		<div class="ui label"> <?=_('Command')?>: </div>
-		<div class="ui selection labeled dropdown">
-			<? local def = (#commands ~= 0 and commands[1] or '') ?>
-			<input id="command" name="command" type="hidden" value="<?=def?>"/>
-			<div class="default text"><? = def ?> </div>
-			<i class="dropdown icon"></i>
-			<div class="menu">
-				<? for _, v in pairs(commands) do ?>
-				<div class="item" data-value="<?=v?>"><?=v?></div>
-				<? end ?>
+	<div class="two column stackable ui grid">
+		<div class="column">
+			<div class="ui segment">
+				<div class="ui top attached label"><b><?=_('Control Panel')?></b></div>
+				<div id="panel"></div>
 			</div>
 		</div>
-		<input class="ui teal button submit" type="submit" value="<?=_('Send')?>"></input>
-	</form>
+		<div class="column">
+			<div class="ui segment">
+				<div class="ui top attached label"><b><?=_('Editor')?></b></div>
+				<form class="ui form" method="post" action="/apps/<?=app.appname?>/mod">
+					<textarea class="ui full filled fluid textarea" name="user_mod" id="user_mod">
+					</textarea>
+					<input class="ui green button" type="button" onclick="set_panel()" value="<?=_('Apply')?>"/>
+					<input class="ui right floated teal submit button" type="submit" value="<?=_('Save')?>"/>
+				</form>
+			</div>
+		</div>
+	</div>
+	<div class="ui message" id="status">&nbsp;</div>
 	<div class="ui divider"></div>
-	<a class="ui teal button" href="/apps/<?=app.appname?>/learn"><?=_('Learn')?></a>
+	<div class="two column stackable ui grid">
+		<div class="column">
+			<div class="ui segment">
+				<div class="ui top attached label"><b><?=_('Test')?></b></div>
+				<form class="ui form" method="post">
+					<div class="ui label"> <?=_('Command')?>: </div>
+					<div class="ui selection labeled dropdown">
+						<? local def = (#commands ~= 0 and commands[1] or '') ?>
+						<input id="command" name="command" type="hidden" value="<?=def?>"/>
+						<div class="default text"><? = def ?> </div>
+						<i class="dropdown icon"></i>
+						<div class="menu">
+							<? for _, v in pairs(commands) do ?>
+							<div class="item" data-value="<?=v?>"><?=v?></div>
+							<? end ?>
+						</div>
+					</div>
+					<input class="ui teal button submit" type="submit" value="<?=_('Send')?>"></input>
+				</form>
 
-	<div class="ui divider"></div>
+			</div>
+		</div>
+		<div class="column">
+			<div class="ui segment">
+				<div class="ui top attached label"><b><?=_('Learn')?></b></div>
+				<a class="ui teal button" href="/apps/<?=app.appname?>/learn"><?=_('Learn')?></a>
+			</div>
+		</div>
+	</div>
 
-	<table class="ui two column table segment">
-		<thead>
-			<tr>
-				<th class="nine wide">Panel</th>
-				<th class="seven wide">Code</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr>
-				<th>
-					<div id="panel"><div>
-				</th>
-				<th>
-					<form class="ui form" method="post" action="/apps/<?=app.appname?>/mod">
-						<textarea class="ui full filled fluid textarea" name="user_mod" id="user_mod">
-						</textarea>
-						<div class="ui green button" onclick="set_panel()">Test</div>
-						<input class="ui teal submit button" type="submit" value="Save"/>
-					</form>
-				</th>
-			</tr>
-		</tbody>
-	</table>
-	<div id="status"></div>
+
 </div>
 
 
@@ -62,7 +70,7 @@
 		var status = $('#status');
 		$('form').ajaxForm({
 			beforeSend: function() {
-				status.empty();
+				status.text(' ');
 			},
 			success: function() {
 			},
@@ -101,10 +109,5 @@
 		.fail(function() {
 				alert("Failed to send command request!!");
 				});
-	};
-
-	function send_commands(str) {
-		var cmds = JSON.parse(str);
-		send_command(cmds);
 	};
 </script>
