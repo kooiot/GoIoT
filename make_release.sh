@@ -42,6 +42,8 @@ du __install -sh
 sudo chown -R root:root __install
 #mkfs.cramfs __install __release/cad2.cramfs
 mksquashfs __install __release/cad2.sfs
+#mksquashfs __install __release/cad2_mips.sfs -nopad -noappend -root-owned -comp xz -Xpreset 9 -Xe -Xlc 0 -Xlp 2 -Xpb 2
+mksquashfs __install __release/cad2_xz.sfs -comp xz
 # Clean up the rootfs files
 sudo rm -rf __install
 

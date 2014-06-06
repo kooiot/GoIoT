@@ -56,7 +56,7 @@ return {
 		local store = require 'shared.store'
 		assert(store.upgrade("]]..path..'","'..version..'"))'
 		local api = require 'shared.api.services'
-		local r, err = api.add('store.install.'..lname, dostr, 'Upgrade '..lname..' ('..path..')')
+		local r, err = api.add('store.install.'..lname..'.upgrade', dostr, 'Upgrade '..lname..' ('..path..')')
 		assert(r, err)
 		if r then
 			res:write([[View the progress <a href="/store/backend">here</a>]])

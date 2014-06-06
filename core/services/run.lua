@@ -30,6 +30,6 @@ else
 	else
 		log:info('SRV_RUNNER', 'Services exited normally[', pwd, ']')
 		local api = require 'shared.api.services'
-		api.result(srv_name, ture, 'DONE without error')
+		api.result(srv_name, true, 'DONE without error')
 	end
 end

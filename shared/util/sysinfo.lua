@@ -53,7 +53,8 @@ _M.loadavg = function()
    for w in tokens do
 	   avgs[#avgs + 1] = w
    end
-   local lavg_1, lavg_5, lavg_15, nr_running, nr_threads, last_pid = table.unpack(avgs)
+   local unpack = table.unpack or unpack
+   local lavg_1, lavg_5, lavg_15, nr_running, nr_threads, last_pid = unpack(avgs)
    return {
 		lavg_1 = lavg_1,
 		lavg_5 = lavg_5,

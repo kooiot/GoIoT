@@ -239,7 +239,7 @@ local function start_application(name, lname)
 	local cmd = platform.path.cad..'/scripts/run_app.sh start '..name..' '..lname
 	log:debug('WEB', "Running application", cmd)
 	os.execute(cmd)
-	res:write('Starting application....')
+	log:debug('Starting application '..lname..' ....')
 end
 
 ---
@@ -255,7 +255,7 @@ _M.upgrade = function(path, version)
 		log:info('STORE', "Upgrading "..path..",  instance - "..v)
 		assert(_M.remove(v))
 		assert(_M.install(v, path, version))
-		start_application(v)
+		start_application(path:match('([^/]+)$'), v)
 	end
 	return true
 end

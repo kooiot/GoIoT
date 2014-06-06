@@ -30,6 +30,7 @@ end
 -- @tparam string name the destination application name
 -- @tparam string insname Application local installed name
 return function(apps_folder, name, insname)
+	list.reload()
 	local lock = lfs.lock_dir(apps_folder)
 	list.del(name, insname, on_remove(apps_folder))
 	lock:free()
