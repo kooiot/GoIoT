@@ -1,5 +1,6 @@
 local pdu = require 'modbus.pdu'
 local log = require 'shared.log'
+local unpack = table.unpack or unpack
 
 local class = {}
 
@@ -12,7 +13,7 @@ end
 function class:request (unit, name, ...) 
 	local args = {...}
 
-	local p, parser = pdu[name](table.unpack(args))
+	local p, parser = pdu[name](unpack(args))
 	self.transcode = self.transcode + 1
 	local _, apdu_raw = self.apdu.encode(p, self.transcode, unit)
 
