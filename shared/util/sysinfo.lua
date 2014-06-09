@@ -69,20 +69,29 @@ end
 -- @tparam string ifname The interface name
 -- @treturn table
 local function network_if(ifname)
+	local patt = '%g'
+	if _VERSION == 'Lua 5.1' then
+		patt = '[^%s]'
+	end
 	local f = io.popen('LANG=C ifconfig '..ifname)
 	local s = f:read('*all')
-	local hwaddr = s:match('HWaddr%s-(%g+)')
-	local ipv4 = s:match('inet%s+addr:%s-(%g+)')
-	local ipv6 = s:match('inet6%s+addr:%s-(%g+)')
+	local hwaddr = s:match('HWaddr%s-('..patt..'+)')
+	local ipv4 = s:match('inet%s+addr:%s-('..patt..'+)')
+	local ipv6 = s:match('inet6%s+addr:%s-('..patt..'+)')
 	return {hwaddr=hwaddr, ipv4 = ipv4, ipv6=ipv6}
 end
 
 --- List all network interfaces
 -- @treturn table Includes all network information
 _M.network = function()
+	local patt = '%g'
+	if _VERSION == 'Lua 5.1' then
+		patt = '[^%s]'
+	end
+
 	local f = io.popen('cat /proc/net/dev')
 	local s = f:read('*all')
-	local tokens = s:gmatch('%s-([%g^:]+):')
+	local tokens = s:gmatch('%s-(['..patt..'^:]+):')
 	local ifs = {}
 	for w in tokens do
 		if w ~= 'lo' then
