@@ -1,3 +1,4 @@
+local execute = require 'shared.util.execute'
 local _M = {}
 
 local function pid_file(name)
@@ -8,17 +9,17 @@ function _M.run(name, luafile)
 	assert(name, luafile)
 	local pidfile = pid_file(name)
 	local pid = 0
-	local r, status, code = os.execute('start-stop-daemon --start --make-pidfile --pidfile '..pidfile..' --background --chdir $CAD_DIR/core/services --startas /usr/bin/lua -- run.lua '..luafile..' "'..name..'"')
-	if not r or status ~= 'exit' or code ~= 0 then
+	local r, code = execute('start-stop-daemon --start --make-pidfile --pidfile '..pidfile..' --background --chdir $CAD_DIR/core/services --startas /usr/bin/lua -- run.lua '..luafile..' "'..name..'"')
+	if not r or code ~= 0 then
 		return nil, 'Same name services has been runned'
 	end
 
 	local count = 32
 	while count > 0 do
 		--- the pid file may not ready,  right after the start-stop-daemon.
-		os.execute('sleep 0')
-		local r, status, code = os.execute('cat '..pidfile)
-		if r and status == 'exit' and code == 0 then
+		execute('sleep 0')
+		local r, code = execute('cat '..pidfile)
+		if r and code == 0 then
 			break
 		end
 		count = count - 1
@@ -40,8 +41,8 @@ end
 function _M.abort(name)
 	assert(name)
 	local pidfile = pid_file(name)
-	local r, status, code = os.execute('start-stop-daemon --stop --pidfile '..pidfile..' --retry 5')
-	if not r or status ~= 'exit' or code ~= 0 then
+	local r, code = execute('start-stop-daemon --stop --pidfile '..pidfile..' --retry 5')
+	if not r or code ~= 0 then
 		return nil, code
 	end
 	return true
@@ -50,8 +51,8 @@ end
 function _M.check(name)
 	assert(name)
 	local pidfile = pid_file(name)
-	local r, status, code = os.execute('start-stop-daemon --status --pidfile '..pidfile)
-	if not r or status ~= 'exit' or code ~= 0 then
+	local r, code = execute('start-stop-daemon --status --pidfile '..pidfile)
+	if not r or code ~= 0 then
 		os.remove(pidfile)
 		return nil, code
 	end

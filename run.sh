@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/bin/sh
 
 if [ -z $CAD_DIR ]; then
 	export CAD_DIR=$(pwd)
@@ -7,6 +7,9 @@ fi
 export LWF_ROOT=$CAD_DIR/web/lwf
 export LWF_APP_NAME='v3'
 export LWF_APP_PATH=$CAD_DIR/web/www
+
+# The fix for openwrt. The path does not includes the /usr/sbin in its system env
+export PATH=/usr/sbin:$PATH
 
 echo $CAD_DIR
 

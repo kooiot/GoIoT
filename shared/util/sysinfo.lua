@@ -11,7 +11,7 @@ _M.cpu_model = function()
 	local s = f:read('*all')
 	f:close()
 	--return s:match("Hardware%s+:%s+([^%c]+)")
-	return s:match("name%s+:%s+([^%c]+)")
+	return s:match("^mode%s+name%s+:%s+([^%c]+)") or s:match("system%s+type%s+:%s+([^%c]+)") or 'Unknown'
 end
 
 --- Get the output for uname

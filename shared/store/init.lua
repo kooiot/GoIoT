@@ -125,7 +125,7 @@ _M.find = function(path)
 	if not path then
 		return nil, 'Path is a must'
 	end
-	local apps = load_cache()
+	local apps = load_cache() or {}
 	for author, list in pairs(apps) do
 		for _, v in pairs(list) do
 			if v.info.path == path then
@@ -140,7 +140,7 @@ end
 -- @tparam string key the search key string, nil will match all
 -- @treturn table matched applications
 _M.search = function(key)
-	local apps = load_cache()
+	local apps = load_cache() or {}
 	if key then
 		key = key:lower()
 		local t = {}

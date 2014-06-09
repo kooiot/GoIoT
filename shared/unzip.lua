@@ -77,9 +77,10 @@ return function (path, destination, force)
   if force then
 	  cmd = "unzip -o %s -d %s"
   end
-  local r, way, error_code = os.execute(cmd:format(path, destination))
+  local execute = require 'shared.util.execute'
+  local r, error_code = execute(cmd:format(path, destination))
 
-  if way == 'exit' then
+  if r then
 	  --print("UnZip: " .. (code[error_code] or "Unknown error encountered while unzipping. code-"..error_code))
 
 	  if (error_code ~= 0) then
