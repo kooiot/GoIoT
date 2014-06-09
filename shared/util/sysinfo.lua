@@ -84,14 +84,14 @@ end
 --- List all network interfaces
 -- @treturn table Includes all network information
 _M.network = function()
-	local patt = '%g'
+	local patt = '[%g^:]'
 	if _VERSION == 'Lua 5.1' then
-		patt = '[^%s]'
+		patt = '[^%s:]'
 	end
 
 	local f = io.popen('cat /proc/net/dev')
 	local s = f:read('*all')
-	local tokens = s:gmatch('%s-(['..patt..'^:]+):')
+	local tokens = s:gmatch('%s-('..patt..'+):')
 	local ifs = {}
 	for w in tokens do
 		if w ~= 'lo' then

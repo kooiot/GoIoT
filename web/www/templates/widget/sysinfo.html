@@ -114,39 +114,40 @@
 	</div>
 	<div class="content">
 		<div class="accordion">
-		<?
-		local ninfo = sysinfo.network()
-		for ifname, v in pairs(ninfo) do
-		?>
-		<div class="active title">
-			<i class="dropdown icon"></i>
-			<?=ifname:upper() ?>
-		</div>
-		<div class="active content">
-			<table class="ui table segment">
-				<thead>
-					<tr><th>Name</th>
-						<th>Value</th>
+			<?
+			local ninfo = sysinfo.network()
+			for ifname, v in pairs(ninfo) do
+			?>
+			<div class="active title">
+				<i class="dropdown icon"></i>
+				<?=ifname:upper() ?>
+			</div>
+			<div class="active content">
+				<table class="ui table segment">
+					<thead>
+						<tr><th>Name</th>
+							<th>Value</th>
+						</tr>
+					</thead>
+
+					<tbody>
+
+					<?
+					for key, val in pairs(v) do
+					?>
+					<tr>
+						<td><?=tostring(key):upper() ?> </td>
+						<td><?=tostring(val):upper() ?> </td>
 					</tr>
-				</thead>
-
-				<tbody>
-
-				<?
-				for key, val in pairs(v) do
-				?>
-				<tr>
-					<td><?=tostring(key):upper() ?> </td>
-					<td><?=tostring(val):upper() ?> </td>
-				</tr>
-				<?
-				end
-				?>
-				</tbody>
-			</table>
+					<?
+					end
+					?>
+					</tbody>
+				</table>
+			</div>
+			<?
+			end
+			?>
 		</div>
-		<?
-		end
-		?>
 	</div>
 </div>
