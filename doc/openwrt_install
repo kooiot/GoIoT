@@ -1,0 +1,25 @@
+-- 创建目录
+mkdir /etc/cad2
+mkdir /etc/cad2/apps
+
+-- 编辑rc.local 增加一下内容
+ln -s /etc/cad2 /tmp/core
+ln -s /etc/cad2/apps /tmp/apps
+mkdir /tmp/backups
+
+mkdir /tmp/cad2
+mount -t squashfs -o loop /etc/cad2/cad2_xz.sfs /tmp/cad2
+
+export CAD_DIR=/tmp/cad2
+cd /tmp/cad2
+sh /tmp/cad2/run.sh start
+cd -
+
+
+-- 使用crontab 增加定时运行/tmp/cad2/run.sh start 　测试时不要添加
+
+
+-- 复制cad2_xz.sfs到openwrt中去
+scp cad2_xz.sfs root@192.168.1.1:/etc/cad2/
+
+-- 重启openwrt或者运行 sh /etc/rc.local　即可

@@ -5,10 +5,12 @@ local function doi(req, res, info)
 	local reply, err = mon.query({app.appname})
 	if reply then
 		local api = require 'shared.api.app'
-		local client = api.new(reply.status[app.appname].port)
-		local reply, err = client:request('list_commands', {})
-		if reply then
-			commands = reply.commands
+		if reply.status and reply.status[app.appname] then
+			local client = api.new(reply.status[app.appname].port)
+			local reply, err = client:request('list_commands', {})
+			if reply then
+				commands = reply.commands
+			end
 		end
 	end
 
