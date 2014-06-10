@@ -20,7 +20,7 @@ return {
 		--- Check the version from cache only
 		local app, err = store.find(info.path)
 		local new_version = nil
-		if app.info.version ~= info.version then
+		if app and app.info and app.info.version ~= info.version then
 			new_version = app.info.version
 		end
 		if not info then

@@ -26,12 +26,12 @@ local function load_conf()
 	local config, err = config.get(ioname..'.conf')
 	if config then
 		config, err = cjson.decode(config)
-		config = config or {}
-		config.key = config.key or "6015c744795762df41e9ebfa25fd625c"
-		config.url = config.url or 'http://172.30.0.115:8000/RestService/'
-		config.timeout = config.timeout or 5
-		return config
 	end
+	config = config or {}
+	config.key = config.key or "6015c744795762df41e9ebfa25fd625c"
+	config.url = config.url or 'http://172.30.0.115:8000/RestService/'
+	config.timeout = config.timeout or 5
+	return config
 end
 
 local conf = load_conf()
@@ -78,7 +78,12 @@ local function on_start()
 	end
 end
 
-app = require('shared.app').new(info, {on_start = on_start})
+local aborting = false
+local function on_close()
+	aborting = true
+end
+
+app = require('shared.app').new(info, {on_start = on_start, on_close = on_close})
 app:init()
 app:reg_request_handler('list_devices', function(app, vars)
 	local devs = {}
@@ -99,13 +104,11 @@ end
 -- The mail loop
 local ms = 1000 * 3
 while not aborting do
-	while not aborting do
-		save_all(function() app:run(50) end)
-		local timer = ztimer.monotonic(ms)
-		timer:start()
-		while timer:rest() > 0 do
-			app:run(timer:rest())
-		end
+	save_all(function() app:run(50) end)
+	local timer = ztimer.monotonic(ms)
+	timer:start()
+	while timer:rest() > 0 do
+		app:run(timer:rest())
 	end
 end
 
