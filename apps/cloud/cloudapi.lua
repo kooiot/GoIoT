@@ -5,14 +5,12 @@ local url = require 'socket.url'
 local pp = require 'shared.PrettyPrint'
 local cjson = require 'cjson.safe'
 
-http.TIMEOUT = 2
-
-local KEY = 'bablbababab'
-local base_url = 'http://172.30.0.115:8000/RestService/'
+local KEY = nil
+local URL = nil
 
 local function api(method, obj, path)
 	assert(path)
-	local u = url.parse(base_url..path, {path=path, scheme='http'})
+	local u = url.parse(URL..path, {path=path, scheme='http'})
 
 	local rstring = cjson.encode(obj)
 	--print('JSON', rstring)
@@ -52,8 +50,10 @@ local function api(method, obj, path)
 end
 
 return {
-	init = function (key)
+	init = function (key, url, timeout)
 		KEY = key
+		URL = url
+		http.TIMEOUT = timeout or 5
 	end,
 	call = api,
 }

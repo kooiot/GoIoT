@@ -2,19 +2,23 @@ msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
 
-msgid "Editor"
+msgid "Server URL"
 msgstr ""
 
 
-msgid "Name"
+msgid "Auth Key"
 msgstr ""
 
 
-msgid "Value"
+msgid "SymLink Cloud"
 msgstr ""
 
 
-msgid "Network"
+msgid "Save"
+msgstr ""
+
+
+msgid "Timeout"
 msgstr ""
 
 

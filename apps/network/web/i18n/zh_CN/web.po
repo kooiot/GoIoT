@@ -1,6 +1,9 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8\n"
 
+msgid "Editor"
+msgstr "编辑器"
+
 msgid "Name"
 msgstr "名称"
 
@@ -9,6 +12,3 @@ msgstr "值"
 
 msgid "Network"
 msgstr "网络"
-
-msgid "Editor"
-msgstr "编辑器"

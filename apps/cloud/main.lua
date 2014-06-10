@@ -22,14 +22,20 @@ info.ctx = zmq.context()
 info.poller = zpoller.new()
 info.name = ioname
 
-local function load_key()
-	local config_key = config.get(ioname..'.key')
-	return config_key or "6015c744795762df41e9ebfa25fd625c"
+local function load_conf()
+	local config, err = config.get(ioname..'.conf')
+	if config then
+		config, err = cjson.decode(config)
+		config = config or {}
+		config.key = config.key or "6015c744795762df41e9ebfa25fd625c"
+		config.url = config.url or 'http://172.30.0.115:8000/RestService/'
+		config.timeout = config.timeout or 5
+		return config
+	end
 end
 
-local KEY = load_key()
-assert(KEY, "No Cloud Auth key")
-cloudapi.init(KEY)
+local conf = load_conf()
+cloudapi.init(conf.key, conf.url, conf.timeout)
 buf.set_api(cloudapi)
 
 local client = api.new(arg[1], info.ctx, info.poller)

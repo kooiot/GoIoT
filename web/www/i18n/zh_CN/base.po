@@ -1,74 +1,74 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8\n"
 
-msgid "Data"
-msgstr "数据"
-
-msgid "Menu"
-msgstr "菜单"
-
-msgid "Store"
-msgstr "商店"
-
-msgid "Packets"
-msgstr "报文"
-
-msgid "More"
-msgstr "更多"
-
-msgid "System"
-msgstr "系统"
-
-msgid "Log"
-msgstr "日志"
-
-msgid "Sign In"
-msgstr "登入"
+msgid "Forum"
+msgstr "论坛"
 
 msgid "Install New"
 msgstr "安装应用"
 
-msgid "Close Menu"
-msgstr "关闭菜单"
-
-msgid "Help"
-msgstr "帮助"
-
-msgid "Services"
-msgstr "服务"
-
-msgid "Settings"
-msgstr "设定"
-
-msgid "Applications"
-msgstr "应用"
-
 msgid "Backup"
 msgstr "备份"
 
-msgid "Simple"
-msgstr "精简模式"
-
-msgid "Advance"
-msgstr "高级模式"
-
-msgid "Forum"
-msgstr "论坛"
+msgid "Sign In"
+msgstr "登入"
 
 msgid "Network"
 msgstr "网络"
 
-msgid "Home"
-msgstr "主页"
+msgid "Applications"
+msgstr "应用"
 
 msgid "About"
 msgstr "关于"
 
-msgid "Login Now"
-msgstr "登陆"
+msgid "Services"
+msgstr "服务"
+
+msgid "Close Menu"
+msgstr "关闭菜单"
+
+msgid "Home"
+msgstr "主页"
+
+msgid "System"
+msgstr "系统"
 
 msgid "Upgrade"
 msgstr "升级"
+
+msgid "Settings"
+msgstr "设定"
+
+msgid "Advance"
+msgstr "高级模式"
+
+msgid "Help"
+msgstr "帮助"
+
+msgid "Simple"
+msgstr "精简模式"
+
+msgid "Log"
+msgstr "日志"
+
+msgid "More"
+msgstr "更多"
+
+msgid "Menu"
+msgstr "菜单"
+
+msgid "Packets"
+msgstr "报文"
+
+msgid "Login Now"
+msgstr "登陆"
+
+msgid "Data"
+msgstr "数据"
+
+msgid "Store"
+msgstr "商店"
 
 msgid "Utilies"
 msgstr "工具"
