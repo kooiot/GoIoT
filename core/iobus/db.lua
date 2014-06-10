@@ -21,6 +21,9 @@ local function create(path)
 end
 
 function class:open(path)
+	if true then
+		return 
+	end
 	self.path = path
 	self.conn = assert(sqlite3:connect(path))
 	local check_sql = [[SELECT name FROM sqlite_master WHERE type = "table" AND name = "tags"]]
