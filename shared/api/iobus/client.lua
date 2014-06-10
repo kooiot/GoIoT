@@ -63,7 +63,7 @@ end
 
 --- Enum devices according to pattern
 -- @tparam string pattern( refer to string.match pattern  )
--- @treturn table device name list
+-- @treturn table device name list in group of namespaces
 function class:enum(pattern)
 	local req = {'enum', {pattern=pattern, from=self.from}}
 	local reply, err = self.client:request(cjson.encode(req), true)
@@ -80,7 +80,7 @@ function class:enum(pattern)
 end
 
 --- Read the device tree meta from iobus
--- @tparam string path the device path
+-- @tparam string path the namespace/device path 
 -- @treturn table the device tree table
 function class:tree(path)
 	local req = {'tree', {path=path, from=self.from}}
