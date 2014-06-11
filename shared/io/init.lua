@@ -269,6 +269,7 @@ end
 
 --- The minimum running time for application run loop
 local MIN_MS = 50
+local delay_start = os.time() + 2
 
 --- The IO Application running loop
 function _M.run()
@@ -277,10 +278,15 @@ function _M.run()
 	local co = coroutine.create(function (abort)
 		local abort = abort or false
 		while not abort do
-			if _M.handlers.on_run then
-				abort = _M.handlers.on_run(app)
-			else
+			--- Set a delay before calling the on_run handler
+			if delay_start and os.time() < delay_start then
 				abort = coroutine.yield(false, 1000)
+			else
+				if _M.handlers.on_run then
+					abort = _M.handlers.on_run(app)
+				else
+					abort = coroutine.yield(false, 1000)
+				end
 			end
 		end
 	end)
