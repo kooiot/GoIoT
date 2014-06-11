@@ -9,36 +9,19 @@ local m_path = os.getenv('CAD_DIR') or "."
 local m_package_path = package.path  
 package.path = string.format("%s;%s/?.lua;%s/?/init.lua", m_package_path, m_path, m_path)  
 
+require 'shared.zhelpers'
 local zmq = require 'lzmq'
 local zpoller = require 'lzmq.poller'
 local ztimer = require 'lzmq.timer'
 local cjson = require 'cjson.safe'
-local config_api = require 'shared.api.config'
 local fifo = require 'shared.fifo'
 
 local cache = fifo({timestamp = ztimer.absolute_time(), src="CORE", level="info", content="Log Start"})
 local pcache = fifo()
 
-local function load_config()
-	local debug = true
-	if debug then
-		return {
-			port = 5500,
-		}
-	end
-	local config, err = config_api.get(ioname..'.configs')
-	assert(config, err)
-
-	config, err = cjson.decode(settings)
-	assert(config, err)
-
-	return config 
-end
-
 local function  app_meta()
 	return {
 		type = "app",
-		config = config,
 	}
 end
 
@@ -97,8 +80,11 @@ local function on_request(msg)
 	--print('on_request')
 	local json, err = cjson.decode(msg)
 	if not json then
-		print('JSON DECODE ERR', err)
-		send_err(server, 'Unsupported message format')
+		send_err(server, 'Unsupported message format, json decode error - '..err)
+		return
+	end
+	if not json[1] or not json[2] then
+		send_err(server, 'Unsupported message format - JSON FORMAT ERROR')
 		return
 	end
 
@@ -114,10 +100,8 @@ local function on_request(msg)
 end
 
 local function init()
-	-- Loading the configuration from db
-	local config = load_config()
 	-- Create the handler
-	local srv, err = ctx:socket({zmq.REP, bind="tcp://127.0.0.1:"..config.port or 5500})
+	local srv, err = ctx:socket({zmq.REP, bind="tcp://127.0.0.1:5500"})
 	zassert(srv, err)
 	server = srv
 	poller:add(server, zmq.POLLIN, function()
@@ -136,10 +120,18 @@ local function init()
 	local logsrv = require('shared.log.server')(ctx, poller, function(log)
 		--local pp = require 'shared.PrettyPrint'
 		--print(pp(log))
+		if not log.level then
+			return nil, 'Incorrect log object'
+		end
 
-		pub.pub(log.level, cjson.encode(log))
+		local logstr, err = cjson.encode(log)
+		if not logstr then
+			return nil, err
+		end
 
-		-- Do not save the packet to cache
+		pub.pub(log.level, logstr)
+
+		-- Seperate the packat and log
 		if log.level == 'packet' then
 			pcache:push(log)
 			if pcache:length() > 512 then

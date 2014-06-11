@@ -171,6 +171,7 @@ handlers.on_run = function(app)
 		for k, v in pairs(packets) do
 			local pa, err = mclient:request(v.unit, v.code, v.start, v.count)
 			if pa then
+				log:debug(ioname, 'try to read packets'..v.unit)
 				local ts = ztimer.absolute_time()
 				local vals = {}
 				for i, val in pairs(pa:data()) do
@@ -184,7 +185,7 @@ handlers.on_run = function(app)
 				err_count = 0
 			else
 				err_count = err_count + 1
-				print(os.date(), 'pa is nil', err)
+				log:debug(ioname, 'pa is nil error:'..err)
 			end
 		end
 	end

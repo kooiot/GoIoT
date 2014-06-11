@@ -130,7 +130,7 @@ _M.ReadHoldingRegisters = function (addr, len)
 		end
 		for i = 1, len do
 			if not pdu:parser(i, 'uint16') then
-				return nil, 'not enough data'
+				return nil, 'not enough data '..len..' '..i
 			end
 		end
 		return pdu

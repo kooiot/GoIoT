@@ -23,28 +23,27 @@ echo $1
 #PID_FOLDER=/var/run/
 PID_FOLDER=/tmp/
 if [ $1 = "start" ] ; then
-	#start-stop-daemon --start --oknodo --name rdb --pidfile /var/run/rdb.pid --chdir ~/cad2/app/rdb --background --startas /usr/bin/lua5.2 -- start.lua
+	start-stop-daemon --start --oknodo --make-pidfile --pidfile $PID_FOLDER/logs.pid --chdir $CAD_DIR/core/logs --background --startas /usr/bin/lua -- start.lua -- logs
+	start-stop-daemon --start --oknodo --make-pidfile --pidfile $PID_FOLDER/core_services.pid --chdir $CAD_DIR/core/services --background --startas /usr/bin/lua -- start.lua -- services
 	start-stop-daemon --start --oknodo --make-pidfile --pidfile $PID_FOLDER/core_config.pid --chdir $CAD_DIR/core/config --background --startas /usr/bin/lua -- start.lua -- config
 	# make sure config has enough time to startup
 	sleep 1
-	start-stop-daemon --start --oknodo --make-pidfile --pidfile $PID_FOLDER/core_services.pid --chdir $CAD_DIR/core/services --background --startas /usr/bin/lua -- start.lua -- services
 	start-stop-daemon --start --oknodo --make-pidfile --pidfile $PID_FOLDER/core_monitor.pid --chdir $CAD_DIR/core/monitor --background --startas /usr/bin/lua -- start.lua -- monitor
 	start-stop-daemon --start --oknodo --make-pidfile --pidfile $PID_FOLDER/core_iobus.pid --chdir $CAD_DIR/core/iobus --background --startas /usr/bin/lua -- start.lua -- iobus
-	start-stop-daemon --start --oknodo --make-pidfile --pidfile $PID_FOLDER/logs.pid --chdir $CAD_DIR/core/logs --background --startas /usr/bin/lua -- start.lua -- logs
 	start-stop-daemon --start --oknodo --make-pidfile --pidfile $PID_FOLDER/web.pid --chdir $CAD_DIR/web/wsapi --background --startas /usr/local/bin/wsapi -- --config=xavante.conf.lua
 else
 	start-stop-daemon --stop --oknodo --pidfile $PID_FOLDER/web.pid --retry 5
 	rm $PID_FOLDER/web.pid
-	start-stop-daemon --stop --oknodo --pidfile $PID_FOLDER/logs.pid --retry 5
-	rm $PID_FOLDER/logs.pid
 	start-stop-daemon --stop --oknodo --pidfile $PID_FOLDER/core_iobus.pid --retry 5
 	rm $PID_FOLDER/core_iobus.pid
 	start-stop-daemon --stop --oknodo --pidfile $PID_FOLDER/core_monitor.pid --retry 5
 	rm $PID_FOLDER/core_monitor.pid
-	start-stop-daemon --stop --oknodo --pidfile $PID_FOLDER/core_services.pid --retry 5
-	rm $PID_FOLDER/core_services.pid
 	start-stop-daemon --stop --oknodo --pidfile $PID_FOLDER/core_config.pid --retry 5
 	rm $PID_FOLDER/core_config.pid
+	start-stop-daemon --stop --oknodo --pidfile $PID_FOLDER/core_services.pid --retry 5
+	rm $PID_FOLDER/core_services.pid
+	start-stop-daemon --stop --oknodo --pidfile $PID_FOLDER/logs.pid --retry 5
+	rm $PID_FOLDER/logs.pid
 fi
 
 if [ -f /tmp/apps/_list ]; then
