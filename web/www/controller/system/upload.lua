@@ -14,7 +14,7 @@ return {
 			local file = req.post_args['file']
 
 			if file and type(file) == 'table' and next(file) then
-				local _, name = string.match(file.name, "^(.-)([^:/\\]*)$")
+				local name = string.match(file.name, "([^:/\\]+)$")
 
 				local shared = app.model:get('shared')
 				local platform = shared.require('platform')

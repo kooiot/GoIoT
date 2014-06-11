@@ -11,7 +11,8 @@ local lfs = require 'lfs'
 local function on_remove(apps_folder) 
 	return function(app, insname, keep)
 		log:warn("APP", "Removing installed application", insname)
-		local lpath = app.path:gsub('/', '.')
+		local path = app.path or insname
+		local lpath = path:gsub('/', '.')
 		if lpath ~= insname then
 			local dest_folder = apps_folder..'/'..insname
 			assert(os.execute('rm -rf '..dest_folder))
