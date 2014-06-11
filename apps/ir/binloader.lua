@@ -9,7 +9,7 @@ local lfs = require 'lfs'
 local commands = {
 }
 
-local load_command_file = function(path)
+local load_command_file = function(devname, path)
 	local name = path:match('.*/([^/]+)$')
 	name = name:match('^(.+)%.[^%.]*') or name
 	print(name)
@@ -20,14 +20,28 @@ local load_command_file = function(path)
 		return
 	end
 	local cmd = file:read('*a')
-	commands[name] = {name=name, cmd = cmd}
+	commands[devname] = commands[devname] or {}
+	commands[devname][name] = cmd
 	file:close()
 end
 
+local function load_device_folder(devname, directory)
+	for file in lfs.dir(directory) do
+		local path = directory..'/'..file
+		if lfs.attributes(path, "mode") == "file" then
+			load_command_file(devname, path)
+		end
+	end
+end
+
 for file in lfs.dir(directory) do
-	--- Cannot use the == 'file' as lfs cannot get the infomration of bin file correctly...
-	if lfs.attributes(file, "mode") ~= "directory" then
-		load_command_file(directory..'/'..file)
+	local path = directory..'/'..file
+	if lfs.attributes(path, "mode") == "directory" then
+		if file ~= '.' and file ~= '..' then
+			print(file)
+			local devname = file
+			load_device_folder(devname, path)
+		end
 	end
 end
 

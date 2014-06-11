@@ -23,6 +23,30 @@ local function load_from_file()
 	return c
 end
 
+local function add_device_cmd(device, name, cmd)
+	if not device or not name or not cmd then
+		return nil, 'How dare U!!'
+	end
+
+	local dev = app.devices:get(device)
+	if not dev then
+		dev = app.devices:add(device, 'IR Devices ['..device..']')
+	end
+	if not dev then
+		return nil, 'Cannot create devices for '..device
+	end
+
+	print('Added command '..device..':'..name)
+	local obj = dev.commands:get(name)
+	if not obj then
+		dev.commands:add(name, 'Control command', {})
+	end
+
+	commands[device] = commands[device] or {}
+	commands[device][name] = cmd
+	return true
+end
+
 local function load_conf(app, reload)
 	if commands then
 		return nil
@@ -36,13 +60,15 @@ local function load_conf(app, reload)
 	end
 	commands = cjson.decode(cmds)
 	if commands then
-		local dev = app.devices:add('ir', 'IR Controller')
-		for k, v in pairs(commands) do
-			if v.cmd then
-				print('Added command '..k)
-				dev.commands:add(k, 'Controll command', {})
-			else
-				log:warn(ioname, "Incorrect command entry found!")
+		for devname, cmds in pairs(commands) do
+			if type(cmds) ~= 'table' then
+				break
+			end
+
+			local dev = app.devices:add(devname, 'IR Devices ['..devname..']')
+			for name, cmd in pairs(cmds) do
+				print('Added command '..devname..':'..name)
+				dev.commands:add(name, 'Control command', {})
 			end
 		end
 	end
@@ -127,7 +153,7 @@ handlers.on_write = function(app, path, value, from)
 end
 
 
-local function send_cmd(cmd)
+local function _send_cmd(cmd)
 	print(hex.dump(cmd))
 	port:write(string.char(0xe3))
 	for i = 1, string.len(cmd) do
@@ -141,47 +167,53 @@ local function send_cmd(cmd)
 	return r, err
 end
 
-local function send_cmds(cmds)
-	local dev = app.devices:get('ir')
-	if dev then
-		for _, cmd in pairs(cmds) do
-			cmd = tostring(cmd)
-			local cmdobj = dev.commands:get(cmd)
-			if not cmdobj then
-				for k, v in pairs(dev.commands) do
-					print(k, string.len(k), v)
-				end
-				return nil, "No such command "..cmd
-			end		
-
-			local c = commands[cmdobj.name]
-			if c then
-				log:info(ioname, string.format('Writing commmand[%s] to devices', cmd))
-				local r, err = send_cmd(c.cmd)
-				if not r then
-					return r, err
-				end
-			else
-				return nil, "No command name"
-			end
-		end
-		return true
-	else
-		return nil, 'No such devices'
+local function send_cmd(device, name)
+	local dev = app.devices:get(device)
+	if not dev or not commands[device] then
+		return nil, 'No such devices '..device
 	end
 
+	local cmdobj = dev.commands:get(name)
+	if not cmdobj then
+		for k, v in pairs(dev.commands) do
+			print(k, string.len(k), v)
+		end
+		return nil, "No such command "..name
+	end		
+
+	local cmd = commands[device][cmdobj.name]
+	if cmd then
+		log:info(ioname, string.format('Writing commmand[%s] to devices', name))
+		local r, err = _send_cmd(cmd)
+		if not r then
+			return r, err
+		end
+	else
+		return nil, "No command name"
+	end
+	return true
 end
+
 handlers.on_command = function(app, path, value, from)
 	local match = '^'..ioname..'/([^/]+)/commands/(.+)'
 	local devname, cmd = path:match(match)
-	local cjson = require 'cjson.safe'
+	if devname == 'ir' and cmd == 'send' then
+		local cjson = require 'cjson.safe'
 
-	if type(value) ~= 'table' then
-		value = {value}
+		if type(value) ~= 'table' then
+			value = {value}
+		end
+		local pp = require 'shared.PrettyPrint'
+		print(pp(value))
+
+		for _, cmd in pairs(value) do
+			cmd = tostring(cmd)
+			local device, name = cmd:match('^([^/]+)/(.+)$')
+			send_cmd(device, name)
+		end
+	else
+		send_cmd(device, cmd)
 	end
-	local pp = require 'shared.PrettyPrint'
-	print(pp(value))
-	return send_cmds(value)
 end
 
 handlers.on_import = function(app, filename)
@@ -199,7 +231,9 @@ assert(app)
 app:reg_request_handler('list_commands', function(app, vars)
 	local list = {}
 	for k, v in pairs(commands) do
-		list[#list + 1] = k
+		for name, _ in pairs(v) do
+			list[#list + 1] = k..'/'..name
+		end
 	end
 	local reply = {'list_commands', {result=true, commands=list}}
 	app.server:send(cjson.encode(reply))
@@ -237,6 +271,23 @@ app:reg_request_handler('learn_result', function(app, vars)
 		learn_result = hex.dump(learn_table.result)
 	end
 	local reply = {'learn_result', {result = learn_result and true or false, learn = learn_result}}
+	app.server:send(cjson.encode(reply))
+end)
+
+app:reg_request_handler('learn_save', function(app, vars)
+	local result = false
+	local err = 'no learn result'
+	if vars.name and vars.device then
+		if not learn_table.learning and learn_table.result then
+			add_device_cmd(vars.device, vars.name, learn_table.result)
+		else
+			err = 'no learn result'
+		end
+	else
+		err = 'no learn result name or device provided'
+	end
+
+	local reply = {'learn_result', {result = result, err=err}}
 	app.server:send(cjson.encode(reply))
 end)
 
