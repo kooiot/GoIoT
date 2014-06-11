@@ -119,11 +119,11 @@ local function reading(app)
 	if port:read(1) then
 		print('SSSSSSSSSSSSSS')
 	end
-	--[[
-	local f = io.open('/tmp/aaaa', 'w+')
+
+	local f = io.open('/tmp/ir_learn_result', 'w+')
 	f:write(learn_table.result)
 	f:close()
-	]]--
+
 	learn_table.learning = false
 end
 
@@ -247,7 +247,7 @@ local function learn()
 	end
 	local r, data, size = port:read(1, 500)
 	if not r then
-		return nil, "Start learn failure, err: "..data
+		return nil, "Start learn failure, err: "..( data or 'timeout')
 	end
 	if data ~= string.char(0xE0) then
 		return nil, "Start learn failure, returns "..hex.dump(data)
