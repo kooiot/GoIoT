@@ -67,7 +67,7 @@ function class:on_request(msg)
 	if self.mpft[msgtype] then
 		self.mpft[msgtype](self, json[2])
 	else
-		send_err(self.server, 'No handler for message '..msgtype)
+		send_err(self.server, self.name..' has no handler for message '..msgtype)
 	end
 end
 

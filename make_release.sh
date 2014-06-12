@@ -57,6 +57,8 @@ sudo rm -rf __install
 ./scripts/release_app.sh network
 # Release IR Controller
 ./scripts/release_app.sh ir
+# Release Auto Control
+./scripts/release_app.sh autoctrl
 
 # Done
 echo 'DONE'

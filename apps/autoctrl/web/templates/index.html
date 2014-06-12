@@ -1,0 +1,67 @@
+<? extend 'layout.html'?>
+
+<div class="tab segment">
+	<div class="container">
+		<div class="introduction">
+			<h2 class="ui dividing header"> <?=_("Auto Control")?> - <?=app.appname ?> </h2>
+		</div>
+	</div>
+</div>
+
+<div class="main container">
+	<div class="ui message" id="status"><?=info or '&nbsp;'?></div>
+
+	<form class="ui form" method="post" action="/apps/<?=app.appname?>/send">
+		<div class="ui label"> <?=_('Command')?>: </div>
+		<div class="ui selection labeled dropdown">
+			<? local def = (#commands ~= 0 and commands[1].path or '') ?>
+			<input id="command" name="command" type="hidden" value="<?=def?>"/>
+			<div class="default text"><? = def ?> </div>
+			<i class="dropdown icon"></i>
+			<div class="menu">
+				<? for _, v in pairs(commands) do ?>
+				<div class="item" data-value="<?=v.path?>"><?=v.path?></div>
+				<? end ?>
+			</div>
+		</div>
+		<input class="ui teal button submit" type="submit" value="<?=_('Send')?>"></input>
+	</form>
+
+	<form class="ui form" method="post" action="/apps/<?=app.appname?>/read">
+		<div class="ui label"> <?=_('Input')?>: </div>
+		<div class="ui selection labeled dropdown">
+			<? local def = (#inputs ~= 0 and inputs[1].path or '') ?>
+			<input id="input" name="input" type="hidden" value="<?=def?>"/>
+			<div class="default text"><? = def ?> </div>
+			<i class="dropdown icon"></i>
+			<div class="menu">
+				<? for _, v in pairs(inputs) do ?>
+				<div class="item" data-value="<?=v.path?>"><?=v.path?></div>
+				<? end ?>
+			</div>
+		</div>
+		<input class="ui teal button submit" type="submit" value="<?=_('Read')?>"></input>
+	</form>
+
+	<form class="ui form" method="post">
+		<textarea class="ui full filled fluid textarea" name="rules" id="rules"><?=rules or ''?></textarea>
+		<input class="ui right floated teal submit button" type="submit" value="<?=_('Save')?>"/>
+	</form>
+
+</div>
+
+<script>
+	(function() {
+		var status = $('#status');
+		$('form').ajaxForm({
+			beforeSend: function() {
+				status.text(' ');
+			},
+			success: function() {
+			},
+			complete: function(xhr) {
+				status.text(xhr.responseText);
+			}
+		}); 
+	})();
+</script>

@@ -2,23 +2,27 @@ msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
 
-msgid "Server URL"
+msgid "Command"
 msgstr ""
 
 
-msgid "SymLink Cloud"
+msgid "Read"
 msgstr ""
 
 
-msgid "Timeout"
-msgstr ""
-
-
-msgid "Auth Key"
+msgid "Send"
 msgstr ""
 
 
 msgid "Save"
+msgstr ""
+
+
+msgid "Input"
+msgstr ""
+
+
+msgid "Auto Control"
 msgstr ""
 
 

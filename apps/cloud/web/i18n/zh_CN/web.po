@@ -4,14 +4,14 @@ msgstr "Content-Type: text/plain; charset=UTF-8\n"
 msgid "Server URL"
 msgstr "服务器地址"
 
-msgid "Auth Key"
-msgstr "认证密匙"
-
 msgid "SymLink Cloud"
 msgstr "SymLink数据云"
 
-msgid "Save"
-msgstr "保存"
-
 msgid "Timeout"
 msgstr "超时"
+
+msgid "Auth Key"
+msgstr "认证密匙"
+
+msgid "Save"
+msgstr "保存"

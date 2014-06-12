@@ -2,63 +2,7 @@ msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
 
-msgid "Forum"
-msgstr ""
-
-
 msgid "Install New"
-msgstr ""
-
-
-msgid "Backup"
-msgstr ""
-
-
-msgid "Sign In"
-msgstr ""
-
-
-msgid "Network"
-msgstr ""
-
-
-msgid "Applications"
-msgstr ""
-
-
-msgid "About"
-msgstr ""
-
-
-msgid "Services"
-msgstr ""
-
-
-msgid "Close Menu"
-msgstr ""
-
-
-msgid "Home"
-msgstr ""
-
-
-msgid "System"
-msgstr ""
-
-
-msgid "Upgrade"
-msgstr ""
-
-
-msgid "Settings"
-msgstr ""
-
-
-msgid "Advance"
-msgstr ""
-
-
-msgid "Help"
 msgstr ""
 
 
@@ -66,7 +10,7 @@ msgid "Simple"
 msgstr ""
 
 
-msgid "Log"
+msgid "Network"
 msgstr ""
 
 
@@ -74,19 +18,7 @@ msgid "More"
 msgstr ""
 
 
-msgid "Menu"
-msgstr ""
-
-
-msgid "Packets"
-msgstr ""
-
-
-msgid "Login Now"
-msgstr ""
-
-
-msgid "Data"
+msgid "Upgrade"
 msgstr ""
 
 
@@ -94,7 +26,75 @@ msgid "Store"
 msgstr ""
 
 
+msgid "Backup"
+msgstr ""
+
+
+msgid "Login Now"
+msgstr ""
+
+
+msgid "Services"
+msgstr ""
+
+
+msgid "Settings"
+msgstr ""
+
+
 msgid "Utilies"
+msgstr ""
+
+
+msgid "Home"
+msgstr ""
+
+
+msgid "Packets"
+msgstr ""
+
+
+msgid "Advance"
+msgstr ""
+
+
+msgid "Sign In"
+msgstr ""
+
+
+msgid "Forum"
+msgstr ""
+
+
+msgid "Menu"
+msgstr ""
+
+
+msgid "About"
+msgstr ""
+
+
+msgid "System"
+msgstr ""
+
+
+msgid "Close Menu"
+msgstr ""
+
+
+msgid "Data"
+msgstr ""
+
+
+msgid "Help"
+msgstr ""
+
+
+msgid "Log"
+msgstr ""
+
+
+msgid "Applications"
 msgstr ""
 
 

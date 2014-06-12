@@ -211,8 +211,9 @@ handlers.on_command = function(app, path, value, from)
 			local device, name = cmd:match('^([^/]+)/(.+)$')
 			send_cmd(device, name)
 		end
+		return true
 	else
-		send_cmd(device, cmd)
+		return send_cmd(devname, cmd)
 	end
 end
 

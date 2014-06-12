@@ -2,7 +2,19 @@ msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
 
+msgid "Save"
+msgstr ""
+
+
 msgid "Command"
+msgstr ""
+
+
+msgid "Restart Learning"
+msgstr ""
+
+
+msgid "Control Panel"
 msgstr ""
 
 
@@ -14,15 +26,7 @@ msgid "Editor"
 msgstr ""
 
 
-msgid "Learn"
-msgstr ""
-
-
-msgid "Send"
-msgstr ""
-
-
-msgid "Save"
+msgid "Test"
 msgstr ""
 
 
@@ -30,15 +34,11 @@ msgid "IR Controller"
 msgstr ""
 
 
-msgid "Test"
+msgid "Learn"
 msgstr ""
 
 
-msgid "Control Panel"
-msgstr ""
-
-
-msgid "Restart Learning"
+msgid "Send"
 msgstr ""
 
 
