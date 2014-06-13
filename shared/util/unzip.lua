@@ -77,7 +77,7 @@ return function (path, destination, force)
   if force then
 	  cmd = "unzip -o %s -d %s"
   end
-  local execute = require 'shared.util.execute'
+  local execute = require 'shared.compat.execute'
   local r, error_code = execute(cmd:format(path, destination))
 
   if r then

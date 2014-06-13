@@ -1,4 +1,4 @@
-local execute = require 'shared.util.execute'
+local execute = require 'shared.compat.execute'
 local _M = {}
 
 local function pid_file(name)
