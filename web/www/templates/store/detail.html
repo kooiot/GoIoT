@@ -7,18 +7,18 @@
 			<? local author, name = appname:match('([^/]-)/(.+)') ?>
 			<h2 class="ui dividing header"> <?=name or 'Unkonwn' ?> </h2>
 			<div class="ui breadcrumb">
-				<a class="section" href="/">Home</a>
+				<a class="section" href="/"><?=_("Home")?></a>
 				<i class="right arrow icon divider"></i>
-				<a class="section" href="/store">Store</a>
+				<a class="section" href="/store"><?=_("Store")?></a>
 				<i class="right arrow icon divider"></i>
-				<div class="active section">Details</div>
+				<div class="active section"><?=_("Details")?></div>
 			</div>
 		</div>
 	</div>
 </div>
 <div class="ui basic small modal">
 	<div class="header">
-		Choose a local instance name
+		<?=_("Choose a local instance name")?>
 	</div>
 	<div class="content">
 		<div class="left">
@@ -27,7 +27,7 @@
 		<div class="right">
 			<p>Pick up an unique local instance name</p>
 			<div class="ui small input">
-				<input id="app_lname" type="text" placeholder="Instance Name..."></input>
+				<input id="app_lname" type="text" placeholder="<?=_('Instance Name...')?>"></input>
 				<div class="ui corner label">
 					<i class="asterisk icon"></i>
 				</div>
@@ -38,10 +38,10 @@
 		<div class="two fluid ui buttons">
 			<div class="ui negative labeled icon button">
 				<i class="remove icon"></i>
-				Cancel
+				<?=_("Cancel")?>
 			</div>
 			<div class="ui positive right labeled icon button">
-				Install
+				<?=_("Install")?>
 				<i class="checkmark icon"></i>
 			</div>
 		</div>
@@ -51,8 +51,7 @@
 <div class="main container">
 	<i class="ui large user icon"></i>
 	<a href="/user/<?=author or 'symtech' ?>" > <?=author or 'Symtech Inc' ?> </a>
-	<!--<a class="ui button blue right floated" href="/store/get/<?=appname?>" >Install</a> -->
-	<div id="btn_install" class="ui disabled button blue right floated" onclick="ask_for_lname();">Install</div>
+	<div id="btn_install" class="ui disabled button blue right floated" onclick="ask_for_lname();"><?=_("Install")?></div>
 	<div>
 		<div>
 			<i class="ui tag icon"></i>
@@ -141,7 +140,7 @@
 					var lname = $('#app_lname').val();
 					lname = lname.trim();
 					if (lname.length == 0) {
-						window.alert('Instance Name cannot be empty');
+						window.alert("<?=_('Instance Name cannot be empty')?>");
 						return false;
 					};
 					if (isRegisterUserName(lname)) {
@@ -165,7 +164,7 @@
 				//alert("Application Started!!");
 				})
 		.fail(function() {
-				alert("Failed to send start request!!");
+				alert("<?=('Failed to send start request!!')?>");
 				});
 
 	};

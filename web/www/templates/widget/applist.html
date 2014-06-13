@@ -3,9 +3,9 @@
 <table id="applist" class="ui sortable table segment">
 	<thead>
 		<tr>
-			<th>Name</th>
-			<th>Description</th>
-			<th>Controls</th>
+			<th><?=_("Name")?></th>
+			<th><?=_("Description")?></th>
+			<th><?=_("Controls")?></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -39,7 +39,7 @@
 				</i>
 			</td>
 			<td>
-				<a class="ui mini button" href="/apps/<?=v.lname?>"> View </a>
+				<a class="ui mini button" href="/apps/<?=v.lname?>"> <?=translate("View")?></a>
 			</td>
 		</tr>
 		<? end ?>
@@ -48,8 +48,8 @@
 	</tbody>
 	<tfoot>
 		<tr>
-			<th>Total <?=counts?></th>
-			<th>In <?= cates?> types</th>
+			<th><?=_("Total")?> <?=counts?></th>
+			<th><?=_("Types")?> <?= cates?> </th>
 			<th></th>
 		</tr>
 	</tfoot>
@@ -60,7 +60,7 @@
 	<i class="info icon"></i>
 	<div class="content">
 		<div class="header">
-			No application?! Install ONE
+			<?=_("No application?! Install ONE")?>
 			<a href="/store" class="ui blue link">
 				<b> </b>
 				<i class="cloud download large icon"></i>

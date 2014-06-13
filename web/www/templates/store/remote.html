@@ -1,4 +1,4 @@
-<? include('widget/sticky.html', {items = { 'Populars', 'Recents' }}) ?>
+<? include('widget/sticky.html', {items = { _('Populars'), _('Recents') }}) ?>
 
 <form id="cloudform" class="ui form">
 	<div class="three fields">
@@ -10,14 +10,14 @@
 		</div>
 		<div class="buttons">
 			<input type="submit" class="ui tiny teal submit button"/>
-			<div class="ui small teal button item" onclick="query_all();">Reload</div>
+			<div class="ui small teal button item" onclick="query_all();"><?=_("Reload")?></div>
 		</div>
 	</div>
 </form>
 
-<h2 class="ui dividing header"> Populars</h2>
+<h2 class="ui dividing header"> <?=("Populars")?></h2>
 <div id="pop_list"></div>
-<h2 class="ui dividing header"> Recents</h2>
+<h2 class="ui dividing header"> <?=("Recents")?></h2>
 <div id="rec_list"></div>
 
 <div id="status"></div>
@@ -90,7 +90,7 @@
 			data:{ type:typ, key : key, limit : 10 },
 			error: function(jqXHR, textStatus, errorThrown) {
 				if (textStatus == "error") {
-					alert("Failed to fetch application information from store server, error : " + errorThrown);
+					alert("<?=_('Failed to fetch application information from store server, error : ')?>" + errorThrown);
 				} else {
 					alert(textStatus);
 				}

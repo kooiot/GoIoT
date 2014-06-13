@@ -1,6 +1,6 @@
-<? include('widget/sticky.html', {items = { 'Summary', 'Device Events', 'System Events'}}) ?>
+<? include('widget/sticky.html', {items = { _('Summary'), _('Device Events'), _('System Events')}}) ?>
 
-<h2 class="ui dividing header"> Summary</h2>
+<h2 class="ui dividing header"> <?=_("Summary")?></h2>
 <div class="ui computer only grid">
 	<div class="ten wide column">
 		<?
@@ -12,11 +12,11 @@
 			sumevs[#sumevs + 1] = v
 		end
 		?>
-		<? include('widget/events.html', {title="Devices", events=sumevs}) ?>
+		<? include('widget/events.html', {title=_("Devices"), events=sumevs}) ?>
 	</div>
 	<div class="six wide column">
 		<? 
-		include('widget/sevents.html', {title="System", 
+		include('widget/sevents.html', {title=_("System"), 
 		events={
 		'<a href="/user/admin"> admin </a> has upgrade the system to <a>1.2.1</a>',
 		'<a> 1.2.1 </a> has released, please upgrade your system from <a>here</a>',
@@ -25,11 +25,11 @@
 		?>
 	</div>
 </div>
-<h2 class="ui dividing header"> Device Events</h2>
-<? include('widget/events.html', {title="Devices", events=events}) ?>
-<h2 class="ui dividing header"> System Events</h2>
+<h2 class="ui dividing header"> <?=_("Device Events")?></h2>
+<? include('widget/events.html', {title=_("Devices"), events=events}) ?>
+<h2 class="ui dividing header"> <?=_("System Events")?></h2>
 <? 
-include('widget/sevents.html', {title="System", 
+include('widget/sevents.html', {title=_("System"), 
 events={
 '<a href="/user/admin"> admin </a> has upgrade the system to <a>1.2.1</a>',
 '<a> 1.2.1 </a> has released, please upgrade your system from <a>here</a>',

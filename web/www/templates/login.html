@@ -6,7 +6,7 @@
 	<div class="center aligned column">
 		<div id="btn_signup" class="huge green ui labeled icon button">
 			<i class="signup icon"></i>
-			Sign Up
+			<?=_("Sign Up") ?>
 		</div>
 	</div>
 	<div class="ui vertical divider">
@@ -18,7 +18,7 @@
 		<? end ?>
 		<form class="ui form segment" action="/user/login" method="post">
 			<div class="field">
-				<label>Username</label>
+				<label><?=_("Username")?></label>
 				<div class="ui left labeled icon input">
 					<input placeholder="Username" name="username" type="text" />
 					<i class="user icon"></i>
@@ -28,7 +28,7 @@
 				</div>
 			</div>
 			<div class="field">
-				<label>Password</label>
+				<label><?=_("Password")?></label>
 				<div class="ui left labeled icon input">
 					<input type="password" name="password"/>
 					<i class="lock icon"></i>
@@ -38,7 +38,7 @@
 				</div>
 			</div>
 			<div class="ui field">
-			<input type="submit" class="ui blue submit button" value="Submit"/>
+			<input type="submit" class="ui blue submit button" value="<?=_('Login')?>"/>
 		</div>
 		</form>
 	</div>
@@ -46,8 +46,8 @@
 <? else ?>
 <div class="ui two column middle aligned relaxed grid basic segment">
 	<div class="center aligned column">
-		<div class="ui blue message">Welcome <?=lwf.ctx.user.username ?></div>
-		<a class="ui blue button" href="/"><i class="home icon"></i> Home </a>
+		<div class="ui blue message"><?=_("Welcome")?> <?=lwf.ctx.user.username ?></div>
+		<a class="ui blue button" href="/"><i class="home icon"></i> <?=_("Home")?> </a>
 	</div>
 
 	<div class="ui vertical divider">
@@ -57,7 +57,7 @@
 	<div class="center aligned column">
 		<a class="huge red ui labeled icon button ", href="/user/logout">
 			<i class="help icon"></i>
-			Logout
+			<?=_("Logout")?>
 		</a>
 	</div>
 </div>

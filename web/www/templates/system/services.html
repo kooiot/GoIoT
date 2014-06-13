@@ -6,20 +6,20 @@
 <div class="segment">
 	<div class="container">
 		<div class="introduction">
-			<h3 class="ui dividing header"> Services Management</h3>
+			<h3 class="ui dividing header"> <?=_("Services Management")?></h3>
 		</div>
 	</div>
 </div>
 <div class="main container">
-<a class="ui teal button" href="">Refresh</a>
+<a class="ui teal button" href=""><?=_("Refresh")?></a>
 <table class="ui sortable table segment">
 	<thead>
 		<tr>
-			<th>Name</th>
-			<th>Status</th>
-			<th>PID</th>
-			<th>Action</th>
-			<th>Result</th>
+			<th><?=_("Name")?></th>
+			<th><?=_("Status")?></th>
+			<th><?=_("PID")?></th>
+			<th><?=_("Action")?></th>
+			<th><?=_("Result")?></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -52,8 +52,8 @@
 	</tbody>
 	<tfoot>
 		<tr>
-			<th>Total <?=counts?></th>
-			<th>In <?= cates?> types</th>
+			<th><?=_("Total")?> <?=counts?></th>
+			<th></th>
 			<th></th>
 			<th></th>
 			<th></th>
@@ -75,7 +75,7 @@
 
 <form class="ui form segment" action="" method="post">
 	<div class="field">
-		<label>Name</label>
+		<label><?=_("Name")?></label>
 		<div class="ui left labeled icon input">
 			<input id="appname" placeholder="name..." name="name" type="text" />
 		</div>
@@ -85,7 +85,7 @@
 	</div>
 
 	<div class="field">
-		<input type="submit" class="ui blue submit button" value="Submit"/>
+		<input type="submit" class="ui blue submit button" value="<?=_('Run as Services')?>"/>
 	</div>
 </form>
 

@@ -2,19 +2,11 @@ msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
 
-msgid "Command"
-msgstr ""
-
-
-msgid "Read"
-msgstr ""
-
-
 msgid "Send"
 msgstr ""
 
 
-msgid "Save"
+msgid "Auto Control"
 msgstr ""
 
 
@@ -22,7 +14,15 @@ msgid "Input"
 msgstr ""
 
 
-msgid "Auto Control"
+msgid "Read"
+msgstr ""
+
+
+msgid "Command"
+msgstr ""
+
+
+msgid "Save"
 msgstr ""
 
 

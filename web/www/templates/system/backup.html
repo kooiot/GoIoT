@@ -3,26 +3,26 @@
 <div class="segment">
 	<div class="container">
 		<div class="introduction">
-			<h3 class="ui dividing header"> Backup &amp; Restore</h3>
+			<h3 class="ui dividing header"> <?=_("Backup")?> &amp; <?=_("Restore")?></h3>
 		</div>
 	</div>
 </div>
 <div class="main container">
 	<div class="ui primary segment">
-		<div class="ui teal ribbon label">Backup System</div>
+		<div class="ui teal ribbon label"><?=_("Backup System")?></div>
 		<p>
-		<a id="btn_backup_sys" class="ui small green button">Pack System</a>
+		<a id="btn_backup_sys" class="ui small green button"><?=("Pack System")?></a>
 		</p>
-		<div class="ui teal ribbon label">Restore System</div>
+		<div class="ui teal ribbon label"><?=_("Restore System")?></div>
 		<p>
 		<form action="/system/restore" method="post" enctype="multipart/form-data">
 			<input type="hidden" name="filetype" value="app" />
 			<input type="file" name="file" />
-			<input type="submit" class="ui small red submit button" value="Restore"></input>
+			<input type="submit" class="ui small red submit button" value="<?=_('Restore')?>"></input>
 		</form>
 		</p>
 
-		<div class="ui teal ribbon label">Progress and Output</div>
+		<div class="ui teal ribbon label"><?=("Progress and Output")?></div>
 		<p>
 		<div class="ui green progress">
 			<div class="small bar"></div>

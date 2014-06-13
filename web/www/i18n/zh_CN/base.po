@@ -1,77 +1,347 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8\n"
 
-msgid "Install New"
-msgstr "安装应用"
+msgid "TIME"
+msgstr "时间"
 
-msgid "Simple"
-msgstr "精简模式"
+msgid "Status"
+msgstr "状态"
 
-msgid "Network"
-msgstr "网络"
+msgid "SN"
+msgstr "串号"
 
-msgid "More"
-msgstr "更多"
-
-msgid "Upgrade"
-msgstr "升级"
-
-msgid "Store"
-msgstr "商店"
-
-msgid "Backup"
-msgstr "备份"
-
-msgid "Login Now"
-msgstr "登陆"
-
-msgid "Services"
-msgstr "服务"
-
-msgid "Settings"
-msgstr "设定"
-
-msgid "Utilies"
-msgstr "工具"
-
-msgid "Home"
-msgstr "主页"
-
-msgid "Packets"
-msgstr "报文"
-
-msgid "Advance"
-msgstr "高级模式"
-
-msgid "Sign In"
-msgstr "登入"
-
-msgid "Forum"
-msgstr "论坛"
-
-msgid "Menu"
-msgstr "菜单"
-
-msgid "About"
-msgstr "关于"
-
-msgid "System"
-msgstr "系统"
-
-msgid "Close Menu"
-msgstr "关闭菜单"
-
-msgid "Data"
-msgstr "数据"
-
-msgid "Help"
-msgstr "帮助"
-
-msgid "Log"
-msgstr "日志"
+msgid "Device Events"
+msgstr "设备事件"
 
 msgid "Applications"
 msgstr "应用"
 
+msgid "Choose a local instance name"
+msgstr "选择本地实例名"
+
+msgid "Close Menu"
+msgstr "关闭菜单"
+
 msgid "Logout"
 msgstr "退出"
+
+msgid "Login"
+msgstr "登陆"
+
+msgid "DATETIME"
+msgstr "日期时间"
+
+msgid "Login Now"
+msgstr "登陆"
+
+msgid "Auth Key"
+msgstr "认证密匙"
+
+msgid "Services"
+msgstr "服务"
+
+msgid "Result"
+msgstr "结果"
+
+msgid "Failed to send start request!!"
+msgstr "发送启动指令失败"
+
+msgid "Refresh"
+msgstr "刷新"
+
+msgid "CPU LOAD"
+msgstr "处理器负荷"
+
+msgid "Install Application"
+msgstr "安装应用"
+
+msgid "Services Management"
+msgstr "服务管理"
+
+msgid "Upgrade"
+msgstr "升级"
+
+msgid "Simple"
+msgstr "精简模式"
+
+msgid "Populars"
+msgstr "热门"
+
+msgid "Devices"
+msgstr "设备"
+
+msgid "No application?! Install ONE"
+msgstr "没有安装任何应用？！ 现在进行安装"
+
+msgid "Instance Name cannot be empty"
+msgstr "实例名称不能为空"
+
+msgid "Cancel"
+msgstr "取消"
+
+msgid "Abort"
+msgstr "终止"
+
+msgid "CPU"
+msgstr "处理器"
+
+msgid "Cloud"
+msgstr "云"
+
+msgid "Details"
+msgstr "详细"
+
+msgid "Store"
+msgstr "商店"
+
+msgid "Summary"
+msgstr "摘要"
+
+msgid "Data"
+msgstr "数据"
+
+msgid "Settings"
+msgstr "设定"
+
+msgid "Management"
+msgstr "管理"
+
+msgid "Server"
+msgstr "服务器"
+
+msgid "Cache"
+msgstr "缓存"
+
+msgid "Application Store"
+msgstr "应用商店"
+
+msgid "OS"
+msgstr "操作系统"
+
+msgid "Name"
+msgstr "名称"
+
+msgid "LOCALE"
+msgstr "本地语言"
+
+msgid "Failed to fetch application information from store server, error : "
+msgstr "从应用商店服务器获取应用信息失败,错误:"
+
+msgid "Recents"
+msgstr "最新"
+
+msgid "Sign In"
+msgstr "登入"
+
+msgid "Confirm"
+msgstr "确认"
+
+msgid "Upgrading"
+msgstr "更新中"
+
+msgid "System wide settings"
+msgstr "系统级设定"
+
+msgid "Affected Instance"
+msgstr "受影响的应用实例"
+
+msgid "SYSTEM"
+msgstr "系统"
+
+msgid "Cached"
+msgstr "缓存"
+
+msgid "Username"
+msgstr "用户名"
+
+msgid "Progress and Output"
+msgstr "进度和输出"
+
+msgid "Used"
+msgstr "使用"
+
+msgid "KEY"
+msgstr "密匙"
+
+msgid "Instance Name"
+msgstr "实例名"
+
+msgid "Log"
+msgstr "日志"
+
+msgid "Instance Name..."
+msgstr "实例名.."
+
+msgid "Run as Services"
+msgstr "启动服务"
+
+msgid "Controls"
+msgstr "控制项"
+
+msgid "Installation list"
+msgstr "已安装列表"
+
+msgid "Update"
+msgstr "更新"
+
+msgid "About"
+msgstr "关于"
+
+msgid "Upgrade System"
+msgstr "升级系统"
+
+msgid "System Management"
+msgstr "系统管理"
+
+msgid "Backup"
+msgstr "备份"
+
+msgid "Device Settings"
+msgstr "设备设定"
+
+msgid "MEMOERY"
+msgstr "内存"
+
+msgid "Forum"
+msgstr "论坛"
+
+msgid "Website"
+msgstr "网站"
+
+msgid "Failed to reboot"
+msgstr "发送重启指令失败"
+
+msgid "Network"
+msgstr "网络"
+
+msgid "Types"
+msgstr "种类"
+
+msgid "Reload"
+msgstr "加载"
+
+msgid "Failed to send stop request!!"
+msgstr "发送停止指令失败"
+
+msgid "Utilies"
+msgstr "工具"
+
+msgid "Install New"
+msgstr "安装应用"
+
+msgid "Backup System"
+msgstr "备份系统"
+
+msgid "Sign Up"
+msgstr "注册"
+
+msgid "System Events"
+msgstr "系统事件"
+
+msgid "Start"
+msgstr "启动"
+
+msgid "Advance"
+msgstr "高级模式"
+
+msgid "View"
+msgstr "查看"
+
+msgid "Remove"
+msgstr "移除"
+
+msgid "Stop"
+msgstr "停止"
+
+msgid "Help"
+msgstr "帮助"
+
+msgid "Packets"
+msgstr "报文"
+
+msgid "HARDWARE"
+msgstr "硬件"
+
+msgid "Enable"
+msgstr "开启"
+
+msgid "More"
+msgstr "更多"
+
+msgid "Action"
+msgstr "动作"
+
+msgid "System Upgrade"
+msgstr "系统升级"
+
+msgid "HOSTNAME"
+msgstr "主机名称"
+
+msgid "Overview"
+msgstr "总览"
+
+msgid "Reboot"
+msgstr "重启"
+
+msgid "Free"
+msgstr "可用"
+
+msgid "Total"
+msgstr "总数"
+
+msgid "Cloud Settings"
+msgstr "云设定"
+
+msgid "Restore"
+msgstr "恢复"
+
+msgid "Menu"
+msgstr "菜单"
+
+msgid "User Key"
+msgstr "用户密匙"
+
+msgid "System Settings"
+msgstr "系统设定"
+
+msgid "VERSION"
+msgstr "版本"
+
+msgid "Home"
+msgstr "主页"
+
+msgid "Welcome"
+msgstr "欢迎"
+
+msgid "Password"
+msgstr "密码"
+
+msgid "Restore System"
+msgstr "恢复系统"
+
+msgid "PID"
+msgstr "进程号"
+
+msgid "Failed to send remove request!!"
+msgstr "发送移除指令失败"
+
+msgid "Install"
+msgstr "安装"
+
+msgid "NETWORK"
+msgstr "网络"
+
+msgid "Description"
+msgstr "描述"
+
+msgid "Events"
+msgstr "事件"
+
+msgid "Apply"
+msgstr "应用"
+
+msgid "Value"
+msgstr "值"
+
+msgid "System"
+msgstr "系统"

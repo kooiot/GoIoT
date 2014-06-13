@@ -2,15 +2,15 @@
 	<form id="settingform" action="/store/settings" method="post" class="ui fluid form">
 		<div class="two fields">
 			<div class="inline field">
-				<div class="ui pointing right label"><b>Server</b></div>
+				<div class="ui pointing right label"><b><?=_("Server")?></b></div>
 				<input name="srvurl" placeholder="domain:port" type="text" value="<?=srvurl?>"/>
 			</div>
 			<div class="inline field">
-				<div class="ui pointing right label"><b>User Key</b></div>
+				<div class="ui pointing right label"><b><?=_("User Key")?></b></div>
 				<input name="userkey" placeholder="Your user key" type="text" value="fake_for_now"/>
 			</div>
 		</div>
-		<input type="submit" class="ui right floated tiny blue submit button" value="Apply"/>
+		<input type="submit" class="ui right floated tiny blue submit button" value="<?=_('Apply')?>"/>
 	</form>
 	<div id="setting_status"></div>
 </div>

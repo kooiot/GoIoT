@@ -1,24 +1,24 @@
 <div class="ui fluid accordion">
 	<div class="active title">
-		<i class="dropdown icon"></i> System Settings
+		<i class="dropdown icon"></i> <?=_("System Settings")?>
 	</div>
 	<div class="active content">
-		<p>System wide settings.</p>
+		<p><?=_("System wide settings")?></p>
 
 		<div class="active title">
 			<i class="dropdown icon"></i>
-			Management
+			<?=_("Management")?>
 		</div>
 		<div class="active content">
 			<div class="ui small buttons">
-			<a href="/system/upgrade" class="ui button">Upgrade</a>
-			<div class="or"> </div>
-			<a href="/system/backup" class="ui button">Backup</a>
-		</div>
+				<a href="/system/upgrade" class="ui button"><?=_("Upgrade")?></a>
+				<div class="or"> </div>
+				<a href="/system/backup" class="ui button"><?=_("Backup")?></a>
+			</div>
 		</div>
 
 		<div class="title">
-			<i class="dropdown icon"></i> Device Settings
+			<i class="dropdown icon"></i> <?=_("Device Settings")?>
 		</div>
 		<div class="content">
 			<div class="ui segment">
@@ -26,30 +26,30 @@
 					<input type="hidden" name="type" value="device" />
 					<div class="two fields">
 						<div class="inline field">
-							<div class="ui pointing right label"><b>Name</b></div>
-							<input name="devname" placeholder="Name" type="text">
+							<div class="ui pointing right label"><b><?=_("Name")?></b></div>
+							<input name="devname" placeholder="<?=_('Name')?>" type="text">
 						</div>
 						<div class="inline field">
-							<div class="ui pointing right label"><b>SN</b></div>
-							<input name="sn" placeholder="SN" type="text">
+							<div class="ui pointing right label"><b><?=_("SN")?></b></div>
+							<input name="sn" placeholder="<?=_('SN')?>" type="text">
 						</div>
 					</div>
 					<div class="title">
 						<i class="icon dropdown"></i>
-						More
+						<?=_("More")?>
 					</div>
 					<div class="content field">
-						<label>Auth Key</label>
-						<input name="authkey" placeholder="KEY" type="text">
+						<label><?=_("Auth Key")?></label>
+						<input name="authkey" placeholder="<?=_('KEY')?>" type="text">
 					</div>
-					<input type="submit" class="ui right floated tiny blue submit button" value="Apply"/>
+					<input type="submit" class="ui right floated tiny blue submit button" value="<?=_('Apply')?>"/>
 				</form>
 			</div>
 		</div>
 	</div>
 	<div class="title">
 		<i class="dropdown icon"></i>
-		Cloud Settings
+		<?=_("Cloud Settings")?>
 	</div>
 	<div class="content">
 		<div class="ui segment">
@@ -57,24 +57,24 @@
 				<input type="hidden" name="type" value="device" />
 				<div class="ui toggle checkbox field">
 					<input name="enable" type="checkbox" checked="true">
-					<label><b>Enable</b></label>
+					<label><b><?=_("Enable")?></b></label>
 				</div>
 				<div class="title">
-					<i class="icon dropdown"></i><b> More </b>
+					<i class="icon dropdown"></i><b> <?=_("More")?> </b>
 				</div>
 				<div class="content field">
 					<div class="two fields">
 						<div class="inline field">
-							<div class="ui pointing right label"><b>Namespace</b></div>
-							<input name="devname" placeholder="Name" type="text">
+							<div class="ui pointing right label"><b><?=("Namespace")?></b></div>
+							<input name="devname" placeholder="<?=_('Name')?>" type="text">
 						</div>
 						<div class="inline field">
-							<div class="ui pointing right label"><b>Auth Key</b></div>
-							<input name="authkey" placeholder="KEY" type="text">
+							<div class="ui pointing right label"><b><?=_("Auth Key")?></b></div>
+							<input name="authkey" placeholder="<?=_('KEY')?>" type="text">
 						</div>
 					</div>
 				</div>
-				<input type="submit" class="ui right floated tiny blue submit button" value="Apply"/>
+				<input type="submit" class="ui right floated tiny blue submit button" value="<?=_('Apply')?>"/>
 			</form>
 		</div>
 	</div>

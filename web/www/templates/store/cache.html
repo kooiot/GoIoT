@@ -8,13 +8,13 @@
 		</div>
 		<div class="buttons">
 			<input type="submit" class="ui tiny teal submit button"/>
-			<div class="ui small teal button item" onclick="query_cache('');">Reload</div>
-			<div class="ui small teal button item" onclick="update_cache();">Update</div>
+			<div class="ui small teal button item" onclick="query_cache('');"><?=_("Reload")?></div>
+			<div class="ui small teal button item" onclick="update_cache();"><?=_("Update")?></div>
 		</div>
 	</div>
 </form>
 
-<h2 class="ui dividing header"> Cached</h2>
+<h2 class="ui dividing header"> <?=_("Cached")?></h2>
 <div id="cache_list"></div>
 
 <div id="cache_status"></div>

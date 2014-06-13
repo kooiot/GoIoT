@@ -22,4 +22,9 @@ cd -
 -- 复制cad2_xz.sfs到openwrt中去
 scp cad2_xz.sfs root@192.168.1.1:/etc/cad2/
 
+-- 链接wsapi（执行一下命令)  (TODO: This is A bug!!!!)
+mkdir -p /usr/local/bin
+cd /usr/local/bin
+ln -s /usr/bin/wsapi .
+
 -- 重启openwrt或者运行 sh /etc/rc.local　即可

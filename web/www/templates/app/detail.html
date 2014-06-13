@@ -5,9 +5,9 @@
 			<h2 class="ui diving header"><? =appname ?> </h2>
 		</div>
 		<div class="ui breadcrumb">
-			<a class="section" href="/">Home</a>
+			<a class="section" href="/"><?=_("Home")?></a>
 			<i class="right arrow icon divider"></i>
-			<a class="section" href="/#/apps">Applications</a>
+			<a class="section" href="/#/apps"><?=_("Applications")?></a>
 			<i class="right arrow icon divider"></i>
 			<div class="active section"><?=appname?></div>
 		</div>
@@ -18,25 +18,25 @@
 
 	<div class="ui icon buttons">
 		<div type="hidden" class="ui button" appname="<?=appname?>" id="btn_start">
-			<i class="teal play icon"></i> Start
+			<i class="teal play icon"></i> <?=_("Start")?>
 		</div>
 		<div type="hidden" class="ui button" appname="<?=appname?>" id="btn_stop">
-			<i class="red stop icon"></i> Stop
+			<i class="red stop icon"></i> <?=_("Stop")?>
 		</div>
 		<a class="ui button" href="/apps/<?=appname?>">
-			<i class="teal settings icon"></i> Settings
+			<i class="teal settings icon"></i> <?=_("Settings")?>
 		</a>
 		<div class="or"></div>
 		<div class="ui button" appname="<?=appname?>" id="btn_remove">
-			<i class="orange trash icon"></i> Remove
+			<i class="orange trash icon"></i> <?=_("Remove")?>
 		</div>
 	</div>
 
 	<? if new_version then ?>
 	<div class="ui label">
-		<a class="ui tiny teal button" href="/store/upgrade/<?=appname?>">Upgrade</a>
+		<a class="ui tiny teal button" href="/store/upgrade/<?=appname?>"><?=_("Upgrade")?></a>
 		<div class="detail">
-			New version [ <?=new_version?> ] found! 
+			<?=("New version")?> [ <?=new_version?> ] <?=("found!")?>
 		</div>
 	</div>
 	<? end ?>
@@ -46,7 +46,7 @@
 	<? --[[include('widget/events.html', {title="Events"}) ]]--?>
 
 	<div class="ui basic feed segment">
-		<h3 class="ui dividing header">Logs</h3>
+		<h3 class="ui dividing header"><?=_("Events")?></h3>
 		<div id="logs_place">
 		</div>
 	</div>
@@ -91,7 +91,7 @@
 				//alert("Application Started!!");
 			})
 			.fail(function() {
-				alert("Failed to send stop request!!");
+				alert("<?=_('Failed to send stop request!!')?>");
 			});
 			btnstop.removeClass("active");
 		});
@@ -105,7 +105,7 @@
 				//alert("Application Started!!");
 			})
 			.fail(function() {
-				alert("Failed to send start request!!");
+				alert("<?=_('Failed to send start request!!')?>");
 			});
 			btnstart.removeClass("active");
 		});
@@ -118,7 +118,7 @@
 			.done(function() {
 			})
 			.fail(function() {
-				alert("Failed to send remove request!!");
+				alert("<?=_('Failed to send remove request!!')?>");
 			});
 			btnremove.removeClass("active");
 		});
