@@ -17,6 +17,8 @@ _M.path.temp = os.getenv('CAD_TEMP_DIR') or '/tmp/apps/_upload'
 _M.path.core = os.getenv('CAD_CORE_DIR') or '/tmp/core'
 
 local function init()
+	os.execute('mkdir -p '.._M.path.appdefconf)
+	os.execute('mkdir -p '.._M.path.temp)
 	os.execute('mkdir -p '.._M.path.core)
 end
 
