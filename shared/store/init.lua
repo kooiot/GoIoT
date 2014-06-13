@@ -1,7 +1,6 @@
 --- Store module
 -- The store helper functions
 
-local unzip = require 'shared.unzip'
 local download = require 'shared.store.download'
 local list = require 'shared.app.list'
 local log = require 'shared.log'

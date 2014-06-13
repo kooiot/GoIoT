@@ -3,7 +3,7 @@
 --
 local log  = require 'shared.log'
 local install = require 'shared.app.install'
-local unzip = require 'shared.unzip'
+local unzip = require 'shared.util.unzip'
 local platform = require 'shared.platform'
 
 

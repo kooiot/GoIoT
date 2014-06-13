@@ -14,7 +14,7 @@ local zmq = require 'lzmq'
 local zpoller = require 'lzmq.poller'
 local ztimer = require 'lzmq.timer'
 local cjson = require 'cjson.safe'
-local fifo = require 'shared.fifo'
+local fifo = require 'shared.util.fifo'
 
 local cache = fifo({timestamp = ztimer.absolute_time(), src="CORE", level="info", content="Log Start"})
 local pcache = fifo()

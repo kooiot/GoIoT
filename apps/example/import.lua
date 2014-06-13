@@ -35,7 +35,7 @@ local function import(app, filename)
 		return nil, "Only csv file can not imported to "..ioname
 	end
 
-	local csv = require 'shared.csv'
+	local csv = require 'shared.util.csv'
 	local t, err = csv.file(filename)
 	if not t then
 		return nil, err or "failed to open the csv file"

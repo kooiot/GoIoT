@@ -7,7 +7,7 @@ application install lua script
 
 local cjson = require 'cjson.safe'
 local lfs = require 'lfs'
-local unzip = require 'shared.unzip'
+local unzip = require 'shared.util.unzip'
 local list = require 'shared.app.list'
 local newinst = require 'shared.app.newinst'
 local pp = require 'shared.PrettyPrint'

@@ -64,7 +64,7 @@ local function cov(path, value)
 end
 
 local function on_start()
-	local CE = require 'shared.compat_env'
+	local CE = require 'shared.compat.env'
 	local load = CE.load
 	if conf.rules then
 		for k, v in pairs(conf.rules) do
