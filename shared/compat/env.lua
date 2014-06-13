@@ -3,7 +3,10 @@
   (c) 2012 David Manura.  Licensed under Lua 5.1/5.2 terms (MIT license).
 --]]
 
-local M = {_TYPE='module', _NAME='compat_env', _VERSION='0.2.2.20120406'}
+---
+-- The utility helper for Lua5.1 has the save load/loadfile as lua5.2 which takes the env from parameter
+
+local _M = {_TYPE='module', _NAME='compat_env', _VERSION='0.2.2.20120406'}
 
 local function check_chunk_type(s, mode)
   local nmode = mode or 'bt' 
@@ -18,11 +21,11 @@ end
 
 local IS_52_LOAD = pcall(load, '')
 if IS_52_LOAD then
-  M.load     = _G.load
-  M.loadfile = _G.loadfile
+  _M.load     = _G.load
+  _M.loadfile = _G.loadfile
 else
-  -- 5.2 style `load` implemented in 5.1
-  function M.load(ld, source, mode, env)
+  --- 5.2 style `load` implemented in 5.1
+  function _M.load(ld, source, mode, env)
     local f
     if type(ld) == 'string' then
       local s = ld
@@ -51,15 +54,15 @@ else
     return f
   end
 
-  -- 5.2 style `loadfile` implemented in 5.1
-  function M.loadfile(filename, mode, env)
+  --- 5.2 style `loadfile` implemented in 5.1
+  function _M.loadfile(filename, mode, env)
     if (mode or 'bt') ~= 'bt' then
       local ioerr
       local fh, err = io.open(filename, 'rb'); if not fh then return fh,err end
       local function ld()
         local chunk; chunk,ioerr = fh:read(4096); return chunk
       end
-      local f, err = M.load(ld, filename and '@'..filename, mode, env)
+      local f, err = _M.load(ld, filename and '@'..filename, mode, env)
       fh:close()
       if not f then return f, err end
       if ioerr then return nil, ioerr end
@@ -73,8 +76,8 @@ else
 end
 
 if _G.setfenv then -- Lua 5.1
-  M.setfenv = _G.setfenv
-  M.getfenv = _G.getfenv
+  _M.setfenv = _G.setfenv
+  _M.getfenv = _G.getfenv
 else -- >= Lua 5.2
   -- helper function for `getfenv`/`setfenv`
   local function envlookup(f)
@@ -112,8 +115,8 @@ else -- >= Lua 5.2
   end
   -- [*] might simulate with table keyed by coroutine.running()
   
-  -- 5.1 style `setfenv` implemented in 5.2
-  function M.setfenv(f, t)
+  --- 5.1 style `setfenv` implemented in 5.2
+  function _M.setfenv(f, t)
     local f = envhelper(f, 'setfenv')
     local up, val, unknown = envlookup(f)
     if up then
@@ -129,8 +132,8 @@ else -- >= Lua 5.2
   end
   -- [*] http://lua-users.org/lists/lua-l/2010-06/msg00313.html
 
-  -- 5.1 style `getfenv` implemented in 5.2
-  function M.getfenv(f)
+  --- 5.1 style `getfenv` implemented in 5.2
+  function _M.getfenv(f)
     if f == 0 or f == nil then return _G end -- simulated behavior
     local f = envhelper(f, 'setfenv')
     local up, val = envlookup(f)
@@ -141,4 +144,4 @@ else -- >= Lua 5.2
 end
 
 
-return M
+return _M
