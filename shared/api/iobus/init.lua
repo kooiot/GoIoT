@@ -78,7 +78,7 @@ end
 
 --- Read object/property value
 -- @tparam strint path The path of object/property
--- @treturn table value object
+-- @treturn table value object { value, timestamp, quality }
 -- @treturn string error message
 function class:read(path)
 	local req = {'read', {path=path, from=self.from}}
@@ -91,7 +91,8 @@ end
 
 --- Enum devices according to pattern
 -- @tparam string pattern( refer to string.match pattern  )
--- @treturn table device name list
+-- @treturn table device name list { 'namespace' = { 'device1', 'device2' } 'namespace2' = { 'device2', 'devices' }}
+
 function class:enum(pattern)
 	local req = {'enum', {pattern=pattern, from=self.from}}
 	local reply, err = self.client:request(cjson.encode(req), true)
@@ -108,8 +109,8 @@ function class:enum(pattern)
 end
 
 --- Read the device tree meta from iobus
--- @tparam string path the device path
--- @treturn table the device tree table
+-- @tparam string path the device path (including namespace and device name)
+-- @treturn table the device tree table  { verinfo = {}, device {inputs={}, comands={} } }
 function class:tree(path)
 	local req = {'tree', {path=path, from=self.from}}
 	local reply, err = self.client:request(cjson.encode(req), true)

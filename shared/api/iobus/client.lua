@@ -111,8 +111,6 @@ end
 
 --- Create iobus access api
 -- @tparam string from Your application namespace
--- @tparam lzmq.context ctx
--- @tparam lzmq.poller poller
 -- @treturn class the api object
 local function new(from)
 	assert(from)

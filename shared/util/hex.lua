@@ -1,5 +1,11 @@
+--- Hex helper utility functions
 
-local function dump(raw)
+local _M = {}
+
+--- Dump raw string as hex printed string
+-- @tparam string raw the raw string
+-- @treturn string the well printed string e.g. B0 EF 0A D6
+function _M.dump(raw)
 	if not raw then
 		return ""
 	end
@@ -11,6 +17,4 @@ local function dump(raw)
 end
 
 
-return {
-	dump = dump,
-}
+return _M
