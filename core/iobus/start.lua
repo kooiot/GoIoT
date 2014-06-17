@@ -9,6 +9,7 @@ local zmq = require 'lzmq'
 local zpoller = require 'lzmq.poller'
 local cjson = require 'cjson.safe'
 local log = require 'shared.log'
+local vardef = require 'vardef'
 
 local db = require('db').new()
 db:open('db.sqlite3')
@@ -274,6 +275,11 @@ end)
 poller:add(publisher, zmq.POLLIN, function()
 	--- NONE
 end)
+
+vardef.load()
+local ns = vardef.populate(db)
+ns.port = -1
+clients[ns.name] = ns
 
 poller:start()
 
