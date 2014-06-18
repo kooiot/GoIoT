@@ -18,7 +18,10 @@ local runner = require 'runner'
 local NAME = 'SERVICES'
 
 local running = {
---	test = {run = true, last = os.time()}
+--	test = {desc = 'xxfadfa', status = RUNNING, last = os.time(), result=nil, percent=50, pid=xxxx}
+}
+local logs = {
+	-- test = {'start on .dafa', 'dafdafd'}
 }
 
 local ctx = zmq.context()
@@ -134,6 +137,28 @@ mpft['result'] = function(vars)
 	send_err(err)
 end
 
+mpft['progress'] = function(vars)
+	local err = 'Invalid/Unsupported progress request'
+	if vars and type(vars) == 'table' then
+		local name = vars.name
+		local desc = vars.desc
+		local perc = vars.perc
+		log:info(NAME, 'Progress from service ['..name..'] - '..desc..' - ', perc)
+		if running[name] and desc and name then
+			running[name].percent = perc
+			logs[name] = logs[name] or {}
+			logs[name][#logs[name]] = desc
+			local rep = {'progress', {result=true}}
+			server:send(cjson.encode(rep))
+			return
+		else
+			err = "The services not exists "..name
+			log:error(NAME, err)
+		end
+	end
+	send_err(err)
+end
+
 mpft['abort'] = function(vars)
 	if vars and type(vars) ~= 'table' then
 		local err = 'Invalid/Unsupported abort request'
@@ -173,12 +198,16 @@ mpft['query'] = function(vars)
 
 	local name = vars.name
 	local status = 'NONE'
+	local percent = nil
+	local lgs = nil
 
 	if name and running[name] then
 		status = running[name].status
+		percent = running[name].percent
+		lgs = logs[name]
 	end
 
-	local rep = {'query', {result=true, status = status}}
+	local rep = {'query', {result=true, status = status, percent = percent, logs=lgs}}
 	server:send(cjson.encode(rep))
 end
 

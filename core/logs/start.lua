@@ -16,6 +16,7 @@ local ztimer = require 'lzmq.timer'
 local cjson = require 'cjson.safe'
 local fifo = require 'shared.util.fifo'
 
+local MAX_CACHE_SIZE = 512
 local cache = fifo({timestamp = ztimer.absolute_time(), src="CORE", level="info", content="Log Start"})
 local pcache = fifo()
 
@@ -134,12 +135,12 @@ local function init()
 		-- Seperate the packat and log
 		if log.level == 'packet' then
 			pcache:push(log)
-			if pcache:length() > 512 then
+			if pcache:length() > MAX_CACHE_SIZE then
 				pcache:pop()
 			end
 		else
 			cache:push(log)
-			if cache:length() > 512 then
+			if cache:length() > MAX_CACHE_SIZE then
 				cache:pop()
 			end
 		end

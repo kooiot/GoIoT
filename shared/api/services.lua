@@ -112,6 +112,25 @@ _M.result = function(name, result, output)
 	return reply, err
 end
 
+--- Log progress for service
+-- @tparam string name services name
+-- @tparam string desc progress description
+-- @tparam number prec progress percent (nil for logging the desc only)
+-- @treturn nil
+_M.progress = function(name, desc, prec)
+	local req = {'progress', {name=name, desc=desc, prec=prec}}
+	local reply, err = client:request(cjson.encode(req), true)
+	print(reply)
+	if reply then
+		reply, err = get_reply(reply, 'progress')
+		if reply then
+			err = reply.err
+			reply = reply.result
+		end
+	end
+	return reply, err
+end
+
 --- List all services' status
 -- @treturn table services status tables
 _M.list = function(name, dostr)
