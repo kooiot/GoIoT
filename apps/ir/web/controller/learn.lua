@@ -7,6 +7,7 @@ local function learn(appname)
 
 	local client = api.new(port)
 	local reply, err = client:request('learn', {})
+	client:close()
 	if reply then
 		return true
 	end
@@ -22,6 +23,7 @@ local function learn_save(appname, devname, command)
 
 	local client = api.new(port)
 	local reply, err = client:request('learn_save', {device=devname, name=command})
+	client:close()
 	if reply then
 		return reply.result, reply.err
 	end
@@ -37,6 +39,7 @@ local function get_learn(appname)
 
 	local client = api.new(port)
 	local reply, err = client:request('learn_result', {})
+	client:close()
 	if reply then
 		return reply.learn
 	end

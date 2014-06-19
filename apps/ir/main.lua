@@ -10,7 +10,7 @@ local ioname = arg[1]
 assert(ioname, 'Applicaiton needs to have a name')
 
 local app = nil
-local commands = nil
+local commands = {}
 
 local function load_from_file()
 	local file, err = io.open('conf.json')
@@ -69,19 +69,14 @@ local function add_device_cmd(device, name, cmd)
 end
 
 local function load_conf(app, reload)
-	if commands then
-		return nil
-	end
-
 	--local config = require 'shared.api.config'
 	--local cmds, err = config.get(ioname..'.commands') or load_from_file()
 	local cmds, err = load_from_file()
 	if not cmds then
 		log:error(ioname, err or 'Failed to get command configuration')
-		commands = {}
 		return
 	end
-	commands = cjson.decode(cmds)
+	commands = cjson.decode(cmds) or {}
 	if commands then
 		for devname, cmds in pairs(commands) do
 			if type(cmds) ~= 'table' then
@@ -94,8 +89,6 @@ local function load_conf(app, reload)
 				dev.commands:add(name, 'Control command', {})
 			end
 		end
-	else
-		commands = {}
 	end
 end
 
