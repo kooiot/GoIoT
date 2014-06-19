@@ -13,25 +13,18 @@
 		<i class="inverted circular blue awesome download cloud icon"></i><b> <?=_("Install New")?></b>
 	</a>
 
-	<? if lwf.ctx.session:get('advance') == 'true' then ?>
-	<? if apps then  ?>
 	<div class="item">
-		<b> <?=_("Applications")?></b>
+		<b> <?=_('System')?></b>
 		<div class="menu">
-			<?	 for cate, lst in pairs(apps) do ?>
-				 <div class="item">
-					 <b> <? = cate:upper() ?> </b>
-					 <div class="menu">
-						 <? for _, v in pairs(lst) do ?>
-						 <a class="item" href="/app/<?=v.lanem?>"> <?=v.lname?></a>
-						 <? end ?>
-					 </div>
-				 </div>
-			 <? end ?>
+			<a class="item" href="/system/network"> <?=_('Network')?></a>
+			<a class="item" href="/system/services"> <?=_('Services')?></a>
+			<a class="item" href="/system/upgrade"> <?=_('Upgrade')?></a>
+			<a class="item" href="/system/backup"> <?=_('Backup')?></a>
 		</div>
 	</div>
-	<? end ?>
-	<div class="item">
+
+	<? if lwf.ctx.session:get('advance') == 'true' then ?>
+		<div class="item">
 		<b> <?=_("Utilies")?></b>
 		<div class="menu">
 			<a class="item" href="/data"> <?=_('Data')?></a>
@@ -41,15 +34,24 @@
 	</div>
 	<? end ?>
 
+	<? if apps then  ?>
 	<div class="item">
-		<b> <?_('System')?></b>
+		<b> <?=_("Applications")?></b>
 		<div class="menu">
-			<a class="item" href="/system/network"> <?=_('Network')?></a>
-			<a class="item" href="/system/services"> <?=_('Services')?></a>
-			<a class="item" href="/system/upgrade"> <?=_('Upgrade')?></a>
-			<a class="item" href="/system/backup"> <?=_('Backup')?></a>
+			<?	 for cate, lst in pairs(apps) do ?>
+				 <div class="item">
+					 <b> <? = cate:upper() ?> </b>
+					 <div class="menu">
+						 <? for _, v in pairs(lst) do ?>
+						 <a class="item" href="/apps/<?=v.lname?>"> <?=v.lname?></a>
+						 <? end ?>
+					 </div>
+				 </div>
+			 <? end ?>
 		</div>
 	</div>
+	<? end ?>
+
 	<? end ?>
 
 	<div class="item">
