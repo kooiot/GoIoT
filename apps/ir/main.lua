@@ -24,7 +24,7 @@ local function load_from_file()
 end
 
 local function save_to_file(str)
-	local f, err = io.open('conf.json')
+	local f, err = io.open('conf.json', 'w+')
 	if not f then
 		return nil, err
 	end
@@ -57,10 +57,13 @@ local function add_device_cmd(device, name, cmd)
 
 	local r, err = cjson.encode(commands)
 	if r then
+		--[[
 		print(save_to_file(r))
 		local config = require 'shared.api.config'
 		local cmds = r 
 		r, err = config.set(ioname..'.commands', cmds)
+		]]--
+		r, err = save_to_file(r)
 	end
 	return r, err
 end
@@ -70,10 +73,12 @@ local function load_conf(app, reload)
 		return nil
 	end
 
-	local config = require 'shared.api.config'
-	local cmds, err = config.get(ioname..'.commands') or load_from_file()
+	--local config = require 'shared.api.config'
+	--local cmds, err = config.get(ioname..'.commands') or load_from_file()
+	local cmds, err = load_from_file()
 	if not cmds then
 		log:error(ioname, err or 'Failed to get command configuration')
+		commands = {}
 		return
 	end
 	commands = cjson.decode(cmds)
@@ -89,6 +94,8 @@ local function load_conf(app, reload)
 				dev.commands:add(name, 'Control command', {})
 			end
 		end
+	else
+		commands = {}
 	end
 end
 
@@ -295,7 +302,7 @@ end)
 
 app:reg_request_handler('learn_save', function(app, vars)
 	local result = false
-	local err = 'no learn result'
+	local err = nil
 	if vars.name and vars.device then
 		if not learn_table.learning and learn_table.result then
 			add_device_cmd(vars.device, vars.name, learn_table.result)
@@ -307,6 +314,17 @@ app:reg_request_handler('learn_save', function(app, vars)
 	end
 
 	local reply = {'learn_result', {result = result, err=err}}
+	app.server:send(cjson.encode(reply))
+end)
+
+app:reg_request_handler('learn_stop', function(app, vars)
+	log:info(ioname, 'Stop learning')
+	if port:is_open() then
+	end
+	port:write(string.char(0xe2))
+	port:read(1, 200)
+
+	local reply = {'learn_stop', {result = true}}
 	app.server:send(cjson.encode(reply))
 end)
 

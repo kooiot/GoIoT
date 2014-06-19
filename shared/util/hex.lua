@@ -10,7 +10,7 @@ function _M.dump(raw)
 		return ""
 	end
 	if (string.len(raw) > 1) then
-		return string.format("%02X ", string.byte(raw:sub(1, 1)))..dump(raw:sub(2))
+		return string.format("%02X ", string.byte(raw:sub(1, 1))).._M.dump(raw:sub(2))
 	else
 		return string.format("%02X ", string.byte(raw:sub(1, 1)))
 	end

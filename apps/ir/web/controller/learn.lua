@@ -13,7 +13,7 @@ local function learn(appname)
 	return nil, err
 end
 
-local function learn_save(devname, command)
+local function learn_save(appname, devname, command)
 	local api = require 'shared.api.app'
 	local port = api.find_app_port(appname)
 	if not port then
@@ -61,17 +61,18 @@ return {
 			end
 		elseif action == 'save' then
 			local devname = req:get_arg('devname')
-			local cmd = req:get_arg('cmd')
+			local name = req:get_arg('name')
 			local info = nil
-			if devname and cmd then
-				local r, err = learn_save(devname, cmd)
+			if devname and name then
+				local r, err = learn_save(app.appname, devname, name)
 				if not r then
 					info = err
 				end
 			else
 				info = 'Please specify device name and command name'
 			end
-			res:ltp('learn.html', {lwf=lwf, app=app, info=info})
+			--res:ltp('learn.html', {lwf=lwf, app=app, info=info})
+			res:write(info or "Commands saved, application requires restart")
 		else
 			res:write('Not implemented '..(action or ''))
 		end
