@@ -1,27 +1,6 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8\n"
 
-msgid "Command"
-msgstr "命令"
-
-msgid "Save"
-msgstr "保存"
-
-msgid "Control Panel"
-msgstr "控制器面板"
-
-msgid "IR Controller"
-msgstr "红外控制器"
-
-msgid "Send"
-msgstr "发送"
-
-msgid "Learn"
-msgstr "学习"
-
-msgid "Apply"
-msgstr "应用"
-
 msgid "Editor"
 msgstr "编辑器"
 
@@ -30,6 +9,27 @@ msgstr "重新学习"
 
 msgid "Test"
 msgstr ""
+
+msgid "Learn"
+msgstr "学习"
+
+msgid "Send"
+msgstr "发送"
+
+msgid "Apply"
+msgstr "应用"
+
+msgid "IR Controller"
+msgstr "红外控制器"
+
+msgid "Command"
+msgstr "命令"
+
+msgid "Save"
+msgstr "保存"
+
+msgid "Control Panel"
+msgstr "控制器面板"
 
 #~ msgid "Panel"
 #~ msgstr "面板"

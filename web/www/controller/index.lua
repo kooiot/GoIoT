@@ -43,6 +43,18 @@ local function query_log(limit)
 	return logs, err
 end
 
+local function get_system_settings()
+	local settings = {}
+	local config = require 'shared.api.config'
+	local cjson = require 'cjson.safe'
+	local conf, err = config.get('settings.cloud')
+	if conf then
+		settings.cloud, err = cjson.decode(conf)
+	end
+
+	return settings, err
+end
+
 return {
 	get = function(req, res)
 		local applist = {}
@@ -79,6 +91,7 @@ return {
 				}
 			}
 		end
-		res:ltp('index.html', {app=app, lwf=lwf, apps=apps, events=events, err=err})
+		local settings, err = get_system_settings()
+		res:ltp('index.html', {app=app, lwf=lwf, apps=apps, events=events, settings=settings, err=err})
 	end
 }
