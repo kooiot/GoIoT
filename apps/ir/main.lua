@@ -23,6 +23,16 @@ local function load_from_file()
 	return c
 end
 
+local function save_to_file(str)
+	local f, err = io.open('conf.json')
+	if not f then
+		return nil, err
+	end
+	local r, err = f:write(str)
+	f:close()
+	return r, err
+end
+
 local function add_device_cmd(device, name, cmd)
 	if not device or not name or not cmd then
 		return nil, 'How dare U!!'
@@ -44,7 +54,15 @@ local function add_device_cmd(device, name, cmd)
 
 	commands[device] = commands[device] or {}
 	commands[device][name] = cmd
-	return true
+
+	local r, err = cjson.encode(commands)
+	if r then
+		print(save_to_file(r))
+		local config = require 'shared.api.config'
+		local cmds = r 
+		r, err = config.set(ioname..'.commands', cmds)
+	end
+	return r, err
 end
 
 local function load_conf(app, reload)

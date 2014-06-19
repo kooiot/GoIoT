@@ -22,7 +22,9 @@
 
 	<form method="post" class="ui fluid form">
 		<textarea class="ui fluid textarea" name="learn_result" id="learn_result"></textarea>
-		<input class="ui input" type="text" name="name" placeholder="command name..."/>
+		<input type="hidden" class="ui input" name="action" value="save"/>
+		<input class="ui input" type="text" name="name" placeholder="device name..."/>
+		<input class="ui input" type="text" name="devname" placeholder="command name..."/>
 		<input class="ui teal submit button" type="submit" value="<?=_('Save')?>"/>
 	</form>
 </div>
