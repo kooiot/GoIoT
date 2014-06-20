@@ -1,0 +1,91 @@
+﻿html, body, form
+{
+    margin: 0px;
+    padding: 0px;
+    width: 100%;
+    font-family: Tahoma, Arial;
+    font-size: 12pt;
+}
+html
+{
+    overflow: -moz-scrollbars-vertical;
+    overflow-y: scroll;
+}
+div.main-title
+{
+    text-align: center;
+    background-image: none !important;
+}
+div.main-title .first
+{
+    font-size: 18pt;
+    padding-left: 96px;
+}
+div.main-title .second
+{
+    font-size: 14pt;
+    padding: 12px 0px 0px 120px;
+}
+div.viewable
+{
+    text-align: left;
+    margin: auto;
+    width: 900px;
+    padding: 12px;
+}
+div.logo
+{
+    background: url(../img/logo.png) no-repeat 0% 50%;
+    padding: 12px 0px !important;
+}
+div.main-menu
+{
+    text-align: right;
+}
+div.main-body
+{
+}
+div.main-body .header
+{
+    font-size: 20pt;
+    padding-bottom: 12px;
+}
+div.main-body .content
+{
+    padding-left: 24px;
+    padding-bottom: 24px;
+}
+div.main-body .content p
+{
+    padding-bottom: 12px;
+    margin: 0px;
+}
+table.changelog tr td:first-child
+{
+    vertical-align: top;
+    font-style: italic;
+}
+.name
+{
+    font-weight: bold;
+}
+a, a:visited
+{
+    color: #0000ff;
+}
+a:hover
+{
+    color: #ff0000;
+}
+table.slim
+{
+    border-collapse: collapse;
+}
+input.error, select.error, textarea.error
+{
+    background-color: #ffffbb;
+}
+td.title, div.title
+{
+    padding: 6px 4px;
+}

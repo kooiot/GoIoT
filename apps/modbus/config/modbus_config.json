@@ -1,0 +1,1 @@
+[{"config":{"sIp":"","port":"","unit":""},"tree":{"id":"1","name":"modbus TCP","pId":"0"}},{"tree":{"id":"11","name":"devices1","pId":"1"},"config":{"sIp":"172.30.11.166","port":"502","unit":"1"}},{"config":{"sIp":"172.30.11.166","port":"502","unit":"2"},"tree":{"id":"12","name":"devices2","pId":"1"}}]

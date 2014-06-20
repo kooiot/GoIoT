@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<HTML>
+<HEAD>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<link href="/static/appendgrid/css/jquery-ui-1.10.2.custom.css" rel="stylesheet"/>
+	<link href="/static/appendgrid/css/Site.css" rel="stylesheet"/>
+	<link href="/static/appendgrid/css/jquery.appendGrid-1.3.5.css" rel="stylesheet"/>
+	<link rel="stylesheet" href="/static/tree/css/demo.css" type="text/css">
+	<link rel="stylesheet" href="/static/tree/css/zTreeStyle/zTreeStyle.css" type="text/css">
+	<!--
+	<script type="text/javascript" src="/static/tree/js/jquery-1.4.4.min.js"></script>
+	<script src="http://lightswitch05.github.io/table-to-json/javascripts/jquery.tabletojson.min.js"></script>
+	-->
+	<script src="/static/appendgrid/js/jquery-1.9.1.min.js"></script>
+	<script type="text/javascript" src="/static/tree/js/jquery.ztree.core-3.5.js"></script>
+	<script type="text/javascript" src="/static/tree/js/jquery.ztree.excheck-3.5.js"></script>
+	<script type="text/javascript" src="/static/tree/js/jquery.ztree.exedit-3.5.js"></script>
+	<script src="/static/appendgrid/js/shCore.js"></script>
+	<script src="/static/appendgrid/js/shBrushJScript.js"></script>
+	<script src="/static/appendgrid/js/shBrushXml.js"></script>
+	<script src="/static/appendgrid/js/shBrushCss.js"></script>
+	<script src="/static/appendgrid/js/jquery-ui-1.10.2.custom.min.js"></script>
+	<script src="/static/appendgrid/js/jquery.validate.min.js"></script>
+	<script src="/static/appendgrid/js/jquery.appendGrid-1.3.5.js"></script>
+	<SCRIPT type="text/javascript">
+		<!--
+		var setting = {
+			view: {
+				selectedMulti: false
+			},
+			edit: {
+				enable: true,
+				showRemoveBtn: false,
+				showRenameBtn: false
+			},
+			data: {
+				keep: {
+					parent:true,
+					leaf:true
+				},
+				simpleData: {
+					enable: true,
+					idKey: "id",
+					pIdKey: "pId",
+					rootPId: 0
+				}
+			},
+			callback: {
+				beforeClick: beforeClick,
+				onClick: onClick,
+				beforeDrag: beforeDrag,
+				beforeRemove: beforeRemove,
+				beforeRename: beforeRename,
+				onRemove: onRemove
+			}
+		};
+
+		var json_text = <?=json_text ?>;
+		var tree_config;
+		console.log(json_text)
+		if (json_text.length == 0) {
+			tree_config = "";
+		} else {
+			var tree = new Array();
+			if (json_text.length == 1) {
+					var treenode = new Object();
+					treenode.id = json_text[0].tree.id;
+					treenode.pId = json_text[0].tree.pId;
+					treenode.name = json_text[0].tree.name;
+					treenode.isParent = true;
+					tree[0] = treenode;
+			} else {
+				for (var i = 0; i < json_text.length; i++) {
+					var treenode = new Object();
+					treenode.id = json_text[i].tree.id;
+					treenode.pId = json_text[i].tree.pId;
+					treenode.name = json_text[i].tree.name;
+					tree[i] = treenode;
+				}
+			}
+			tree_config = tree
+		}
+
+//alert(json_text[0].tree.id);
+/*
+for (var i in json_text[0]) {
+	for (var n in json_text[0][i])
+		alert(json_text[0][i][n]);
+		}
+		*/
+		//var zNodes = JSON.parse("<?=jsontext ?>");
+		var zNodes = tree_config;
+		//var zNodes = [];
+		var log, className = "dark";
+		function beforeClick(treeId, treeNode, clickFlag) {
+			className = (className === "dark" ? "":"dark");
+			showLog("[ "+getTime()+" beforeClick ]&nbsp;&nbsp;" + treeNode.name );
+			return (treeNode.click != false);
+		}
+		function onClick(event, treeId, treeNode, clickFlag) {
+			var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+			nodes = zTree.getSelectedNodes();
+			treeNode = nodes[0];
+			if (treeNode) {
+				var id = treeNode.id;
+				var pId = treeNode.pId;
+				var name = treeNode.name;
+			} else {
+				alert("Please select one node at first ...");
+				return;
+			}
+			if (id == parseInt(1) && pId == parseInt(0)) {
+				$("#sIp").attr("disabled",true); 
+				$("#port").attr("disabled",true); 
+				$("#unit").attr("disabled",true); 
+			} else {
+				$("#sIp").attr("disabled",false); 
+				$("#port").attr("disabled",false); 
+				$("#unit").attr("disabled",false); 
+			}
+			var vals;
+			for (var i = 0; i < json_text.length; i++) {
+				if (id == json_text[i].tree.id && pId == json_text[i].tree.pId && name == json_text[i].tree.name) {
+					document.getElementById("port").value = json_text[i].config.port;
+					document.getElementById("sIp").value = json_text[i].config.sIp;
+					document.getElementById("unit").value = json_text[i].config.unit;
+					//alert(JSON.stringify(json_text[i].vals));
+					//vals = json_text[i].vals;
+					break;
+				} else {
+					document.getElementById("port").value = "";
+					document.getElementById("sIp").value = "";
+					document.getElementById("unit").value = "";
+				}
+			}
+			$('#tblAppendGrid').appendGrid('load', vals);
+		}		
+		function beforeDrag(treeId, treeNodes) {
+			return false;
+		}
+		function beforeRemove(treeId, treeNode) {
+			className = (className === "dark" ? "":"dark");
+			showLog("[ "+getTime()+" beforeRemove ]&nbsp;&nbsp;&nbsp;&nbsp; " + treeNode.name);
+			return confirm("Confirm delete node '" + treeNode.name + "' it?");
+		}
+		function onRemove(e, treeId, treeNode) {
+			showLog("[ "+getTime()+" onRemove ]&nbsp;&nbsp;&nbsp;&nbsp; " + treeNode.name);
+		}
+		function beforeRename(treeId, treeNode, newName) {
+			if (newName.length == 0) {
+				alert("Node name can not be empty.");
+				var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+				setTimeout(function(){zTree.editName(treeNode)}, 10);
+				return false;
+			}
+			return true;
+		}
+		function showLog(str) {
+			if (!log) log = $("#log");
+			log.append("<li class='"+className+"'>"+str+"</li>");
+			if(log.children("li").length > 8) {
+				log.get(0).removeChild(log.children("li")[0]);
+			}
+		}
+		function getTime() {
+			var now= new Date(),
+			h=now.getHours(),
+			m=now.getMinutes(),
+			s=now.getSeconds(),
+			ms=now.getMilliseconds();
+			return (h+":"+m+":"+s+ " " +ms);
+		}
+		
+		var newCount = 1;
+		function add(e) {
+			var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
+			isParent = e.data.isParent,
+			nodes = zTree.getSelectedNodes(),
+			treeNode = nodes[0];
+			if (treeNode) {
+				if (json_text.length > 0 && isParent) {
+					alert("Parent node is locked and can not add Parent node.");
+					return;
+				}
+				var max = 0;
+				if (json_text.length > 1) {
+					max = parseInt(json_text[0].tree.id);
+					for (var i = 0; i < json_text.length; i++) {
+						if (parseInt(json_text[i].tree.id) > max) {
+							max = parseInt(json_text[i].tree.id);
+						}
+					}
+					treeNode = zTree.addNodes(treeNode, {id:(max + newCount ), pId:treeNode.id, isParent:isParent, name:"new node" + (newCount++)});
+				} else {
+					treeNode = zTree.addNodes(treeNode, {id:(treeNode.id * 10 + newCount ), pId:treeNode.id, isParent:isParent, name:"new node" + (newCount++)});
+				}
+			} else {
+				if (json_text.length > 0 && isParent) {
+					alert("Parent node is locked and can not add Parent node.");
+					return;
+				}
+				if ( !isParent ) {
+					alert("Please add Parent node.");
+					return;
+				}
+				treeNode = zTree.addNodes(null, {id:1, pId:0, isParent:isParent, name:"new node"});
+			}
+			if (treeNode) {
+				zTree.editName(treeNode[0]);
+				$("#sIp").attr("disabled",false); 
+				$("#port").attr("disabled",false); 
+				$("#unit").attr("disabled",false); 
+			} else {
+				newCount--;
+				alert("Leaf node is locked and can not add child node.");
+			}
+		};
+		function edit() {
+			var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
+			nodes = zTree.getSelectedNodes(),
+			treeNode = nodes[0];
+			zTree.editName(treeNode);
+		};
+/*
+		function save() {
+			var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+			//var nodes = zTree.transformTozTreeNodes(zNodes);
+			var nodes = zTree.transformToArray(zTree.getNodes());
+			//alert(nodes.length);
+			//nodes = zTree.getNodes();
+			$.post("tree", {nodes:JSON.stringify(nodes)}, function(data){
+						//TODO
+						});
+		};
+*/		
+		function pSave(){
+			var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+			nodes = zTree.getSelectedNodes();
+			treeNode = nodes[0];
+			if (treeNode) {
+				var id = treeNode.id;
+				var pId = treeNode.pId;
+				var name = treeNode.name;
+			} else {
+				alert("Please select one node at first...");
+				return;
+			}
+			var port = document.getElementById("port").value;
+			var sIp = document.getElementById("sIp").value;
+			var unit = document.getElementById("unit").value;
+			//var str = $(document.forms[0]).serialize();
+			//console.log(str);
+			$.post("", {id:id, pId:pId, name:name, port:port, sIp:sIp, unit:unit}, function(data, status){
+						if (status) {
+							if (parseInt(pId) != 0)
+								window.location.reload();
+						}
+						});
+		}
+		function remove(e) {
+			var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
+			nodes = zTree.getSelectedNodes(),
+			treeNode = nodes[0];
+			if (nodes.length == 0) {
+				alert("Please select one node at first...");
+				return;
+			} else {
+				var id = treeNode.id;
+				var pId = treeNode.pId;
+				var name = treeNode.name;
+			}
+			for (var i = 0; i < json_text.length; i++) {
+				if (id == json_text[i].tree.id && pId == json_text[i].tree.pId && name == json_text[i].tree.name) {
+					//console.log(JSON.stringify(json_text));
+					$.post("/apps/<?=app.appname?>/remove", {id:id, pId:pId, name:name, json_text:(JSON.stringify(json_text)), filename:"<?=app.appname?>"}, function(data){
+								});
+				}
+			}
+			var callbackFlag = $("#callbackTrigger").attr("checked");
+			zTree.removeNode(treeNode, callbackFlag);
+			location.reload();
+		};
+/*
+		function clearChildren(e) {
+			var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
+			nodes = zTree.getSelectedNodes(),
+			treeNode = nodes[0];
+			if (nodes.length == 0 || !nodes[0].isParent) {
+				alert("Please select one parent node at first...");
+				return;
+			}
+			zTree.removeChildNodes(treeNode);
+		};
+		*/
+
+		function fontCss(treeNode) {
+			var aObj = $("#" + treeNode.tId + "_a");
+			aObj.removeClass("copy").removeClass("cut");
+			if (treeNode === curSrcNode) {
+				if (curType == "copy") {
+					aObj.addClass(curType);
+				} else {
+					aObj.addClass(curType);
+				}			
+			}
+		};
+		var curSrcNode, curType;
+		function setCurSrcNode(treeNode) {
+			var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+			if (curSrcNode) {
+				delete curSrcNode.isCur;
+				var tmpNode = curSrcNode;
+				curSrcNode = null;
+				fontCss(tmpNode);
+			}
+			curSrcNode = treeNode;
+			if (!treeNode) return;
+
+			curSrcNode.isCur = true;			
+			zTree.cancelSelectedNode();
+			fontCss(curSrcNode);
+		};
+		function copy(e) {
+			var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
+			nodes = zTree.getSelectedNodes();
+			if (nodes.length == 0) {
+				alert("Please select one node at first...");
+				return;
+			}
+			curType = "copy";
+			setCurSrcNode(nodes[0]);
+		};
+		function cut(e) {
+			var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
+			nodes = zTree.getSelectedNodes();
+			if (nodes.length == 0) {
+				alert("Please select one node at first...");
+				return;
+			}
+			curType = "cut";
+			setCurSrcNode(nodes[0]);
+		};
+		function paste(e) {
+			if (!curSrcNode) {
+				alert("Please select one node to copy or cut at first...");
+				return;
+			}
+			var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
+			nodes = zTree.getSelectedNodes(),
+			targetNode = nodes.length>0? nodes[0]:null;
+			if (curSrcNode === targetNode) {
+				alert("Can't move, the same source node and destination node.");
+				return;
+			} else if (curType === "cut" && ((!!targetNode && curSrcNode.parentTId === targetNode.tId) || (!targetNode && !curSrcNode.parentTId))) {
+				alert("Can't move, source node is the target node's child.");
+				return;
+			} else if (curType === "copy") {
+				targetNode = zTree.copyNode(targetNode, curSrcNode, "inner");
+			} else if (curType === "cut") {
+				targetNode = zTree.moveNode(targetNode, curSrcNode, "inner");
+				if (!targetNode) {
+					alert("Cutting failure, source node is the target node's parent.");
+				}
+				targetNode = curSrcNode;
+			}
+			setCurSrcNode();
+			delete targetNode.isCur;
+			zTree.selectNode(targetNode);
+		};
+
+		function advance() {
+			var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+			nodes = zTree.getSelectedNodes();
+			treeNode = nodes[0];
+			if (treeNode && parseInt(treeNode.id) != 1 && parseInt(treeNode.pId) != 0) {
+				var id = treeNode.id;
+				var pId = treeNode.pId;
+				var name = treeNode.name;
+			} else {
+				alert("Please select one child node at first...");
+				return;
+			}
+			window.location.href="/apps/<?=app.appname?>/" + "tree?name=" + treeNode.name;
+		}
+		
+		$(document).ready(function(){
+			$.fn.zTree.init($("#treeDemo"), setting, zNodes);
+			$("#addParent").bind("click", {isParent:true}, add);
+			$("#addLeaf").bind("click", {isParent:false}, add);
+			$("#remove").bind("click", remove);
+		//	$("#clearChildren").bind("click", clearChildren);
+			$("#edit").bind("click", edit);
+			$("#copy").bind("click", copy);
+			$("#cut").bind("click", cut);
+			$("#paste").bind("click", paste);
+		//	$("#save").bind("click", save);
+			$("#pSave").bind("click", pSave);
+			$("#advance").bind("click", advance);
+			var treeObj = $.fn.zTree.getZTreeObj("treeDemo"); 
+			treeObj.expandAll(true); 
+		});
+		//-->
+	</SCRIPT>
+</HEAD>
+<BODY>
+<div class="content_wrap">
+	<div class="zTreeDemoBackground left">
+		<ul id="treeDemo" class="ztree"></ul>
+		
+		<ul class="info">
+			<li class="title">
+				<ul class="list">
+				<li><p>Try to edit node:<br/>
+					&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id="callbackTrigger" checked /> Whether trigger the callback when execution removeNode() method.<br/>
+
+					remove log:<br/>
+					<ul id="log" class="log"></ul></p>
+				</li>
+				</ul>
+			</li>
+		</ul>
+	</div>
+	<div class="right">
+		<div class="news">
+			<div style="background:#f0f6e4; color:#FFF">
+				<br />
+			</div>
+			<p><button type=button id="pSave" name="pSave">Save</button>
+			&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" name="addParent" id="addParent">addParent</button>
+			&nbsp;&nbsp;&nbsp;&nbsp;<button type = "button" name="addLeaf" id="addLeaf">addLeaf</button>
+			&nbsp;&nbsp;&nbsp;&nbsp;<button id="edit" name="edit" type="button">Edit</button>
+			&nbsp;&nbsp;&nbsp;&nbsp;<button id="remove" name="remove" type="button">Remove</button>
+			&nbsp;&nbsp;&nbsp;&nbsp;<button id="copy" name="copy" type="button">Copy</button>
+			&nbsp;&nbsp;&nbsp;&nbsp;<button id="cut" name="cut" type="button">Cut</button>
+			&nbsp;&nbsp;&nbsp;&nbsp;<button id="paste" name="paste" type="button">Paste</button>
+			</p>
+		</div>
+		<div style="background:#f0f6e4; color:#FFF">
+			<br />
+		</div>
+		<div class="news">
+			<p>
+			IP:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="sIp" name="sIp"/>
+			&nbsp;&nbsp;&nbsp;端口:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="port" name="port" />
+			&nbsp;&nbsp;&nbsp;地址:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="unit" name="unit" />
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type = button id="advance" name="advance">高级</button>
+			</p>
+		</div>
+		<div style="background:#f0f6e4; color:#FFF">
+			<br />
+		</div>
+		<div>
+<!--
+		<form id="frmMain" name="frmMain" action="/Demo" method="post">
+			<div style="text-align: center;">
+				<div class="viewable main-body">
+					<script id="jsSource" type="text/javascript">
+						$(function () {
+									// Initialize appendGrid
+								var MyGrid = $('#tblAppendGrid').appendGrid({
+									caption: 'values',
+									initRows: 1,
+									columns: [
+									{ name: 'Name', display: 'Name', type: 'text', ctrlAttr: { maxlength: 100 }, ctrlCss: { width: '160px'} },
+									{ name: 'Description', display: 'Description', type: 'text', ctrlAttr: { maxlength: 100 }, ctrlCss: { width: '100px'} },
+									{ name: 'Length', display: 'Length', type: 'text', ctrlAttr: { maxlength: 100 }, ctrlCss: { width: '100px'} },
+									{ name: 'Unit', display: 'Unit', type: 'text', ctrlAttr: { maxlength: 100 }, ctrlCss: { width: '100px'} },
+									{ name: 'Endianness', display: 'Endianness', type: 'select', ctrlOptions: { 0: '{Choose}', 1: 'high to low', 2: 'low to high', 3: 'Others'} },
+									]
+								});
+								/*
+									// Handle `Load` button click
+								$('#btnLoad').button().click(function () {
+									$('#tblAppendGrid').appendGrid('load', [
+										{"Name": "aaa", "Address": "168", "Length": "2", "Endianness": 2}
+									]);
+								});
+									// Handle `Serialize` button click
+								$('#btnSerialize').button().click(function () {
+									alert('Here is the serialized data!!\n' + $(document.forms[0]).serialize());
+								});
+								*/
+							});
+					</script>
+					<div id="divSource">
+						<table id="tblAppendGrid">
+						</table>
+					</div>
+				</div>
+			</div>
+		</form>
+-->
+		</div>
+	</div>
+</div>
+</BODY>
+</HTML>
