@@ -102,6 +102,13 @@ function class:request(msg, vars)
 	return reply, err
 end
 
+--- Close the connection manually (save memory usage)
+--
+function class:close()
+	self.client:close()
+	self.client = nil
+end
+
 --- Module
 -- @section
 local _M = {}

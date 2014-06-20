@@ -2,34 +2,6 @@ msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
 
-msgid "Command"
-msgstr ""
-
-
-msgid "Save"
-msgstr ""
-
-
-msgid "Control Panel"
-msgstr ""
-
-
-msgid "IR Controller"
-msgstr ""
-
-
-msgid "Send"
-msgstr ""
-
-
-msgid "Learn"
-msgstr ""
-
-
-msgid "Apply"
-msgstr ""
-
-
 msgid "Editor"
 msgstr ""
 
@@ -39,6 +11,34 @@ msgstr ""
 
 
 msgid "Test"
+msgstr ""
+
+
+msgid "Learn"
+msgstr ""
+
+
+msgid "Send"
+msgstr ""
+
+
+msgid "Apply"
+msgstr ""
+
+
+msgid "IR Controller"
+msgstr ""
+
+
+msgid "Command"
+msgstr ""
+
+
+msgid "Save"
+msgstr ""
+
+
+msgid "Control Panel"
 msgstr ""
 
 

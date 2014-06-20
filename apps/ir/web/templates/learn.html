@@ -9,7 +9,8 @@
 </div>
 
 <div class="main container">
-	<a class="ui teal button" href=""><?=_('Restart Learning')?></a>
+	<a class="ui teal button" id="start_learn" href=""><?=_('Start Learning')?></a>
+	<a class="ui teal button" href="learn_stop"><?=_('Stop Learning')?></a>
 	<div class="ui icon green message">
 		<i class="info icon"></i>
 		<div class="content">
@@ -22,7 +23,16 @@
 
 	<form method="post" class="ui fluid form">
 		<textarea class="ui fluid textarea" name="learn_result" id="learn_result"></textarea>
-		<input class="ui input" type="text" name="name" placeholder="command name..."/>
+		<input type="hidden" class="ui input" name="action" value="save"/>
+		<h3 class="ui dividing header"> <?=_("Command Saving")?> </h2>
+		<div class="ui two fields">
+			<div class="ui field">
+				<input class="ui input" type="text" name="name" placeholder="device name..."/>
+			</div>
+			<div class="ui field">
+				<input class="ui input" type="text" name="devname" placeholder="command name..."/>
+			</div>
+		</div>
 		<input class="ui teal submit button" type="submit" value="<?=_('Save')?>"/>
 	</form>
 </div>
@@ -33,6 +43,19 @@
 		query_result();
 		}, 1000 );
 
+	$(document).ready(function() {
+		var btnstart = $('#start_learn');
+		btnstart.addClass('disabled');
+
+		$('form').ajaxForm({
+			success: function(data) {
+				$('#status').html('<i>' + data + '</i>');
+			},
+			error: function(data) {
+				$('#status').html('<b>' + data + '</b>');
+			},
+		});
+	});
 })()
 
 function query_result() {
@@ -43,6 +66,8 @@ function query_result() {
 				var status = $('#status');
 				status.text('Learning Done');
 				clearInterval(newtimer);
+				var btnstart = $('#start_learn');
+				btnstart.removeClass('disabled');
 			}
 	})
 	.done(function() {

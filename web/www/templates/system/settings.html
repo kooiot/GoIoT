@@ -22,12 +22,12 @@
 		</div>
 		<div class="content">
 			<div class="ui segment">
-				<form action="/user/login" method="post" class="ui fluid form">
+				<form action="/system/settings" method="post" class="ui fluid form">
 					<input type="hidden" name="type" value="device" />
 					<div class="two fields">
 						<div class="inline field">
 							<div class="ui pointing right label"><b><?=_("Name")?></b></div>
-							<input name="devname" placeholder="<?=_('Name')?>" type="text">
+							<input name="name" placeholder="<?=_('Name')?>" type="text">
 						</div>
 						<div class="inline field">
 							<div class="ui pointing right label"><b><?=_("SN")?></b></div>
@@ -53,10 +53,20 @@
 	</div>
 	<div class="content">
 		<div class="ui segment">
-			<form action="login" method="post" class="ui fluid form">
+			<form action="/system/cloud" method="post" class="ui fluid form">
+				<? 
+					local enable = ''
+					local ns = ''
+					local akey = ''
+					if settings and settings.cloud then
+						enable = settings.cloud.enable and 'checked=true' or ''
+						ns = settings.cloud.namespace or ''
+						akey = settings.cloud.authkey or ''
+					end
+				?>
 				<input type="hidden" name="type" value="device" />
 				<div class="ui toggle checkbox field">
-					<input name="enable" type="checkbox" checked="true">
+					<input name="enable" type="checkbox" <?=enable?>>
 					<label><b><?=_("Enable")?></b></label>
 				</div>
 				<div class="title">
@@ -65,12 +75,12 @@
 				<div class="content field">
 					<div class="two fields">
 						<div class="inline field">
-							<div class="ui pointing right label"><b><?=("Namespace")?></b></div>
-							<input name="devname" placeholder="<?=_('Name')?>" type="text">
+							<div class="ui pointing right label"><b><?=_("Namespace")?></b></div>
+							<input name="namespace" placeholder="<?=_('Namespace')?>" type="text" value="<?=ns?>">
 						</div>
 						<div class="inline field">
 							<div class="ui pointing right label"><b><?=_("Auth Key")?></b></div>
-							<input name="authkey" placeholder="<?=_('KEY')?>" type="text">
+							<input name="authkey" placeholder="<?=_('KEY')?>" type="text" value="<?=akey?>">
 						</div>
 					</div>
 				</div>
@@ -79,3 +89,27 @@
 		</div>
 	</div>
 </div>
+
+<div class="ui icon message">
+	<i class="inbox icon"></i>
+	<div class="content">
+		<div class="header">
+			<div id="setting_status">
+				<? = err ?>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	$(document).ready(function() {
+			$('form').ajaxForm({
+				success: function(data) {
+					$('#setting_status').html('<i>' + data + '</i>');
+				},
+				error: function(data) {
+					$('#setting_status').html('<b>' + data + '</b>');
+				},
+			});
+	});
+</script>

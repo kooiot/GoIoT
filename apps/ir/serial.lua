@@ -37,6 +37,10 @@ function class:open(port_name, opt)
 end
 
 function class:read(len, timeout)
+	if not self.port then 
+		return false, '', 0
+	end
+
 	assert(len)
 	-- read with timeout
 	local timeout = timeout or self.read_timeout -- in miliseconds
@@ -45,12 +49,20 @@ function class:read(len, timeout)
 end
 
 function class:write(data, timeout)
+	if not self.port then
+		return false, 0
+	end
+
 	-- write with timeout 1000 msec
 	local e, len_written = self.port:write(data, timeout or self.write_timeout)
 	return e == rs232.RS232_ERR_NOERROR, len_written
 end
 
 function class:close()
+	if not self.port then
+		return
+	end
+
 	-- close
 	assert(self.port:close() == rs232.RS232_ERR_NOERROR)
 	self.port = nil
