@@ -20,6 +20,8 @@ fi
 
 echo $1
 
+cat /proc/sys/net/ipv4/ip_local_port_range > /tmp/port_range
+
 #PID_FOLDER=/var/run/
 PID_FOLDER=/tmp/
 if [ $1 = "start" ] ; then
