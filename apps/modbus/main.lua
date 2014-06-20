@@ -25,6 +25,7 @@ stream.buf = ''
 
 -- Load tags from file
 local packets = {}
+local ip_port = {}
 local tags = {}
 
 local function remove_tags()
@@ -54,7 +55,7 @@ local function load_tags_conf(app, reload)
 		end
 	end
 
-	packets = require("tags").load_tags(ioname)
+	packets, ip_port = require("tags").load_tags(ioname)
 
 	for k, v in pairs(packets) do
 		port_config = v.port_config
@@ -153,13 +154,11 @@ end
 local handlers = {}
 handlers.on_start = function(app)
 		load_tags_conf(app)
-	for k, v in pairs(packets) do
-		local remote_addr = v.port_config.sIp
-		local port = v.port_config.port
+		local remote_addr = ip_port.sIp
+		local port = ip_port.port
 		local tcpc = require 'shared.io.tcp.client'
 		log:info(app.name, 'Creating tcp client to', remote_addr, 'port', port)
 		io_ports.main = tcpc.new(app.ctx, app.poller, remote_addr, port)
-	end
 		io_ports.main:open(on_rev)
 	--[[
 		log:info(ioname, 'Received event [START]')

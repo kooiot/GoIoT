@@ -11,7 +11,7 @@ return {
 		local name = req:get_post_arg("name")
 		config = cjson.decode(json_text)
 		res:write(path)
-		filename = path .. "/modbus/config/" .. filename .."_config.json"
+		filename = path .. "/modbus/config/" .. app.appname .. "/" .. filename .."_config.json"
 		res:write(filename)
 		for k, v in pairs(config) do
 			if v.tree.id == id and v.tree.pId == pId and v.tree.name == name then

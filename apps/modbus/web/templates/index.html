@@ -97,6 +97,7 @@ console.log(json_text)
 		tree_config = tree
 	}
 
+$("#unit").hide(); 
 var zNodes = tree_config;
 var log, className = "dark";
 function beforeClick(treeId, treeNode, clickFlag) {
@@ -214,9 +215,9 @@ function add(e) {
 	}
 	if (treeNode) {
 		zTree.editName(treeNode[0]);
-		$("#sIp").attr("disabled",false); 
-		$("#port").attr("disabled",false); 
-		$("#unit").attr("disabled",false); 
+		$("#sIp").hide();
+		$("#port").hide(); 
+		$("#unit").show(); 
 	} else {
 		newCount--;
 		alert("Leaf node is locked and can not add child node.");
@@ -248,8 +249,7 @@ function pSave(){
 	//console.log(str);
 	$.post("", {id:id, pId:pId, name:name, port:port, sIp:sIp, unit:unit}, function(data, status){
 		if (status) {
-			if (parseInt(pId) != 0)
-		window.location.reload();
+			window.location.reload();
 		}
 	});
 }

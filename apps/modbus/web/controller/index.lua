@@ -4,7 +4,13 @@ path = platform.path.apps
 
 return {
 	get = function(req, res)
-		local filename = path .. "/"..app.appname.."/config/" .. app.appname .."_config.json"
+		local path = path .. "/modbus/config/" .. app.appname .. "/"
+		local excute = "mkdir " .. path .. " -p"
+		if not os.execute(excute) then
+			res:write(app.appname)
+			return
+		end
+		local filename = path .. app.appname .. "_config.json"
 		local file, err = io.open(filename, "a+")
 		if file then
 			local config = file:read("*a")
@@ -34,7 +40,8 @@ return {
 
 	post = function(req, res)
 		req:read_body()
-		local filename = path .. "/"..app.appname.."/config/" .. app.appname .."_config.json"
+		local path = path .. "/modbus/config/" .. app.appname .. "/"
+		local filename = path .. app.appname .. "_config.json"
 		local port = req:get_post_arg("port")
 		local sIp = req:get_post_arg("sIp")
 		local unit = req:get_post_arg("unit")
