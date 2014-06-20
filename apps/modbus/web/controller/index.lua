@@ -26,7 +26,7 @@ return {
 				--res:write(config)
 			end
 			file:close()
-			res:ltp("index.html", {json_text = config, app=app})
+			res:ltp("index.html", {lwf=lwf, app=app, json_text = config, app=app})
 		else
 			res:write(err)
 		end
