@@ -4,10 +4,10 @@ path = platform.path.apps
 
 return {
 	get = function(req, res)
-		filename = path .. "/modbus/config/" .. app.appname .."_config.json"
-		local file = io.open(filename, "a+")
-		if (file) then
-			config = file:read("*a")
+		local filename = path .. "/"..app.appname.."/config/" .. app.appname .."_config.json"
+		local file, err = io.open(filename, "a+")
+		if file then
+			local config = file:read("*a")
 			if config == "" then
 				devices = {}
 				t = {}
@@ -25,14 +25,16 @@ return {
 				file:write(config)
 				--res:write(config)
 			end
+			file:close()
+			res:ltp("index.html", {json_text = config, app=app})
+		else
+			res:write(err)
 		end
-		file:close()
-		res:ltp("index.html", {json_text = config, app=app})
 	end,
 
 	post = function(req, res)
 		req:read_body()
-		filename = path .. "/modbus/config/" .. app.appname .."_config.json"
+		local filename = path .. "/"..app.appname.."/config/" .. app.appname .."_config.json"
 		local port = req:get_post_arg("port")
 		local sIp = req:get_post_arg("sIp")
 		local unit = req:get_post_arg("unit")
@@ -49,10 +51,14 @@ return {
 		t.config.sIp = sIp
 		t.config.unit = unit
 
-		file = io.open(filename, "a+")
-		json_text = file:read("*a")
-		tags = cjson.decode(json_text)
-		flags = false
+		local file, err = io.open(filename, "a+")
+		if not file then
+			res:write(err)
+			return
+		end
+		local json_text = file:read("*a")
+		local tags = cjson.decode(json_text)
+		local flags = false
 		if tags then
 			for k, v in pairs(tags) do
 				if v.tree.id == t.tree.id and v.tree.pId == t.tree.pId then

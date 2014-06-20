@@ -6,11 +6,16 @@ path = platform.path.apps
 
 return {
 	get = function(req, res)
-		filename = req:get_arg("name")
-		filename = path .. "/modbus/config/" .. filename .. "_config.json"
-		local file = io.open(filename, "a+")
-		if (file) then
-			config = file:read("*a")
+		local filename = req:get_arg("name")
+		if not filename then
+			res:write('No file name specified')
+			return
+		end
+
+		filename = path .. "/"..app.appname.."/config/" .. filename .."_config.json"
+		local file, err = io.open(filename, "a+")
+		if file then
+			local config = file:read("*a")
 			if config == "" then
 				devices = {}
 				t = {}
@@ -30,15 +35,17 @@ return {
 				config = cjson.encode(devices)
 				file:write(config)
 			end
+			file:close()
+			res:ltp('tree.html', {json_text = config})
+		else
+			res:write(err)
 		end
-		file:close()
-		res:ltp('tree.html', {json_text = config})
 	end,
 
 	post = function(req, res)
 		req:read_body()
-		filename = req:get_post_arg("filename")
-		filename = path .. "/modbus/config/" .. filename .. "_config.json"
+		local filename = req:get_post_arg("filename")
+		filename = path .. "/"..app.appname.."/config/" .. filename .."_config.json"
 		local cycle = req:get_post_arg("cycle")
 		if not cycle then
 			res:write("error!")
@@ -66,10 +73,10 @@ return {
 		t.request.addr = addr
 		t.request.len = len
 
-		n = values:find("tblAppendGrid_rowOrder")
-		values = values:sub(0, n - 2)
-		tmp = {}
-		i = 1
+		local n = values:find("tblAppendGrid_rowOrder")
+		local values = values:sub(0, n - 2)
+		local tmp = {}
+		local i = 1
 		--a = {}
 		for k, v in values:gmatch("([^&=]+)=([^&=]+)") do
 		--	res:write(v)
@@ -98,10 +105,15 @@ return {
 
 		end
 
-		file = io.open(filename, "a+")
-		json_text = file:read("*a")
-		tags = cjson.decode(json_text)
-		flags = false
+		local file, err = io.open(filename, "a+")
+		if not file then
+			res:write(err)
+			return
+		end
+
+		local json_text = file:read("*a")
+		local tags = cjson.decode(json_text)
+		local flags = false
 		if tags then
 			for k, v in pairs(tags) do
 				if v.tree.id == t.tree.id and v.tree.pId == t.tree.pId then
