@@ -3,9 +3,9 @@ return {
 		local config = require 'shared.api.config'
 		local appname = app.appname
 		local mod = config.get(appname..'.mod') or
-		[[<a class="ui red button" onclick="send_command('关机');">关机</a>
-<a class="ui teal button" onclick="send_command('开机');">开机</a>
-<a class="ui red button" onclick="send_command('[&quot;6&quot;, &quot;0&quot;, &quot;1&quot;]');">央视1高清</a>
+		[[<a class="ui red button" onclick="send_command('GREE/关机');">关机</a>
+<a class="ui teal button" onclick="send_command('GREE/开机');">开机</a>
+<a class="ui red button" onclick="send_command('[&quot;DS/6&quot;, &quot;DS/0&quot;, &quot;DS/1&quot;]');">央视1高清</a>
 ]]
 		res:write(mod)
 	end,
