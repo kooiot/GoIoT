@@ -59,6 +59,8 @@ sudo rm -rf __install
 ./scripts/release_app.sh ir
 # Release Auto Control
 ./scripts/release_app.sh autoctrl
+# Release Modbus
+./scripts/release_app.sh modbus
 
 # Done
 echo 'DONE'
