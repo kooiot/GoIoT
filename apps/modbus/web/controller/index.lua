@@ -11,7 +11,6 @@ return {
 			return
 		end
 		local filename = path .. app.appname .. "_config.json"
-		res:write(filename)
 		local file, err = io.open(filename, "a+")
 		if file then
 			local config = file:read("*a")
