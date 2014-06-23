@@ -43,7 +43,6 @@ return {
 			return packets, ip_port
 		else
 			print(msg)
-			file:close()
 			return file
 		end
 	end
