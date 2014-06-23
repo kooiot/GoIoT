@@ -12,7 +12,7 @@ return {
 			return
 		end
 
-		filename = path .. "/modbus/config/" .. app.appname .. "/" .. filename .."_config.json"
+		filename = path .. "/" .. app.appname .. "/config/" .. app.appname .. "/" .. filename .."_config.json"
 		local file, err = io.open(filename, "a+")
 		if file then
 			local config = file:read("*a")
@@ -45,7 +45,7 @@ return {
 	post = function(req, res)
 		req:read_body()
 		local filename = req:get_post_arg("filename")
-		filename = path .. "/modbus/config/" .. app.appname .. "/" .. filename .."_config.json"
+		filename = path .. "/" .. app.appname .. "/config/" .. app.appname .. "/" .. filename .."_config.json"
 		local cycle = req:get_post_arg("cycle")
 		if not cycle then
 			res:write("error!")
