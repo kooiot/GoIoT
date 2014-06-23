@@ -7,9 +7,9 @@ fi
 # zip files
 cd ./apps/$1
 zip -r -q ../../__release/$1.zip *
+cd ../../
 
 # copy to web server folder
-cd ../../
-mkdir -p /var/www/master/$1
-cp __release/$1.zip /var/www/master/$1/latest.zip
+#mkdir -p /var/www/master/$1
+#cp __release/$1.zip /var/www/master/$1/latest.zip
 
