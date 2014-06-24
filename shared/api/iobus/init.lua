@@ -10,19 +10,13 @@ local iobussub = require 'shared.api.iobus.sub'
 -- @type class
 local class = {}
 
+local msg_reply = require 'shared.msg.reply'
+
 --- Process reply message
 local function reply(json, err)
 	local reply = nil
 	if json then
-		reply, err = cjson.decode(json)
-		if reply then
-			if #reply == 2 then
-				err = reply[2].err
-				reply = reply[2].result
-			else
-				err = "incorrect reply json"
-			end
-		end
+		reply, err = msg_reply(json)
 	end
 	return reply, err
 end
@@ -82,11 +76,8 @@ end
 -- @treturn string error message
 function class:read(path)
 	local req = {'read', {path=path, from=self.from}}
-	local reply, err = self.client:request(cjson.encode(req), true)
-	if reply then
-		reply = cjson.decode(reply)[2]
-	end
-	return reply, err
+	local r, err = reply(self.client:request(cjson.encode(req), true))
+	return r, err
 end
 
 --- Enum devices according to pattern
@@ -95,17 +86,14 @@ end
 
 function class:enum(pattern)
 	local req = {'enum', {pattern=pattern, from=self.from}}
-	local reply, err = self.client:request(cjson.encode(req), true)
-	if reply then
-		reply = cjson.decode(reply)[2].devices
+	local devices, err = reply(self.client:request(cjson.encode(req), true))
 		--[[
 			devices = {
 				'namespace' = { 'device1', 'device2' }，
 				'namespace2' = { 'device2', 'devices' },
 			}
 		]]--
-	end
-	return reply, err
+	return devices, err
 end
 
 --- Read the device tree meta from iobus
@@ -113,14 +101,8 @@ end
 -- @treturn table the device tree table  { verinfo = {}, device {inputs={}, comands={} } }
 function class:tree(path)
 	local req = {'tree', {path=path, from=self.from}}
-	local reply, err = self.client:request(cjson.encode(req), true)
-	if reply then
-		reply, err = cjson.decode(reply)
-		if type(reply) == 'table' then
-			reply = reply[2].tree
-		end
-	end
-	return reply, err
+	local tree, err = reply(self.client:request(cjson.encode(req), true))
+	return tree, err
 end
 
 --- Subscribe to a path, to get notice when data changed
@@ -134,13 +116,8 @@ function class:subscribe(pattern, cb)
 	assert(self.subclient)
 
 	local req = {'subscribe', {pattern=pattern, from=self.from}}
-	local reply, err = self.client:request(cjson.encode(req), true)
-	if reply then
-		reply = cjson.decode(reply)[2]
-		-- Only bind the callbacks when subscribe successfully
-		self.subclient:bind(pattern, cb)
-	end
-	return reply, err
+	local r, err = reply(self.client:request(cjson.encode(req), true))
+	return r, err
 end
 
 --- Unsubscribe cov
@@ -151,11 +128,8 @@ function class:unsubscribe(pattern)
 	assert(self.subclient)
 	self.subclient:unbind(pattern)
 	local req = {'unsubscribe', {pattern=pattern, from=self.from}}
-	local reply, err = self.client:request(cjson.encode(req), true)
-	if reply then
-		reply = cjson.decode(reply)[2]
-	end
-	return reply, err
+	local r, err = reply(self.client:request(cjson.encode(req), true))
+	return r, err
 end
 
 --- Register the callback function for data writing
@@ -183,11 +157,8 @@ end
 -- 
 function class:version()
 	local req = {'version', {from=self.from}}
-	local reply, err = self.client:request(cjson.encode(req), true)
-	if reply then
-		reply = cjson.decode(reply)[2]
-	end
-	return reply, err
+	local r, err = reply(self.client:request(cjson.encode(req), true))
+	return r, err
 end
 
 --- Module functions

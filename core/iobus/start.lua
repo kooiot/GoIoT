@@ -22,11 +22,8 @@ zassert(server, err)
 local pub = require 'pub'
 local publisher = pub.init(ctx)
 
-function send_err(err)
-	local reply = {'error', {err=err}}
-	local rep_json = cjson.encode(reply)
-	server:send(rep_json)
-end
+local send = require('shared.msg.send')(server)
+local send_result, send_err = send.result, send.err
 
 local clients = {} -- contains clients information
 local mpft = {} -- message process function table
@@ -38,8 +35,8 @@ mpft['login'] = function(vars)
 	local pass = vars.pass
 	local port = vars.port
 	clients[namespace] = { user=user, pass=pass, port=port }
-	local rep = {"login", { result = true, ver="1" }}
-	server:send(cjson.encode(rep))
+
+	send_result('login', {ver="1"})
 
 	if port and port ~= 0 then
 		-- Tell all client there possiably an updated application back online
@@ -56,14 +53,13 @@ mpft['publish'] = function(vars)
 			local r = true
 			r, err = db:set(vars.path, vars.value, vars.timestamp, vars.quality)
 			if r then
-				local rep = {'publish', {result=true, path=vars.path}}
-				server:send(cjson.encode(rep))
+				send_result('publish', true)
 				pub.cov(vars.path, vars)
 				return
 			end
 		end
 	end
-	send_err(err)
+	send_err('publish', err)
 end
 
 mpft['batch_publish'] = function(vars)
@@ -87,11 +83,9 @@ mpft['batch_publish'] = function(vars)
 				result = false
 			end
 		end
-		local rep = {'batch_publish', {result=result, paths=paths}}
-		server:send(cjson.encode(rep))
-		return
+		return send_result('batch_publish', {result=result, paths=paths})
 	end
-	send_err(err)
+	send_err('batch_publish', err)
 end
 
 mpft['read'] = function(vars)
@@ -101,15 +95,13 @@ mpft['read'] = function(vars)
 		if vars.path then
 			local r, value, timestamp = db:get(vars.path)
 			if r then
-				local rep = {'read', {path=vars.path, value=value, timestamp=timestamp}}
-				server:send(cjson.encode(rep))
-				return
+				return send_result('read', {path=vars.path, value=value, timestamp=timestamp})
 			else
 				err = value
 			end
 		end
 	end
-	send_err(err)
+	send_err('read', err)
 end
 
 mpft['write'] = function(vars)
@@ -119,15 +111,13 @@ mpft['write'] = function(vars)
 		local ns, dev = vars.path:match('^([^/]+)/([^/]+)/.+')
 		if clients[ns] then
 			local r, err = pub.write(vars.path, vars.value, vars.from)
-			local reply = {'write', {result=r, err=err}}
-			server:send(cjson.encode(reply))
-			return
+			return send_result('write', r, err)
 		else
 			err = 'Device path incorrect, no such namespace '..vars.path
 		end
 	end
 	log:error('IOBUS', 'Error on write', err)
-	send_err(err)
+	send_err('write', err)
 end
 
 mpft['command'] = function(vars)
@@ -137,15 +127,13 @@ mpft['command'] = function(vars)
 		local ns, dev = vars.path:match('^([^/]+)/([^/]+)/.+')
 		if clients[ns] then
 			local r, err = pub.command(vars.path, vars.args, vars.from)
-			local reply = {'command', {result=r, err=err}}
-			server:send(cjson.encode(reply))
-			return
+			return send_result('command', r, err)
 		else
 			err = 'Device path incorrect, no such namespace '..vars.path
 		end
 	end
 	log:error('IOBUS', 'Error on command:', err)
-	send_err(err)
+	send_err('command', err)
 end
 
 local get_devices_tree
@@ -172,8 +160,7 @@ mpft['enum'] = function (vars)
 		end
 	end
 
-	local rep = {'enum', {result=ture, devices=devs}}
-	server:send(cjson.encode(rep))
+	return send_result('enum', devs)
 end
 
 get_devices_tree = function(path)
@@ -214,26 +201,24 @@ mpft['tree'] = function(vars)
 	if path then
 		local obj, err = get_devices_tree(path)	
 		if obj then
-			server:send(cjson.encode({'tree', {result=true, tree=obj}}))
+			return send_result('tree', obj)
 		else
-			send_err(err)
+			return send_err('tree', err)
 		end
 	else
 		local err = 'Invalid/Unsupported get request'
-		send_err(err)
+		return send_err('tree', err)
 	end
 end
 
 mpft['subscribe'] = function(vars)
 	local result, err = pub.sub(vars.pattern, vars.from)
-	local rep = {'subscribe', {result=result, err=err}}
-	server:send(cjson.encode(rep))
+	return send_result('subscribe', result, err)
 end
 
 mpft['unsubscribe'] = function(vars)
 	local result, err = pub.unsub(vars.pattern, vars.from)
-	local rep = {'unsubscribe', {result=result, err=err}}
-	server:send(cjson.encode(rep))
+	return send_result('subscribe', result, err)
 end
 
 mpft['version'] = function()
@@ -255,10 +240,10 @@ poller:add(server, zmq.POLLIN, function()
 
 	local req, err = cjson.decode(req_json)
 	if not req then
-		send_err(err)
+		send_err('error', err)
 	else
 		if type(req) ~= 'table' then
-			send_err('unsupport message type')
+			send_err('error', 'unsupport message type')
 		else
 			-- handle request
 			--server:send(cjson.encode(req))
@@ -266,7 +251,7 @@ poller:add(server, zmq.POLLIN, function()
 			if fun then
 				fun(req[2])
 			else
-				send_err('Unsupported message operation: '..req[1])
+				send_err('error', 'Unsupported message operation: '..req[1])
 			end
 		end
 	end

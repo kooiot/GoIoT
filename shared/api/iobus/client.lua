@@ -11,19 +11,13 @@ local ztimer = require 'lzmq.timer'
 -- @type class
 local class = {}
 
+local msg_reply = require 'shared.msg.reply'
+
 --- Process reply message
 local function reply(json, err)
 	local reply = nil
 	if json then
-		reply, err = cjson.decode(json)
-		if reply then
-			if #reply == 2 then
-				err = reply[2].err
-				reply = reply[2].result
-			else
-				err = "incorrect reply json"
-			end
-		end
+		reply, err = msg_reply(json)
 	end
 	return reply, err
 end
@@ -50,65 +44,45 @@ end
 
 --- Read object/property value
 -- @tparam strint path The path of object/property
--- @treturn table value object
+-- @treturn table value object { value, timestamp, quality }
 -- @treturn string error message
 function class:read(path)
 	local req = {'read', {path=path, from=self.from}}
-	local reply, err = self.client:request(cjson.encode(req), true)
-	if reply then
-		local t = cjson.decode(reply)
-		if t[1] == 'read' then
-			reply = cjson.decode(reply)[2]
-		else
-			reply = nil
-			err = t[2].err
-		end
-	end
-	return reply, err
+	local r, err = reply(self.client:request(cjson.encode(req), true))
+	return r, err
 end
 
 --- Enum devices according to pattern
 -- @tparam string pattern( refer to string.match pattern  )
--- @treturn table device name list in group of namespaces
+-- @treturn table device name list { 'namespace' = { 'device1', 'device2' } 'namespace2' = { 'device2', 'devices' }}
+
 function class:enum(pattern)
 	local req = {'enum', {pattern=pattern, from=self.from}}
-	local reply, err = self.client:request(cjson.encode(req), true)
-	if reply then
-		reply = cjson.decode(reply)[2].devices
+	local devices, err = reply(self.client:request(cjson.encode(req), true))
 		--[[
 			devices = {
 				'namespace' = { 'device1', 'device2' }，
 				'namespace2' = { 'device2', 'devices' },
 			}
 		]]--
-	end
-	return reply, err
+	return devices, err
 end
 
 --- Read the device tree meta from iobus
--- @tparam string path the namespace/device path 
--- @treturn table the device tree table
+-- @tparam string path the device path (including namespace and device name)
+-- @treturn table the device tree table  { verinfo = {}, device {inputs={}, comands={} } }
 function class:tree(path)
 	local req = {'tree', {path=path, from=self.from}}
-	local reply, err = self.client:request(cjson.encode(req), true)
-	if reply then
-		reply, err = cjson.decode(reply)
-		if type(reply) == 'table' then
-			reply = reply[2].tree
-		end
-	end
-	return reply, err
+	local tree, err = reply(self.client:request(cjson.encode(req), true))
+	return tree, err
 end
 
 --- Get the IOBUS service version
 -- 
 function class:version()
 	local req = {'version', {from=self.from}}
-	local reply, err = self.client:request(cjson.encode(req), true)
-	if reply then
-		reply = cjson.decode(reply)[2]
-	end
-	return reply, err
+	local r, err = reply(self.client:request(cjson.encode(req), true))
+	return r, err
 end
 
 --- Module functions
