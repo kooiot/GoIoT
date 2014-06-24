@@ -1,3 +1,4 @@
+--- The utility helper function for sending result in json format
 
 local cjson = require 'cjson.safe'
 

@@ -14,11 +14,11 @@ msgid "Auth Key"
 msgstr ""
 
 
-msgid "Save"
+msgid "Server URL"
 msgstr ""
 
 
-msgid "Server URL"
+msgid "Save"
 msgstr ""
 
 

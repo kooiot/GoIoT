@@ -1,4 +1,6 @@
 
+--- Helper function for parsing the reply message
+
 local cjson = require 'cjson.safe'
 
 return function(raw, msg)
