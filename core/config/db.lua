@@ -58,6 +58,10 @@ local function save()
 	con:commit()
 end
 
+function _M.list()
+	return _buf
+end
+
 function _M.set(key, value)
 	_buf[key] = value
 	return save_(key, value)
@@ -75,6 +79,13 @@ end
 function _M.del(key)
 	_buf[key] = nil
 	return delete_(key)
+end
+
+function _M.clear()
+	_buf = {}
+	con:execute([[DROP TABLE  configs;]])
+	con:execute(_create_table)
+	return true
 end
 
 _M.load = load

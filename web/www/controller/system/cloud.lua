@@ -5,17 +5,12 @@ return {
 		local authkey = req:get_arg('authkey')
 		if authkey and ns then
 			local config = require 'shared.api.config'
-			local cjson = require 'cjson.safe'
-			local s, err = cjson.encode({namespace = ns, authkey = authkey, enable = enable and true or false})
-			if s then
-				local r, err = config.set('settings.cloud', s)
-				if not r then
-					res:write(err)
-				else
-					res:write('Cloud settings saved '..s)
-				end
-			else
+			local s = {namespace = ns, authkey = authkey, enable = enable and true or false}
+			local r, err = config.set('settings.cloud', s)
+			if not r then
 				res:write(err)
+			else
+				res:write('Cloud settings saved!')
 			end
 		else
 			res:write('Incorrect post request')

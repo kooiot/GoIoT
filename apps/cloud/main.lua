@@ -24,7 +24,7 @@ info.name = ioname
 
 local function load_conf()
 	local config, err = config.get(ioname..'.conf')
-	if config then
+	if config and type(config) == 'string' then
 		config, err = cjson.decode(config)
 	end
 	config = config or {}

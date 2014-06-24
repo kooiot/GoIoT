@@ -1,11 +1,9 @@
 local function doi(req, res, info)
 	local config = require 'shared.api.config'
-	local cjson = require 'cjson.safe'
 
 	assert(app.appname)
 	local name = app.appname..'.conf'
-	local conf_json = config.get(name)
-	local conf = cjson.decode(conf_json or "{}")
+	local conf = config.get(name) or {}
 	conf.key = conf.key or "6015c744795762df41e9ebfa25fd625c"
 	conf.url = conf.url or 'http://172.30.0.115:8000/RestService/'
 	conf.timeout = conf.timeout or 5
@@ -22,10 +20,7 @@ return {
 		local info = nil
 		if key then
 			local config = require 'shared.api.config'
-			local cjson = require 'cjson.safe'
-			local conf_str, err = cjson.encode({key=key, url=url, timeout=timeout})
-
-			local r, err = config.set(name, conf_str)
+			local r, err = config.set(name, {key=key, url=url, timeout=timeout})
 			if r then
 				info = 'Key has been saved!!'
 			else

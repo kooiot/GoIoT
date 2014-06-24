@@ -220,11 +220,7 @@ local function init_sub()
 end
 
 local function load_yxx_map()
-	local jstr = config.get(ioname..'.config')
-	if not jstr then
-		return {}
-	end
-	local ctree, err = cjson.decode(jstr)
+	local ctree, err = config.get(ioname..'.config')
 	if ctree then
 		return ctree
 	else
@@ -234,12 +230,7 @@ local function load_yxx_map()
 end
 
 local function save_yxx_map(ctree)
-	local jstr, err = cjson.encode(ctree)
-	if jstr then
-		config.set(ioname..'.config', jstr)
-	else
-		log:error(ioname, 'Encode config string error:', err)
-	end
+	return config.set(ioname..'.config', ctree)
 end
 
 local function on_start()
