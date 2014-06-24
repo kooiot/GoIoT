@@ -56,7 +56,13 @@ function class:read(path)
 	local req = {'read', {path=path, from=self.from}}
 	local reply, err = self.client:request(cjson.encode(req), true)
 	if reply then
-		reply = cjson.decode(reply)[2]
+		local t = cjson.decode(reply)
+		if t[1] == 'read' then
+			reply = cjson.decode(reply)[2]
+		else
+			reply = nil
+			err = t[2].err
+		end
 	end
 	return reply, err
 end

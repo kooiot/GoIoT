@@ -15,7 +15,14 @@ return {
 					for _, dev in pairs(tree.devices) do
 						for _, input in pairs(dev.inputs) do
 							local vars, err = client:read(input.path)
-							vars = vars or {}
+							--[[
+							if vars then
+								for k, v in pairs(vars) do print(k, v) end
+							else
+								print(vars, err)
+							end
+							]]--
+							vars = vars or {timestamp=0}
 							tags[#tags+1] = {name=input.path, desc=input.desc, value=vars.value or '', timestamp=os.date('%c', vars.timestamp)}
 						end
 					end

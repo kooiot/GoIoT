@@ -43,6 +43,8 @@ function _M.abort(name)
 	local pidfile = pid_file(name)
 	local r, code = execute('start-stop-daemon --stop --pidfile '..pidfile..' --retry 5')
 	if not r or code ~= 0 then
+		-- Do not remove the pid when aborting services, keep it..
+		--os.remove(pidfile)
 		return nil, code
 	end
 	return true
