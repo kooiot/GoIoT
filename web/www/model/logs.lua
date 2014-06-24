@@ -2,6 +2,8 @@ local zmq = require "lzmq"
 local req = require "shared.req"
 local cjson = require 'cjson.safe'
 
+local msg_reply = require 'shared.msg.reply'
+
 local _M = {}
 
 function _M.new(m, ctx)
@@ -18,12 +20,7 @@ function _M:query(typ, clean)
 	local req = {typ, {from='web', clean=clean}}
 	local reply, err = self.client:request(cjson.encode(req), true)
 	if reply then
-		local reply = cjson.decode(reply)
-		if reply and #reply == 2 and reply[1] == typ and reply[2].result == true then
-			return reply[2].logs
-		else
-			return nil, reply[2].err
-		end
+		return msg_reply(reply)
 	else
 		return nil, err
 	end
