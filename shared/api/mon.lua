@@ -6,6 +6,7 @@ local zmq = require "lzmq"
 local cjson = require "cjson.safe"
 
 local req = require "shared.req"
+local msg_reply = require 'shared.msg.reply'
 
 local client = req.new()
 
@@ -20,17 +21,13 @@ local _M = {}
 _M.query = function(apps)
 	local req = {"query", apps}
 	local reply, err = client:request(cjson.encode(req), true)
+	--print(reply, err)
 
 	if reply then
-		reply = cjson.decode(reply)
-		if reply[1] ~= 'query' then
-			err = reply[2].err
-			reply = nil
-		else
-			reply = reply[2]
-		end
+		return msg_reply(reply)
+	else
+		return reply, err
 	end
-	return reply, err
 end
 
 --- Get the monitor service version
@@ -39,9 +36,10 @@ _M.version = function()
 	local req = {'version'}
 	local reply, err = client:request(cjson.encode(req), true)
 	if reply then
-		reply = cjson.decode(reply)[2]
+		return msg_reply(reply)
+	else
+		return reply, err
 	end
-	return reply, err
 end
 
 return _M

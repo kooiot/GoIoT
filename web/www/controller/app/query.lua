@@ -11,10 +11,26 @@ return {
 		local appname = req:get_arg('app')
 
 		local vars = appname and {appname} or nil
-		local reply, err = api.query(vars)
-		if reply then
-			res.headers['Content-Type'] = 'application/json'
+		local status, err = api.query(vars)
+
+		--[[
+		if status then
+			for k, v in pairs(status) do
+				print(k)
+				for k, v in pairs(v) do
+					print(k, v)
+				end
+			end
+		else
+			print(status, err)
 		end
-		res:write(cjson.encode(reply and reply.status or err))
+		]]--
+
+		if status then
+			res.headers['Content-Type'] = 'application/json'
+			res:write(cjson.encode(status))
+		else
+			res:write(err)
+		end
 	end
 }
