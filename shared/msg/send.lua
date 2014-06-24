@@ -15,6 +15,8 @@ return function(con)
 		con:send(rep_json)
 	end
 	local err_f = function(msg, err)
+		assert(msg)
+		assert(err)
 		return result_f(msg, nil, err)
 	end
 

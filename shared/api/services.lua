@@ -15,13 +15,11 @@ client:open({zmq.REQ, linger = 0, connect="tcp://localhost:5115", rcvtimeo = 300
 --- Module
 local _M = {}
 
-local function get_reply(reply, key)
-	local reply, err = cjson.decode(reply)
-	if #reply ~= 2 or (key and reply[1] ~= key) then
-		err = 'Error result json '..cjson.encode(reply)..' - '..(key or '')
-		reply = nil
-	else
-		reply = reply[2]
+local msg_reply = require 'shared.msg.reply'
+
+local function get_reply(reply, err)
+	if reply then
+		return msg_reply(reply)
 	end
 	return reply, err
 end
@@ -30,46 +28,21 @@ end
 -- @tparam string name services name
 -- @treturn boolean result
 -- @treturn string error
--- @treturn table services status table {
---	status = 'xxxx' -- 'DONE' 'ERROR' 'RUNNING'
---	err = 'xxxx
---	}
 _M.abort = function(name)
 	local req = {"abort", {name=name}}
-	local reply, err = client:request(cjson.encode(req), true)
-	print(reply)
-
-	if reply then
-		reply, err = get_reply(reply, 'abort')
-
-		if reply then
-			err = reply and reply.err or err
-			return reply.result, err, reply.status
-		end
-	end
-	return nil, err
+	return get_reply(client:request(cjson.encode(req), true))
 end
 
 --- Query the services running status
 -- @tparam string name services name
 -- @treturn table services status table {
 --	status = 'xxxx' -- 'DONE' 'ERROR' 'RUNNING'
---	err = 'xxxx
+--	percent = 10
+--	logs = {'', ''}
 --	}
 _M.query = function(name)
 	local req = {"query", {name=name}}
-	local reply, err = client:request(cjson.encode(req), true)
-
-	if reply then
-		reply, err = get_reply(reply, 'query')
-		if reply and reply.result then
-			reply = reply.status
-		else
-			err = reply and reply.err or err
-			reply = nil
-		end
-	end
-	return reply, err
+	return get_reply(client:request(cjson.encode(req), true))
 end
 
 --- Add one services
@@ -81,82 +54,43 @@ end
 -- @treturn string error
 _M.add = function(name, dostr, desc, keepalive)
 	local req = {'add', {name=name, dostr=dostr, desc=desc, keepalive=keepalive}}
-	local reply, err = client:request(cjson.encode(req), true)
-	print(reply)
-	if reply then
-		reply, err = get_reply(reply, 'add')
-		if reply then
-			err = reply.err
-			reply = reply.result
-		end
-	end
-	return reply, err
+	return get_reply(client:request(cjson.encode(req), true))
 end
 
 --- Set the result(error output)
 -- @tparam string name services name
 -- @tparam boolean result result boolean
 -- @tparam string output output text
--- @treturn nil
+-- @treturn boolean result
+-- @treturn string error
 _M.result = function(name, result, output)
 	local req = {'result', {name=name, result=result, output=output}}
-	local reply, err = client:request(cjson.encode(req), true)
-	print(reply)
-	if reply then
-		reply, err = get_reply(reply, 'result')
-		if reply then
-			err = reply.err
-			reply = reply.result
-		end
-	end
-	return reply, err
+	return get_reply(client:request(cjson.encode(req), true))
 end
 
---- Log progress for service
+--- Set progress for service
 -- @tparam string name services name
 -- @tparam string desc progress description
 -- @tparam number prec progress percent (nil for logging the desc only)
--- @treturn nil
+-- @treturn boolean result
+-- @treturn string error
 _M.progress = function(name, desc, prec)
 	local req = {'progress', {name=name, desc=desc, prec=prec}}
-	local reply, err = client:request(cjson.encode(req), true)
-	print(reply)
-	if reply then
-		reply, err = get_reply(reply, 'progress')
-		if reply then
-			err = reply.err
-			reply = reply.result
-		end
-	end
-	return reply, err
+	return get_reply(client:request(cjson.encode(req), true))
 end
 
 --- List all services' status
--- @treturn table services status tables
+-- @treturn table services status table(array)
 _M.list = function(name, dostr)
 	local req = {'list', {name=name, dostr=dostr}}
-	local reply, err = client:request(cjson.encode(req), true)
-	if reply then
-		reply, err = get_reply(reply, 'list')
-		if reply and reply.result then
-			reply = reply.status
-		else
-			err = reply and reply.err or err
-			reply = nil
-		end
-	end
-	return reply, err
+	return get_reply(client:request(cjson.encode(req), true))
 end
 
 --- Get the monitor service version
 -- 
 _M.version = function()
 	local req = {'version'}
-	local reply, err = client:request(cjson.encode(req), true)
-	if reply then
-		reply = cjson.decode(reply)[2]
-	end
-	return reply, err
+	return get_reply(client:request(cjson.encode(req), true))
 end
 
 return _M
