@@ -26,10 +26,10 @@
 	</div>
 	<? if lwf.ctx.user then ?>
 	<div class="ui tab" data-tab="cloud">
-		<? include('store/remote.html', {lwf=lwf, app=app, srvurl=srvurl}) ?>
+		<? include('store/remote.html', {lwf=lwf, app=app, srvurl=srvurl, authkey=authkey}) ?>
 	</div>
 	<div class="ui tab" data-tab="settings">
-		<? include('store/settings.html', {lwf=lwf, app=app, srvurl=srvurl}) ?>
+		<? include('store/settings.html', {lwf=lwf, app=app, srvurl=srvurl, authkey=authkey}) ?>
 	</div>
 	<? end ?>
 

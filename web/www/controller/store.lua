@@ -7,7 +7,7 @@ return {
 			local store = require 'shared.store'
 
 			local applist, err = store.search()
-			res:ltp('store/index.html', {lwf=lwf, app=app, srvurl=store.get_srv(), applist=applist, err=err})
+			res:ltp('store/index.html', {lwf=lwf, app=app, srvurl=store.get_srv(), authkey=store.get_authkey(), applist=applist, err=err})
 		end
 	end,
 	post = function(req, res)
