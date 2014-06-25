@@ -107,6 +107,10 @@ _M.get_srv = function()
 	return cfg.srvurl:match('://([^/]+)/')
 end
 
+_M.get_cfg = function()
+	return cfg
+end
+
 _M.get_authkey = function()
 	return cfg.authkey
 end
