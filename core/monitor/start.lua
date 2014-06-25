@@ -24,14 +24,10 @@ event:open()
 local server, err = ctx:socket{zmq.REP, bind = "tcp://*:5511"}
 zassert(server, err)
 
-local mpft = {} -- message process function table
+local send = require('shared.msg.send')(server)
+local send_result, send_err = send.result, send.err
 
-function send_err(err)
-	local reply = {'error', {err=err}}
-	local rep_json = cjson.encode(reply)
-	print(rep_json)
-	server:send(rep_json)
-end
+local mpft = {} -- message process function table
 
 mpft['notice'] = function(vars)
 	local err = 'Invalid/Unsupported add request'
@@ -45,19 +41,16 @@ mpft['notice'] = function(vars)
 			end
 			running[vars.name] = vars 
 			running[vars.name].last = os.time()
-			local rep = {'notice', {result=true}}
-			server:send(cjson.encode(rep))
-			return
+			return send_result('notice', true)
 		end
 	end
-	send_err(err)
+	return send_err('notice', err)
 end
 
 mpft['query'] = function(vars)
 	local err = 'Invalid/Unsupported query request'
 	if vars and type(vars) ~= 'table' then
-		send_err(err)
-		return
+		return send_err('query', err)
 	end
 
 	local names = {}
@@ -73,8 +66,7 @@ mpft['query'] = function(vars)
 			st[k] = v
 		end
 	end
-	local rep = {'query', {result=true, status = st}}
-	server:send(cjson.encode(rep))
+	return send_result('query', st)
 end
 
 mpft['version'] = function()
@@ -95,10 +87,10 @@ poller:add(server, zmq.POLLIN, function()
 
 	local req, err = cjson.decode(req_json)
 	if not req then
-		send_err(err)
+		send_err('error', err)
 	else
 		if type(req) ~= 'table' then
-			send_err('unsupport message type')
+			send_err('error', 'unsupport message type')
 		else
 			-- handle request
 			--server:send(cjson.encode(req))
@@ -106,7 +98,7 @@ poller:add(server, zmq.POLLIN, function()
 			if fun then
 				fun(req[2])
 			else
-				send_err('Unsupported message operation'..req[1])
+				send_err('error', 'Unsupported message operation'..req[1])
 			end
 		end
 	end

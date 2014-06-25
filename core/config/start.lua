@@ -22,11 +22,26 @@ zassert(server, err)
 
 local mpft = {} -- message process function table
 
-function send_err(err)
-	local reply = {'error', {err=err}}
-	local rep_json = cjson.encode(reply)
-	print(rep_json)
+local send = require('shared.msg.send')(server)
+local send_result, send_err = send.result, send.err
+
+--[[
+local function send_result(msg, result, err)
+	local reply = {msg, result, err}
+	local rep_json, json_err = cjson.encode(reply)
+	if not rep_json then
+		rep_json = cjson.encode({msg, nil, json_err})
+	end
 	server:send(rep_json)
+end
+
+local function send_err(msg, err)
+	return send_result(msg, nil, err)
+end
+]]--
+mpft['list'] = function(vars)
+	local list = db.list()
+	return send_result('list', list)
 end
 
 mpft['get'] = function(vars)
@@ -35,41 +50,39 @@ mpft['get'] = function(vars)
 		if vars.key then
 			local val_json = db.get(vars.key)
 			--log:debug('CONFIGS', 'get '..vars.key..(val_json or 'nil'))
-			local vals = cjson.decode(val_json)
-			local rep = {'get', {result=true, key=vars.key, vals=vals}}
-			server:send(cjson.encode(rep))
-			return
+			if val_json then
+				local value, err = cjson.decode(val_json)
+				return send_result('get', value, err)
+			else
+				err = 'Config not exists'
+			end
 		end
 	end
-	send_err(err)
+	return send_err('get', err)
 end
 
 mpft['set'] = function(vars)
 	local err = 'Invalid/Unsupported request message format'
 
 	if vars and type(vars) == 'table' then
-		if vars.key and vars.vals then
-			db.set(vars.key, cjson.encode(vars.vals))
-			local rep = {'set', {result=true}}
-			server:send(cjson.encode(rep))
-			return
+		if vars.key and vars.value then
+			db.set(vars.key, cjson.encode(vars.value))
+			return send_result('set', true)
 		end
 	end
-	send_err(err)
+	return send_err('set', err)
 end
 
 mpft['add'] = function(vars)
 	local err = 'Invalid/Unsupported request message format'
 
 	if vars and type(vars) == 'table' then
-		if vars.key and vars.vals then
-			local r, err = db.add(vars.key, vars.vals)
-			local rep = {'add', {result=r, err=err}}
-			server:send(cjson.encode(rep))
-			return
+		if vars.key and vars.value then
+			local r, err = db.add(vars.key, vars.value)
+			return send_result('add', r, err)
 		end
 	end
-	send_err(err)
+	return send_err('add', err)
 end
 
 mpft['erase'] = function(vars)
@@ -78,24 +91,22 @@ mpft['erase'] = function(vars)
 	if vars and type(vars) == 'table' then
 		if vars.key then
 			local r, err = db.del(vars.key)
-			local rep = {'erase', {result=r, err=err}}
-			server:send(cjson.encode(rep))
-			return
+			return send_result('erase', r, err)
 		end
 	end
-	send_err(err)
+	return send_err('erase', err)
+end
 
+mpft['clear'] = function(vars)
+	local r, err = db.clear()
+	return send_result('list', r, err)
 end
 
 mpft['version'] = function()
-	local reply = {
-		'version',
-		{
-			version = '0.1',
-			build = '01',
-		}
-	}
-	server:send(cjson.encode(reply))
+	return send_result('version', {
+		version = '0.1',
+		build = '01',
+	})
 end
 
 poller:add(server, zmq.POLLIN, function()
@@ -104,10 +115,10 @@ poller:add(server, zmq.POLLIN, function()
 
 	local req, err = cjson.decode(req_json)
 	if not req then
-		send_err(err)
+		send_err('error', err)
 	else
 		if type(req) ~= 'table' then
-			send_err('unsupport message type')
+			send_err('error', 'unsupport message type')
 		else
 			-- handle request
 			--server:send(cjson.encode(req))
@@ -115,7 +126,7 @@ poller:add(server, zmq.POLLIN, function()
 			if fun then
 				fun(req[2])
 			else
-				send_err('Unsupported message operation'..req[1])
+				send_err(req[1], 'Unsupported message operation'..req[1])
 			end
 		end
 	end

@@ -1,0 +1,54 @@
+<? extend 'layout.html' ?>
+<div class="tab segment">
+	<div class="container">
+		<div class="introduction">
+			<h2 class="ui diving header"> <?=_('Configurtion')?> </h2>
+		</div>
+	</div>
+</div>
+
+<div class="main container">
+
+<table id="conf_list" class="ui sortable table segment">
+	<thead>
+		<tr>
+			<th><?=_("Key")?></th>
+			<th><?=_("Value")?></th>
+			<th><?=_("Action")?></th>
+		</tr>
+	</thead>
+	<tbody>
+	<? for k, v in pairs(list) do ?>
+		<tr>
+			<td>
+				<b><?=k?></b>
+			</td>
+			<td>
+				<i><?=v?></i>
+			</td>
+			<td>
+				<form method="post" class="ui form">
+					<input type="hidden" name="key" value="<?=k?>"/>
+					<input type="hidden" name="action" value="delete"/>
+					<input type="submit" class="ui red mini submit button" value="<?=_('Delete')?>"/>
+				</form>
+			</td>
+		</tr>
+	<? end ?>
+
+	</tbody>
+	<tfoot>
+		<tr>
+			<th></th>
+			<th></th>
+			<th>
+				<form method="post" class="ui form">
+					<input type="hidden" name="action" value="clear_all"/>
+					<input type="submit" class="ui red mini submit button" value="<?=_('Clear All')?>"/>
+				</form>
+			</th>
+		</tr>
+	</tfoot>
+</table>
+
+</div>

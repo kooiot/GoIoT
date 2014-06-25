@@ -48,7 +48,7 @@ mpft['logs'] = function(vars)
 			cache:clean()
 		end
 	end
-	local reply = {'logs', {result=true, logs=caches}}	
+	local reply = {'logs', caches}	
 	server:send(cjson.encode(reply))
 end
 
@@ -66,12 +66,12 @@ mpft['packets'] = function(vars)
 		end
 	end
 
-	local reply = {'packets', {result=true, logs=caches}}	
+	local reply = {'packets', caches}	
 	server:send(cjson.encode(reply))
 end
 
 local function send_err(server, err)
-	local reply = {'error', {err=err}}
+	local reply = {'error', nil, err=err}
 	local rep_json = cjson.encode(reply)
 	return server:send(rep_json)
 end

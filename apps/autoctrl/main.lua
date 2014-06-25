@@ -20,10 +20,6 @@ info.name = ioname
 
 local function load_conf()
 	local conf, err = config.get(ioname..'.conf')
-	if conf then
-		--print('CONF: ', conf)
-		conf, err = cjson.decode(conf)
-	end
 	return conf or {
 		--rules = { ['^.+'] = {' return function(path, value, client) print(path, value, client) end '}}
 		--rules = { ['eeee/unit.1/inputs/data2'] = {[[ return function(path, value, client) SEND_CMD('gree/ir/commands/send', {'GREE/开机'}) end ]]}}
@@ -94,7 +90,7 @@ app:init()
 app:reg_request_handler('set_rule', function(app, vars)
 	--print(cjson.encode(vars))
 	conf.rules = vars
-	local r, err = config.set(ioname..'.conf', cjson.encode(conf))
+	local r, err = config.set(ioname..'.conf', conf)
 
 	local reply = {'set_rule',  {result=true}}
 	app.server:send(cjson.encode(reply))

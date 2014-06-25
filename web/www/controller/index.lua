@@ -46,12 +46,8 @@ end
 local function get_system_settings()
 	local settings = {}
 	local config = require 'shared.api.config'
-	local cjson = require 'cjson.safe'
-	local conf, err = config.get('settings.cloud')
-	if conf then
-		settings.cloud, err = cjson.decode(conf)
-	end
-
+	local cloud, err = config.get('settings.cloud')
+	settings.cloud = cloud
 	return settings, err
 end
 

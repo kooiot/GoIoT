@@ -1,20 +1,20 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8\n"
 
-msgid "Save"
-msgstr "保存"
+msgid "Auto Control"
+msgstr "自动控制"
 
 msgid "Input"
 msgstr "采集值"
 
+msgid "Save"
+msgstr "保存"
+
 msgid "Command"
 msgstr "命令"
 
-msgid "Read"
-msgstr "读取"
-
-msgid "Auto Control"
-msgstr "自动控制"
-
 msgid "Send"
 msgstr "发送"
+
+msgid "Read"
+msgstr "读取"

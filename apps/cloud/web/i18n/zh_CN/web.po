@@ -10,8 +10,8 @@ msgstr "超时"
 msgid "Auth Key"
 msgstr "认证密匙"
 
-msgid "Save"
-msgstr "保存"
-
 msgid "Server URL"
 msgstr "服务器地址"
+
+msgid "Save"
+msgstr "保存"

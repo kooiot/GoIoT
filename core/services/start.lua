@@ -30,13 +30,10 @@ local poller = zpoller.new(2)
 local server, err = ctx:socket{zmq.REP, bind = "tcp://*:5115"}
 zassert(server, err)
 
-local mpft = {} -- message process function table
+local send = require('shared.msg.send')(server)
+local send_result, send_err = send.result, send.err
 
-function send_err(err)
-	local reply = {'error', {err=err}}
-	local rep_json = cjson.encode(reply)
-	server:send(rep_json)
-end
+local mpft = {} -- message process function table
 
 local function save_file(str)
 	local file = os.tmpname()
@@ -108,12 +105,10 @@ mpft['add'] = function(vars)
 			if pid then
 				result = true
 			end
-			local rep = {'add', {result=result, err=err}}
-			server:send(cjson.encode(rep))
-			return
+			return send_result('add', result, err)
 		end
 	end
-	send_err(err)
+	send_err('add', err)
 end
 
 mpft['result'] = function(vars)
@@ -126,15 +121,13 @@ mpft['result'] = function(vars)
 		if running[name] then
 			running[name].result = result
 			running[name].output = output
-			local rep = {'result', {result=true}}
-			server:send(cjson.encode(rep))
-			return
+			return send_result('result', true)
 		else
 			err = "The services not exists "..name
 			log:error(NAME, err)
 		end
 	end
-	send_err(err)
+	send_err('result', err)
 end
 
 mpft['progress'] = function(vars)
@@ -148,22 +141,19 @@ mpft['progress'] = function(vars)
 			running[name].percent = perc
 			logs[name] = logs[name] or {}
 			logs[name][#logs[name]] = desc
-			local rep = {'progress', {result=true}}
-			server:send(cjson.encode(rep))
-			return
+			return send_result('progress', true)
 		else
 			err = "The services not exists "..name
 			log:error(NAME, err)
 		end
 	end
-	send_err(err)
+	send_err('progress', err)
 end
 
 mpft['abort'] = function(vars)
 	if vars and type(vars) ~= 'table' then
 		local err = 'Invalid/Unsupported abort request'
-		send_err(err)
-		return
+		return send_err('abort', err)
 	end
 
 	local name = vars.name
@@ -184,15 +174,14 @@ mpft['abort'] = function(vars)
 		err = "No such services "..name
 	end
 
-	local rep = {'abort', {result=result, err=err, status = running[name]}}
-	server:send(cjson.encode(rep))
+	return send_result('abort', result, err)
 end
 
 
 mpft['query'] = function(vars)
 	local err = 'Invalid/Unsupported query request'
 	if vars and type(vars) ~= 'table' then
-		send_err(err)
+		send_err('query', err)
 		return
 	end
 
@@ -207,14 +196,13 @@ mpft['query'] = function(vars)
 		lgs = logs[name]
 	end
 
-	local rep = {'query', {result=true, status = status, percent = percent, logs=lgs}}
-	server:send(cjson.encode(rep))
+	return send_result('query', {status = status, percent = percent, logs=lgs})
 end
 
 mpft['list'] = function(vars)
 	local err = 'Invalid/Unsupported query request'
 	if vars and type(vars) ~= 'table' then
-		send_err(err)
+		send_err('list', err)
 		return
 	end
 
@@ -237,8 +225,7 @@ mpft['list'] = function(vars)
 			output = v.output,
 		}
 	end
-	local rep = {'list', {result=true, status = st}}
-	server:send(cjson.encode(rep))
+	return send_result('list', st)
 end
 
 mpft['version'] = function()
@@ -260,10 +247,10 @@ poller:add(server, zmq.POLLIN, function()
 	local req, err = cjson.decode(req_json)
 	if not req then
 		log:error(NAME, err)
-		send_err(err)
+		send_err('error', err)
 	else
 		if type(req) ~= 'table' then
-			send_err('unsupport message type')
+			send_err('error', 'unsupport message type')
 		else
 			--print('Received Request -'..req[1])
 			-- handle request
@@ -272,7 +259,7 @@ poller:add(server, zmq.POLLIN, function()
 			if fun then
 				fun(req[2])
 			else
-				send_err('Unsupported message operation'..req[1])
+				send_err('error', 'Unsupported message operation'..req[1])
 			end
 		end
 	end
