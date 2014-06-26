@@ -29,7 +29,7 @@ local get = function(src)
 	end
 end
 
-local post = function(src, body)
+local post = function(src, authkey, body)
 	local u = url.parse(src, {path='/', scheme='http'})
 
 	--local rstring = cjson.encode(obj)
@@ -40,6 +40,7 @@ local post = function(src, body)
 	u.sink, re = ltn12.sink.table(re)
 	u.method = 'POST' 
 	u.headers = {}
+	u.headers["authkey"] = authkey
 	u.headers["content-length"] = string.len(body)
 	u.headers["content-type"] = "application/json;charset=utf-8"
 
@@ -53,33 +54,50 @@ local post = function(src, body)
 end
 
 --- Upload template to store 
--- @tparam string appname the name of application which templates belongs to
+-- @tparam string app_path the path of application which templates belongs to
 -- @tparam string name the name of this template
 -- @tparam string desc the description of this template
 -- @tparam string content the content of this template in json format
 -- @treturn boolean result
 -- @treturn string error message
-function _M.upload(appname, name, desc, content)
-	local log = require 'shared.log'
+function _M.upload(app_path, name, desc, content)
+	assert(app_path and name and desc and content)
+
 	local store = require 'shared.store'
+	local log = require 'shared.log'
+
+	local key = store.get_authkey()
+	if not key or string.len(key) == 0 then
+		return nil, 'You have to set your authkey first'
+	end
 
 	local url = 'http://'..store.get_srv()..'/tpl/upload'
 	log:info('store.template', 'post to '..url)
 
 	local cjson = require 'cjson.safe'
-	local str, err = post(url, cjson.encode({aaa=10}))
-	print(str, err)
+	local t = {
+		app_path = app_path,
+		name = name,
+		desc = desc,
+		content = content
+	}
+
+	local r, err = post(url, key, cjson.encode(t))
+	if not r then
+		return nil, err
+	end
+	return cjson.decode(r)
 end
 
---- Get the list of template names of application name
--- @tparam string appname the name of application which templates belongs to
+--- Get the list of template names of application
+-- @tparam string app_path the path of application which templates belongs to
 -- @treturn table an array of name/description pair
 -- @treturn string error message
-function _M.list(appname)
+function _M.list(app_path)
 	local log = require 'shared.log'
 	local store = require 'shared.store'
 
-	local url = 'http://'..store.get_srv()..'/tpl/list'
+	local url = 'http://'..store.get_srv()..'/tpl/list?path='..app_path
 	log:info('store.template', 'list from '..url)
 
 	local str, err = get(url)
@@ -90,16 +108,24 @@ function _M.list(appname)
 end
 
 --- Get the template content of template
--- @tparam string appname the name of application which templates belongs to
+-- @tparam string app_path the path of application which templates belongs to
 -- @tparam string name the name of this template
 -- @treturn string the content of this template in json format
 -- @treturn string error message
-function _M.download(appname, name)
+function _M.download(app_path, name)
+	local log = require 'shared.log'
+	local store = require 'shared.store'
+
+	local url = 'http://'..store.get_srv()..'/tpl/download?app_path='..app_path..'&name='..name
+	log:info('store.template', 'download from '..url)
+
+	local str, err = get(url)
+	return str, err
 end
 
 --- Fetch information from server
--- @tparam string appname the name of application
-function _M.fetch(appname)
+-- @tparam string app_path the path of application
+function _M.fetch(app_path)
 end
 
 return _M

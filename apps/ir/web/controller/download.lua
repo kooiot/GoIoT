@@ -3,10 +3,11 @@ return {
 		local templ = require 'shared.store.template'
 		local cjson = require 'cjson.safe'
 
-		local list, err = templ.list('admin/ir')
-		if list then
+		local content, err = templ.download('admin/ir', 'GREE')
+		print(content, err)
+		if content then
 			res.headers['Content-Type'] = 'application/json; charset=utf-8'
-			res:write(cjson.encode(list))
+			res:write(content)
 		else
 			res:write(err)
 		end
