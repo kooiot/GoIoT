@@ -47,6 +47,7 @@ local function query_tree(ns)
 	local pp = require 'shared.PrettyPrint'
 	if trees then
 		local verinfo = trees.verinfo
+		print(pp(trees))
 		print(pp(verinfo))
 		for k, v in pairs(trees.devices) do
 			v.version = verinfo
@@ -76,11 +77,13 @@ local function on_start()
 			query_tree(ns)
 		end
 	end
+	return true
 end
 
 local aborting = false
 local function on_close()
 	aborting = true
+	return true
 end
 
 app = require('shared.app').new(info, {on_start = on_start, on_close = on_close})

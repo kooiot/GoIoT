@@ -153,6 +153,7 @@ function _M.init(name, handlers)
 			log:warn(app.name, "Received on_close event")
 			app:close()
 			_M.abort()
+			return true
 		end
 	end
 
@@ -248,7 +249,7 @@ function _M.init(name, handlers)
 			},
 			revision = config.revision,
 		}
-		local reply = {'devs', {result=true, devices=app.devices.devices, verinfo=verinfo}}
+		local reply = {'devs', {devices=app.devices.devices, verinfo=verinfo}}
 		app.server:send(cjson.encode(reply))
 	end)
 

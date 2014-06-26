@@ -193,6 +193,7 @@ handlers.on_pause = function(app)
 	--print(os.date(), 'Received Stop Event')
 	log:info(ioname, 'Received event [PAUSE]')
 	pause = true
+	return true
 end
 
 handlers.on_reload = function(app)
