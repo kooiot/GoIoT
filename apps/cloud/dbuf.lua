@@ -7,6 +7,8 @@ local buf = {}
 local devlist = {}
 local api = nil
 
+local ioname = arg[1] or 'APP.CLOUD'
+
 function _M.set_api(capi)
 	api = capi
 end
@@ -26,7 +28,7 @@ function _M.add_dev(device)
 	print('Create device:'..device.name..' in cloud')
 	local r, err = api.call('POST', device, 'Device')
 	if not r then
-		log:error('failed to create device in cloud, error:'..err)
+		log:error(ioname, 'failed to create device in cloud, error:'..err)
 	else
 		t[v.path].sync = true
 	end
@@ -42,20 +44,23 @@ function _M.add_cov(path, value)
 		vt.values[#vt.values + 1] = value
 		--print('value size '..#vt.values)
 	else
-		print('error on ', ns)
+		local err = 'Error on '..ns
+		log:error(ioname, err)
+		return nil, err
 	end
+	return true
 end
 
 function _M.on_create(cb)
 	for k, v in pairs(devlist) do
 		if not v.sync then
 			assert(v.device.version)
-			print('Create device:'..v.device.name..' in cloud')
+			log:debug(ioname, 'Create device:'..v.device.name..' in cloud')
 			local r, err = api.call('POST', v.device, 'Device')
 			if r then
 				v.sync = true
 			else
-				log:error('failed to create device in cloud, error:'..err)
+				log:error(ioname, 'failed to create device in cloud, error:'..err)
 			end
 			cb()
 		end
