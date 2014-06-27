@@ -4,7 +4,7 @@ local doi = function(req, res)
 	if not list then
 		res:write(err)
 	else
-		res:ltp('config/list.html', {lwf=lwf, app=app, list=list})
+		res:ltp('system/config.html', {lwf=lwf, app=app, list=list})
 	end
 end
 
