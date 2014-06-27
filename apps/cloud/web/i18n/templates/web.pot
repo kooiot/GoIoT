@@ -2,10 +2,6 @@ msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
 
-msgid "Timeout"
-msgstr ""
-
-
 msgid "Auth Key"
 msgstr ""
 
@@ -19,6 +15,10 @@ msgstr ""
 
 
 msgid "SymLink Cloud"
+msgstr ""
+
+
+msgid "Timeout"
 msgstr ""
 
 

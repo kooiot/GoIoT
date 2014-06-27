@@ -2,15 +2,15 @@ msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
 
+msgid "App Control"
+msgstr ""
+
+
+msgid "App Home"
+msgstr ""
+
+
 msgid "Apply"
-msgstr ""
-
-
-msgid "Command Saving"
-msgstr ""
-
-
-msgid "Save"
 msgstr ""
 
 
@@ -18,11 +18,7 @@ msgid "Command"
 msgstr ""
 
 
-msgid "Local Name"
-msgstr ""
-
-
-msgid "IR Controller"
+msgid "Command Saving"
 msgstr ""
 
 
@@ -30,27 +26,15 @@ msgid "Control Panel"
 msgstr ""
 
 
+msgid "Download"
+msgstr ""
+
+
 msgid "Editor"
 msgstr ""
 
 
-msgid "Management"
-msgstr ""
-
-
-msgid "Online Templates"
-msgstr ""
-
-
-msgid "Stop Learning"
-msgstr ""
-
-
-msgid "Name Alias"
-msgstr ""
-
-
-msgid "Start Learning"
+msgid "IR Controller"
 msgstr ""
 
 
@@ -58,19 +42,51 @@ msgid "Learn"
 msgstr ""
 
 
+msgid "Local Name"
+msgstr ""
+
+
+msgid "Management"
+msgstr ""
+
+
+msgid "Name Alias"
+msgstr ""
+
+
+msgid "Save"
+msgstr ""
+
+
 msgid "Send"
 msgstr ""
 
 
-msgid "Download"
+msgid "Serial Port"
 msgstr ""
 
 
-msgid "Upload"
+msgid "Settings"
+msgstr ""
+
+
+msgid "Start Learning"
+msgstr ""
+
+
+msgid "Stop Learning"
+msgstr ""
+
+
+msgid "Templates Store"
 msgstr ""
 
 
 msgid "Test"
+msgstr ""
+
+
+msgid "Upload"
 msgstr ""
 
 

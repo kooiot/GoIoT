@@ -1,9 +1,6 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8\n"
 
-msgid "Timeout"
-msgstr "超时"
-
 msgid "Auth Key"
 msgstr "认证密匙"
 
@@ -15,3 +12,6 @@ msgstr "服务器地址"
 
 msgid "SymLink Cloud"
 msgstr "SymLink数据云"
+
+msgid "Timeout"
+msgstr "超时"

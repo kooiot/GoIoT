@@ -34,6 +34,17 @@
 	<div class="two column stackable ui grid">
 		<div class="column">
 			<div class="ui segment">
+				<div class="ui top attached label"><b><?=_('Management')?></b></div>
+				<div class="ui group">
+					<a class="ui teal button" href="/apps/<?=app.appname?>/port"><?=_('Settings')?></a>
+					<a class="ui teal button" href="/apps/<?=app.appname?>/tpl"><?=_('Templates Store')?></a>
+					<a class="ui teal button" href="/apps/<?=app.appname?>/learn"><?=_('Learn')?></a>
+				</div>
+			</div>
+		</div>
+
+		<div class="column">
+			<div class="ui segment">
 				<div class="ui top attached label"><b><?=_('Test')?></b></div>
 				<form class="ui form" method="post">
 					<div class="ui label"> <?=_('Command')?>: </div>
@@ -53,18 +64,7 @@
 
 			</div>
 		</div>
-		<div class="column">
-			<div class="ui segment">
-				<div class="ui top attached label"><b><?=_('Management')?></b></div>
-				<div class="ui group">
-					<a class="ui teal button" href="/apps/<?=app.appname?>/tpl"><?=_('Templates Store')?></a>
-					<a class="ui teal button" href="/apps/<?=app.appname?>/learn"><?=_('Learn')?></a>
-				</div>
-			</div>
-		</div>
 	</div>
-
-
 </div>
 
 
