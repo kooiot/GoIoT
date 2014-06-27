@@ -1,8 +1,12 @@
-local function get_tpl(name, app_path)
+local function get_tpl(name, appname)
 	local templ = require 'shared.store.template'
 	local cjson = require 'cjson.safe'
 
-	local content, err = templ.download(app_path or 'admin/ir', name)
+	local list = require 'shared.app.list'
+	local app = list.find(appname)
+	local app_path = app and app.path or 'admin/ir'
+
+	local content, err = templ.download(app_path, name)
 	return content, err
 end
 
@@ -43,7 +47,7 @@ end
 
 return {
 	get = function(req, res)
-		local content, err = get_tpl('admin/GREE')
+		local content, err = get_tpl('admin/GREE', app.appname)
 		print(content, err)
 		if content then
 			res.headers['Content-Type'] = 'application/json; charset=utf-8'
@@ -63,7 +67,7 @@ return {
 			lname = name:match('/([^/]+)$')
 		end
 
-		local content, err = get_tpl(name)
+		local content, err = get_tpl(name, app.appname)
 		if not content then
 			res:write(err)
 		else

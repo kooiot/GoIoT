@@ -1,9 +1,9 @@
-local function upload_tpl(name, alias)
+local function upload_tpl(appname, name, alias)
 	local cjson = require 'cjson.safe'
 	local tpl = require 'shared.store.template'
 	local platform = require 'shared.platform'
 
-	local path = platform.path.apps..'/'..app.appname..'/conf.json'
+	local path = platform.path.apps..'/'..appname..'/conf.json'
 	local f, err = io.open(path)
 	if not f then
 		return nil, err
@@ -19,15 +19,24 @@ local function upload_tpl(name, alias)
 
 	local content = cjson.encode(cmds[name])
 
+	local list = require 'shared.app.list'
+	local app = list.find(appname)
+	local app_path = app and app.path or 'admin/ir'
+
 	-- TODO: For description
-	return tpl.upload('admin/ir', alias or name, 'IR template', content)
+	return tpl.upload(app_pah, alias or name, 'IR template', content)
 end
 
 return {
 	get = function(req, res)
 		local cjson = require 'cjson.safe'
 		local tpl = require 'shared.store.template'
-		local r, err = tpl.upload('admin/ir', 'GREE', 'GREE Air Condition', [[{'adafa'='dafdafda','dafeeee'='wwwwwww'}]])
+
+		local list = require 'shared.app.list'
+		local app = list.find(appname)
+		local app_path = app and app.path or 'admin/ir'
+
+		local r, err = tpl.upload(app_path, 'GREE', 'GREE Air Condition', [[{'adafa'='dafdafda','dafeeee'='wwwwwww'}]])
 		if r then
 			res.headers['Content-Type'] = 'application/json; charset=utf-8'
 			res:write(cjson.encode(r))
@@ -42,7 +51,7 @@ return {
 			alias = name
 		end
 
-		local r, err = upload_tpl(name, alias)
+		local r, err = upload_tpl(app.appname, name, alias)
 		if r then
 			res:write('DONE')
 		else

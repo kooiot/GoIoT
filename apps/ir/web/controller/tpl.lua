@@ -1,8 +1,12 @@
-local function get_list(app_path)
+local function get_list(appname)
 	local templ = require 'shared.store.template'
 	local cjson = require 'cjson.safe'
 
-	local list, err = templ.list(app_path or 'admin/ir')
+	local list = require 'shared.app.list'
+	local app = list.find(appname)
+	local app_path = app and app.path or 'admin/ir'
+
+	local list, err = templ.list(app_path)
 	return list, err
 end
 
@@ -28,7 +32,7 @@ return {
 			info = err or 'Cannot find status'
 		end
 
-		local tlist = get_list()
+		local tlist = get_list(app.appname)
 		res:ltp('tpl.html', {lwf=lwf, app=app, devs=devs, tlist=tlist, info=info})
 	end,
 }
