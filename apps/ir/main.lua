@@ -54,7 +54,9 @@ local function add_device_cmd(device, name, cmd)
 
 	commands[device] = commands[device] or {}
 	commands[device][name] = cmd
+end
 
+local function save_conf()
 	local r, err = cjson.encode(commands)
 	if r then
 		--[[
@@ -241,8 +243,20 @@ handlers.on_import = function(app, filename)
 		return nil, err
 	end
 	local c = f:read('*a')
-	local r, err = config.set(ioname..'.commands', c)
-	return r, err
+	local cmds, err = cjson.decode(c)
+	if not cmds then
+		return nil, err
+	end
+
+	for dev, v in pairs(cmds) do
+		print(v)	
+		for k, v in pairs(v) do
+			add_device_cmd(dev, k, v)
+		end
+	end
+	save_conf()
+
+	return true
 end
 
 app = ioapp.init(ioname, handlers)
@@ -254,9 +268,19 @@ app:reg_request_handler('list_commands', function(app, vars)
 			list[#list + 1] = k..'/'..name
 		end
 	end
-	local reply = {'list_commands', {result=true, commands=list}}
+	local reply = {'list_commands', list}
 	app.server:send(cjson.encode(reply))
 end)
+
+app:reg_request_handler('list_devs', function(app, vars)
+	local list = {}
+	for k, v in pairs(commands) do
+		list[#list + 1] = k
+	end
+	local reply = {'list_devs', list}
+	app.server:send(cjson.encode(reply))
+end)
+
 local function learn()
 	port:write(string.char(0xe2))
 	port:read(1, 500)
@@ -299,6 +323,7 @@ app:reg_request_handler('learn_save', function(app, vars)
 	if vars.name and vars.device then
 		if not learn_table.learning and learn_table.result then
 			add_device_cmd(vars.device, vars.name, learn_table.result)
+			save_conf()
 		else
 			err = 'no learn result'
 		end

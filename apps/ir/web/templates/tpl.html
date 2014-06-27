@@ -1,0 +1,82 @@
+<? extend 'layout.html'?>
+<script src="/static/js/table.js"></script>
+
+<div class="tab segment">
+	<div class="container">
+		<div class="introduction">
+			<h2 class="ui dividing header"> <?=_("IR Controller")?> - <?=app.appname ?> </h2>
+		</div>
+	</div>
+</div>
+
+<div class="main container">
+	<div class="two column stackable ui grid">
+		<div class="column">
+			<div class="ui segment">
+				<div class="ui top attached label"><b><?=_('Upload')?></b></div>
+
+				<form class="ui form" method="post" action="/apps/<?=app.appname?>/tpl/upload">
+					<div class="ui inline field">
+						<div class="ui selection labeled dropdown">
+							<? local def = (#devs ~= 0 and devs[1] or '') ?>
+							<input name="name" type="hidden" value="<?=def?>"/>
+							<div class="default text"><? = def ?> </div>
+							<i class="dropdown icon"></i>
+							<div class="menu">
+								<? for _, v in pairs(devs) do ?>
+								<div class="item" data-value="<?=v?>"><?=v?></div>
+								<? end ?>
+							</div>
+						</div>
+						<input class="ui input" name="alias" placeholder="<?=_('Name Alias')?>" type="text" />
+					</div>
+					<input class="ui teal button submit" type="submit" value="<?=_('Upload')?>"></input>
+				</form>
+
+			</div>
+		</div>
+		<div class="column">
+			<div class="ui segment">
+				<div class="ui top attached label"><b><?=_('Online Templates')?></b></div>
+
+				<form class="ui form" method="post" action="/apps/<?=app.appname?>/tpl/download">
+					<div class="ui inline field">
+						<div class="ui selection labeled dropdown">
+							<? local def = (#tlist ~= 0 and tlist[1] or '') ?>
+							<input name="name" type="hidden" value="<?=def?>"/>
+							<div class="default text"><? = def ?> </div>
+							<i class="dropdown icon"></i>
+							<div class="menu">
+								<? for _, v in pairs(tlist) do ?>
+								<div class="item" data-value="<?=v?>"><?=v?></div>
+								<? end ?>
+							</div>
+						</div>
+						<input class="ui input" name="lname" placeholder="<?=_('Local Name')?>" type="text" />
+					</div>
+					<input class="ui teal button submit" type="submit" value="<?=_('Download')?>"></input>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<div class="ui message" id="status"><?=info or '&nbsp;'?></div>
+</div>
+
+
+<script>
+	(function() {
+		var status = $('#status');
+		$('form').ajaxForm({
+			beforeSend: function() {
+				status.text(' ');
+			},
+			success: function() {
+			},
+			complete: function(xhr) {
+				status.text(xhr.responseText);
+			}
+		}); 
+		query_panel();
+	})();
+</script>

@@ -109,14 +109,14 @@ end
 
 --- Get the template content of template
 -- @tparam string app_path the path of application which templates belongs to
--- @tparam string name the name of this template
+-- @tparam string path the path of this template
 -- @treturn string the content of this template in json format
 -- @treturn string error message
-function _M.download(app_path, name)
+function _M.download(app_path, path)
 	local log = require 'shared.log'
 	local store = require 'shared.store'
 
-	local url = 'http://'..store.get_srv()..'/tpl/download?app_path='..app_path..'&name='..name
+	local url = 'http://'..store.get_srv()..'/tpl/download?app_path='..app_path..'&path='..path
 	log:info('store.template', 'download from '..url)
 
 	local str, err = get(url)

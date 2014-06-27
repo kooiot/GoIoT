@@ -84,10 +84,10 @@ local _M = {}
 
 function _M.find_app_port(appname)
 	local mon = require 'shared.api.mon'
-	local reply, err = mon.query({appname})
-	if reply then
-		if reply.status[appname] then
-			return reply.status[appname].port
+	local status, err = mon.query({appname})
+	if status then
+		if status[appname] then
+			return status[appname].port
 		end
 	end
 end
