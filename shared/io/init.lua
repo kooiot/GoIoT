@@ -224,7 +224,7 @@ function _M.init(name, handlers)
 
 	-- Register the import function handler
 	app:reg_request_handler('import', function(app, vars)
-		log:warn('import message received')
+		log:warn(app.name, 'import message received')
 		local re = false
 		local err = 'Incorrect request found for msg:import'
 		if vars.filename  then
