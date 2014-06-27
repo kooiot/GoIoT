@@ -105,7 +105,7 @@ handlers.on_start = function(app)
 	end
 
 	local config = require 'shared.api.config'
-	local port_name = config.get(ioname..'.port_name') or '/dev/ttyUSB0'
+	local port_name = config.get(ioname..'.port') or '/dev/ttyUSB0'
 	local r, err = port:open(port_name)
 	if not r then
 		log:error(ioname, err)
