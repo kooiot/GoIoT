@@ -15,15 +15,17 @@ local function api(method, obj, path)
 	local rstring = cjson.encode(obj)
 	--print('JSON', rstring)
 
-	u.source = ltn12.source.string(rstring)
 	local re = {}
+
+	u.source = ltn12.source.string(rstring)
 	u.sink, re = ltn12.sink.table(re)
 	u.method = method
 	u.headers = {}
 	u.headers['U-ApiKey'] = KEY
 	u.headers["content-length"] = string.len(rstring)
+	u.headers["content-type"] = "application/json;charset=utf-8"
 
-	local r, code, headers, status = http.request(u, dest)
+	local r, code, headers, status = http.request(u)
 	print(r, code)--, pp(headers), status)
 
 	if r and code == 200 then

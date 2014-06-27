@@ -69,8 +69,15 @@ function _M.populate(db)
 			desc = v,
 		}
 	end
+	local verinfo = {
+		app = {
+			name = '__VARS',
+			verion = '0.0.0' 
+		},
+		revision = '0',
+	}
 
-	return {name = '___', tree ={ devices = {[device.name] = device}}}
+	return {name = 'sys', tree ={ devices = {[device.name] = device}, verinfo=verinfo}}
 end
 
 return _M

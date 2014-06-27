@@ -2,391 +2,7 @@ msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
 
-msgid "Close Menu"
-msgstr ""
-
-
-msgid "KEY"
-msgstr ""
-
-
-msgid "System Settings"
-msgstr ""
-
-
-msgid "Password"
-msgstr ""
-
-
-msgid "PID"
-msgstr ""
-
-
-msgid "NETWORK"
-msgstr ""
-
-
-msgid "Used"
-msgstr ""
-
-
-msgid "Services Management"
-msgstr ""
-
-
-msgid "Install"
-msgstr ""
-
-
-msgid "CPU LOAD"
-msgstr ""
-
-
-msgid "Server"
-msgstr ""
-
-
-msgid "Utilies"
-msgstr ""
-
-
-msgid "System wide settings"
-msgstr ""
-
-
-msgid "Logout"
-msgstr ""
-
-
-msgid "Configurtion"
-msgstr ""
-
-
-msgid "VERSION"
-msgstr ""
-
-
-msgid "Packets"
-msgstr ""
-
-
-msgid "Menu"
-msgstr ""
-
-
-msgid "Free"
-msgstr ""
-
-
-msgid "Simple"
-msgstr ""
-
-
-msgid "Help"
-msgstr ""
-
-
-msgid "Stop"
-msgstr ""
-
-
-msgid "OS"
-msgstr ""
-
-
-msgid "Advance"
-msgstr ""
-
-
-msgid "Sign In"
-msgstr ""
-
-
-msgid "Instance Name cannot be empty"
-msgstr ""
-
-
-msgid "Cache"
-msgstr ""
-
-
-msgid "Cancel"
-msgstr ""
-
-
-msgid "Restore System"
-msgstr ""
-
-
-msgid "Upgrade"
-msgstr ""
-
-
-msgid "Instance Name..."
-msgstr ""
-
-
-msgid "Auth Key"
-msgstr ""
-
-
-msgid "No application?! Install ONE"
-msgstr ""
-
-
-msgid "System"
-msgstr ""
-
-
-msgid "Failed to reboot"
-msgstr ""
-
-
-msgid "Choose a local instance name"
-msgstr ""
-
-
-msgid "Details"
-msgstr ""
-
-
-msgid "Cached"
-msgstr ""
-
-
-msgid "Result"
-msgstr ""
-
-
-msgid "Restore"
-msgstr ""
-
-
-msgid "Delete"
-msgstr ""
-
-
-msgid "CPU"
-msgstr ""
-
-
-msgid "Store"
-msgstr ""
-
-
-msgid "User Key"
-msgstr ""
-
-
-msgid "Management"
-msgstr ""
-
-
-msgid "Cloud"
-msgstr ""
-
-
-msgid "Status"
-msgstr ""
-
-
-msgid "Application Store"
-msgstr ""
-
-
-msgid "Failed to fetch application information from store server, error : "
-msgstr ""
-
-
-msgid "Controls"
-msgstr ""
-
-
-msgid "Login"
-msgstr ""
-
-
-msgid "Instance Name"
-msgstr ""
-
-
-msgid "Name"
-msgstr ""
-
-
-msgid "Description"
-msgstr ""
-
-
-msgid "Remove"
-msgstr ""
-
-
-msgid "Confirm"
-msgstr ""
-
-
-msgid "Recents"
-msgstr ""
-
-
-msgid "Populars"
-msgstr ""
-
-
-msgid "Run as Services"
-msgstr ""
-
-
-msgid "Failed to send stop request!!"
-msgstr ""
-
-
-msgid "Affected Instance"
-msgstr ""
-
-
-msgid "Upgrading"
-msgstr ""
-
-
-msgid "DATETIME"
-msgstr ""
-
-
-msgid "Update"
-msgstr ""
-
-
-msgid "Refresh"
-msgstr ""
-
-
-msgid "Applications"
-msgstr ""
-
-
-msgid "System Events"
-msgstr ""
-
-
-msgid "Reload"
-msgstr ""
-
-
 msgid "Abort"
-msgstr ""
-
-
-msgid "Installation list"
-msgstr ""
-
-
-msgid "Failed to send start request!!"
-msgstr ""
-
-
-msgid "Summary"
-msgstr ""
-
-
-msgid "Key"
-msgstr ""
-
-
-msgid "Reboot"
-msgstr ""
-
-
-msgid "Website"
-msgstr ""
-
-
-msgid "Backup System"
-msgstr ""
-
-
-msgid "Settings"
-msgstr ""
-
-
-msgid "Forum"
-msgstr ""
-
-
-msgid "HOSTNAME"
-msgstr ""
-
-
-msgid "Namespace"
-msgstr ""
-
-
-msgid "Log"
-msgstr ""
-
-
-msgid "Apply"
-msgstr ""
-
-
-msgid "Install New"
-msgstr ""
-
-
-msgid "Devices"
-msgstr ""
-
-
-msgid "Progress and Output"
-msgstr ""
-
-
-msgid "Start"
-msgstr ""
-
-
-msgid "Services"
-msgstr ""
-
-
-msgid "Network"
-msgstr ""
-
-
-msgid "Data"
-msgstr ""
-
-
-msgid "Device Settings"
-msgstr ""
-
-
-msgid "System Upgrade"
-msgstr ""
-
-
-msgid "Cloud Settings"
-msgstr ""
-
-
-msgid "Clear All"
-msgstr ""
-
-
-msgid "Events"
-msgstr ""
-
-
-msgid "Value"
-msgstr ""
-
-
-msgid "Enable"
-msgstr ""
-
-
-msgid "Failed to send remove request!!"
 msgstr ""
 
 
@@ -394,67 +10,31 @@ msgid "About"
 msgstr ""
 
 
-msgid "SYSTEM"
+msgid "Action"
 msgstr ""
 
 
-msgid "View"
+msgid "Advance"
 msgstr ""
 
 
-msgid "System Management"
+msgid "Affected Instance"
 msgstr ""
 
 
-msgid "More"
+msgid "Application Store"
 msgstr ""
 
 
-msgid "Username"
+msgid "Applications"
 msgstr ""
 
 
-msgid "Welcome"
+msgid "Apply"
 msgstr ""
 
 
-msgid "Home"
-msgstr ""
-
-
-msgid "LOCALE"
-msgstr ""
-
-
-msgid "Login Now"
-msgstr ""
-
-
-msgid "Types"
-msgstr ""
-
-
-msgid "SN"
-msgstr ""
-
-
-msgid "Upgrade System"
-msgstr ""
-
-
-msgid "Total"
-msgstr ""
-
-
-msgid "HARDWARE"
-msgstr ""
-
-
-msgid "TIME"
-msgstr ""
-
-
-msgid "MEMOERY"
+msgid "Auth Key"
 msgstr ""
 
 
@@ -462,7 +42,151 @@ msgid "Backup"
 msgstr ""
 
 
-msgid "Overview"
+msgid "Backup System"
+msgstr ""
+
+
+msgid "CPU"
+msgstr ""
+
+
+msgid "CPU LOAD"
+msgstr ""
+
+
+msgid "Cache"
+msgstr ""
+
+
+msgid "Cached"
+msgstr ""
+
+
+msgid "Cancel"
+msgstr ""
+
+
+msgid "Choose a local instance name"
+msgstr ""
+
+
+msgid "Clear All"
+msgstr ""
+
+
+msgid "Close Menu"
+msgstr ""
+
+
+msgid "Cloud"
+msgstr ""
+
+
+msgid "Cloud Settings"
+msgstr ""
+
+
+msgid "Configuration"
+msgstr ""
+
+
+msgid "Configurtion"
+msgstr ""
+
+
+msgid "Confirm"
+msgstr ""
+
+
+msgid "Controls"
+msgstr ""
+
+
+msgid "DATETIME"
+msgstr ""
+
+
+msgid "Data"
+msgstr ""
+
+
+msgid "Delete"
+msgstr ""
+
+
+msgid "Description"
+msgstr ""
+
+
+msgid "Details"
+msgstr ""
+
+
+msgid "Device Events"
+msgstr ""
+
+
+msgid "Device Settings"
+msgstr ""
+
+
+msgid "Devices"
+msgstr ""
+
+
+msgid "Enable"
+msgstr ""
+
+
+msgid "Events"
+msgstr ""
+
+
+msgid "Failed to fetch application information from store server, error : "
+msgstr ""
+
+
+msgid "Failed to reboot"
+msgstr ""
+
+
+msgid "Failed to send remove request!!"
+msgstr ""
+
+
+msgid "Failed to send start request!!"
+msgstr ""
+
+
+msgid "Failed to send stop request!!"
+msgstr ""
+
+
+msgid "Forum"
+msgstr ""
+
+
+msgid "Free"
+msgstr ""
+
+
+msgid "HARDWARE"
+msgstr ""
+
+
+msgid "HOSTNAME"
+msgstr ""
+
+
+msgid "Help"
+msgstr ""
+
+
+msgid "Home"
+msgstr ""
+
+
+msgid "Install"
 msgstr ""
 
 
@@ -470,7 +194,175 @@ msgid "Install Application"
 msgstr ""
 
 
-msgid "Action"
+msgid "Install New"
+msgstr ""
+
+
+msgid "Installation list"
+msgstr ""
+
+
+msgid "Instance Name"
+msgstr ""
+
+
+msgid "Instance Name cannot be empty"
+msgstr ""
+
+
+msgid "Instance Name..."
+msgstr ""
+
+
+msgid "KEY"
+msgstr ""
+
+
+msgid "Key"
+msgstr ""
+
+
+msgid "LOCALE"
+msgstr ""
+
+
+msgid "Log"
+msgstr ""
+
+
+msgid "Login"
+msgstr ""
+
+
+msgid "Login Now"
+msgstr ""
+
+
+msgid "Logout"
+msgstr ""
+
+
+msgid "MEMOERY"
+msgstr ""
+
+
+msgid "Management"
+msgstr ""
+
+
+msgid "Menu"
+msgstr ""
+
+
+msgid "More"
+msgstr ""
+
+
+msgid "NETWORK"
+msgstr ""
+
+
+msgid "Name"
+msgstr ""
+
+
+msgid "Namespace"
+msgstr ""
+
+
+msgid "Network"
+msgstr ""
+
+
+msgid "No application?! Install ONE"
+msgstr ""
+
+
+msgid "OS"
+msgstr ""
+
+
+msgid "Overview"
+msgstr ""
+
+
+msgid "PID"
+msgstr ""
+
+
+msgid "Packets"
+msgstr ""
+
+
+msgid "Password"
+msgstr ""
+
+
+msgid "Populars"
+msgstr ""
+
+
+msgid "Progress and Output"
+msgstr ""
+
+
+msgid "Reboot"
+msgstr ""
+
+
+msgid "Recents"
+msgstr ""
+
+
+msgid "Refresh"
+msgstr ""
+
+
+msgid "Reload"
+msgstr ""
+
+
+msgid "Remove"
+msgstr ""
+
+
+msgid "Restore"
+msgstr ""
+
+
+msgid "Restore System"
+msgstr ""
+
+
+msgid "Result"
+msgstr ""
+
+
+msgid "Run as Services"
+msgstr ""
+
+
+msgid "SN"
+msgstr ""
+
+
+msgid "SYSTEM"
+msgstr ""
+
+
+msgid "Server"
+msgstr ""
+
+
+msgid "Services Management"
+msgstr ""
+
+
+msgid "Settings"
+msgstr ""
+
+
+msgid "Sign In"
 msgstr ""
 
 
@@ -478,7 +370,115 @@ msgid "Sign Up"
 msgstr ""
 
 
-msgid "Device Events"
+msgid "Simple"
+msgstr ""
+
+
+msgid "Start"
+msgstr ""
+
+
+msgid "Status"
+msgstr ""
+
+
+msgid "Stop"
+msgstr ""
+
+
+msgid "Store"
+msgstr ""
+
+
+msgid "Summary"
+msgstr ""
+
+
+msgid "System"
+msgstr ""
+
+
+msgid "System Events"
+msgstr ""
+
+
+msgid "System Management"
+msgstr ""
+
+
+msgid "System Settings"
+msgstr ""
+
+
+msgid "System Upgrade"
+msgstr ""
+
+
+msgid "System wide settings"
+msgstr ""
+
+
+msgid "TIME"
+msgstr ""
+
+
+msgid "Total"
+msgstr ""
+
+
+msgid "Types"
+msgstr ""
+
+
+msgid "Update"
+msgstr ""
+
+
+msgid "Upgrade"
+msgstr ""
+
+
+msgid "Upgrade System"
+msgstr ""
+
+
+msgid "Upgrading"
+msgstr ""
+
+
+msgid "Used"
+msgstr ""
+
+
+msgid "User Key"
+msgstr ""
+
+
+msgid "Username"
+msgstr ""
+
+
+msgid "Utilies"
+msgstr ""
+
+
+msgid "VERSION"
+msgstr ""
+
+
+msgid "Value"
+msgstr ""
+
+
+msgid "View"
+msgstr ""
+
+
+msgid "Website"
+msgstr ""
+
+
+msgid "Welcome"
 msgstr ""
 
 

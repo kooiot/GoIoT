@@ -6,6 +6,14 @@ local zmq = require 'lzmq'
 local cjson = require "cjson.safe"
 
 local req = require 'shared.req'
+local msg_reply = require 'shared.msg.reply'
+
+local get_reply = function(json, err)
+	if not json then
+		return nil, err
+	end
+	return msg_reply(json)
+end
 
 --- Interface class
 -- @type class
@@ -14,13 +22,8 @@ local class = {}
 --- Get version of application
 function class:version()
 	local req = {'version', {from='web'}}
-	local reply, err = self.client:request(cjson.encode(req), true)
 
-	if reply then
-		reply = cjson.decode(reply)[2]
-	end
-	-- reply = { version=xxx, build=xxxx }
-	return reply, err
+	return get_reply( self.client:request(cjson.encode(req), true) )
 end
 
 --- Get application status
@@ -28,19 +31,7 @@ end
 function class:status(request)
 	local request = request or 'status'
 	local req = {request, {from='web'}}
-	local reply, err = self.client:request(cjson.encode(req), true)
-
-	if reply then
-		reply = cjson.decode(reply)[2]
-		-- reply = { result=xx, status=xxxx }
-		if reply.result then
-			reply = reply.status
-		else
-			reply = nil
-			err = 'result is not true'
-		end
-	end
-	return reply, err
+	return get_reply( self.client:request(cjson.encode(req), true) )
 end
 
 --- Pause the application
@@ -61,19 +52,7 @@ end
 --- Get meta information of application
 function class:meta()
 	local req = {'meta', {from='web'}}
-	local reply, err = self.client:request(cjson.encode(req), true)
-
-	if reply then
-		reply = cjson.decode(reply)[2]
-		-- reply = { result=xx, meta={blabla} }
-		if reply.result then
-			reply = reply.meta
-		else
-			reply = nil
-			err = 'result is not true'
-		end
-	end
-	return reply, err
+	return get_reply( self.client:request(cjson.encode(req), true) )
 end
 
 --- Trigger import operation 
@@ -89,17 +68,7 @@ end
 -- @treturn string error message
 function class:request(msg, vars)
 	local req = {msg, vars}
-	local reply, err = self.client:request(cjson.encode(req), true)
-	if reply then
-		reply = cjson.decode(reply)[2]
-		if reply.result then
-			return reply
-		else
-			err = reply.err
-			reply = reply.result
-		end
-	end
-	return reply, err
+	return get_reply( self.client:request(cjson.encode(req), true) )
 end
 
 --- Close the connection manually (save memory usage)
@@ -115,10 +84,10 @@ local _M = {}
 
 function _M.find_app_port(appname)
 	local mon = require 'shared.api.mon'
-	local reply, err = mon.query({appname})
-	if reply then
-		if reply.status[appname] then
-			return reply.status[appname].port
+	local status, err = mon.query({appname})
+	if status then
+		if status[appname] then
+			return status[appname].port
 		end
 	end
 end

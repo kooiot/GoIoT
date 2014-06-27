@@ -6,7 +6,15 @@ msgid "Auto Control"
 msgstr ""
 
 
+msgid "Command"
+msgstr ""
+
+
 msgid "Input"
+msgstr ""
+
+
+msgid "Read"
 msgstr ""
 
 
@@ -14,15 +22,7 @@ msgid "Save"
 msgstr ""
 
 
-msgid "Command"
-msgstr ""
-
-
 msgid "Send"
-msgstr ""
-
-
-msgid "Read"
 msgstr ""
 
 

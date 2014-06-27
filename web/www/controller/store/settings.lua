@@ -15,7 +15,7 @@ return {
 			local userkey = req:get_arg('userkey')
 			if srvurl and userkey then
 				local store = require 'shared.store'
-				local r, err = store.config('http://'..srvurl..'/static/releases')
+				local r, err = store.config({srvurl='http://'..srvurl..'/static/releases', authkey=userkey})
 				if not r then
 					res:write(err)
 					lwf.exit(500)

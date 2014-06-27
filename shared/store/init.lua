@@ -13,6 +13,7 @@ local _M = {}
 local cfg = {
 	--srvurl = 'ftp://store.opengate.com',
 	srvurl = 'http://172.30.11.169:8081/static/releases',
+	authkey = '',
 	cachefolder = '/tmp',
 	appsfolder = '/tmp/apps',
 }
@@ -87,6 +88,7 @@ end
 _M.config = function(c)
 	if type(c) == 'table' then
 		cfg.srvurl = c.srvurl or cfg.srvurl
+		cfg.authkey = c.authkey or cfg.authkey
 		cfg.cachefolder = c.cachefolder or cfg.cachefolder
 		cfg.appsfolder = c.appsfolder or cfg.appsfolder
 		return save_after_success(_M.check_server())
@@ -103,6 +105,14 @@ end
 -- @treturn string the server domain:port only
 _M.get_srv = function()
 	return cfg.srvurl:match('://([^/]+)/')
+end
+
+_M.get_cfg = function()
+	return cfg
+end
+
+_M.get_authkey = function()
+	return cfg.authkey
 end
 
 local function load_cache()

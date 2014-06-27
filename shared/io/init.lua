@@ -153,6 +153,7 @@ function _M.init(name, handlers)
 			log:warn(app.name, "Received on_close event")
 			app:close()
 			_M.abort()
+			return true
 		end
 	end
 
@@ -223,7 +224,7 @@ function _M.init(name, handlers)
 
 	-- Register the import function handler
 	app:reg_request_handler('import', function(app, vars)
-		log:warn('import message received')
+		log:warn(app.name, 'import message received')
 		local re = false
 		local err = 'Incorrect request found for msg:import'
 		if vars.filename  then
@@ -248,7 +249,7 @@ function _M.init(name, handlers)
 			},
 			revision = config.revision,
 		}
-		local reply = {'devs', {result=true, devices=app.devices.devices, verinfo=verinfo}}
+		local reply = {'devs', {devices=app.devices.devices, verinfo=verinfo}}
 		app.server:send(cjson.encode(reply))
 	end)
 

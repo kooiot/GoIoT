@@ -29,7 +29,13 @@ f:close()
 
 print("msgid \"\"\nmsgstr \"Content-Type: text/plain; charset=UTF-8\"\n\n")
 
+local sort_table = {}
 for key, _ in pairs(stringtable) do
+	sort_table[#sort_table + 1] = key
+end
+table.sort(sort_table)
+
+for _, key in pairs(sort_table) do
 	if key:len() > 0 then
 		print(string.format('msgid \"%s\"\nmsgstr \"\"\n\n', key))
 	end

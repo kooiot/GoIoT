@@ -2,7 +2,7 @@ msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
 
-msgid "Network"
+msgid "Editor"
 msgstr ""
 
 
@@ -10,7 +10,7 @@ msgid "Name"
 msgstr ""
 
 
-msgid "Editor"
+msgid "Network"
 msgstr ""
 
 
