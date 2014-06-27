@@ -2,19 +2,7 @@ msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
 
-msgid "Send"
-msgstr ""
-
-
 msgid "Apply"
-msgstr ""
-
-
-msgid "Control Panel"
-msgstr ""
-
-
-msgid "Editor"
 msgstr ""
 
 
@@ -26,19 +14,11 @@ msgid "Save"
 msgstr ""
 
 
-msgid "Stop Learning"
+msgid "Command"
 msgstr ""
 
 
-msgid "Learn"
-msgstr ""
-
-
-msgid "Test"
-msgstr ""
-
-
-msgid "Start Learning"
+msgid "Local Name"
 msgstr ""
 
 
@@ -46,7 +26,51 @@ msgid "IR Controller"
 msgstr ""
 
 
-msgid "Command"
+msgid "Control Panel"
+msgstr ""
+
+
+msgid "Editor"
+msgstr ""
+
+
+msgid "Management"
+msgstr ""
+
+
+msgid "Online Templates"
+msgstr ""
+
+
+msgid "Stop Learning"
+msgstr ""
+
+
+msgid "Name Alias"
+msgstr ""
+
+
+msgid "Start Learning"
+msgstr ""
+
+
+msgid "Learn"
+msgstr ""
+
+
+msgid "Send"
+msgstr ""
+
+
+msgid "Download"
+msgstr ""
+
+
+msgid "Upload"
+msgstr ""
+
+
+msgid "Test"
 msgstr ""
 
 

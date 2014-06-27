@@ -1,372 +1,375 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: Dirk <dirk.chang@symid.com>\n"
 "Language-Team: \n"
+"Language: zh_CN\n"
 "MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.5.4\n"
-"Language: zh_CN\n"
-
-msgid "Close Menu"
-msgstr "关闭菜单"
-
-msgid "KEY"
-msgstr "密匙"
-
-msgid "System Settings"
-msgstr "系统设定"
-
-msgid "Password"
-msgstr "密码"
-
-msgid "PID"
-msgstr "进程号"
-
-msgid "NETWORK"
-msgstr "网络"
-
-msgid "Used"
-msgstr "使用"
-
-msgid "Services Management"
-msgstr "服务管理"
-
-msgid "Install"
-msgstr "安装"
-
-msgid "CPU LOAD"
-msgstr "处理器负荷"
-
-msgid "Server"
-msgstr "服务器"
-
-msgid "Utilies"
-msgstr "工具"
-
-msgid "System wide settings"
-msgstr "系统级设定"
-
-msgid "Logout"
-msgstr "退出"
-
-msgid "Configurtion"
-msgstr "配置项"
-
-msgid "VERSION"
-msgstr "版本"
-
-msgid "Packets"
-msgstr "报文"
-
-msgid "Menu"
-msgstr "菜单"
-
-msgid "Free"
-msgstr "可用"
-
-msgid "Simple"
-msgstr "精简模式"
-
-msgid "Help"
-msgstr "帮助"
-
-msgid "Stop"
-msgstr "停止"
-
-msgid "OS"
-msgstr "操作系统"
-
-msgid "Advance"
-msgstr "高级模式"
-
-msgid "Sign In"
-msgstr "登入"
-
-msgid "Instance Name cannot be empty"
-msgstr "实例名称不能为空"
-
-msgid "Cache"
-msgstr "缓存"
-
-msgid "Cancel"
-msgstr "取消"
-
-msgid "Restore System"
-msgstr "恢复系统"
-
-msgid "Upgrade"
-msgstr "升级"
-
-msgid "Instance Name..."
-msgstr "实例名.."
-
-msgid "Auth Key"
-msgstr "认证密匙"
-
-msgid "No application?! Install ONE"
-msgstr "没有安装任何应用？！ 现在进行安装"
-
-msgid "System"
-msgstr "系统"
-
-msgid "Failed to reboot"
-msgstr "发送重启指令失败"
-
-msgid "Choose a local instance name"
-msgstr "选择本地实例名"
-
-msgid "Details"
-msgstr "详细"
-
-msgid "Cached"
-msgstr "缓存"
-
-msgid "Result"
-msgstr "结果"
-
-msgid "Restore"
-msgstr "恢复"
-
-msgid "Delete"
-msgstr "删除"
-
-msgid "CPU"
-msgstr "处理器"
-
-msgid "Store"
-msgstr "商店"
-
-msgid "User Key"
-msgstr "用户密匙"
 
 msgid "Management"
 msgstr "管理"
 
-msgid "Cloud"
-msgstr "云"
+msgid "Configurtion"
+msgstr "配置项"
 
-msgid "Status"
-msgstr "状态"
-
-msgid "Application Store"
-msgstr "应用商店"
-
-msgid "Failed to fetch application information from store server, error : "
-msgstr "从应用商店服务器获取应用信息失败,错误:"
-
-msgid "Controls"
-msgstr "控制项"
-
-msgid "Login"
-msgstr "登陆"
-
-msgid "Instance Name"
-msgstr "实例名"
-
-msgid "Name"
-msgstr "名称"
-
-msgid "Description"
-msgstr "描述"
-
-msgid "Remove"
-msgstr "移除"
-
-msgid "Confirm"
-msgstr "确认"
-
-msgid "Recents"
-msgstr "最新"
-
-msgid "Populars"
-msgstr "热门"
-
-msgid "Run as Services"
-msgstr "启动服务"
-
-msgid "Failed to send stop request!!"
-msgstr "发送停止指令失败"
-
-msgid "Affected Instance"
-msgstr "受影响的应用实例"
-
-msgid "Upgrading"
-msgstr "更新中"
-
-msgid "DATETIME"
-msgstr "日期时间"
-
-msgid "Update"
-msgstr "更新"
-
-msgid "Refresh"
-msgstr "刷新"
-
-msgid "Applications"
-msgstr "应用"
-
-msgid "System Events"
-msgstr "系统事件"
-
-msgid "Reload"
-msgstr "加载"
-
-msgid "Abort"
-msgstr "终止"
-
-msgid "Installation list"
-msgstr "已安装列表"
-
-msgid "Failed to send start request!!"
-msgstr "发送启动指令失败"
-
-msgid "Summary"
-msgstr "摘要"
-
-msgid "Key"
-msgstr "索引字"
-
-msgid "Reboot"
-msgstr "重启"
-
-msgid "Website"
-msgstr "网站"
-
-msgid "Backup System"
-msgstr "备份系统"
-
-msgid "Settings"
-msgstr "设定"
-
-msgid "Forum"
-msgstr "论坛"
-
-msgid "HOSTNAME"
-msgstr "主机名称"
-
-msgid "Namespace"
-msgstr "名字空间"
-
-msgid "Log"
-msgstr "日志"
-
-msgid "Apply"
-msgstr "应用"
-
-msgid "Install New"
-msgstr "安装应用"
-
-msgid "Devices"
-msgstr "设备"
+msgid "Stop"
+msgstr "停止"
 
 msgid "Progress and Output"
 msgstr "进度和输出"
 
-msgid "Start"
-msgstr "启动"
-
-msgid "Services"
-msgstr "服务"
-
-msgid "Network"
-msgstr "网络"
-
-msgid "Data"
-msgstr "数据"
-
-msgid "Device Settings"
-msgstr "设备设定"
-
-msgid "System Upgrade"
-msgstr "系统升级"
-
-msgid "Cloud Settings"
-msgstr "云设定"
+msgid "Username"
+msgstr "用户名"
 
 msgid "Clear All"
 msgstr "清除所有"
 
-msgid "Events"
-msgstr "事件"
+msgid "Upgrade System"
+msgstr "升级系统"
 
-msgid "Value"
-msgstr "值"
-
-msgid "Enable"
-msgstr "开启"
-
-msgid "Failed to send remove request!!"
-msgstr "发送移除指令失败"
-
-msgid "About"
-msgstr "关于"
-
-msgid "SYSTEM"
-msgstr "系统"
-
-msgid "View"
-msgstr "查看"
-
-msgid "System Management"
-msgstr "系统管理"
-
-msgid "More"
-msgstr "更多"
-
-msgid "Username"
-msgstr "用户名"
-
-msgid "Welcome"
-msgstr "欢迎"
-
-msgid "Home"
-msgstr "主页"
-
-msgid "LOCALE"
-msgstr "本地语言"
+msgid "System Events"
+msgstr "系统事件"
 
 msgid "Login Now"
 msgstr "登陆"
 
-msgid "Types"
-msgstr "种类"
+msgid "About"
+msgstr "关于"
 
-msgid "SN"
-msgstr "串号"
-
-msgid "Upgrade System"
-msgstr "升级系统"
-
-msgid "Total"
-msgstr "总数"
-
-msgid "HARDWARE"
-msgstr "硬件"
-
-msgid "TIME"
-msgstr "时间"
+msgid "Free"
+msgstr "可用"
 
 msgid "MEMOERY"
 msgstr "内存"
 
-msgid "Backup"
-msgstr "备份"
+msgid "Close Menu"
+msgstr "关闭菜单"
 
-msgid "Overview"
-msgstr "总览"
-
-msgid "Install Application"
-msgstr "安装应用"
+msgid "User Key"
+msgstr "用户密匙"
 
 msgid "Action"
 msgstr "动作"
 
+msgid "Website"
+msgstr "网站"
+
+msgid "Controls"
+msgstr "控制项"
+
+msgid "Password"
+msgstr "密码"
+
+msgid "Advance"
+msgstr "高级模式"
+
+msgid "Total"
+msgstr "总数"
+
+msgid "Logout"
+msgstr "退出"
+
+msgid "Simple"
+msgstr "精简模式"
+
+msgid "Install Application"
+msgstr "安装应用"
+
+msgid "Start"
+msgstr "启动"
+
+msgid "Sign In"
+msgstr "登入"
+
+msgid "Applications"
+msgstr "应用"
+
+msgid "System"
+msgstr "系统"
+
+msgid "Menu"
+msgstr "菜单"
+
+msgid "KEY"
+msgstr "密匙"
+
+msgid "Forum"
+msgstr "论坛"
+
+msgid "Restore System"
+msgstr "恢复系统"
+
+msgid "HOSTNAME"
+msgstr "主机名称"
+
+msgid "DATETIME"
+msgstr "日期时间"
+
+msgid "Reload"
+msgstr "加载"
+
+msgid "Cancel"
+msgstr "取消"
+
+msgid "Instance Name..."
+msgstr "实例名.."
+
+msgid "Result"
+msgstr "结果"
+
+msgid "Choose a local instance name"
+msgstr "选择本地实例名"
+
+msgid "Device Settings"
+msgstr "设备设定"
+
+msgid "Login"
+msgstr "登陆"
+
+msgid "Store"
+msgstr "商店"
+
+msgid "NETWORK"
+msgstr "网络"
+
+msgid "Overview"
+msgstr "总览"
+
+msgid "Server"
+msgstr "服务器"
+
+msgid "Name"
+msgstr "名称"
+
+msgid "Cache"
+msgstr "缓存"
+
+msgid "Help"
+msgstr "帮助"
+
+msgid "Application Store"
+msgstr "应用商店"
+
+msgid "PID"
+msgstr "进程号"
+
+msgid "Refresh"
+msgstr "刷新"
+
+msgid "Failed to fetch application information from store server, error : "
+msgstr "从应用商店服务器获取应用信息失败,错误:"
+
+msgid "Namespace"
+msgstr "名字空间"
+
+msgid "Welcome"
+msgstr "欢迎"
+
+msgid "Packets"
+msgstr "报文"
+
+msgid "Network"
+msgstr "网络"
+
+msgid "Install New"
+msgstr "安装应用"
+
+msgid "System wide settings"
+msgstr "系统级设定"
+
+msgid "Used"
+msgstr "使用"
+
+msgid "Data"
+msgstr "数据"
+
+msgid "Cached"
+msgstr "缓存"
+
+msgid "Reboot"
+msgstr "重启"
+
 msgid "Sign Up"
 msgstr "注册"
 
+msgid "System Upgrade"
+msgstr "系统升级"
+
+msgid "Apply"
+msgstr "应用"
+
+msgid "Cloud"
+msgstr "云"
+
+msgid "Affected Instance"
+msgstr "受影响的应用实例"
+
+msgid "SN"
+msgstr "串号"
+
+msgid "Summary"
+msgstr "摘要"
+
+msgid "Upgrade"
+msgstr "升级"
+
+msgid "Update"
+msgstr "更新"
+
+msgid "Abort"
+msgstr "终止"
+
+msgid "SYSTEM"
+msgstr "系统"
+
+msgid "Status"
+msgstr "状态"
+
+msgid "Installation list"
+msgstr "已安装列表"
+
+msgid "HARDWARE"
+msgstr "硬件"
+
+msgid "Log"
+msgstr "日志"
+
+msgid "Recents"
+msgstr "最新"
+
+msgid "Utilies"
+msgstr "工具"
+
+msgid "Configuration"
+msgstr "配置"
+
+msgid "System Management"
+msgstr "系统管理"
+
+msgid "Failed to send remove request!!"
+msgstr "发送移除指令失败"
+
+msgid "Description"
+msgstr "描述"
+
+msgid "Devices"
+msgstr "设备"
+
+msgid "Failed to send start request!!"
+msgstr "发送启动指令失败"
+
+msgid "Failed to send stop request!!"
+msgstr "发送停止指令失败"
+
+msgid "Failed to reboot"
+msgstr "发送重启指令失败"
+
+msgid "Services Management"
+msgstr "服务管理"
+
+msgid "Events"
+msgstr "事件"
+
+msgid "Remove"
+msgstr "移除"
+
+msgid "CPU"
+msgstr "处理器"
+
+msgid "Backup System"
+msgstr "备份系统"
+
+msgid "TIME"
+msgstr "时间"
+
+msgid "Delete"
+msgstr "删除"
+
+msgid "Install"
+msgstr "安装"
+
+msgid "No application?! Install ONE"
+msgstr "没有安装任何应用？！ 现在进行安装"
+
+msgid "Restore"
+msgstr "恢复"
+
+msgid "CPU LOAD"
+msgstr "处理器负荷"
+
+msgid "Types"
+msgstr "种类"
+
+msgid "System Settings"
+msgstr "系统设定"
+
+msgid "Enable"
+msgstr "开启"
+
+msgid "Instance Name cannot be empty"
+msgstr "实例名称不能为空"
+
+msgid "View"
+msgstr "查看"
+
+msgid "Populars"
+msgstr "热门"
+
+msgid "Settings"
+msgstr "设定"
+
+msgid "VERSION"
+msgstr "版本"
+
+msgid "Cloud Settings"
+msgstr "云设定"
+
+msgid "Auth Key"
+msgstr "认证密匙"
+
+msgid "Backup"
+msgstr "备份"
+
+msgid "More"
+msgstr "更多"
+
+msgid "Details"
+msgstr "详细"
+
+msgid "LOCALE"
+msgstr "本地语言"
+
 msgid "Device Events"
 msgstr "设备事件"
+
+msgid "Upgrading"
+msgstr "更新中"
+
+msgid "Value"
+msgstr "值"
+
+msgid "Key"
+msgstr "索引字"
+
+msgid "OS"
+msgstr "操作系统"
+
+msgid "Instance Name"
+msgstr "实例名"
+
+msgid "Home"
+msgstr "主页"
+
+msgid "Run as Services"
+msgstr "启动服务"
+
+msgid "Confirm"
+msgstr "确认"
+
+#~ msgid "Services"
+#~ msgstr "服务"
