@@ -35,6 +35,7 @@ local function load_conf()
 end
 
 local conf = load_conf()
+log:debug(ioname, 'SERVER ', conf.url)
 cloudapi.init(conf.key, conf.url, conf.timeout)
 buf.set_api(cloudapi)
 
@@ -83,8 +84,10 @@ local function on_start()
 	return true
 end
 
+local app = nil
 local aborting = false
 local function on_close()
+	app:close()
 	aborting = true
 	return true
 end

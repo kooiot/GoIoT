@@ -1,5 +1,10 @@
 return {
 	get = function(req, res, insname, action)
+		if not lwf.ctx.user then
+			res:redirect('/user/login')
+			return
+		end
+
 		local action = action or ''
 		local list = require 'shared.app.list'
 		list:reload()

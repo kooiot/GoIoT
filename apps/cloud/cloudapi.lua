@@ -10,6 +10,7 @@ local URL = nil
 
 local function api(method, obj, path)
 	assert(path)
+	print(URL..path)
 	local u = url.parse(URL..path, {path=path, scheme='http'})
 
 	local rstring = cjson.encode(obj)
@@ -31,7 +32,7 @@ local function api(method, obj, path)
 	if r and code == 200 then
 		return true
 	else
-		return nil, 'Error'
+		return nil, 'Error: code['..(code or 'Unknown')..'] status ['..(status or '')..']'
 	end
 	--[[
 	if r and code == 200 then

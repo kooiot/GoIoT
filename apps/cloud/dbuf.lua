@@ -55,7 +55,7 @@ function _M.on_create(cb)
 	for k, v in pairs(devlist) do
 		if not v.sync then
 			assert(v.device.version)
-			log:debug(ioname, 'Create device:'..v.device.name..' in cloud')
+			log:debug(ioname, 'Create device:'..v.device.path..' in cloud')
 			local r, err = api.call('POST', v.device, 'Device')
 			if r then
 				v.sync = true
@@ -88,7 +88,12 @@ function _M.on_send(cb)
 		print(pp(all))
 		]]--
 		if #all ~= 0 then
-			api.call('POST', all, 'Data')
+			local r, err = api.call('POST', all, 'Data')
+			if not r then
+				log:error(ioname, err)
+			end
+		else
+			log:debug(ioname, ns..' has no updated data')
 		end
 		cb()
 	end
