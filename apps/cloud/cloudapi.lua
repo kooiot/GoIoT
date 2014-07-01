@@ -24,6 +24,7 @@ local function api(method, obj, path)
 	u.headers = {}
 	u.headers['U-ApiKey'] = KEY
 	u.headers["content-length"] = string.len(rstring)
+	--print(string.len(rstring))
 	u.headers["content-type"] = "application/json;charset=utf-8"
 
 	local r, code, headers, status = http.request(u)

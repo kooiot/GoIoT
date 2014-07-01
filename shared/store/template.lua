@@ -61,7 +61,10 @@ end
 -- @treturn boolean result
 -- @treturn string error message
 function _M.upload(app_path, name, desc, content)
-	assert(app_path and name and desc and content)
+	assert(app_path)
+	assert(name)
+	assert(desc)
+	assert(content)
 
 	local store = require 'shared.store'
 	local log = require 'shared.log'
