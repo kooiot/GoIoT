@@ -97,7 +97,7 @@ function _M.on_send(cb)
 				log:error(ioname, err)
 			end
 		else
-			log:debug(ioname, ns..' has no updated data')
+			--log:debug(ioname, ns..' has no updated data')
 		end
 		cb()
 	end

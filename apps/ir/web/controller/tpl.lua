@@ -13,7 +13,7 @@ end
 return {
 	get = function(req, res)
 		local devs = {}
-		local info = nil
+		local info = ''
 
 		local mon = require 'shared.api.mon'
 		local status, err = mon.query({app.appname})
@@ -32,7 +32,11 @@ return {
 			info = err or 'Cannot find status'
 		end
 
-		local tlist = get_list(app.appname)
+		local tlist, err = get_list(app.appname)
+		if not tlist then
+			info = info .. err			
+			tlist = {}
+		end
 		res:ltp('tpl.html', {lwf=lwf, app=app, devs=devs, tlist=tlist, info=info})
 	end,
 }
