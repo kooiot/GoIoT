@@ -7,9 +7,10 @@ return {
 		local file, msg = io.open(filename, "r")
 		if file then
 			json_text = file:read("*a")
+			--print(json_text)
 			modbus  = cjson.decode(json_text)
 			packets = {}
-			ip_port = {}
+			modbus_mode = {}
 			for k, v in pairs(modbus) do
 				config = {}
 				config.port_config = {}
@@ -29,7 +30,7 @@ return {
 					config.tags = tags
 					table.insert(packets, config)
 				else
-					ip_port = v.config
+					modbus_mode = v.config
 				end
 			end
 			for k, v in pairs(packets) do
@@ -40,10 +41,11 @@ return {
 				end
 			end
 			end
-			return packets, ip_port
+			return packets, modbus_mode
 		else
 			print(msg)
 			return file
 		end
 	end
 }
+

@@ -8,12 +8,14 @@ local log = require('shared.log')
 local ztimer = require 'lzmq.timer'
 local decode = require "modbus.decode"
 local encode = require "modbus.encode"
+local serial = require "serial"
 
 local ioname = arg[1]
 assert(ioname, 'Applicaiton needs to have a name')
 
 -- application object
 local app = nil
+local mclient = nil
 local io_ports = {}
 local err_count = 1
 
@@ -25,7 +27,7 @@ stream.buf = ''
 
 -- Load tags from file
 local packets = {}
-local ip_port = {}
+local modbus_mode = {}
 local tags = {}
 
 local function remove_tags()
@@ -55,7 +57,7 @@ local function load_tags_conf(app, reload)
 		end
 	end
 
-	packets, ip_port = require("tags").load_tags(ioname)
+	packets, modbus_mode = require("tags").load_tags(ioname)
 
 	for k, v in pairs(packets) do
 		port_config = v.port_config
@@ -84,18 +86,6 @@ local function load_tags_conf(app, reload)
 						name = ioname .. "/unit." .. port_config.unit .. "/inputs/" .. name
 						tags[name] = input
 					end
-					--[[
-					if v.name ~= '' then
-					local input = dev.inputs:get(v.name)
-					if not input then
-					input = dev.inputs:add(v.name, 'Input tag ' .. v.name)
-					assert(input)
-					local prop = input.props:add('high', 'alarm high condition', 100)
-					prop = input.props:add('low', 'alarm low condition', 20)
-					tags[v.name] = input
-					end
-					end
-					--]]
 				end
 			end
 		end
@@ -103,8 +93,6 @@ local function load_tags_conf(app, reload)
 
 	return true
 end
-
-local mclient = modbus.client(stream, modbus.apdu_tcp)
 
 -- When user click stop, we only pause the data 
 local pause = false
@@ -122,8 +110,9 @@ end
 
 local function on_rev(port, msg)
 --	print(os.date(), 'DATA RECV', hex_raw(msg))
-	log:packet(ioname, 'MODBUS.RECV', hex_raw(msg))
+--	log:packet(ioname, 'MODBUS.RECV', hex_raw(msg))
 	stream.buf = stream.buf..msg
+	print("RECV", hex_raw(stream.buf))
 end
 
 stream.read = function (t, check, timeout)
@@ -133,60 +122,91 @@ stream.read = function (t, check, timeout)
 
 	local abort = false
 	while not abort and timer:rest() > 0 do
-		if string.len(stream.buf) > 0 then
-			--print(os.date(), 'DATA CHECK', hex_raw(stream.buf))
-			local r, b, e = check(stream.buf, t, port_config)
-			if r then
-				return r
+		if modbus_mode.mode == "0" then
+			local r, data, size = io_ports.port:read(1024, 1000)
+			if r and data then
+				on_rev(nil, data)
 			end
+
+			if string.len(stream.buf) > 0 then
+				--print(os.date(), 'DATA CHECK', hex_raw(stream.buf))
+				local r, b, e = check(stream.buf, t, port_config, ecm)
+				if r then
+					return r
+				end
+			end
+			abort = coroutine.yield(false, 50)
+		else
+			if string.len(stream.buf) > 0 then
+				--print(os.date(), 'DATA CHECK', hex_raw(stream.buf))
+				local r, b, e = check(stream.buf, t, port_config)
+				if r then
+					return r
+				end
+			end
+			abort = coroutine.yield(false, 50)
 		end
-		abort = coroutine.yield(false, 50)
 	end
 	stream.buf = ''
 	return nil, 'timeout'
 end
 
 stream.send = function(msg)
-	log:packet(ioname, "MODBUS.SEND", hex_raw(msg))
-	io_ports.main:send(msg)
+	--log:packet(ioname, "MODBUS.SEND", hex_raw(msg))
+	if modbus_mode.mode == "0" or modbus_mode.mode == "2" then
+		io_ports.port:write(msg, 500)
+	else
+		io_ports.main:send(msg)
+	end
+	print("SEND", hex_raw(msg))
 end
 
 local handlers = {}
 handlers.on_start = function(app)
-		load_tags_conf(app)
-		local remote_addr = ip_port.sIp
-		local port = ip_port.port
+	log:info(ioname, 'Starting application[MODBUS]')
+	load_tags_conf(app)
+	if modbus_mode.mode == "0" then
+		mclient = modbus.client(stream, modbus.apdu_rtu)
+	elseif modbus_mode.mode == "1" then
+		mclient = modbus.client(stream, modbus.apdu_tcp)
+	else
+		mclient = modbus.client(stream, modbus.apdu_ascii)
+	end
+
+	if modbus_mode.mode == "0" or modbus_mode.mode == "2" then
+		io_ports.port = serial.new()
+		if io_ports.port:is_open() then
+			return true
+		end
+
+		--local port_name = "ttyS" .. modbus_mode.sPort
+		local port_name = "/dev/ttyUSB" .. modbus_mode.sPort
+		local opt = {}
+		opt.baudrate = tostring(modbus_mode.baud)
+		opt.databits = tostring(modbus_mode.dbs)
+		if modbus_mode.parity == "0" then
+			opt.parity = "NONE"
+		elseif modbus_mode.parity == "1" then
+			opt.parity = "ODD"
+		else
+			opt.parity = "EVEN"
+		end
+		opt.stopbits = tostring(modbus_mode.sbs)
+		opt.flowcontrol = modbus_mode.flowcontrol
+
+		local r, err = io_ports.port:open(port_name, opt)
+		if not r then
+			log:error(ioname, err)
+			return nil
+		end
+	else
+		local remote_addr = modbus_mode.sIp
+		local port = modbus_mode.port
 		local tcpc = require 'shared.io.tcp.client'
 		log:info(app.name, 'Creating tcp client to', remote_addr, 'port', port)
 		io_ports.main = tcpc.new(app.ctx, app.poller, remote_addr, port)
 		io_ports.main:open(on_rev)
-	--[[
-		log:info(ioname, 'Received event [START]')
-		pause = false
-		io_ports.main, io_ports.main_type = assert(io.get_port('main'))
-		local r, err = io_ports.main:open(on_rev)
-		if not r then
-			print(err)
-		end
-	log:info(ioname, 'Received event [START]')
-	pause = false
-	if io_ports.main then
-		return
 	end
-
-
-	if io_ports.main_type ~= port.tcp_client then
-		local r, err = io_ports.main:open(on_rev)
-		if not r then
-			print(err)
-		end
-
-		load_tags_conf(app)
-
-		return true
-	end
-	return false
-	--]]
 end
 
 handlers.on_pause = function(app)
@@ -219,7 +239,7 @@ handlers.on_run = function(app)
 			for k, v in pairs(v.tags) do
 				if v.request.cycle ~= "" then
 					if v.request.cycle and v.request.timer:rest() == 0 then
-						local pdu, err = mclient:request(v, port_config)
+						local pdu, err = mclient:request(v, port_config, modbus_mode.ecm)
 						if pdu then
 							local ts = ztimer.absolute_time()
 							local vals = {}
@@ -322,21 +342,9 @@ end
 
 handlers.on_import = require('import').import
 
-io.add_port('main', {port.tcp_client, port.serial}, port.tcp_client) 
-io.add_port('backup', {port.tcp_client, port.serial}, port.tcp_client) 
+--io.add_port('main', {port.tcp_client, port.serial}, port.tcp_client) 
+--io.add_port('backup', {port.tcp_client, port.serial}, port.tcp_client) 
 
---[[
-local setting = require('shared.io.setting')
-local command = require('shared.io.command')
-
-local t1 = setting.new('t1')
-t1:add_prop('prop1', 'test prop 1', 'number', 11, {min=1, max=99})
-io.add_setting(t1)
-
-local c1 = command.new('c1')
-c1:add_arg('arg1', 'test arg 1', 'number', 10, {min=1, max=99})
-io.add_command(c1)
---]]
 app = io.init(ioname, handlers)
 assert(app)
 

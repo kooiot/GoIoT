@@ -20,7 +20,7 @@ local function create_header(transaction, length, unit)
 	return data
 end
 
-function _M.encode(pdu, t, port_config) --unit, checkmode)
+function _M.encode(pdu, port_config) --unit, checkmode)
 	if not pdu then
 		return nil, 'no pdu object'
 	end

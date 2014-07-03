@@ -20,18 +20,18 @@ _M.int16 = function(val, option)
 	if option == 3 then
 		return string.char(hv) .. string.char(lv)
 	else
-		return string.char(hv) .. string.char(lv)
+		return string.char(lv) .. string.char(hv)
 	end
 end
 
-_M.uint16 = function(val)
+_M.uint16 = function(val, option)
 	val = val % 65536
 	hv = math.floor((val / 256) % 256) 
 	lv = math.floor(val % 256)
 	if option == 3 then
 		return string.char(hv) .. string.char(lv)
 	else
-		return string.char(hv) .. string.char(lv)
+		return string.char(lv) .. string.char(hv)
 	end
 end
 

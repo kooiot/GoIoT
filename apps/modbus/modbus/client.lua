@@ -4,9 +4,9 @@ local cmd = require "modbus.code"
 
 local class = {}
 
-local function packet_check(apdu, port_config)
+local function packet_check(apdu, port_config, ecm)
 	return function(msg, t, port_config)
-		return apdu.check(msg, t, port_config)
+		return apdu.check(msg, t, port_config, ecm)
 	end
 end
 
@@ -21,43 +21,27 @@ local function hex_raw(raw)
 	end 
 end
 
-function class:request (t, port_config) 
+--ecm, error checking methods
+function class:request (t, port_config, ecm) 
 	p = pdu[cmd[tonumber(t.request.func)]](t)
 	if not p then
 		return nil
 	end
 
-	local _, apdu_raw = self.apdu.encode(p, t, port_config) --t.request.unit, t.request.checkmode)
+	local _, apdu_raw = self.apdu.encode(p, port_config, ecm)
 
 	--- write to pipe
 	-- fiber.await(self.internal.write(apdu_raw))
 	self.stream.send(apdu_raw)
 
 	--local raw = fiber.await(self.internal.read())
-	local raw = self.stream.read(t, packet_check(self.apdu), 500)
+	local raw = self.stream.read(t, packet_check(self.apdu, port_config, ecm), 2000)
 	if not raw then
 		return nil, 'Packet timeout'
 	end
 
 	local unit, pdu_raw = self.apdu.decode(raw)
 	return pdu_raw, unit
-	--[[local pdu, err = pdu.parser_pdu(pdu_raw)
-	if not pdu then
-		return nil, err
-	end
-
-	local _, err = parser(pdu)
-	if _ ~= pdu then
-		--log:error('MODBUS', 'P: '..err)
-		return nil, err
-	end
-	return pdu, err
-	]]--
---[[
-	for k, v in pairs(p:data()) do
-	print(k, v)
-	end
-]]--
 end
 
 return function (stream, apdu)

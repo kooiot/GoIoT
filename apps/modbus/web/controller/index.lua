@@ -42,9 +42,9 @@ return {
 		req:read_body()
 		local path = path .. "/" .. app.appname .. "/config/" .. app.appname .. "/"
 		local filename = path .. app.appname .. "_config.json"
-		local port = req:get_post_arg("port")
-		local sIp = req:get_post_arg("sIp")
+		res:write(app.appname)
 		local unit = req:get_post_arg("unit")
+		local mode = req:get_post_arg("mode")
 		local t = {}
 		t.tree = {}
 		local name = req:get_post_arg("name")
@@ -54,9 +54,31 @@ return {
 		t.tree.id = id
 		t.tree.pId = pId
 		t.config = {}
-		t.config.port = port
-		t.config.sIp = sIp
-		t.config.unit = unit
+		if mode == "1" then
+			local port = req:get_post_arg("port")
+			local sIp = req:get_post_arg("sIp")
+			t.config.mode = mode
+			t.config.port = port
+			t.config.sIp = sIp
+			t.config.unit = unit
+		elseif mode == "0" or mode == "2" then
+			local sPort = req:get_post_arg("sPort")
+			local baud = req:get_post_arg("baud")
+			local dbs = req:get_post_arg("dbs") -- Data bits
+			local parity = req:get_post_arg("parity")
+			local sbs = req:get_post_arg("sbs") -- Stop bits
+			local ecm = req:get_post_arg("ecm") -- error checking method
+			t.config.mode = mode
+			t.config.sPort = sPort
+			t.config.baud = baud
+			t.config.dbs = dbs
+			t.config.parity = parity
+			t.config.sbs = sbs
+			t.config.ecm = ecm
+			t.config.unit = unit
+		else
+			res:write("error")
+		end
 
 		local file, err = io.open(filename, "a+")
 		if not file then
