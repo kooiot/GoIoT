@@ -180,7 +180,7 @@ handlers.on_start = function(app)
 		end
 
 		--local port_name = "ttyS" .. modbus_mode.sPort
-		local port_name = "/dev/ttyUSB" .. modbus_mode.sPort
+		local port_name = "/dev/ttyS" .. modbus_mode.sPort
 		local opt = {}
 		opt.baudrate = tostring(modbus_mode.baud)
 		opt.databits = tostring(modbus_mode.dbs)
