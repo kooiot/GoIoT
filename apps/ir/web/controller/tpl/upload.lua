@@ -24,7 +24,7 @@ local function upload_tpl(appname, name, alias)
 	local app_path = app and app.path or 'admin/ir'
 
 	-- TODO: For description
-	return tpl.upload(app_pah, alias or name, 'IR template', content)
+	return tpl.upload(app_path, alias or name, 'IR template', content)
 end
 
 return {

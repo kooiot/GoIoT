@@ -103,7 +103,7 @@ end
 local function init()
 	-- Create the handler
 	local srv, err = ctx:socket({zmq.REP, bind="tcp://127.0.0.1:5500"})
-	if err then
+	if not srv and err then
 		err = err..' @1'
 	end
 	zassert(srv, err)

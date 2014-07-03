@@ -56,6 +56,10 @@ function _M.on_create(cb)
 		if not v.sync then
 			assert(v.device.version)
 			log:debug(ioname, 'Create device:'..v.device.path..' in cloud')
+			if v.device.path == 'sys/dev' then
+				local cjson = require 'cjson.safe'
+				print(cjson.encode(v.device))
+			end
 			local r, err = api.call('POST', v.device, 'Device')
 			if r then
 				v.sync = true
@@ -93,7 +97,7 @@ function _M.on_send(cb)
 				log:error(ioname, err)
 			end
 		else
-			log:debug(ioname, ns..' has no updated data')
+			--log:debug(ioname, ns..' has no updated data')
 		end
 		cb()
 	end
