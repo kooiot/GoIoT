@@ -81,8 +81,8 @@ end
 
 --- List all services' status
 -- @treturn table services status table(array)
-_M.list = function(name, dostr)
-	local req = {'list', {name=name, dostr=dostr}}
+_M.list = function()
+	local req = {'list', {}}
 	return get_reply(client:request(cjson.encode(req), true))
 end
 

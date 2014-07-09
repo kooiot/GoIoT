@@ -5,7 +5,8 @@ local cjson = require 'cjson.safe'
 local zpoller =  require 'lzmq.poller'
 local zmq = require 'lzmq'
 local ztimer = require 'lzmq.timer'
-local cloudapi = require 'cloudapi'
+local cloudapi = require 'api'
+local logsub = require 'logsub'
 local log = require 'shared.log'
 local config = require 'shared.api.config'
 
@@ -22,6 +23,9 @@ info.ctx = zmq.context()
 info.poller = zpoller.new()
 info.name = ioname
 
+local client = api.new(arg[1], info.ctx, info.poller)
+logsub.open(info.ctx, info.poller)
+
 local function load_conf()
 	local config, err = config.get(ioname..'.conf')
 	if config and type(config) == 'string' then
@@ -29,18 +33,29 @@ local function load_conf()
 	end
 	config = config or {}
 	config.key = config.key or "6015c744795762df41e9ebfa25fd625c"
-	config.url = config.url or 'http://172.30.0.115:8000/RestService/'
-	--config.url = config.url or 'http://172.30.11.172:8111/RestService/'
+	config.url = config.url or 'http://172.30.11.169:8081/api/'
 	config.timeout = config.timeout or 5
 	return config
 end
 
-local conf = load_conf()
-log:debug(ioname, 'SERVER ', conf.url)
-cloudapi.init(conf.key, conf.url, conf.timeout)
-buf.set_api(cloudapi)
+local function on_write(path, value, cb_path)
+	log:warn(ioname, 'Write on path ', path)
+	return client:write(path, value)
+end
 
-local client = api.new(arg[1], info.ctx, info.poller)
+local function on_command(path, args, cb_path)
+	log:warn(ioname, 'Command on path ', path)
+	return client:command(path, args)
+end
+
+local conf = load_conf()
+
+log:debug(ioname, 'SERVER ', conf.url)
+
+cloudapi.init(conf, on_write, on_command)
+
+buf.set_api(cloudapi)
+logsub.set_api(cloudapi)
 
 local function query_tree(ns)
 	assert(ns, 'Namespace cannot be nil')
@@ -67,7 +82,7 @@ client:onupdate(function(namespace)
 end)
 
 local function cov(path, value)
-	--print('data changed on ', path)
+	print('data changed on ', path)
 	return buf.add_cov(path, value)
 end
 
@@ -106,15 +121,19 @@ app:reg_request_handler('list_devices', function(app, vars)
 	app.server:send(cjson.encode(reply))
 end)
 
-local function save_all(cb)
+local function task_run(cb)
+	--log:debug(ioname, 'One run')
+	cloudapi.ping()
+	cloudapi.pull(cb)
 	buf.on_create(cb)
 	buf.on_send(cb)
+	cloudapi.push(cb)
 end
 
 -- The mail loop
 local ms = 1000 * 3
 while not aborting do
-	save_all(function() app:run(50) end)
+	task_run(function() app:run(50) end)
 	local timer = ztimer.monotonic(ms)
 	timer:start()
 	while timer:rest() > 0 do

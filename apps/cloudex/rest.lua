@@ -10,8 +10,9 @@ local URL = nil
 
 local function api(method, obj, path)
 	assert(path)
-	print(URL..path)
-	local u = url.parse(URL..path, {path=path, scheme='http'})
+	local fpath = URL..'/'..path
+	--print(fpath)
+	local u = url.parse(fpath, {path=path, scheme='http'})
 
 	local rstring = cjson.encode(obj)
 	--print('JSON', rstring)
@@ -22,35 +23,21 @@ local function api(method, obj, path)
 	u.sink, re = ltn12.sink.table(re)
 	u.method = method
 	u.headers = {}
-	u.headers['U-ApiKey'] = KEY
+	u.headers['user-auth-key'] = KEY
 	u.headers["content-length"] = string.len(rstring)
 	--print(string.len(rstring))
 	u.headers["content-type"] = "application/json;charset=utf-8"
 
 	local r, code, headers, status = http.request(u)
-	print(r, code)--, pp(headers), status)
+	--print(r, code)--, pp(headers), status)
 
 	if r and code == 200 then
-		return true
+		return true, table.concat(re)
 	else
-		return nil, 'Error: code['..(code or 'Unknown')..'] status ['..(status or '')..']'
+		local err = 'Error: code['..(code or 'Unknown')..'] status ['..(status or '')..']'
+		print(err)
+		return nil, err
 	end
-	--[[
-	if r and code == 200 then
-		if #re == 0 then
-			return r, code, headers, status
-		end
-
-		local j, err = cjson.decode(table.concat(re))
-		if j then
-			print(pp(j))
-			return j
-		else
-			return nil, code, headers, status, err
-		end
-	end
-	return nil, code, headers, status
-	]]--
 end
 
 return {

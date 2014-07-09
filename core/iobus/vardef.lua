@@ -5,6 +5,7 @@ local cjson = require 'cjson.safe'
 local _M = {}
 
 _M.conf = {}
+local inputs = {}
 
 local function  load_conf()
 	local f, err = io.open('def.conf')
@@ -24,8 +25,9 @@ function _M.load()
 			name = 'dev',
 			desc = 'symlink device',
 			inputs = {
-				sn = {name='sn', desc='Serial Number of device', value=1},
-				modal = {name='modal', desc='Modal of device', value='Test'},
+				sn = {name='sn', desc='Serial Number of device', value='xxx-xxxx-xxxx-xxxxxxxx'},
+				modal = {name='modal', desc='Modal of device', value='Symlink V3 Test'},
+				time = {name='system time', desc='Device system time', value=os.time()}
 			},
 			commands = {
 				reboot = 'reboot device'
@@ -59,6 +61,7 @@ function _M.populate(db)
 			value = v.value,
 		}
 		device.inputs[k] = input
+		inputs[k] = input
 		local r, err = db:set(input.path, input.value)
 	end
 
@@ -78,6 +81,14 @@ function _M.populate(db)
 	}
 
 	return {name = 'sys', tree ={ devices = {[device.name] = device}, verinfo=verinfo}}
+end
+
+function _M.run(publish)
+	for k, v in pairs(inputs) do
+		if k == 'time' then
+			publish(v.path, os.time())
+		end
+	end
 end
 
 return _M

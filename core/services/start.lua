@@ -201,12 +201,9 @@ end
 
 mpft['list'] = function(vars)
 	local err = 'Invalid/Unsupported query request'
-	if vars and type(vars) ~= 'table' then
-		send_err('list', err)
-		return
-	end
 
-	--local st = {}
+	local st = {}
+	--[[
 	local st = { {
 		name = 'store.install.dummy',
 		desc = '/admin/modbus',
@@ -215,6 +212,7 @@ mpft['list'] = function(vars)
 		result = true,
 		output = 'Done',
 	}}
+	]]--
 	for n, v in pairs(running) do
 		st[#st + 1] = {
 			name = n,
@@ -223,6 +221,7 @@ mpft['list'] = function(vars)
 			pid = v.pid,
 			result = v.result,
 			output = v.output,
+			percent = v.percent,
 		}
 	end
 	return send_result('list', st)

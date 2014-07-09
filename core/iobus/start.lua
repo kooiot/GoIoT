@@ -7,6 +7,7 @@ package.path = string.format("%s;%s/?.lua;%s/?/init.lua", m_package_path, m_path
 require 'shared.zhelpers'
 local zmq = require 'lzmq'
 local zpoller = require 'lzmq.poller'
+local ztimer = require 'lzmq.timer'
 local cjson = require 'cjson.safe'
 local log = require 'shared.log'
 local vardef = require 'vardef'
@@ -266,5 +267,25 @@ local ns = vardef.populate(db)
 ns.port = -1
 clients[ns.name] = ns
 
-poller:start()
+--poller:start()
+local timer = ztimer.monotonic(1000)
+while true do
+
+	timer:start()
+	while timer:rest() > 0 do
+		poller:poll(timer:rest())
+	end
+
+	print('ping....')
+	vardef.run(function(path, value, timestamp, quality)
+		assert(path and value)
+		local timestamp= timestamp or ztimer.absolute_time()
+		local quality = quality or 1
+		local r, err = db:set(path, value, timestamp, quality)
+		if r then
+			pub.cov(path, {path=path, value=value, timestamp=timestamp, quality=quality})
+		end
+	end)
+	
+end
 

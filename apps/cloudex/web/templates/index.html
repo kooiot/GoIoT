@@ -1,0 +1,30 @@
+<? extend 'layout.html'?>
+<script src="/static/js/table.js"></script>
+
+<div class="tab segment">
+	<div class="container">
+		<div class="introduction">
+			<h2 class="ui dividing header"> <?=_("SymLink Cloud")?> - <?=app.appname ?> </h2>
+		</div>
+	</div>
+</div>
+
+<div class="main container">
+	<div class="ui message"><?=info or ''?></div>
+	<form class="ui form" method="post">
+		<div class="ui inline label"> <?=_('Auth Key')?>: </div>
+		<div class="ui left labeled input">
+			<input class="ui input" type="text" name="key" value="<?=key or ''?>"/>
+		</div>
+		<div class="ui inline label"> <?=_('Server URL')?>: </div>
+		<div class="ui left labeled input">
+			<input class="ui input" type="text" name="url" value="<?=url or ''?>"/>
+		</div>
+		<div class="ui inline label"> <?=_('Timeout')?>: </div>
+		<div class="ui left labeled input">
+			<input class="ui input" type="text" name="timeout" value="<?=timeout or ''?>"/>
+		</div>
+		<input class="ui teal button submit" type="submit" value="<?=_('Save')?>"/>
+	</form>
+</div>
+

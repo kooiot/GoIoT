@@ -117,6 +117,9 @@ function class:subscribe(pattern, cb)
 
 	local req = {'subscribe', {pattern=pattern, from=self.from}}
 	local r, err = reply(self.client:request(cjson.encode(req), true))
+	if r then
+		self.subclient:bind(pattern, cb)
+	end
 	return r, err
 end
 
