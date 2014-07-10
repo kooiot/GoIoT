@@ -252,6 +252,7 @@ _M.install = function(lname, path, version)
 		return nil, err
 	end
 	start_application(path, lname)
+	return true
 end
 
 ---
