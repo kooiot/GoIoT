@@ -204,6 +204,7 @@ function class:meta()
 end
 
 --- Application exit/close/destroy
+--  Call this when application is closing
 function class:close()
 	self:send_notice('exit')
 	self.closed = true

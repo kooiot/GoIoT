@@ -82,6 +82,9 @@ end
 -- @section
 local _M = {}
 
+--- Find application mangement port
+-- @tparam string appname application instance name 
+-- @return port or nil if instance is not running or not installed
 function _M.find_app_port(appname)
 	local mon = require 'shared.api.mon'
 	local status, err = mon.query({appname})
@@ -91,6 +94,65 @@ function _M.find_app_port(appname)
 		end
 	end
 end
+
+--- Stop application by instance name
+-- @tparam string insname application instance name
+-- @treturn boolean result
+-- @treturn string error message
+function _M.stop(insname)
+	local event = require('shared.event').C.new()
+	event:open()
+	--[[
+	local log = require 'shared.log'
+	log:info('STORE', "Stoping application "..lname)
+	]]--
+	return event:send({src='API', name='close', dest=insname})
+end
+
+--- Start application by instance name
+-- @tparam string insname application instance name
+-- @tparam boolean debug whether start the application in debug mode
+-- @treturn boolean result
+-- @treturn string error message
+function _M.start(insname, debug)
+	local list = require 'shared.app.list'
+	list.reload()
+
+	local app = list.find(insname)
+	if not app then
+		return nil, 'The application['..insname..'] is not installed'
+	else
+		local caddir = require('shared.platform').path.cad
+		local cmd = caddir..'/scripts/run_app.sh start '..app.name..' '..insname
+		if debug then
+			if debug.addr then
+				local file, err = io.open('/tmp/apps/_debug', "w")
+				if file then
+					local pp = require 'shared.PrettyPrint'
+					local cfg = {}
+					cfg.addr = debug.addr
+					cfg.port = debug.port or 8172
+					file:write('return '..pp(cfg)..'\n')
+					file:close()
+					cmd = cmd..' -debug'
+				else
+					return nil, err
+				end
+			else
+				return nil, "Incorrect debug post"
+			end
+		end
+
+		--[[
+		local log = require 'shared.log'
+		log:debug(ioname, "Running application", cmd)
+		]]--
+
+		os.execute(cmd)
+		return true
+	end
+end
+
 
 --- Create new api instance 
 -- @tparam number port Application management port

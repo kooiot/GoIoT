@@ -80,8 +80,10 @@ local function on_start()
 	end
 end
 
+local app = nil
 local aborting = false
 local function on_close()
+	app:close()
 	aborting = true
 end
 

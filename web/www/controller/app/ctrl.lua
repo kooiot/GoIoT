@@ -14,38 +14,17 @@ local function doi(req, res)
 	local actions = {}
 
 	actions.start = function(key, debug)
-		local list = require 'shared.app.list'
 		local log = require 'shared.log'
+		log:warn('WEB', 'Start application '..key)
 
-		local app = list.find(key)
-		if not app then
-			res:write('The application['..key..'] is not installed')
+		local app = require 'shared.api.app'
+		local r, err = app.start(key, debug)
+
+		if not r then
+			log:error('WEB', err)
+			res:write(err)
 		else
-			local caddir = os.getenv('CAD_DIR') or '/tmp/cad2'
-			local cmd = caddir..'/scripts/run_app.sh start '..app.name..' '..key
-
-			if debug then
-				if debug.addr then
-					local file, err = io.open('/tmp/apps/_debug', "w")
-					if file then
-						local pp = require 'shared.PrettyPrint'
-						local cfg = {}
-						cfg.addr = debug.addr
-						cfg.port = debug.port or 8172
-						file:write('return '..pp(cfg)..'\n')
-						file:close()
-						cmd = cmd..' -debug'
-					else
-						log:error('WEB', err)
-					end
-				else
-					log:error('WEB', "Incorrect debug post")
-				end
-			end
-
-			log:debug('WEB', "Running application", cmd)
-			os.execute(cmd)
-			res:write('Starting application....')
+			res:write('DONE')
 		end
 	end
 
@@ -58,10 +37,16 @@ local function doi(req, res)
 	if actions[action] then
 		actions[action](appname)
 	else
+		local log = require 'shared.log'
+		log:warn('WEB', 'Process application action '..action)
 		local event = require('shared.event').C.new()
 		event:open()
-		event:send({src='web', name=action, dest=appname})
-		res:write('DONE')
+		local r, err = event:send({src='web', name=action, dest=appname})
+		if not r then
+			res:write(err)
+		else
+			res:write('DONE')
+		end
 	end
 
 end

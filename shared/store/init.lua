@@ -214,9 +214,9 @@ end
 local function start_application(name, lname)
 	local platform = require 'shared.platform'
 	local cmd = platform.path.cad..'/scripts/run_app.sh start '..name..' '..lname
-	log:debug('WEB', "Running application", cmd)
+	log:debug('STORE', "Running application", cmd)
 	os.execute(cmd)
-	log:debug('Starting application '..lname..' ....')
+	log:debug('SOTRE', 'Starting application '..lname..' ....')
 end
 
 ---

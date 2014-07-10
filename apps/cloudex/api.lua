@@ -1,6 +1,7 @@
 local rest = require 'rest'
 local cjson = require 'cjson.safe'
 local fifo = require 'shared.util.fifo'
+local log = require 'shared.log'
 
 local ioname = arg[1]
 
@@ -52,8 +53,13 @@ _M.pull_command = function()
 		return nil, err
 	end
 	for _, action in ipairs(list) do
-		local r, err = _M.on_command(action.path, action.args)
-		rest.call('POST', {name=name, id=action.id, result=r, err=err}, 'actions/command')
+		if action.path then
+			log:warn(ioname, 'Received COMMAND, path: '..action.path)
+			local r, err = _M.on_command(action.path, action.args)
+			rest.call('POST', {name=name, id=action.id, result=r, err=err}, 'actions/command')
+		else
+			rest.call('POST', {name=name, id=action.id, result=false, err='No path in action'}, 'actions/command')
+		end
 	end
 	return true
 end
@@ -72,8 +78,13 @@ _M.pull_write = function()
 		return nil, err
 	end
 	for _, action in ipairs(list) do
-		local r, err = _M.on_write(action.path, action.value)
-		rest.call('POST', {name=name, id=action.id, result=r, err=err}, 'actions/output')
+		if action.path then
+			log:warn(ioname, 'Received WRITE, path: '..action.path)
+			local r, err = _M.on_write(action.path, action.value)
+			rest.call('POST', {name=name, id=action.id, result=r, err=err}, 'actions/output')
+		else
+			rest.call('POST', {name=name, id=action.id, result=false, err='No path in action'}, 'actions/command')
+		end
 	end
 	return true
 end
@@ -182,6 +193,7 @@ _M.pull_extra = function()
 		local name = action.name
 		local id = action.id
 		assert(id and name)
+		log:warn(ioname, 'Received action '..name)
 		ACTIONS[id] = action
 		if name == 'logs' then
 			if action.enable then
@@ -214,6 +226,19 @@ _M.pull_extra = function()
 			local insname = action.insname
 			local version = action.version
 			local r, err = upgrade_app(insname, version)
+			rest.call('POST', {name=name, id=id, result=r, err=err}, 'actions/system')
+		elseif name == 'app_start' then
+			local insname = action.insname
+			local debug = action.debug
+			local api = require 'shared.api.app'
+			log:debug(ioname, 'Application start ', insname)
+			local r, err = api.start(insname, debug)
+			rest.call('POST', {name=name, id=id, result=r, err=err}, 'actions/system')
+		elseif name == 'app_stop' then
+			local insname = action.insname
+			log:debug(ioname, 'Application stop ', insname)
+			local api = require 'shared.api.app'
+			local r, err = api.stop(insname)
 			rest.call('POST', {name=name, id=id, result=r, err=err}, 'actions/system')
 		elseif name == 'list' then
 			--- List applications
