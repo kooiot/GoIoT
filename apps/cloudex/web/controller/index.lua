@@ -5,7 +5,7 @@ local function doi(req, res, info)
 	local name = app.appname..'.conf'
 	local conf = config.get(name) or {}
 	conf.key = conf.key or "6015c744795762df41e9ebfa25fd625c"
-	conf.url = conf.url or 'http://172.30.11.169:8081/api/'
+	conf.url = conf.url or 'http://172.30.1.121:8080/api/'
 	conf.timeout = conf.timeout or 5
 
 	res:ltp('index.html', {lwf=lwf, app=app, key = conf.key, url=conf.url, timeout=conf.timeout, info=info})
