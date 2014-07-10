@@ -12,7 +12,7 @@ local _M = {}
 --- The default store configuration
 local cfg = {
 	--srvurl = 'ftp://store.opengate.com',
-	srvurl = 'http://172.30.11.169:8081/static/releases',
+	srvurl = 'http://172.30.1.121:8080/static/releases',
 	authkey = '',
 	cachefolder = '/tmp',
 	appsfolder = '/tmp/apps',

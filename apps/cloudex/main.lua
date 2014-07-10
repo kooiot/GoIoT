@@ -33,7 +33,7 @@ local function load_conf()
 	end
 	config = config or {}
 	config.key = config.key or "6015c744795762df41e9ebfa25fd625c"
-	config.url = config.url or 'http://172.30.11.169:8081/api/'
+	config.url = config.url or 'http://172.30.1.121:8080/api/'
 	config.timeout = config.timeout or 5
 	return config
 end
