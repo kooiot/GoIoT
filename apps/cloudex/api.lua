@@ -108,7 +108,6 @@ end
 
 local function list_apps()
 	local api = require 'shared.api.mon'
-	local cjson = require 'cjson.safe'
 
 	local list = require 'shared.app.list'
 	list.reload()

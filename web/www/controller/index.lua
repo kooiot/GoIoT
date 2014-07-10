@@ -57,10 +57,20 @@ return {
 		local apps = {}
 		local user = lwf.ctx.user
 		local list = require 'shared.app.list'
+		local api = require 'shared.api.mon'
 		list.reload()
 		local l = list.list()
 		for name, v in pairs(l) do
 			for _, info in pairs(v.insts) do
+				local run = false
+				if info.insname then
+					local vars = {info.insname}
+					local status, err = api.query(vars)
+					if status and status[info.insname] then
+						run = status[info.insname].run
+					end
+				end
+
 				apps[info.app.type] = apps[info.app.type]  or {}
 				apps[info.app.type][#apps[info.app.type]+1] = {
 					lname = info.insname,
@@ -69,6 +79,7 @@ return {
 					name = info.app.name,
 					author = info.app.author or info.app.path:match('([^/]+)/.+'),
 					path = info.app.path,
+					run = run,
 				}
 			end
 		end
