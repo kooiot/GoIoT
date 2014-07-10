@@ -1,6 +1,12 @@
 local doi = function(req, res)
 	local config = require 'shared.api.config'
+	local lwfutil = require 'lwf.util'
+
 	local list, err = config.list()
+	for k, v in pairs(list) do
+		--- Escape the string for avoid html tags
+		list[k] = lwfutil.escape(v)
+	end
 	if not list then
 		res:write(err)
 	else
