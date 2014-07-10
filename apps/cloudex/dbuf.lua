@@ -28,7 +28,7 @@ end
 function _M.add_cov(path, value)
 	assert(path)
 	assert(value)
-	print('on add_cov', path)
+	--print('on add_cov', path)
 	local ns = path:match('^[^/]+')
 	if ns and buf[ns] then
 		local vt = buf[ns][path]

@@ -38,12 +38,12 @@ local function load_conf()
 	return config
 end
 
-local function on_write(path, value, cb_path)
+local function on_write(path, value)
 	log:warn(ioname, 'Write on path ', path)
 	return client:write(path, value)
 end
 
-local function on_command(path, args, cb_path)
+local function on_command(path, args)
 	log:warn(ioname, 'Command on path ', path)
 	return client:command(path, args)
 end
@@ -82,7 +82,6 @@ client:onupdate(function(namespace)
 end)
 
 local function cov(path, value)
-	print('data changed on ', path)
 	return buf.add_cov(path, value)
 end
 

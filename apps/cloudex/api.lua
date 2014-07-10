@@ -43,12 +43,17 @@ _M.pull_command = function()
 	if not r then
 		return nil, re
 	end
+	if string.len(re) == 0 then
+		return true
+	end
+
 	local list, err = cjson.decode(re)
 	if not list then
 		return nil, err
 	end
 	for _, action in ipairs(list) do
-		_M.on_command(action.path, action.args, action.cb_path)
+		local r, err = _M.on_command(action.path, action.args)
+		rest.call('POST', {name=name, id=action.id, result=r, err=err}, 'actions/command')
 	end
 	return true
 end
@@ -58,12 +63,17 @@ _M.pull_write = function()
 	if not r then
 		return nil, re
 	end
+	if string.len(re) == 0 then
+		return true
+	end
+
 	local list, err = cjson.decode(re)
 	if not list then
 		return nil, err
 	end
 	for _, action in ipairs(list) do
-		_M.on_write(action.path, action.value, action.cb_path)
+		local r, err = _M.on_write(action.path, action.value)
+		rest.call('POST', {name=name, id=action.id, result=r, err=err}, 'actions/output')
 	end
 	return true
 end
@@ -160,6 +170,9 @@ _M.pull_extra = function()
 	if not r then
 		return nil, re
 	end
+	if string.len(re) == 0 then
+		return true
+	end
 
 	local list, err = cjson.decode(re)
 	if not list then
@@ -169,14 +182,11 @@ _M.pull_extra = function()
 		local name = action.name
 		local id = action.id
 		assert(id and name)
-		print('Received action ', name)
 		ACTIONS[id] = action
 		if name == 'logs' then
 			if action.enable then
 				PUSH.log = true
-				print('Enable log forwarding')
 			else
-				print('Disable log forwarding')
 				PUSH.log = nil
 			end
 			save_conf()
@@ -198,7 +208,6 @@ _M.pull_extra = function()
 		elseif name == 'uninstall' then
 			--- Uninstall application
 			local insname = action.insname
-			print('Uninstall application ', insname)
 			local r, err = uninstall_app(insname)
 			rest.call('POST', {name=name, id=id, result=r, err=err}, 'actions/system')
 		elseif name == 'upgrade' then
@@ -208,7 +217,6 @@ _M.pull_extra = function()
 			rest.call('POST', {name=name, id=id, result=r, err=err}, 'actions/system')
 		elseif name == 'list' then
 			--- List applications
-			print('List application request coming')
 			local list = list_apps()
 			rest.call('POST', {name=name, id=id, result=true, list=list}, 'actions/system')
 		elseif name == 'list_services' then
@@ -256,7 +264,6 @@ _M.push = function(cb)
 		end
 
 		if #list ~= 0 then
-			print('PUSH TO ONLINEEEEEEEEEEE')
 			local r, err = rest.call('POST', list, '/logs')
 			if r then
 				cache:clean()
@@ -273,7 +280,6 @@ _M.push = function(cb)
 		end
 
 		if #list ~= 0 then
-			print('PUSH TO ONLINEEEEEEEEEEE')
 			local r, err = rest.call('POST', list, '/packets')
 			if r then
 				pcache:clean()

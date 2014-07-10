@@ -203,6 +203,22 @@ local function get_app_info(path, version)
 	return nil, 'Failed to download, return code: '..code..' url: '..url
 end
 
+local function stop_application(lname)
+	local event = require('shared.event').C.new()
+	event:open()
+	log:info('STORE', "Stoping application "..lname)
+	event:send({src='web', name='close', dest=lname})
+	os.execute('sleep 2')
+end
+
+local function start_application(name, lname)
+	local platform = require 'shared.platform'
+	local cmd = platform.path.cad..'/scripts/run_app.sh start '..name..' '..lname
+	log:debug('WEB', "Running application", cmd)
+	os.execute(cmd)
+	log:debug('Starting application '..lname..' ....')
+end
+
 ---
 -- Install one application
 -- @tparam string lname Application local install name
@@ -231,23 +247,11 @@ _M.install = function(lname, path, version)
 	end
 
 	local install = require 'shared.store.install'
-	return install(cfg, app, lname)
-end
-
-local function stop_application(lname)
-	local event = require('shared.event').C.new()
-	event:open()
-	log:info('STORE', "Stoping application "..lname)
-	event:send({src='web', name='close', dest=lname})
-	os.execute('sleep 2')
-end
-
-local function start_application(name, lname)
-	local platform = require 'shared.platform'
-	local cmd = platform.path.cad..'/scripts/run_app.sh start '..name..' '..lname
-	log:debug('WEB', "Running application", cmd)
-	os.execute(cmd)
-	log:debug('Starting application '..lname..' ....')
+	local r, err = install(cfg, app, lname)
+	if not r then
+		return nil, err
+	end
+	start_application(path, lname)
 end
 
 ---
