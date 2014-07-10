@@ -53,6 +53,8 @@ sudo rm -rf __install
 ./scripts/release_app.sh yeelink
 # Release cloud 
 ./scripts/release_app.sh cloud
+# Release cloudex
+./scripts/release_app.sh cloudex
 # Release network
 ./scripts/release_app.sh network
 # Release IR Controller

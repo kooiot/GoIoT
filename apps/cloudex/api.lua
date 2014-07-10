@@ -107,6 +107,9 @@ local function upgrade_app(lname, version)
 end
 
 local function list_apps()
+	local api = require 'shared.api.mon'
+	local cjson = require 'cjson.safe'
+
 	local list = require 'shared.app.list'
 	list.reload()
 	local l = list.list() or {}
@@ -114,9 +117,18 @@ local function list_apps()
 	local rlist = {}
 	for k, v in pairs(l) do
 		for _, info in ipairs(v.insts) do
+			local run = false
+			if info.insname then
+				local vars = {info.insname}
+				local status, err = api.query(vars)
+				if status and status[info.insname] then
+					run = status[info.insname].run
+				end
+			end
 			rlist[#rlist + 1] = {
 				name = k,
 				insname = info.insname,
+				run = run,
 				app = {
 					name = info.app.name,
 					path = info.app.path,
