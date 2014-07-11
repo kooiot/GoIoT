@@ -59,6 +59,9 @@ msgstr "缓存"
 msgid "Cancel"
 msgstr "取消"
 
+msgid "Check for updates"
+msgstr "检查更新"
+
 msgid "Choose a local instance name"
 msgstr "选择本地实例名"
 
@@ -69,10 +72,10 @@ msgid "Close Menu"
 msgstr "关闭菜单"
 
 msgid "Cloud"
-msgstr "云"
+msgstr "云平台"
 
 msgid "Cloud Settings"
-msgstr "云设定"
+msgstr "云平台配置"
 
 msgid "Configuration"
 msgstr "配置"
@@ -105,7 +108,7 @@ msgid "Device Events"
 msgstr "设备事件"
 
 msgid "Device Settings"
-msgstr "设备设定"
+msgstr "设备配置"
 
 msgid "Devices"
 msgstr "设备"
@@ -279,7 +282,7 @@ msgid "Services Management"
 msgstr "服务管理"
 
 msgid "Settings"
-msgstr "设定"
+msgstr "配置"
 
 msgid "Sign In"
 msgstr "登入"
@@ -315,13 +318,13 @@ msgid "System Management"
 msgstr "系统管理"
 
 msgid "System Settings"
-msgstr "系统设定"
+msgstr "系统配置"
 
 msgid "System Upgrade"
 msgstr "系统升级"
 
 msgid "System wide settings"
-msgstr "系统级设定"
+msgstr "系统级配置"
 
 msgid "TIME"
 msgstr "时间"
@@ -340,6 +343,9 @@ msgstr "升级"
 
 msgid "Upgrade System"
 msgstr "升级系统"
+
+msgid "Upgrade to"
+msgstr "升级到"
 
 msgid "Upgrading"
 msgstr "更新中"

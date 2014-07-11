@@ -108,7 +108,7 @@
 					$('#setting_status').html('<i>' + data + '</i>');
 				},
 				error: function(data) {
-					$('#setting_status').html('<b>' + data + '</b>');
+					$('#setting_status').html('<b>' + data.responseText + '</b>');
 				},
 			});
 	});

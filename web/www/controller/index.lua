@@ -1,5 +1,7 @@
 
 local SYS_SRC = {
+	['IOBUS'] = 1,
+	['CORE'] = 1,
 	['APP'] = 1,
 	['MONITOR'] = 1,
 	['STORE'] = 1,
@@ -7,6 +9,7 @@ local SYS_SRC = {
 	['INSTALL.io.conf'] = 1,
 	['WEB'] = 1,
 	['RUNNER'] = 1,
+	['SRV_RUNNER'] = 1,
 }
 local function log_to_event(logs)
 	
@@ -29,7 +32,7 @@ local function log_to_event(logs)
 			ev.summary = '<a href="/apps/'..v.src..'">'..v.src..'</a>'
 			table.insert(events, ev)
 		else
-			ev.summary = v.src..' <p>'..v.content
+			ev.summary = '<a>'..v.src..'</a> <p>'..v.content
 			table.insert(sys_events, ev)
 		end
 	end
@@ -74,6 +77,7 @@ return {
 		local user = lwf.ctx.user
 		local list = require 'shared.app.list'
 		local api = require 'shared.api.mon'
+		local store = require 'shared.store'
 		list.reload()
 		local l = list.list()
 		for name, v in pairs(l) do
@@ -86,6 +90,12 @@ return {
 						run = status[info.insname].run
 					end
 				end
+				local app, err = store.find(info.app.path)
+				local new_version = nil
+				if app and app.info and app.info.version ~= info.app.version then
+					new_version = app.info.version
+				end
+
 
 				apps[info.app.type] = apps[info.app.type]  or {}
 				apps[info.app.type][#apps[info.app.type]+1] = {
@@ -96,6 +106,7 @@ return {
 					author = info.app.author or info.app.path:match('([^/]+)/.+'),
 					path = info.app.path,
 					run = run,
+					new_version = new_version,
 				}
 			end
 		end

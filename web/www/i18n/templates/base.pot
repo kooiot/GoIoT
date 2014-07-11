@@ -66,6 +66,10 @@ msgid "Cancel"
 msgstr ""
 
 
+msgid "Check for updates"
+msgstr ""
+
+
 msgid "Choose a local instance name"
 msgstr ""
 
@@ -439,6 +443,10 @@ msgstr ""
 
 
 msgid "Upgrade System"
+msgstr ""
+
+
+msgid "Upgrade to"
 msgstr ""
 
 

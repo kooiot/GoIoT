@@ -39,7 +39,16 @@
 				</i>
 			</td>
 			<td>
-				<a class="ui mini button" href="/apps/<?=v.lname?>"> <?=translate("View")?></a>
+				<a class="ui mini icon button" href="/apps/<?=v.lname?>"> 
+					<i class="ui teal info icon"></i>
+					<?=translate("View")?>
+				</a>
+				<? if v.new_version then ?>
+				<a class="ui mini icon button" href="/store/upgrade/<?=v.lname?>">
+					<i class="ui orange up icon"></i>
+					<?=translate("Upgrade to")?> <?=v.new_version?>
+				</a>
+				<? end ?>
 			</td>
 		</tr>
 		<? end ?>
@@ -49,7 +58,10 @@
 	<tfoot>
 		<tr>
 			<th><?=_("Total")?> <?=counts?></th>
-			<th><?=_("Types")?> <?= cates?> </th>
+			<th>
+				<?=_("Types")?> <?= cates?> 
+				<div class="ui tiny teal button" onclick="update_cache();"><?=_("Check for updates")?></div>
+			</th>
 			<th></th>
 		</tr>
 	</tfoot>
@@ -73,12 +85,21 @@
 
 
 <script type="text/javascript">
-/*
-	$(document).ready(function () {
-			var oTable = $('#applist').editableTableWidget({
-				editor: $('<textarea>'),
-				cloneProperties: ['background', 'border', 'outline'],
-			});
-	});
-	*/
+	function update_cache() {
+		$.ajax({
+			type: "POST",
+			url: "/store",
+			data:{ action : 'update' },
+			error: function(jqXHR, textStatus, errorThrown) {
+				if (textStatus == "error") {
+					$('#setting_status').text("Failed to fetch application information from store server, error : " + errorThrown);
+				} else {
+					alert(textStatus);
+				}
+			},
+			success: function(data, textStatus, jqXHR) {
+				alert('Please refresh the page a while later');
+			}
+		});
+	};
 </script>
