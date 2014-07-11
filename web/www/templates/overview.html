@@ -2,39 +2,31 @@
 
 <h2 class="ui dividing header"> <?=_("Summary")?></h2>
 <div class="ui computer only grid">
-	<div class="ten wide column">
-		<?
+	<?
 		local sumevs = {} 
-		for _, v in pairs(events) do
-			if #sumevs >= 4 then
-				break
-			end
+		for _, v in ipairs(events) do
 			sumevs[#sumevs + 1] = v
+			if #sumevs > 4 then
+				table.remove(sumevs, 1)
+			end
 		end
-		?>
+		local sumsevs = {}
+		for _, v in ipairs(sevents) do
+			sumsevs[#sumsevs + 1] = v
+			if #sumsevs > 4 then
+				table.remove(sumsevs, 1)
+			end
+		end
+	?>
+
+	<div class="ten wide column">
 		<? include('widget/events.html', {title=_("Devices"), events=sumevs}) ?>
 	</div>
 	<div class="six wide column">
-		<? 
-		include('widget/sevents.html', {title=_("System"), 
-		events={
-		'<a href="/user/admin"> admin </a> has upgrade the system to <a>1.2.1</a>',
-		'<a> 1.2.1 </a> has released, please upgrade your system from <a>here</a>',
-		}
-		})
-		?>
+		<? include('widget/sevents.html', {title=_("System"), events=sumsevs})?>
 	</div>
 </div>
 <h2 class="ui dividing header"> <?=_("Device Events")?></h2>
 <? include('widget/events.html', {title=_("Devices"), events=events}) ?>
 <h2 class="ui dividing header"> <?=_("System Events")?></h2>
-<? 
-include('widget/sevents.html', {title=_("System"), 
-events={
-'<a href="/user/admin"> admin </a> has upgrade the system to <a>1.2.1</a>',
-'<a> 1.2.1 </a> has released, please upgrade your system from <a>here</a>',
-'<a href="/user/admin"> admin </a> has upgrade the system to <a>1.2.0</a>',
-'<a> 1.2.0 </a> has released, please upgrade your system from <a>here</a>',
-}
-})
-?>
+<? include('widget/sevents.html', {title=_("System"), events=sevents})?>

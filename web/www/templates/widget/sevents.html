@@ -3,9 +3,20 @@
 	<h3 class="ui dividing header"><?=title ?></h3>
 	<? for _, ev in pairs(events) do ?>
 	<div class="event">
+		<div class="label">
+			<? if ev.label.img then ?>
+			<img src="<?=ev.label.img ?>">
+			<? else ?>
+			<i class="circular <?=ev.label.icon?> icon"></i>
+			<? end ?>
+		</div>
 		<div class="content">
+			<div class="date">
+				<?=ev.date ?>
+			</div>
+	
 			<div class="summary">
-				<?=ev ?>
+				<?=ev.summary ?>
 			</div>
 		</div>
 	</div>
