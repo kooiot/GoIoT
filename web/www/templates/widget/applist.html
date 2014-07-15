@@ -39,10 +39,21 @@
 				</i>
 			</td>
 			<td>
+				<? if v.run then ?>
 				<a class="ui mini icon button" href="/apps/<?=v.lname?>"> 
 					<i class="ui teal info icon"></i>
 					<?=translate("View")?>
 				</a>
+				<div class="ui mini icon button" onclick="stop_app('<?=v.lname?>')">
+					<i class="ui teal stop icon"></i>
+					<?=translate("Stop")?>
+				</div>
+				<? else ?>
+				<div class="ui mini icon button" onclick="start_app('<?=v.lname?>')">
+					<i class="ui teal play icon"></i>
+					<?=translate("Start")?>
+				</div>
+				<? end ?>
 				<? if v.new_version then ?>
 				<a class="ui mini icon button" href="/store/upgrade/<?=v.lname?>">
 					<i class="ui orange up icon"></i>
@@ -101,5 +112,29 @@
 				alert('Please refresh the page a while later');
 			}
 		});
+	};
+
+	function stop_app(appname) {
+		$.post("/app/ctrl", {action:"close",app:appname}, function(data) {
+				alert(data);
+				})
+		.done(function() {
+				//alert("Application Started!!");
+				})
+		.fail(function() {
+				alert("<?=_('Failed to send stop request!!')?>");
+				});
+	};
+
+	function start_app(appname) {
+		$.post("/app/ctrl", {action:"start",app:appname}, function(data) {
+				alert(data);
+				})
+		.done(function() {
+				//alert("Application Started!!");
+				})
+		.fail(function() {
+				alert("<?=_('Failed to send start request!!')?>");
+				});
 	};
 </script>
