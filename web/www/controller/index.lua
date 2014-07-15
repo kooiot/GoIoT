@@ -10,6 +10,7 @@ local SYS_SRC = {
 	['WEB'] = 1,
 	['RUNNER'] = 1,
 	['SRV_RUNNER'] = 1,
+	['SERVICES'] = 1,
 }
 local function log_to_event(logs)
 	

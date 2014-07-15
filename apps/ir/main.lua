@@ -9,7 +9,6 @@ local hex = require 'shared.util.hex'
 local ioname = arg[1]
 assert(ioname, 'Applicaiton needs to have a name')
 
-local app = nil
 local commands = {}
 
 local function load_from_file()
@@ -33,8 +32,8 @@ local function save_to_file(str)
 	return r, err
 end
 
-local function add_device_cmd(device, name, cmd)
-	if not device or not name or not cmd then
+local function add_device_cmd(app, device, name, cmd, desc)
+	if not device or not name then
 		return nil, 'How dare U!!'
 	end
 
@@ -49,11 +48,17 @@ local function add_device_cmd(device, name, cmd)
 	print('Added command '..device..':'..name)
 	local obj = dev.commands:get(name)
 	if not obj then
-		dev.commands:add(name, 'Control command', {})
+		local r, err = dev.commands:add(name, desc or 'Control command', {})
+		if not r then 
+			return nil, err
+		end
 	end
 
-	commands[device] = commands[device] or {}
-	commands[device][name] = cmd
+	if cmd then
+		commands[device] = commands[device] or {}
+		commands[device][name] = cmd
+	end
+	return true
 end
 
 local function save_conf()
@@ -78,20 +83,26 @@ local function load_conf(app, reload)
 		log:error(ioname, err or 'Failed to get command configuration')
 		return
 	end
-	commands = cjson.decode(cmds) or {}
-	if commands then
-		for devname, cmds in pairs(commands) do
+	cmds = cjson.decode(cmds) or {}
+	if cmds then
+		for devname, cmds in pairs(cmds) do
 			if type(cmds) ~= 'table' then
 				break
 			end
 
+			for name, cmd in pairs(cmds) do
+				assert(add_device_cmd(app, devname, name, cmd))
+			end
+			--[[
 			local dev = app.devices:add(devname, 'IR Devices ['..devname..']')
 			for name, cmd in pairs(cmds) do
 				print('Added command '..devname..':'..name)
 				dev.commands:add(name, 'Control command', {})
 			end
+			]]
 		end
 	end
+	assert(add_device_cmd(app, 'ir', 'send', nil, 'The sender which used to send multiple commands(in json string array) out'))
 end
 
 local port = serial.new()
@@ -187,7 +198,7 @@ local function _send_cmd(cmd)
 	return r, err
 end
 
-local function send_cmd(device, name)
+local function send_cmd(app, device, name)
 	local dev = app.devices:get(device)
 	if not dev or not commands[device] then
 		return nil, 'No such devices '..device
@@ -206,7 +217,7 @@ local function send_cmd(device, name)
 		log:info(ioname, string.format('Writing commmand[%s] to devices', name))
 		local r, err = _send_cmd(cmd)
 		if not r then
-			return r, err
+			return nil, err
 		end
 	else
 		return nil, "No command name"
@@ -226,14 +237,25 @@ handlers.on_command = function(app, path, value, from)
 		local pp = require 'shared.PrettyPrint'
 		print(pp(value))
 
+		local errs = {}
 		for _, cmd in pairs(value) do
 			cmd = tostring(cmd)
 			local device, name = cmd:match('^([^/]+)/(.+)$')
-			send_cmd(device, name)
+			local r, err = send_cmd(app, device, name)
+			if not r then
+				errs[#errs + 1] = cmd
+				errs[#errs + 1] = '['
+				errs[#errs + 1] = err
+				errs[#errs + 1] = ']'
+			end
 		end
-		return true
+		if #errs == 0 then
+			return true
+		else
+			return nil, table.concat(errs)
+		end
 	else
-		return send_cmd(devname, cmd)
+		return send_cmd(app, devname, cmd)
 	end
 end
 
@@ -251,7 +273,7 @@ handlers.on_import = function(app, filename)
 	for dev, v in pairs(cmds) do
 		print(v)	
 		for k, v in pairs(v) do
-			add_device_cmd(dev, k, v)
+			add_device_cmd(app, dev, k, v)
 		end
 	end
 	save_conf()
@@ -259,9 +281,10 @@ handlers.on_import = function(app, filename)
 	return true
 end
 
-app = ioapp.init(ioname, handlers)
-assert(app)
-app:reg_request_handler('list_commands', function(app, vars)
+local gapp = ioapp.init(ioname, handlers)
+assert(gapp)
+gapp:reg_request_handler('list_commands', function(app, vars)
+	--local list = {'ir/send'} // do not show the multip sender
 	local list = {}
 	for k, v in pairs(commands) do
 		for name, _ in pairs(v) do
@@ -272,7 +295,7 @@ app:reg_request_handler('list_commands', function(app, vars)
 	app.server:send(cjson.encode(reply))
 end)
 
-app:reg_request_handler('list_devs', function(app, vars)
+gapp:reg_request_handler('list_devs', function(app, vars)
 	local list = {}
 	for k, v in pairs(commands) do
 		list[#list + 1] = k
@@ -298,7 +321,7 @@ local function learn()
 	return true
 end
 
-app:reg_request_handler('learn', function(app, vars)
+gapp:reg_request_handler('learn', function(app, vars)
 	local r, err = learn()
 	local reply = {'learn', {result=r, err = err}}
 	if r then
@@ -308,7 +331,7 @@ app:reg_request_handler('learn', function(app, vars)
 	app.server:send(cjson.encode(reply))
 end)
 
-app:reg_request_handler('learn_result', function(app, vars)
+gapp:reg_request_handler('learn_result', function(app, vars)
 	local learn_result = nil
 	if not learn_table.learning and learn_table.result then
 		learn_result = hex.dump(learn_table.result)
@@ -317,12 +340,12 @@ app:reg_request_handler('learn_result', function(app, vars)
 	app.server:send(cjson.encode(reply))
 end)
 
-app:reg_request_handler('learn_save', function(app, vars)
+gapp:reg_request_handler('learn_save', function(app, vars)
 	local result = false
 	local err = nil
 	if vars.name and vars.device then
 		if not learn_table.learning and learn_table.result then
-			add_device_cmd(vars.device, vars.name, learn_table.result)
+			add_device_cmd(app, vars.device, vars.name, learn_table.result)
 			save_conf()
 		else
 			err = 'no learn result'
@@ -335,7 +358,7 @@ app:reg_request_handler('learn_save', function(app, vars)
 	app.server:send(cjson.encode(reply))
 end)
 
-app:reg_request_handler('learn_stop', function(app, vars)
+gapp:reg_request_handler('learn_stop', function(app, vars)
 	log:info(ioname, 'Stop learning')
 	if port:is_open() then
 	end
