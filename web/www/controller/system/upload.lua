@@ -29,7 +29,8 @@ return {
 
 					if filetype == 'sys' then
 						local mv = 'mv '..tmp_file..' '..platform.path.core..'/'..name
-						delay_exec('upgrade.sh', {'cd /', '$CAD_DIR/run.sh stop', 'umount /tmp/cad2', mv, 'sleep 3', 'reboot'})
+						local start = 'mount '..platform.path.core..'/'..name..' /tmp/cad2'
+						delay_exec('upgrade.sh', {'cd /', '$CAD_DIR/run.sh stop', 'umount /tmp/cad2', mv, 'sleep 3', start, '$CAD_DIR/run.sh start'})
 						res:write('<br> Device is rebooting to upgrade the system....')
 					elseif filetype == 'app' then
 						local appname = req:get_post_arg('appname')
