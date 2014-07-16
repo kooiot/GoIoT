@@ -61,6 +61,10 @@
 					<?=translate("Start")?>
 				</div>
 				<? end ?>
+				<div class="ui mini icon button" onclick="remove_app('<?=v.lname?>')">
+					<i class="ui red trash icon"></i>
+					<?=translate("Remove")?>
+				</div>
 				<? if v.new_version then ?>
 				<a class="ui mini icon button" href="/store/upgrade/<?=v.lname?>">
 					<i class="ui orange up icon"></i>
@@ -142,6 +146,17 @@
 				})
 		.fail(function() {
 				alert("<?=_('Failed to send start request!!')?>");
+				});
+	};
+
+	function remove_app(appname) {
+		$.post("/app/remove", {app:appname}, function(data) {
+				alert(data);
+				})
+		.done(function() {
+				})
+		.fail(function() {
+				alert("<?=_('Failed to send remove request!!')?>");
 				});
 	};
 </script>
