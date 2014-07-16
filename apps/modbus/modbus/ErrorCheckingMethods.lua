@@ -1,3 +1,5 @@
+local bit32 = require 'shared.compat.bit'
+
 local _M = {}
 
 local CRC = function(adu)

@@ -1,5 +1,6 @@
 -- modbus decode functions
 --
+local bit32 = require 'shared.compat.bit'
 
 local _M = {}
 
