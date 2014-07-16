@@ -13,6 +13,7 @@
 <div class="main container">
 	<div class="ui two column middle aligned relaxed grid basic segment">
 		<div class="six wide column">
+			<p>
 			<div class="ui dropdown selection modes" onChange="changeType(this)">
 				<input id="modbus_modes" name="modbus_modes" type="hidden" value=-1 />
 				<div class="text">MODBUS MODES</div>
@@ -23,6 +24,7 @@
 					<div class="item" data-value=2>MODBUS ASCII</div>
 				</div>
 			</div>
+			</p>
 			<div class="ui clearing divider"></div>
 			<div class="zTreeDemoBackground">
 				<div class="ui small buttons">
@@ -34,6 +36,17 @@
 					<div id="treeDemo" class="ztree"></div>
 				</div>
 			</div>
+			<div class="ui clearing divider"></div>
+			<form  class="ui form">
+				<div class="inline field">
+					<label>CT:</label>
+					<input placeholder="CT" id="ct" name="ct" type="text" value=1.000000 />
+				</div>
+				<div class="inline field">
+					<label>PT:</label>
+					<input placeholder="PT" id="pt" name="pt" type="text" value=1.000000 />
+				</div>
+			</form>
 		</div>
 		<div class="ten wide column">
 			<div class="ui basic segment">
@@ -144,7 +157,6 @@
 								<div class="item" data-value=1>LRC</div>
 							</div>
 						</div>
-						</p>
 					</div>
 				</div>
 
@@ -261,7 +273,9 @@ function onClick(event, treeId, treeNode, clickFlag) {
 		alert("Please select one node at first ...");
 		return;
 	}
-	var mode = json_text[0].config.mode;
+	document.getElementById("ct").value = json_text[0].config.ct ? json_text[0].config.ct : "1.000000"
+	document.getElementById("pt").value = json_text[0].config.pt ? json_text[0].config.pt : "1.000000"
+	var mode = json_text[0].config.mode ? json_text[0].config.mode : $(".ui.modes").dropdown("get value");
 	$(".ui.modes")
 		.data()
 		.moduleDropdown
@@ -485,6 +499,8 @@ function pSave(){
 		return;
 	}
 	var unit = document.getElementById("unit").value;
+	var ct = document.getElementById("ct").value;
+	var pt = document.getElementById("pt").value;
 	var val = changeType();
 	if (val == "0" || val == "2") {
 		var sPort = $(".ui.sPort").dropdown("get value");
@@ -495,7 +511,7 @@ function pSave(){
 		var ecm = $(".ui.ecm").dropdown("get value");
 		console.log("sPort=", sPort, "baud=", baud, "dbs=", dbs, "parity=", parity, "sbs=", sbs, "ecm=", ecm);
 		//alert($(".ui.parity").dropdown("get value"));
-		$.post("", {id:id, pId:pId, name:name, mode:val, sPort:sPort, baud:baud, dbs:dbs, parity:parity, sbs:sbs, ecm:ecm, unit:unit}, function(data, status){
+		$.post("", {id:id, pId:pId, name:name, mode:val, sPort:sPort, baud:baud, dbs:dbs, parity:parity, sbs:sbs, ecm:ecm, unit:unit, ct:ct, pt:pt}, function(data, status){
 					if (status) {
 					window.location.reload();
 					}
@@ -503,7 +519,7 @@ function pSave(){
 	} else if (val == "1") {
 		var port = document.getElementById("port").value;
 		var sIp = document.getElementById("sIp").value;
-		$.post("", {id:id, pId:pId, name:name, mode:val, port:port, sIp:sIp, unit:unit}, function(data, status){
+		$.post("", {id:id, pId:pId, name:name, mode:val, port:port, sIp:sIp, unit:unit, ct:ct, pt:pt}, function(data, status){
 					if (status) {
 					window.location.reload();
 					}

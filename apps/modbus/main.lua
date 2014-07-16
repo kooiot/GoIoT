@@ -180,7 +180,7 @@ handlers.on_start = function(app)
 		end
 
 		--local port_name = "ttyS" .. modbus_mode.sPort
-		local port_name = "/dev/ttyS" .. modbus_mode.sPort
+		local port_name = "/dev/ttyUSB" .. modbus_mode.sPort
 		local opt = {}
 		opt.baudrate = tostring(modbus_mode.baud)
 		opt.databits = tostring(modbus_mode.dbs)
@@ -223,6 +223,17 @@ handlers.on_reload = function(app)
 	return load_tags_conf(app, true)
 end
 
+local create_funcs = function(raw, addr)
+	return {
+		byte = function(index)
+			return decode.byte(raw, addr, index)
+		end,
+		bit = function(index)
+			return decode.bit(raw, addr, index)
+		end
+	}
+end
+
 handlers.on_run = function(app)
 	--log:info(ioname, 'RUN TIME')
 	--print(os.date(), 'RUN TIME')
@@ -248,40 +259,27 @@ handlers.on_run = function(app)
 								len = decode.uint8(pdu:sub(2, 2))
 								raw = pdu:sub(3)
 								for k, v in pairs(v.vals) do
-									for k, v in pairs (v) do
-										if k == "Name" then
-											name = v
-										end
-										if k == "Address" then
-											addr = tonumber(v)
-										end 
-										if k == "Endianness" then
-											option = tonumber(v)
-										end 
-										if k == "Data" then
-											data = tonumber(v)
-										end 
-									end 
+									local name = v.Name
+									local multiple = tonumber(v.Multiple)
+									local addr = tonumber(v.Address)
+									local ctpt = v.CTPT
+									local calc = v.Calc
 
-									local pos = 0
-									if fc == 1 or fc == 2 then
-										if (addr % 8 ~= 0) then
-											pos = math.floor(addr / 8) + 1 
-										else
-											pos = math.floor(addr / 8)
-										end
-										val = decode.uint8(raw:sub(pos, pos))
-										val = bit32.band(1, bit32.rshift(val, addr % 8))
+									local func = require('shared.compat.env').load(calc, nil,nil, create_funcs(raw, addr))
+									val = func()
+									val = val * multiple
+
+									if ctpt == "2" then
+										val = val * modbus_mode.ct
+									elseif ctpt == "3" then
+										val = val * modbus_mode.pt
+									elseif ctpt == "4" then
+										val = val * modbus_mode.ct * modbus_mode.pt
 									else
-										if option == 3 then
-											val = decode.uint16(raw:sub(2 * addr - 1, 2 * addr), 3)
-										elseif option == 4 then
-											val = decode.uint16(raw:sub(2 * addr - 1, 2 * addr), 4)
-										else
-											print("----TODO----")
-										end
-
+										val = val
 									end
+
+
 									for k, v in pairs (v) do
 										if k == "Data" then
 											v = val
@@ -294,20 +292,9 @@ handlers.on_run = function(app)
 								end
 							else
 								for k, v in pairs(v.vals) do
-									for k, v in pairs (v) do
-										if k == "Name" then
-											name = v
-										end
-										if k == "Address" then
-											addr = tonumber(v)
-										end 
-										if k == "Endianness" then
-											option = tonumber(v)
-										end 
-										if k == "Data" then
-											data = tonumber(v)
-										end 
-									end 
+									local name = v.Nmae
+									local addr = v.Address
+									local data = v.Data
 									name = ioname .. "/unit." .. port_config.unit .. "/inputs/" .. name
 									tags[name]:set(data, ts, 1)
 									--vals[#vals+1] = {name = ioname..'.'..name, value = data, timestamp = ts}

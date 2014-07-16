@@ -16,7 +16,13 @@ end
 
 
 local function create_header(transaction, length, unit)
-	local data = encode.uint16(transaction, 3) .. encode.uint16(0) .. encode.uint16(length, 3) .. encode.uint8(unit)
+	local hv, lv = encode.uint16(transaction)
+	transaction = hv .. lv
+	hv, lv = encode.uint16(0)
+	local protocolId = hv .. lv
+	hv, lv = encode.uint16(length)
+	length = hv .. lv
+	local data =  transaction .. protocolId .. length .. encode.uint8(unit)
 	return data
 end
 
@@ -54,17 +60,21 @@ function _M.check(buf, t, port_config)
 	end
 
 	local adu = nil
-	local transcation = transcation or 0
+	local transaction = transaction or 0
 	local unit = encode.uint8(port_config.unit)
 	local fc = encode.uint8(t.request.func)
-	local data = encode.uint16(transcation, 3) .. encode.uint16(0)
+	local hv, lv = encode.uint16(transaction)
+	transaction = hv .. lv
+	hv, lv = encode.uint16(0)
+	local protocolId = hv .. lv
+	local data = transaction .. protocolId
 	while string.len(buf) > 7 do
 		local b, e = buf:find(data)
 		if e then
 			local raw_fc = buf:sub(e + 4, e + 4)
 			if decode.uint8(fc) == decode.uint8(raw_fc) then
 				--print(decode.uint8(fc), decode.uint8(raw_fc))
-				local len = decode.uint16(buf:sub(e + 1, e + 2), 3)
+				local len = decode.uint16(buf:sub(e + 1, e + 2))
 				if string.len(buf) < len + 6 then
 					return nil, b, e
 				end

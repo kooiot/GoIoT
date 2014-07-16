@@ -29,7 +29,7 @@ div.main-title .second
 div.viewable
 {
     text-align: left;
-    margin: auto;
+    /*margin: auto;*/
     width: 900px;
     padding: 12px;
 }

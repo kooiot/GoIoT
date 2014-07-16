@@ -76,7 +76,9 @@ function _M.check(buf, t, port_config, ecm)
 				end
 			end
 		elseif func == 0x05 or func == 0x06 then
-			local data = unit .. encode.uint8(t.request.func) .. encode.uint16(t.request.addr, 3)
+			local hv, lv = encode.uint16(t.request.addr)
+			local addr = hv .. lv
+			local data = unit .. encode.uint8(t.request.func) .. addr
 			local b, e = buf:find(data)
 			if e then
 				if e + 4 > #buf then
@@ -90,7 +92,11 @@ function _M.check(buf, t, port_config, ecm)
 				end
 			end
 		elseif func == 0x0F or func == 0x10 then
-			local data = unit .. encode.uint8(t.request.func) .. encode.uint16(t.request.addr, 3) .. encode.uint16(t.request.len, 3)
+			local hv, lv = encode.uint16(t.request.addr)
+			local addr = hv .. lv
+			hv, lv = encode.uint16(t.request.len)
+			local len = hv .. lv
+			local data = unit .. encode.uint8(t.request.func) .. addr .. len
 			local b, e = buf:find(data)
 			if e then
 				if e + 2 > #buf then

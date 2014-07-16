@@ -35,7 +35,7 @@ function class:request (t, port_config, ecm)
 	self.stream.send(apdu_raw)
 
 	--local raw = fiber.await(self.internal.read())
-	local raw = self.stream.read(t, packet_check(self.apdu, port_config, ecm), 2000)
+	local raw = self.stream.read(t, packet_check(self.apdu, port_config, ecm), 1000)
 	if not raw then
 		return nil, 'Packet timeout'
 	end

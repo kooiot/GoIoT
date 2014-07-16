@@ -1,0 +1,1 @@
+[{"config":{"parity":"0","baud":"9600","sPort":"0","dbs":"8","ecm":"0","mode":"0","sbs":"1","unit":""},"tree":{"id":"1","name":"s5500","pId":"0"}},{"tree":{"id":"11","name":"devices1","pId":"1"},"config":{"parity":"0","sPort":"0","baud":"9600","dbs":"8","sbs":"1","mode":"0","ecm":"0","unit":"1"}}]

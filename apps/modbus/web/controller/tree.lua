@@ -36,7 +36,7 @@ return {
 				file:write(config)
 			end
 			file:close()
-			res:ltp('tree.html', {json_text = config})
+			res:ltp('tree.html', {lwf=lwf, app=app, json_text = config})
 		else
 			res:write(err)
 		end
@@ -55,7 +55,7 @@ return {
 		local addr = req:get_post_arg("addr")
 		local len = req:get_post_arg("len")
 		local values = req:get_post_arg("values")
-	--	res:write(values)
+		res:write(values)
 
 		local t = {}
 		t.tree = {}
@@ -95,8 +95,20 @@ return {
 			elseif i == 4 then
 				tmp.Data = v
 				i = i + 1
-			else
+			elseif i == 5 then
+				tmp.Unit = v
+				i = i + 1
+			elseif i == 6 then
+				tmp.Multiple = v
+				i = i + 1
+			elseif i == 7 then
+				tmp.CTPT = v
+				i = i + 1
+			elseif i == 8 then
 				tmp.Endianness = v
+				i = i + 1
+			else
+				tmp.Calc = v
 		--		a = tmp
 				i = 1
 				table.insert(t.vals, tmp)

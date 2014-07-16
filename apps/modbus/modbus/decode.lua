@@ -15,12 +15,8 @@ end
 
 _M.int16 = function (data, option)
 	hv = string.byte(data)
-	hl = string.byte(data, 2)
-	if option == 3 then
-		val = hv * 256 + hl
-	else
-		val = hl * 256 + hl
-	end
+	lv = string.byte(data, 2)
+	val = hv * 256 + lv
 	val = ((val + 32768) % 65536) - 32768
 	return val
 end
@@ -28,11 +24,7 @@ end
 _M.uint16 = function (data, option)
 	hv = string.byte(data)
 	hl = string.byte(data, 2)
-	if option == 3 then
-		val = hv * 256 + hl
-	else
-		val = hl * 256 + hv
-	end
+	val = hv * 256 + hl
 	return val
 end
 
@@ -52,12 +44,15 @@ _M.string = function (data, len)
 	return string.sub(data, 1, len)
 end
 
-_M.bit = function (data, len, offset)
-	if bit32.band(_M.uint8(data), bit32.lshift(1, offset)) == 0 then
-		return 0
-	else
-		return 1
-	end
+_M.bit = function (raw, addr, index)
+	val = math.floor(addr / 8)
+	data = decode.uint8(raw:sub(addr + val, addr + val))
+	return bit32.band(1, bit32.rshift(data, index % 8))
+end
+
+_M.byte = function (raw, addr, index)
+	data = raw:sub(addr)
+	return string.byte(data, index)
 end
 
 _M.get_len = function (name, len)

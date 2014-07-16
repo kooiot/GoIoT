@@ -53,6 +53,8 @@ return {
 		t.tree.name = name
 		t.tree.id = id
 		t.tree.pId = pId
+		local ct = req:get_post_arg("ct")
+		local pt = req:get_post_arg("pt")
 		t.config = {}
 		if mode == "1" then
 			local port = req:get_post_arg("port")
@@ -61,6 +63,8 @@ return {
 			t.config.port = port
 			t.config.sIp = sIp
 			t.config.unit = unit
+			t.config.ct = ct
+			t.config.pt = pt
 		elseif mode == "0" or mode == "2" then
 			local sPort = req:get_post_arg("sPort")
 			local baud = req:get_post_arg("baud")
@@ -76,6 +80,8 @@ return {
 			t.config.sbs = sbs
 			t.config.ecm = ecm
 			t.config.unit = unit
+			t.config.ct = ct
+			t.config.pt = pt
 		else
 			res:write("error")
 		end

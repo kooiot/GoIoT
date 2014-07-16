@@ -41,12 +41,14 @@ _M.check = function(adu, checkmode)
 	local checknum = 0
 	if checkmode == "0" then
 		checknum = CRC(adu)
-		return encode.uint16(checknum, 4)
+		hv, lv = encode.uint16(checknum)
+		return lv .. hv
 	end
 
 	if checkmode == "1" then
 		checknum = LRC(adu)
-		return encode.int16(checknum, 4)
+		hv, lv = encode.uint16(checknum)
+		return hv .. lv
 	end
 end
 
