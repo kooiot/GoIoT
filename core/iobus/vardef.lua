@@ -25,9 +25,9 @@ function _M.load()
 			name = 'dev',
 			desc = 'symlink device',
 			inputs = {
-				sn = {name='sn', desc='Serial Number of device', value='xxx-xxxx-xxxx-xxxxxxxx'},
-				modal = {name='modal', desc='Modal of device', value='Symlink V3 Test'},
-				time = {name='system time', desc='Device system time', value=os.time()}
+				sn = {name='sn', desc='Serial Number of device', value='xxx-xxxx-xxxx-xxxxxxxx', ['type']='string/uuid'},
+				modal = {name='modal', desc='Modal of device', value='Symlink V3 Test', ['type']='string'},
+				time = {name='system time', desc='Device system time', value=os.time(), ['type']='number/time'}
 			},
 			commands = {
 				reboot = 'reboot device'
@@ -55,10 +55,18 @@ function _M.populate(db)
 
 	for k, v in pairs(conf.inputs) do
 		local input = {
-			path = device.path..'/'..k,
+			path = device.path..'/inputs/'..k,
 			name = v.name,
 			desc = v.desc,
 			value = v.value,
+			props = {
+				['type'] = {
+					name='type',
+					value=v['type'],
+					desc='data type',
+					path = device.path..'/'..k..'/props/type'
+				}
+			}
 		}
 		device.inputs[k] = input
 		inputs[k] = input
