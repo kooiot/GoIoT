@@ -83,7 +83,7 @@ return {
 		local l = list.list()
 		for name, v in pairs(l) do
 			for _, info in pairs(v.insts) do
-				local run = false
+				local run = 'UNKNOWN'
 				if info.insname then
 					local vars = {info.insname}
 					local status, err = api.query(vars)

@@ -22,7 +22,12 @@
 		<tr>
 			<!--<td class="<?=v.run and '' or 'warning' ?>" > -->
 			<td>
-				<i class="<?=v.run and 'teal circle icon' or 'red attention icon' ?>"></i>
+				<?
+				local ic = 'red attention icon'
+				if v.run then ic = 'teal circle icon' end
+				if v.run == 'UNKNOWN' then ic = 'question icon' end
+				?>
+				<i class="<?=ic?>"></i>
 				<a href="/app/view/<? =escape_url(v.lname) ?>"><b><?=v.lname?></b></a>
 			</td>
 			<td>
@@ -44,10 +49,12 @@
 					<?=translate("View")?>
 				</a>
 				<? if v.run then ?>
+				<? if v.run ~= 'UNKNOWN' then?>
 				<div class="ui mini icon button" onclick="stop_app('<?=v.lname?>')">
 					<i class="ui teal stop icon"></i>
 					<?=translate("Stop")?>
 				</div>
+				<? end ?>
 				<? else ?>
 				<div class="ui mini icon button" onclick="start_app('<?=v.lname?>')">
 					<i class="ui teal play icon"></i>
