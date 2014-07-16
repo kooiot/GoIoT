@@ -143,6 +143,8 @@ local function list_apps()
 				local status, err = api.query(vars)
 				if status and status[info.insname] then
 					run = status[info.insname].run
+				else
+					run = 'UNKNOWN'
 				end
 			end
 			rlist[#rlist + 1] = {
