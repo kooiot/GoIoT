@@ -32,7 +32,10 @@ return {
 				--res:write(config)
 			end
 			file:close()
-			res:ltp("index.html", {lwf=lwf, app=app, json_text = config, app=app})
+
+			local list = require("shared.util.sysinfo").list_serial()
+
+			res:ltp("index.html", {lwf=lwf, app=app, json_text = config, list=list})
 		else
 			res:write(err)
 		end
@@ -56,7 +59,7 @@ return {
 		local ct = req:get_post_arg("ct")
 		local pt = req:get_post_arg("pt")
 		t.config = {}
-		if mode == "1" then
+		if mode == "1" or mode == "3" then
 			local port = req:get_post_arg("port")
 			local sIp = req:get_post_arg("sIp")
 			t.config.mode = mode
@@ -65,6 +68,10 @@ return {
 			t.config.unit = unit
 			t.config.ct = ct
 			t.config.pt = pt
+			if mode == "3" then
+				local ecm = req:get_post_arg("ecm") -- error checking method
+				t.config.ecm = ecm
+			end
 		elseif mode == "0" or mode == "2" then
 			local sPort = req:get_post_arg("sPort")
 			local baud = req:get_post_arg("baud")

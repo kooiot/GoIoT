@@ -122,7 +122,7 @@ stream.read = function (t, check, timeout)
 
 	local abort = false
 	while not abort and timer:rest() > 0 do
-		if modbus_mode.mode == "0" then
+		if modbus_mode.mode == "0" or modbus_mode.mode == "2" then
 			local r, data, size = io_ports.port:read(1024, 1000)
 			if r and data then
 				on_rev(nil, data)
@@ -165,7 +165,7 @@ local handlers = {}
 handlers.on_start = function(app)
 	log:info(ioname, 'Starting application[MODBUS]')
 	load_tags_conf(app)
-	if modbus_mode.mode == "0" then
+	if modbus_mode.mode == "0"  or modbus_mode.mode == "3" then
 		mclient = modbus.client(stream, modbus.apdu_rtu)
 	elseif modbus_mode.mode == "1" then
 		mclient = modbus.client(stream, modbus.apdu_tcp)
@@ -179,8 +179,7 @@ handlers.on_start = function(app)
 			return true
 		end
 
-		--local port_name = "ttyS" .. modbus_mode.sPort
-		local port_name = "/dev/ttyUSB" .. modbus_mode.sPort
+		local port_name = modbus_mode.sPort
 		local opt = {}
 		opt.baudrate = tostring(modbus_mode.baud)
 		opt.databits = tostring(modbus_mode.dbs)

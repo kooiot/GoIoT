@@ -36,7 +36,7 @@ return {
 				file:write(config)
 			end
 			file:close()
-			res:ltp('tree.html', {lwf=lwf, app=app, json_text = config})
+			res:ltp('tree.html', {lwf=lwf, app=app, json_text = config, name = req:get_arg("name")})
 		else
 			res:write(err)
 		end
