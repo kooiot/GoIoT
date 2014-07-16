@@ -39,11 +39,11 @@
 				</i>
 			</td>
 			<td>
-				<? if v.run then ?>
 				<a class="ui mini icon button" href="/apps/<?=v.lname?>"> 
 					<i class="ui teal info icon"></i>
 					<?=translate("View")?>
 				</a>
+				<? if v.run then ?>
 				<div class="ui mini icon button" onclick="stop_app('<?=v.lname?>')">
 					<i class="ui teal stop icon"></i>
 					<?=translate("Stop")?>
