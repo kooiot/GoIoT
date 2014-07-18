@@ -32,7 +32,7 @@ function _M.add_cov(path, value)
 	local ns = path:match('^[^/]+')
 	if ns and buf[ns] then
 		local vt = buf[ns][path]
-		vt.values[#vt.values + 1] = value
+		vt.values[#vt.values + 1] = {timestamp=value.timestamp, value=value.value, quality=value.quality}
 		--print('value size '..#vt.values)
 	else
 		local err = 'Error on '..ns
