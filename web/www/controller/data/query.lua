@@ -23,7 +23,8 @@ return {
 							end
 							]]--
 							vars = vars or {timestamp=0}
-							tags[#tags+1] = {name=input.path, desc=input.desc, value=vars.value or '', timestamp=os.date('%c', vars.timestamp)}
+							local timestamp = vars.timestamp and  (vars.timestamp / 1000) or nil
+							tags[#tags+1] = {name=input.path, desc=input.desc, value=vars.value or '', timestamp=os.date('%c', timestamp)}
 						end
 					end
 				end
