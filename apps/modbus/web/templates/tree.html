@@ -1,33 +1,132 @@
 <!DOCTYPE html>
 <HTML>
 <HEAD>
+	<? extend'layout.html'?>
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-	<link href="/static/library/appendgrid/css/Site.css" rel="stylesheet"/>
-	<link href="/static/library/appendgrid/css/jquery.appendGrid-1.3.5.css" rel="stylesheet"/>
-	<link rel="stylesheet" href="/static/library/ztree/css/demo.css" type="text/css"/>
 	<link rel="stylesheet" href="/static/library/ztree/css/zTreeStyle/zTreeStyle.css" type="text/css"/>
-	<link rel="stylesheet" href="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.10.2/themes/redmond/jquery-ui.css" type="text/css"/>
-
-	<script src="/static/js/library/jquery.min.js"></script>
-	<script src="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.10.2/jquery-ui.min.js"></script>
+	<link href="/static/library/appendgrid/css/jquery.appendGrid-1.3.5.css" rel="stylesheet"/>
+	<link rel="stylesheet" href="/static/library/appendgrid/css/jquery-ui.css" type="text/css"/>
+	<script src="/static/library/appendgrid/js/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="/static/library/ztree/js/jquery.ztree.all-3.5.min.js"></script>
-
-	<script src="/static/library/appendgrid/js/shCore.js"></script>
-	<script src="/static/library/appendgrid/js/shBrushJScript.js"></script>
-	<script src="/static/library/appendgrid/js/shBrushXml.js"></script>
-	<script src="/static/library/appendgrid/js/shBrushCss.js"></script>
-	<script src="/static/library/appendgrid/js/jquery.validate.min.js"></script>
 	<script src="/static/library/appendgrid/js/jquery.appendGrid-1.3.5.js"></script>
+
+<style type="text/css">
+	.ztree li span.button.add {margin-left:2px; margin-right: -1px; background-position:-144px 0; vertical-align:top; *vertical-align:middle}
+</style>
+<div class="tab segment">
+	<div class="container">
+		<div class="introduction">
+			<h2 class="ui dividing header"> <?=app.appname ?> - <?=name ?> </h2>
+		</div>
+	</div>
+</div>
+
+<div class="main container">
+	<div class="ui two column relaxed grid basic segment">
+		<div class="three wide column">
+			<div class="ui segment">
+				<div id="treeDemo" class="ztree"></div>
+			</div>
+		</div>
+		<div class="thirteen wide column">
+			<div class="ui button" name="pSave" id="pSave">Save</div>
+			<div class="ui clearing divider"></div>
+			<p>
+			周期:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input placeholder="cycle" id="cycle" name="cycle" type="text" />
+			单位:<select id="time_unit" name="time_unit">
+				<option value="1">ms(毫秒)</option>
+				<option value="2">s(秒)</option>
+				<option value="3">min(分)</option>
+				<option value="4">h(时)</option>
+			</select></p>
+			<p>功能码:&nbsp;&nbsp;&nbsp;
+			<select id="func" name="func">
+				<option value="1">0x01(Read Coil Status)</option>
+				<option value="2">0x02(Read Input Status)</option>
+				<option value="3">0x03(Read Holding Registers)</option>
+				<option value="4">0x04(Read Input Registers)</option>
+				<option value="5">0x05(Force Single Coil)</option>
+				<option value="6">0x06(Preset Single Register)</option>
+				<option value="15">0x0F(Force Multiple Coils)</option>
+				<option value="16">0x10(Preset Multiple Regs)</option>
+			</select>
+			</p>
+			<p>起始地址:&nbsp;<input id="addr" name="addr"/></p>
+			<p>数量: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input id="len" name="len" /> </p>
+			<div class="ui clearing divider"></div>
+			<form id="frmMain" name="frmMain" action="/Demo" method="post">
+				<div style="text-align: center;">
+					<div class="viewable main-body">
+						<script id="jsSource" type="text/javascript">
+							var calc = new Array()
+							calc[0] = "return bit(1)" /*bit*/
+							calc[1] = "return byte(1) * 256 + byte(2)" /*byte*/
+							calc[2] = "return byte(2) * 256 + byte(1)" /*byte*/
+							calc[3] = "val = byte(1) * 256 + byte(2) val = ((val + 32768) % 65536) - 32768 return val" /*byte*/
+							calc[4] = "val = byte(2) * 256 + byte(1) val = ((val + 32768) % 65536) - 32768 return val" /*byte*/
+							calc[5] = "val = byte(1) val = ((val + 128) % 256) - 128 return val" /*byte*/
+							calc[6] = "return byte(1)" /*byte*/
+							calc[7] = "val = byte(2) val =  ((val + 128) % 256) - 128 return val" /*byte*/
+							calc[8] = "return byte(2)" /*byte*/
+							calc[9] = "val1 = byte(1) * 256 + byte(2) val2 = byte(3) * 256 + byte(4) val = val1 * 65536 + val2 return val"
+							calc[10] = "val1 = byte(1) * 256 + byte(2) val2 = byte(3) * 256 + byte(4) val = val1 * 65536 + val2 val = ((val + 1073741824) % 2147483648) - 1073741824 return val" 
+							calc[11] = "val1 = byte(2) * 256 + byte(1) val2 = byte(4) * 256 + byte(3) val = val2 * 65536 + val1 return val"
+							calc[12] = "val1 = byte(2) * 256 + byte(1) val2 = byte(4) * 256 + byte(3) val = val2 * 65536 + val1 val = ((val + 1073741824) % 2147483648) - 1073741824 return val" 
+							calc[13] = "val1 = byte(1) * 256 + byte(2) val2 = byte(3) * 256 + byte(4) val = val2 * 65536 + val1  return val" 
+							calc[14] = "val1 = byte(1) * 256 + byte(2) val2 = byte(3) * 256 + byte(4) val = val2 * 65536 + val1  val = ((val + 1073741824) % 2147483648) - 1073741824 return val" 
+							calc[15] = "val1 = byte(2) * 256 + byte(1) val2 = byte(4) * 256 + byte(3) val = val1 * 65536 + val2 return val" 
+							calc[16] = "val1 = byte(2) * 256 + byte(1) val2 = byte(4) * 256 + byte(3) val = val1 * 65536 + val2 val = ((val + 1073741824) % 2147483648) - 1073741824 return val" 
+							$(function () {
+								// Initialize appendGrid
+								var MyGrid = $('#tblAppendGrid').appendGrid({
+								caption: 'values',
+								initRows: 1,
+								columns: [
+								{ name: 'Name', display: 'Name', type: 'text', ctrlAttr: { maxlength: 100 }},
+								{ name: 'Description', display: 'Description', type: 'text', value: " " },
+								{ name: 'Address', display: 'Offset', type: 'text', ctrlAttr: { maxlength: 100 }},
+								{ name: 'Data', display: 'Data', type: 'text', ctrlAttr: { maxlength: 100 }, value: 0 },
+								{ name: 'Unit', display: 'Unit', type: 'text', ctrlAttr: { maxlength: 100 }, value: " " },
+								{ name: 'Multiple', display: 'Multiple', type: 'text', ctrlAttr: { maxlength: 100 }, value: "1.000000" },
+								{ name: 'CTPT', display: 'CT&PT', type: 'select', ctrlOptions: { 1: 'NONE', 2: '* CT', 3: '* PT', 4: '* CT * PT', 0: 'Others'} },
+								{ name: 'Endianness', display: 'Endianness', type: 'select', ctrlOptions: {0: 'Others', 1: 'bit', 2: 'unsigned word (high to low)', 3: 'unsigned word(low to high)', 4: 'signed word(high to low)', 5: 'signed word(low to high)', 6: 'signed byte(high)', 7: 'unsigned byte(low)', 8: 'signed byte(high)', 9: 'unsigned byte(low)', 10: 'unsigend dword(high to low, high first)', 11: 'signed dword(high to low, high first)', 12: 'unsigned dword(low to high, high first)', 13: 'signed dword(low to high, high first)', 14: 'unsigned dword(high to low, low first)', 15: 'signed dword(high to low, low first)', 16: 'unsigned dword(low to high, low first)', 17: 'signed dword(low to high, low first)'}, ctrlCss: { width: '100px'},onChange: function(evt, rowIndex) {
+		var endianness = $('#tblAppendGrid').appendGrid('getCtrlValue', 'Endianness', rowIndex);
+		if (endianness != 0)
+			$('#tblAppendGrid').appendGrid('setCtrlValue', 'Calc', rowIndex, calc[endianness - 1]);
+		else
+			$('#tblAppendGrid').appendGrid('setCtrlValue', 'Calc', rowIndex, "");
+	}},
+								{ name: 'Calc', display: 'Calc', type: 'text', ctrlAttr: { maxlength: 100 }, value: " "},
+]
+					});
+
+});
+					</script>
+					<div id="divSource">
+						<table id="tblAppendGrid">
+						</table>
+					</div>
+		</form>
+	</div>
+</div>
+
 	<SCRIPT type="text/javascript">
 		<!--
 		var setting = {
 			view: {
+				addHoverDom: addHoverDom,
+				removeHoverDom: removeHoverDom,
 				selectedMulti: false
 			},
 			edit: {
 				enable: true,
+				editNameSelectAll: true,
+				showRemoveBtn: showRemoveBtn,
+				showRenameBtn: showRenameBtn,
+				/*
 				showRemoveBtn: false,
 				showRenameBtn: false
+				*/
 			},
 			data: {
 				keep: {
@@ -76,16 +175,7 @@
 			tree_config = tree
 		}
 
-//alert(json_text[0].tree.id);
-/*
-for (var i in json_text[0]) {
-	for (var n in json_text[0][i])
-		alert(json_text[0][i][n]);
-		}
-		*/
-		//var zNodes = JSON.parse("<?=jsontext ?>");
 		var zNodes = tree_config;
-		//var zNodes = [];
 		var log, className = "dark";
 		function beforeClick(treeId, treeNode, clickFlag) {
 			className = (className === "dark" ? "":"dark");
@@ -144,8 +234,29 @@ for (var i in json_text[0]) {
 		function beforeRemove(treeId, treeNode) {
 			className = (className === "dark" ? "":"dark");
 			showLog("[ "+getTime()+" beforeRemove ]&nbsp;&nbsp;&nbsp;&nbsp; " + treeNode.name);
-			return confirm("Confirm delete node '" + treeNode.name + "' it?");
+			var isTrue = confirm("Confirm delete node '" + treeNode.name + "' it?");
+			if (isTrue) {
+				var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+				nodes = zTree.getSelectedNodes();
+				treeNode = nodes[0];
+				var id = treeNode.id;
+				var pId = treeNode.pId;
+				var name = treeNode.name;
+				for (var i = 0; i < json_text.length; i++) {
+					if (id == json_text[i].tree.id && pId == json_text[i].tree.pId && name == json_text[i].tree.name) {
+						//console.log(JSON.stringify(json_text));
+						$.post("remove", {id:id, pId:pId, name:name, json_text:(JSON.stringify(json_text)), filename:json_text[0].tree.name}, function(data){
+									});
+					}
+				}
+				var callbackFlag = $("#callbackTrigger").attr("checked");
+				zTree.removeNode(treeNode, callbackFlag);
+				location.reload();
+			}
+
+			return isTrue;
 		}
+
 		function onRemove(e, treeId, treeNode) {
 			showLog("[ "+getTime()+" onRemove ]&nbsp;&nbsp;&nbsp;&nbsp; " + treeNode.name);
 		}
@@ -175,69 +286,43 @@ for (var i in json_text[0]) {
 		}
 		
 		var newCount = 1;
-		function add(e) {
-			var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
-			isParent = e.data.isParent,
-			nodes = zTree.getSelectedNodes(),
-			treeNode = nodes[0];
-			if (treeNode) {
-				if (json_text.length > 0 && isParent) {
-					alert("Parent node is locked and can not add Parent node.");
-					return;
-				}
+		function addHoverDom(treeId, treeNode) {
+			var sObj = $("#" + treeNode.tId + "_span");
+			if (treeNode.editNameFlag || $("#addBtn_"+treeNode.tId).length>0) return;
+			var addStr = "<span class='button add' id='addBtn_" + treeNode.tId
+				+ "' title='add node' onfocus='this.blur();'></span>";
+			sObj.after(addStr);
+			var btn = $("#addBtn_"+treeNode.tId);
+			if (btn) btn.bind("click", function(){
+				var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
+				nodes = zTree.getSelectedNodes();
+				treeNode = nodes[0];
+				isParent = treeNode.isParent;
 				var max = 0;
 				if (json_text.length > 1) {
 					max = parseInt(json_text[0].tree.id);
 					for (var i = 0; i < json_text.length; i++) {
 						if (parseInt(json_text[i].tree.id) > max) {
-							max = parseInt(json_text[i].tree.id);
+						max = parseInt(json_text[i].tree.id);
 						}
 					}
-					treeNode = zTree.addNodes(treeNode, {id:(max + newCount ), pId:treeNode.id, isParent:isParent, name:"new node" + (newCount++)});
+					treeNode = zTree.addNodes(treeNode, {id:(max + newCount ), pId:treeNode.id, name:"new node" + (newCount++)});
 				} else {
-					treeNode = zTree.addNodes(treeNode, {id:(treeNode.id * 10 + newCount ), pId:treeNode.id, isParent:isParent, name:"new node" + (newCount++)});
+					treeNode = zTree.addNodes(treeNode, {id:(treeNode.id * 10 + newCount ), pId:treeNode.id, name:"new node" + (newCount++)});
 				}
-			} else {
-				if (json_text.length > 0 && isParent) {
-					alert("Parent node is locked and can not add Parent node.");
-					return;
-				}
-				if ( !isParent ) {
-					alert("Please add Parent node.");
-					return;
-				}
-				treeNode = zTree.addNodes(null, {id:1, pId:0, isParent:isParent, name:"new node"});
-			}
-			if (treeNode) {
-				zTree.editName(treeNode[0]);
-				$("#cycle").attr("disabled",false); 
-				$("#time_unit").attr("disabled",false); 
-				$("#func").attr("disabled",false); 
-				$("#addr").attr("disabled",false); 
-				$("#len").attr("disabled",false); 
-			} else {
-				newCount--;
-				alert("Leaf node is locked and can not add child node.");
-			}
+				return false;
+			});
 		};
-		function edit() {
-			var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
-			nodes = zTree.getSelectedNodes(),
-			treeNode = nodes[0];
-			zTree.editName(treeNode);
+		function showRemoveBtn(treeId, treeNode) {
+			return !treeNode.isParent;
+		}
+		function showRenameBtn(treeId, treeNode) {
+			return !treeNode.isParent;
+		}
+		function removeHoverDom(treeId, treeNode) {
+			$("#addBtn_"+treeNode.tId).unbind().remove();
 		};
-/*
-		function save() {
-			var zTree = $.fn.zTree.getZTreeObj("treeDemo");
-			//var nodes = zTree.transformTozTreeNodes(zNodes);
-			var nodes = zTree.transformToArray(zTree.getNodes());
-			//alert(nodes.length);
-			//nodes = zTree.getNodes();
-			$.post("tree", {nodes:JSON.stringify(nodes)}, function(data){
-						//TODO
-						});
-		};
-*/		
+
 		function pSave(){
 			var zTree = $.fn.zTree.getZTreeObj("treeDemo");
 			nodes = zTree.getSelectedNodes();
@@ -264,128 +349,9 @@ for (var i in json_text[0]) {
 						}
 						});
 		}
-		function remove(e) {
-			var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
-			nodes = zTree.getSelectedNodes(),
-			treeNode = nodes[0];
-			if (nodes.length == 0) {
-				alert("Please select one node at first...");
-				return;
-			} else {
-				var id = treeNode.id;
-				var pId = treeNode.pId;
-				var name = treeNode.name;
-			}
-			for (var i = 0; i < json_text.length; i++) {
-				if (id == json_text[i].tree.id && pId == json_text[i].tree.pId && name == json_text[i].tree.name) {
-					//console.log(JSON.stringify(json_text));
-					$.post("remove", {id:id, pId:pId, name:name, json_text:(JSON.stringify(json_text)), filename:json_text[0].tree.name}, function(data){
-								});
-				}
-			}
-			var callbackFlag = $("#callbackTrigger").attr("checked");
-			zTree.removeNode(treeNode, callbackFlag);
-			location.reload();
-		};
-/*
-		function clearChildren(e) {
-			var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
-			nodes = zTree.getSelectedNodes(),
-			treeNode = nodes[0];
-			if (nodes.length == 0 || !nodes[0].isParent) {
-				alert("Please select one parent node at first...");
-				return;
-			}
-			zTree.removeChildNodes(treeNode);
-		};
-		*/
-
-		function fontCss(treeNode) {
-			var aObj = $("#" + treeNode.tId + "_a");
-			aObj.removeClass("copy").removeClass("cut");
-			if (treeNode === curSrcNode) {
-				if (curType == "copy") {
-					aObj.addClass(curType);
-				} else {
-					aObj.addClass(curType);
-				}			
-			}
-		};
-		var curSrcNode, curType;
-		function setCurSrcNode(treeNode) {
-			var zTree = $.fn.zTree.getZTreeObj("treeDemo");
-			if (curSrcNode) {
-				delete curSrcNode.isCur;
-				var tmpNode = curSrcNode;
-				curSrcNode = null;
-				fontCss(tmpNode);
-			}
-			curSrcNode = treeNode;
-			if (!treeNode) return;
-
-			curSrcNode.isCur = true;			
-			zTree.cancelSelectedNode();
-			fontCss(curSrcNode);
-		};
-		function copy(e) {
-			var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
-			nodes = zTree.getSelectedNodes();
-			if (nodes.length == 0) {
-				alert("Please select one node at first...");
-				return;
-			}
-			curType = "copy";
-			setCurSrcNode(nodes[0]);
-		};
-		function cut(e) {
-			var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
-			nodes = zTree.getSelectedNodes();
-			if (nodes.length == 0) {
-				alert("Please select one node at first...");
-				return;
-			}
-			curType = "cut";
-			setCurSrcNode(nodes[0]);
-		};
-		function paste(e) {
-			if (!curSrcNode) {
-				alert("Please select one node to copy or cut at first...");
-				return;
-			}
-			var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
-			nodes = zTree.getSelectedNodes(),
-			targetNode = nodes.length>0? nodes[0]:null;
-			if (curSrcNode === targetNode) {
-				alert("Can't move, the same source node and destination node.");
-				return;
-			} else if (curType === "cut" && ((!!targetNode && curSrcNode.parentTId === targetNode.tId) || (!targetNode && !curSrcNode.parentTId))) {
-				alert("Can't move, source node is the target node's child.");
-				return;
-			} else if (curType === "copy") {
-				targetNode = zTree.copyNode(targetNode, curSrcNode, "inner");
-			} else if (curType === "cut") {
-				targetNode = zTree.moveNode(targetNode, curSrcNode, "inner");
-				if (!targetNode) {
-					alert("Cutting failure, source node is the target node's parent.");
-				}
-				targetNode = curSrcNode;
-			}
-			setCurSrcNode();
-			delete targetNode.isCur;
-			zTree.selectNode(targetNode);
-		};
 		
 		$(document).ready(function(){
 			$.fn.zTree.init($("#treeDemo"), setting, zNodes);
-			$("#addParent").bind("click", {isParent:true}, add);
-			$("#addLeaf").bind("click", {isParent:false}, add);
-			$("#remove").bind("click", remove);
-		//	$("#clearChildren").bind("click", clearChildren);
-			$("#edit").bind("click", edit);
-			$("#copy").bind("click", copy);
-			$("#cut").bind("click", cut);
-			$("#paste").bind("click", paste);
-		//	$("#save").bind("click", save);
 			$("#pSave").bind("click", pSave);
 			var treeObj = $.fn.zTree.getZTreeObj("treeDemo"); 
 			treeObj.expandAll(true); 
@@ -394,147 +360,4 @@ for (var i in json_text[0]) {
 	</SCRIPT>
 </HEAD>
 
-<BODY>
-<div class="content_wrap">
-	<div class="zTreeDemoBackground left">
-		<ul id="treeDemo" class="ztree"></ul>
-		
-		<ul class="info">
-			<li class="title">
-				<ul class="list">
-				<li><p>Try to edit node:<br/>
-					&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id="callbackTrigger" checked /> Whether trigger the callback when execution removeNode() method.<br/>
-
-					<!--
-					&nbsp;&nbsp;&nbsp;&nbsp;<button id="clearChildren" name="clearChildren" type="button">clearChildre</button> <br/>
-					&nbsp;&nbsp;&nbsp;&nbsp;<button id="save" name="save" type="button">Save</button> <br/>
-					-->
-					remove log:<br/>
-					<ul id="log" class="log"></ul></p>
-				</li>
-				</ul>
-			</li>
-		</ul>
-	</div>
-	<div class="right">
-		<div class="news">
-			<div style="background:#f0f6e4; color:#FFF">
-				<br />
-			</div>
-			<p><button type=button id="pSave" name="pSave">Save</button>
-			&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" name="addParent" id="addParent">addParent</button>
-			&nbsp;&nbsp;&nbsp;&nbsp;<button type = "button" name="addLeaf" id="addLeaf">addLeaf</button>
-			&nbsp;&nbsp;&nbsp;&nbsp;<button id="edit" name="edit" type="button">Edit</button>
-			&nbsp;&nbsp;&nbsp;&nbsp;<button id="remove" name="remove" type="button">Remove</button>
-			&nbsp;&nbsp;&nbsp;&nbsp;<button id="copy" name="copy" type="button">Copy</button>
-			&nbsp;&nbsp;&nbsp;&nbsp;<button id="cut" name="cut" type="button">Cut</button>
-			&nbsp;&nbsp;&nbsp;&nbsp;<button id="paste" name="paste" type="button">Paste</button>
-			</p>
-		</div>
-		<div style="background:#f0f6e4; color:#FFF">
-			<br />
-		</div>
-		<div class="news">
-			<p>周期:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input id="cycle" name="cycle"  />
-			单位:<select id="time_unit" name="time_unit">
-				<option value="1">ms(毫秒)</option>
-				<option value="2">s(秒)</option>
-				<option value="3">min(分)</option>
-				<option value="4">h(时)</option>
-			</select></p>
-			<p>功能码:&nbsp;&nbsp;&nbsp;
-			<select id="func" name="func">
-				<option value="1">0x01(Read Coil Status)</option>
-				<option value="2">0x02(Read Input Status)</option>
-				<option value="3">0x03(Read Holding Registers)</option>
-				<option value="4">0x04(Read Input Registers)</option>
-				<option value="5">0x05(Force Single Coil)</option>
-				<option value="6">0x06(Preset Single Register)</option>
-				<option value="15">0x0F(Force Multiple Coils)</option>
-				<option value="16">0x10(Preset Multiple Regs)</option>
-				<!--
-				<option value="7">0x07(Read Exception Status)</option>
-				<option value="10">0x0A</option>
-				<option value="11">0x0B(Fetch Comm Event Ctr)</option>
-				<option value="12">0x0C(Fetch Comm Event Log)</option>
-				<option value="13">0x0D</option>
-				<option value="14">0x0E</option>
-				<option value="17">0x11</option>
-				<option value="18">0x12</option>
-				<option value="19">0x13</option>
-				<option value="20">0x14(Read General Reference)</option>
-				<option value="21">0x15(Write General Reference)</option>
-				<option value="22">0x16(Mask Write 4X Register)</option>
-				<option value="23">0x17(Read/Write 4X Registers)</option>
-				<option value="24">0x18(Read FIFO Queue</option>
-				-->
-			</select>
-			</p>
-			<p>起始地址:<input id="addr" name="addr"/></p>
-			<p>数量: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input id="len" name="len" /> </p>
-		</div>
-		<div style="background:#f0f6e4; color:#FFF">
-			<br />
-		</div>
-		<div>
-		<form id="frmMain" name="frmMain" action="/Demo" method="post">
-			<div style="text-align: center;">
-				<div class="viewable main-body">
-					<script id="jsSource" type="text/javascript">
-						var calc = new Array()
-						calc[0] = "return bit(1)" /*bit*/
-						calc[1] = "return byte(1) * 256 + byte(2)" /*byte*/
-						calc[2] = "return byte(2) * 256 + byte(1)" /*byte*/
-						calc[3] = "val = byte(1) * 256 + byte(2) val = ((val + 32768) % 65536) - 32768 return val" /*byte*/
-						calc[4] = "val = byte(2) * 256 + byte(1) val = ((val + 32768) % 65536) - 32768 return val" /*byte*/
-						calc[5] = "val = byte(1) val = ((val + 128) % 256) - 128 return val" /*byte*/
-						calc[6] = "return byte(1)" /*byte*/
-						calc[7] = "val = byte(2) val =  ((val + 128) % 256) - 128 return val" /*byte*/
-						calc[8] = "return byte(2)" /*byte*/
-						calc[9] = "val1 = byte(1) * 256 + byte(2) val2 = byte(3) * 256 + byte(4) val = val1 * 65536 + val2 return val"
-						calc[10] = "val1 = byte(1) * 256 + byte(2) val2 = byte(3) * 256 + byte(4) val = val1 * 65536 + val2 val = ((val + 1073741824) % 2147483648) - 1073741824 return val" 
-						calc[11] = "val1 = byte(2) * 256 + byte(1) val2 = byte(4) * 256 + byte(3) val = val2 * 65536 + val1 return val"
-						calc[12] = "val1 = byte(2) * 256 + byte(1) val2 = byte(4) * 256 + byte(3) val = val2 * 65536 + val1 val = ((val + 1073741824) % 2147483648) - 1073741824 return val" 
-						calc[13] = "val1 = byte(1) * 256 + byte(2) val2 = byte(3) * 256 + byte(4) val = val2 * 65536 + val1  return val" 
-						calc[14] = "val1 = byte(1) * 256 + byte(2) val2 = byte(3) * 256 + byte(4) val = val2 * 65536 + val1  val = ((val + 1073741824) % 2147483648) - 1073741824 return val" 
-						calc[15] = "val1 = byte(2) * 256 + byte(1) val2 = byte(4) * 256 + byte(3) val = val1 * 65536 + val2 return val" 
-						calc[16] = "val1 = byte(2) * 256 + byte(1) val2 = byte(4) * 256 + byte(3) val = val1 * 65536 + val2 val = ((val + 1073741824) % 2147483648) - 1073741824 return val" 
-						$(function () {
-									// Initialize appendGrid
-								var MyGrid = $('#tblAppendGrid').appendGrid({
-									caption: 'values',
-									initRows: 1,
-									columns: [
-									{ name: 'Name', display: 'Name', type: 'text', ctrlAttr: { maxlength: 100 }, ctrlCss: { width: '100px'} },
-									{ name: 'Description', display: 'Description', type: 'text', ctrlAttr: { maxlength: 100 }, ctrlCss: { width: '160px'}, value: " " },
-									{ name: 'Address', display: 'Offset', type: 'text', ctrlAttr: { maxlength: 100 }, ctrlCss: { width: '100px'} },
-									{ name: 'Data', display: 'Data', type: 'text', ctrlAttr: { maxlength: 100 }, ctrlCss: { width: '100px'}, value: 0 },
-									{ name: 'Unit', display: 'Unit', type: 'text', ctrlAttr: { maxlength: 100 }, ctrlCss: { width: '100px'}, value: " " },
-									{ name: 'Multiple', display: 'Multiple', type: 'text', ctrlAttr: { maxlength: 100 }, ctrlCss: { width: '100px'}, value: "1.000000" },
-									{ name: 'CTPT', display: 'CT&PT', type: 'select', ctrlOptions: { 1: 'NONE', 2: '* CT', 3: '* PT', 4: '* CT * PT', 0: 'Others'} },
-									{ name: 'Endianness', display: 'Endianness', type: 'select', ctrlOptions: {0: 'Others', 1: 'bit', 2: 'unsigned word (high to low)', 3: 'unsigned word(low to high)', 4: 'signed word(high to low)', 5: 'signed word(low to high)', 6: 'signed byte(high)', 7: 'unsigned byte(low)', 8: 'signed byte(high)', 9: 'unsigned byte(low)', 10: 'unsigend dword(high to low, high first)', 11: 'signed dword(high to low, high first)', 12: 'unsigned dword(low to high, high first)', 13: 'signed dword(low to high, high first)', 14: 'unsigned dword(high to low, low first)', 15: 'signed dword(high to low, low first)', 16: 'unsigned dword(low to high, low first)', 17: 'signed dword(low to high, low first)'}, 
-onChange: function(evt, rowIndex) {
-	var endianness = $('#tblAppendGrid').appendGrid('getCtrlValue', 'Endianness', rowIndex);
-	if (endianness != 0)
-		$('#tblAppendGrid').appendGrid('setCtrlValue', 'Calc', rowIndex, calc[endianness - 1]);
-	else
-		$('#tblAppendGrid').appendGrid('setCtrlValue', 'Calc', rowIndex, "");
-}},
-									{ name: 'Calc', display: 'Calc', type: 'text', ctrlAttr: { maxlength: 100 }, ctrlCss: { width: '200px'}, value: " "},
-									]
-								});
-
-							});
-					</script>
-					<div id="divSource">
-						<table id="tblAppendGrid">
-						</table>
-					</div>
-				</div>
-			</div>
-		</form>
-		</div>
-	</div>
-</div>
-</BODY>
 </HTML>

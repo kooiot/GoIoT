@@ -68,10 +68,8 @@ return {
 			t.config.unit = unit
 			t.config.ct = ct
 			t.config.pt = pt
-			if mode == "3" then
-				local ecm = req:get_post_arg("ecm") -- error checking method
-				t.config.ecm = ecm
-			end
+			local ecm = req:get_post_arg("ecm") -- error checking method
+			t.config.ecm = ecm
 		elseif mode == "0" or mode == "2" then
 			local sPort = req:get_post_arg("sPort")
 			local baud = req:get_post_arg("baud")
