@@ -34,7 +34,7 @@ local function doi(req, res, info)
 		res:write(err or 'Error when trying to find application mgr port')
 	else
 		local client = appapi.new(port)
-		local r, err = client:request('get_rule', rules)
+		local r, err = client:request('get_rule', {})
 		if r then
 			rules = r.rules
 		end

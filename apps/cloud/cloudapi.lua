@@ -10,8 +10,8 @@ local URL = nil
 
 local function api(method, obj, path)
 	assert(path)
-	print(URL..path)
-	local u = url.parse(URL..path, {path=path, scheme='http'})
+	print(URL..'/'..path)
+	local u = url.parse(URL..'/'..path, {path=path, scheme='http'})
 
 	local rstring = cjson.encode(obj)
 	--print('JSON', rstring)
