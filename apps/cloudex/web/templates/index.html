@@ -10,6 +10,14 @@
 <div class="main container">
 	<div class="ui message"><?=info or ''?></div>
 	<form class="ui form" method="post">
+
+		<div class="inline field">
+			<div class="ui toggle checkbox">
+				<input name="gzip" type="checkbox" <?=gzip?>>
+				<label><b><?=_("Compress")?></b></label>
+			</div>
+		</div>
+
 		<div class="ui inline label"> <?=_('Auth Key')?>: </div>
 		<div class="ui left labeled input">
 			<input class="ui input" type="text" name="key" value="<?=key or ''?>"/>
@@ -22,6 +30,7 @@
 		<div class="ui left labeled input">
 			<input class="ui input" type="text" name="timeout" value="<?=timeout or ''?>"/>
 		</div>
+
 		<input class="ui teal button submit" type="submit" value="<?=_('Save')?>"/>
 	</form>
 </div>

@@ -35,6 +35,7 @@ local function load_conf()
 	config.key = config.key or "6015c744795762df41e9ebfa25fd625c"
 	config.url = config.url or 'http://172.30.1.121:8080/api/'
 	config.timeout = config.timeout or 5
+	config.gzip = config.gzip or false
 	return config
 end
 

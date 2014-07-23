@@ -18,6 +18,11 @@ if [ $# != 1 ] ; then
 	exit 0
 fi
 
+WSAPI_PATH=/usr/bin/wsapi
+if [ -f /usr/local/bin/wsapi ]; then
+	WSAPI_PATH=/usr/local/bin/wsapi
+fi
+
 echo $1
 
 cat /proc/sys/net/ipv4/ip_local_port_range > /tmp/port_range
@@ -32,7 +37,7 @@ if [ $1 = "start" ] ; then
 	sleep 1
 	start-stop-daemon --start --oknodo --make-pidfile --pidfile $PID_FOLDER/core_monitor.pid --chdir $CAD_DIR/core/monitor --background --startas /usr/bin/lua -- start.lua -- monitor
 	start-stop-daemon --start --oknodo --make-pidfile --pidfile $PID_FOLDER/core_iobus.pid --chdir $CAD_DIR/core/iobus --background --startas /usr/bin/lua -- start.lua -- iobus
-	start-stop-daemon --start --oknodo --make-pidfile --pidfile $PID_FOLDER/core_web.pid --chdir $CAD_DIR/web/wsapi --background --startas /usr/local/bin/wsapi -- --config=xavante.conf.lua
+	start-stop-daemon --start --oknodo --make-pidfile --pidfile $PID_FOLDER/core_web.pid --chdir $CAD_DIR/web/wsapi --background --startas $WSAPI_PATH -- --config=xavante.conf.lua
 else
 	start-stop-daemon --stop --oknodo --pidfile $PID_FOLDER/core_web.pid --retry 5
 	rm $PID_FOLDER/core_web.pid

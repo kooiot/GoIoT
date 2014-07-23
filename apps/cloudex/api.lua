@@ -32,7 +32,7 @@ end
 --- Initialize the api, and set the write/command callback function
 _M.init = function(cfg, write, command)
 	load_conf()
-	rest.init(cfg.key, cfg.url, cfg.timeout)
+	rest.init(cfg.key, cfg.url, cfg.timeout, cfg.gzip)
 	_M.on_write = write
 	_M.on_command = command
 end

@@ -4,6 +4,7 @@ local ltn12 = require 'ltn12'
 local url = require 'socket.url'
 local pp = require 'shared.PrettyPrint'
 local cjson = require 'cjson.safe'
+local zlib_loaded, zlib = pcall(require, 'zlib')
 
 local KEY = nil
 local URL = nil
@@ -16,6 +17,9 @@ local function api(method, obj, path)
 
 	local rstring = cjson.encode(obj)
 	--print('JSON', rstring)
+	if GZIP and zlib_loaded then
+		rstring = zlib.compress(rstring, 9, nil, 15 + 16)
+	end
 
 	local re = {}
 
