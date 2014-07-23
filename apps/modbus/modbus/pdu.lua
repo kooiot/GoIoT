@@ -61,7 +61,7 @@ _M.ForceSingleCoil = function(t)
 	for k,v in pairs(t.vals) do
 		local data = tonumber(v.Data)
 		local calc = v.Calc
-		local func = require('shared.compat.env').load(calc)
+		local func = require('shared.compat.env').load(calc, nil, nil, {data = data, encode = encode})
 		data = func()
 		pdu = pdu .. data
 	end
@@ -78,7 +78,7 @@ _M.PresetSingleRegister = function(t)
 	for k,v in pairs(t.vals) do
 		local data = tonumber(v.Data)
 		local calc = v.Calc
-		local func = require('shared.compat.env').load(calc)
+		local func = require('shared.compat.env').load(calc, nil, nil, {data = data, encode = encode})
 		data = func()
 		pdu = pdu .. data
 	end
@@ -103,7 +103,7 @@ _M.ForceMultipleCoils = function(t)
 	for k,v in pairs(t.vals) do
 		local data = tonumber(v.Data)
 		local calc = v.Calc
-		local func = require('shared.compat.env').load(calc)
+		local func = require('shared.compat.env').load(calc, nil, nil, {data = data, encode = encode})
 		data = func()
 		pdu = pdu .. data
 	end
@@ -123,7 +123,7 @@ _M.PresetMultipleRegs = function(t)
 	for k,v in pairs(t.vals) do
 		local data = tonumber(v.Data)
 		local calc = v.Calc
-		local func = require('shared.compat.env').load(calc)
+		local func = require('shared.compat.env').load(calc, nil, nil, {data = data, encode = encode})
 		data = func()
 		pdu = pdu .. data
 	end

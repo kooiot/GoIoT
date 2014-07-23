@@ -1,6 +1,12 @@
 <? extend'layout.html'?>
 <link rel="stylesheet" href="/static/library/ztree/css/zTreeStyle/zTreeStyle.css" type="text/css"/>
 <script type="text/javascript" src="/static/library/ztree/js/jquery.ztree.all-3.5.min.js"></script>
+<script type="text/javascript" src="/static/library/ztree/js/jquery.ztree.excheck-3.5.js"></script>
+<script type="text/javascript" src="/static/library/ztree/js/jquery.ztree.exedit-3.5.js"></script>
+
+<style type="text/css">
+	.ztree li span.button.add {margin-left:2px; margin-right: -1px; background-position:-144px 0; vertical-align:top; *vertical-align:middle}
+</style>
 
 <div class="tab segment">
 	<div class="container">
@@ -11,7 +17,7 @@
 </div>
 
 <div class="main container">
-	<div class="ui two column middle aligned relaxed grid basic segment">
+	<div class="ui two column relaxed grid basic segment">
 		<div class="six wide column">
 			<p>
 			<div class="ui dropdown selection modes" onChange="changeType(this)">
@@ -27,132 +33,120 @@
 			</div>
 			</p>
 			<div class="ui clearing divider"></div>
-			<div class="zTreeDemoBackground">
-				<div class="ui small buttons">
-					<div class="ui button" name="addLeaf" id="addLeaf">Add Device</div>
-					<div class="ui button" id="edit" name="edit">Rename</div>
-					<div class="ui button" id="remove" name="remove">Delete</div>
-				</div>
-				<div class="ui segment">
-					<div id="treeDemo" class="ztree"></div>
-				</div>
+			<div class="ui segment">
+				<div id="treeDemo" class="ztree"></div>
 			</div>
-			<div class="ui clearing divider"></div>
-			<form  class="ui form">
-				<div class="inline field">
-					<label>CT:</label>
-					<input placeholder="CT" id="ct" name="ct" type="text" value=1.000000 />
-				</div>
-				<div class="inline field">
-					<label>PT:</label>
-					<input placeholder="PT" id="pt" name="pt" type="text" value=1.000000 />
-				</div>
-			</form>
 		</div>
 		<div class="ten wide column">
 			<div class="ui basic segment">
 				<div class="ui button" id="pSave" name="pSave">Save</div>
 				<div class="ui clearing divider"></div>
 				<form class="ui form">
-				<div id="RTU" name="RTU">
-					<div class="inline field">
-						端口:
-						<div class="ui dropdown selection sPort">
-							<div class="text">PORT</div>
-							<i class="dropdown icon"></i>
-							<div class="menu">
-								<? for k, v in pairs(list) do ?>
-								<div class="item" data-value="<?=v?>"><?=v?></div>
-								<? end ?>
+					<div id="RTU" name="RTU">
+						<div class="inline field">
+							端口:
+							<div class="ui dropdown selection sPort">
+								<div class="text">PORT</div>
+								<i class="dropdown icon"></i>
+								<div class="menu">
+									<? for k, v in pairs(list) do ?>
+									<div class="item" data-value="<?=v?>"><?=v?></div>
+									<? end ?>
+								</div>
+							</div>
+							波特率:
+							<div class="ui dropdown selection baud">
+								<input type="hidden" value=9600 />
+								<div class="text">BAUD</div>
+								<i class="dropdown icon"></i>
+								<div class="menu">
+									<div class="item" data-value=0>0</div>
+									<div class="item" data-value=50>50</div>
+									<div class="item" data-value=75>75</div>
+									<div class="item" data-value=110>110</div>
+									<div class="item" data-value=134>134</div>
+									<div class="item" data-value=150>150</div>
+									<div class="item" data-value=300>300</div>
+									<div class="item" data-value=600>600</div>
+									<div class="item" data-value=1200>1200</div>
+									<div class="item" data-value=1800>1800</div>
+									<div class="item" data-value=2400>2400</div>
+									<div class="item" data-value=4800>4800</div>
+									<div class="item" data-value=9600>9600</div>
+									<div class="item" data-value=19200>19200</div>
+									<div class="item" data-value=38400>38400</div>
+									<div class="item" data-value=57600>57600</div>
+									<div class="item" data-value=115200>115200</div>
+									<div class="item" data-value=230400>230400</div>
+									<div class="item" data-value=460800>460800</div>
+									<div class="item" data-value=921600>921600</div>
+								</div>
+							</div>
+							数据位:
+							<div class="ui dropdown selection data_bits">
+								<input type="hidden" value=8 />
+								<div class="text">DATA BITS</div>
+								<i class="dropdown icon"></i>
+								<div class="menu">
+									<div class="item" data-value=6>6</div>
+									<div class="item" data-value=7>7</div>
+									<div class="item" data-value=8>8</div>
+								</div>
 							</div>
 						</div>
-						波特率:
-						<div class="ui dropdown selection baud">
-							<input type="hidden" value=9600 />
-							<div class="text">BAUD</div>
-							<i class="dropdown icon"></i>
-							<div class="menu">
-								<div class="item" data-value=0>0</div>
-								<div class="item" data-value=50>50</div>
-								<div class="item" data-value=75>75</div>
-								<div class="item" data-value=110>110</div>
-								<div class="item" data-value=134>134</div>
-								<div class="item" data-value=150>150</div>
-								<div class="item" data-value=300>300</div>
-								<div class="item" data-value=600>600</div>
-								<div class="item" data-value=1200>1200</div>
-								<div class="item" data-value=1800>1800</div>
-								<div class="item" data-value=2400>2400</div>
-								<div class="item" data-value=4800>4800</div>
-								<div class="item" data-value=9600>9600</div>
-								<div class="item" data-value=19200>19200</div>
-								<div class="item" data-value=38400>38400</div>
-								<div class="item" data-value=57600>57600</div>
-								<div class="item" data-value=115200>115200</div>
-								<div class="item" data-value=230400>230400</div>
-								<div class="item" data-value=460800>460800</div>
-								<div class="item" data-value=921600>921600</div>
+						<div class="inline field">
+							校验位:
+							<div class="ui dropdown selection parity">
+								<input type="hidden" value=0 />
+								<div class="text">PARITY</div>
+								<i class="dropdown icon"></i>
+								<div class="menu">
+									<div class="item" data-value=0>NONE</div>
+									<div class="item" data-value=1>ODD PARITY</div>
+									<div class="item" data-value=2>EVEN PARITY</div>
+								</div>
 							</div>
-						</div>
-						数据位:
-						<div class="ui dropdown selection data_bits">
-							<input type="hidden" value=8 />
-							<div class="text">DATA BITS</div>
-							<i class="dropdown icon"></i>
-							<div class="menu">
-								<div class="item" data-value=6>6</div>
-								<div class="item" data-value=7>7</div>
-								<div class="item" data-value=8>8</div>
+							停止位:
+							<div class="ui dropdown selection stop_bits">
+								<input type="hidden" value=1 />
+								<div class="text">STOP BITS</div>
+								<i class="dropdown icon"></i>
+								<div class="menu">
+									<div class="item" data-value=1>1</div>
+									<div class="item" data-value=1.5>1.5</div>
+									<div class="item" data-value=2>2</div>
+								</div>
 							</div>
 						</div>
 					</div>
-					<div class="inline field">
-						校验位:
-						<div class="ui dropdown selection parity">
-							<input type="hidden" value=0 />
-							<div class="text">PARITY</div>
+
+					<div id="TCP" name="TCP">
+						<input placeholder="IP" id="sIp" name="sIp" type="text" />
+						<input placeholder="PORT" id="port" name="port" type="text" />
+
+					</div>
+					<div id="DEVICES" name="DEVICES">
+						<label>UNIT:</label>
+						<input placeholder="UNIT" id="unit" name="unit" type="text" />
+						<label>CT:</label>
+						<input placeholder="CT" id="ct" name="ct" type="text" value=1.000000 />
+						<label>PT:</label>
+						<input placeholder="PT" id="pt" name="pt" type="text" value=1.000000 />
+						<p></p>
+						错误校验:
+						<div class="ui dropdown selection ecm">
+							<div class="text">Error Checking Methods</div>
 							<i class="dropdown icon"></i>
 							<div class="menu">
 								<div class="item" data-value=0>NONE</div>
-								<div class="item" data-value=1>ODD PARITY</div>
-								<div class="item" data-value=2>EVEN PARITY</div>
-							</div>
-						</div>
-						停止位:
-						<div class="ui dropdown selection stop_bits">
-							<input type="hidden" value=1 />
-							<div class="text">STOP BITS</div>
-							<i class="dropdown icon"></i>
-							<div class="menu">
-								<div class="item" data-value=1>1</div>
-								<div class="item" data-value=1.5>1.5</div>
-								<div class="item" data-value=2>2</div>
+								<div class="item" data-value=1>CRC</div>
+								<div class="item" data-value=2>LRC</div>
 							</div>
 						</div>
 					</div>
-				</div>
-
-				<div id="TCP" name="TCP">
-					<input placeholder="IP" id="sIp" name="sIp" type="text" />
-					<input placeholder="PORT" id="port" name="port" type="text" />
-
-				</div>
-				<input placeholder="UNIT" id="unit" name="unit" type="text" />
-				<div id="ECM" name="ECM">
-					错误校验:
-					<div class="ui dropdown selection ecm">
-						<input type="hidden" value=0 />
-						<div class="text">Error Checking Methods</div>
-						<i class="dropdown icon"></i>
-						<div class="menu">
-							<div class="item" data-value=0>CRC</div>
-							<div class="item" data-value=1>LRC</div>
-						</div>
-					</div>
-				</div>
 				</form>
-					<div class="ui clearing divider"></div>
-					<div class="ui button" id="advance" name="advance">高级</div>
+				<div class="ui clearing divider"></div>
+				<div class="ui button" id="advance" name="advance">高级</div>
 			</div>
 		</div>
 	</div>
@@ -161,12 +155,19 @@
 <script type="text/javascript">
 var setting = {
 	view: {
+		addHoverDom: addHoverDom,
+		removeHoverDom: removeHoverDom,
 		selectedMulti: false
 	},
 	edit: {
 		enable: true,
+		editNameSelectAll: true,
+		showRemoveBtn: showRemoveBtn,
+		showRenameBtn: showRenameBtn,
+		/*
 		showRemoveBtn: false,
 		showRenameBtn: false
+		*/
 	},
 	data: {
 		keep: {
@@ -196,28 +197,23 @@ function changeType(obj)
 	if (val == 0 || val == 2) {
 		$("#RTU").show();
 		$("#TCP").hide();
-		$("#ECM").show();
 	} else if (val == 1) {
 		$("#RTU").hide();
 		$("#TCP").show();
-		$("#ECM").hide();
 	} else if (val == 3) {
 		$("#RTU").hide();
 		$("#TCP").show();
-		$("#ECM").show();
 	} else {
 		$("#RTU").hide();
 		$("#TCP").hide();
-		$("#ECM").hide();
 	}
-	$("#unit").hide(); 
+	$("#DEVICES").hide(); 
 	return val;
 }
 
-$("#unit").hide(); 
+$("#DEVICES").hide(); 
 $("#RTU").hide();
 $("#TCP").hide();
-$("#ECM").hide();
 var json_text = <?=json_text ?>;
 //$(".ui.modes").dropdown("set value", json_text[0].config.mode);
 $(".ui.dropdown").dropdown();
@@ -265,8 +261,6 @@ function onClick(event, treeId, treeNode, clickFlag) {
 		alert("Please select one node at first ...");
 		return;
 	}
-	document.getElementById("ct").value = json_text[0].config.ct ? json_text[0].config.ct : "1.000000"
-	document.getElementById("pt").value = json_text[0].config.pt ? json_text[0].config.pt : "1.000000"
 	var mode = json_text[0].config.mode ? json_text[0].config.mode : $(".ui.modes").dropdown("get value");
 	$(".ui.modes")
 		.data()
@@ -279,26 +273,21 @@ function onClick(event, treeId, treeNode, clickFlag) {
 		if (mode == "0" || mode == "2") {
 			$("#RTU").show();
 			$("#TCP").hide();
-			$("#ECM").show();
 		} else if (mode == "1") {
 			$("#RTU").hide();
 			$("#TCP").show();
-			$("#ECM").hide();
 		} else if (mode == "3") {
 			$("#RTU").hide();
 			$("#TCP").show();
-			$("#ECM").show();
 		} else {
 			$("#RTU").hide();
 			$("#TCP").hide();
-			$("#ECM").hide();
 		}
-		$("#unit").hide(); 
+		$("#DEVICES").hide(); 
 	} else {
-		$("#ECM").hide();
 		$("#RTU").hide();
 		$("#TCP").hide();
-		$("#unit").show(); 
+		$("#DEVICES").show(); 
 	}
 	if (mode == "1" || mode == "3") {
 		for (var i = 0; i < json_text.length; i++) {
@@ -306,27 +295,27 @@ function onClick(event, treeId, treeNode, clickFlag) {
 				document.getElementById("port").value = json_text[i].config.port;
 				document.getElementById("sIp").value = json_text[i].config.sIp;
 				document.getElementById("unit").value = json_text[i].config.unit;
-				if (mode == "3") {
-					$(".ui.ecm")
-						.data()
-						.moduleDropdown
-						.action
-						.activate(undefined, json_text[i].config.ecm)
-						;
-				}
+				document.getElementById("ct").value = json_text[i].config.ct ? json_text[i].config.ct : "1.000000";
+				document.getElementById("pt").value = json_text[i].config.pt ? json_text[i].config.pt : "1.000000";
+				$(".ui.ecm")
+					.data()
+					.moduleDropdown
+					.action
+					.activate(undefined, json_text[i].config.ecm)
+					;
 				break;
 			} else {
 				document.getElementById("port").value = "";
 				document.getElementById("sIp").value = "";
 				document.getElementById("unit").value = "";
-				if (mode == "3") {
-					$(".ui.ecm")
-						.data()
-						.moduleDropdown
-						.action
-						.activate(undefined, 0)
-						;
-				}
+				document.getElementById("ct").value = "1.000000";
+				document.getElementById("pt").value = "1.000000";
+				$(".ui.ecm")
+					.data()
+					.moduleDropdown
+					.action
+					.activate(undefined, 0)
+					;
 			}
 		}
 	} else if (mode == "0" || mode == "2") {
@@ -370,6 +359,8 @@ function onClick(event, treeId, treeNode, clickFlag) {
 					.activate(undefined, json_text[i].config.ecm)
 					;
 				document.getElementById("unit").value = json_text[i].config.unit;
+				document.getElementById("ct").value = json_text[i].config.ct ? json_text[i].config.ct : "1.000000";
+				document.getElementById("pt").value = json_text[i].config.pt ? json_text[i].config.pt : "1.000000";
 				break;
 			} else {
 				$(".ui.sPort")
@@ -409,6 +400,8 @@ function onClick(event, treeId, treeNode, clickFlag) {
 					.activate(undefined, "0")
 					;
 				document.getElementById("unit").value = "";
+				document.getElementById("ct").value = "1.000000";
+				document.getElementById("pt").value = "1.000000";
 			}
 		}
 	} else {
@@ -421,7 +414,27 @@ function beforeDrag(treeId, treeNodes) {
 function beforeRemove(treeId, treeNode) {
 	className = (className === "dark" ? "":"dark");
 	showLog("[ "+getTime()+" beforeRemove ]&nbsp;&nbsp;&nbsp;&nbsp; " + treeNode.name);
-	return confirm("Confirm delete node '" + treeNode.name + "' it?");
+	var isTrue = confirm("Confirm delete node '" + treeNode.name + "' it?");
+	if (isTrue) {
+		var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+		nodes = zTree.getSelectedNodes();
+		treeNode = nodes[0];
+		var id = treeNode.id;
+		var pId = treeNode.pId;
+		var name = treeNode.name;
+		for (var i = 0; i < json_text.length; i++) {
+			if (id == json_text[i].tree.id && pId == json_text[i].tree.pId && name == json_text[i].tree.name) {
+				//console.log(JSON.stringify(json_text));
+				$.post("/apps/<?=app.appname?>/remove", {id:id, pId:pId, name:name, json_text:(JSON.stringify(json_text)), filename:"<?=app.appname?>"}, function(data){
+							});
+			}
+		}
+		var callbackFlag = $("#callbackTrigger").attr("checked");
+		zTree.removeNode(treeNode, callbackFlag);
+		location.reload();
+	}
+
+	return isTrue;
 }
 function onRemove(e, treeId, treeNode) {
 	showLog("[ "+getTime()+" onRemove ]&nbsp;&nbsp;&nbsp;&nbsp; " + treeNode.name);
@@ -452,55 +465,43 @@ function getTime() {
 }
 
 var newCount = 1;
-function add(e) {
-	var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
-		isParent = e.data.isParent,
-		nodes = zTree.getSelectedNodes(),
+function addHoverDom(treeId, treeNode) {
+	var sObj = $("#" + treeNode.tId + "_span");
+	if (treeNode.editNameFlag || $("#addBtn_"+treeNode.tId).length>0) return;
+	var addStr = "<span class='button add' id='addBtn_" + treeNode.tId
+		+ "' title='add node' onfocus='this.blur();'></span>";
+	sObj.after(addStr);
+	var btn = $("#addBtn_"+treeNode.tId);
+	if (btn) btn.bind("click", function(){
+		//var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+		//zTree.addNodes(treeNode, {id:(100 + newCount), pId:treeNode.id, name:"new node" + (newCount++)});
+		var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
+		nodes = zTree.getSelectedNodes();
 		treeNode = nodes[0];
-	if (treeNode) {
-		if (json_text.length > 0 && isParent) {
-			alert("Parent node is locked and can not add Parent node.");
-			return;
-		}
+		isParent = treeNode.isParent;
 		var max = 0;
 		if (json_text.length > 1) {
 			max = parseInt(json_text[0].tree.id);
 			for (var i = 0; i < json_text.length; i++) {
-				if (parseInt(json_text[i].tree.id) > max) {
-					max = parseInt(json_text[i].tree.id);
-				}
+			if (parseInt(json_text[i].tree.id) > max) {
+				max = parseInt(json_text[i].tree.id);
 			}
-			treeNode = zTree.addNodes(treeNode, {id:(max + newCount ), pId:treeNode.id, isParent:isParent, name:"new node" + (newCount++)});
+		}
+			treeNode = zTree.addNodes(treeNode, {id:(max + newCount ), pId:treeNode.id, name:"new node" + (newCount++)});
 		} else {
-			treeNode = zTree.addNodes(treeNode, {id:(treeNode.id * 10 + newCount ), pId:treeNode.id, isParent:isParent, name:"new node" + (newCount++)});
+			treeNode = zTree.addNodes(treeNode, {id:(treeNode.id * 10 + newCount ), pId:treeNode.id, name:"new node" + (newCount++)});
 		}
-	} else {
-		if (json_text.length > 0 && isParent) {
-			alert("Parent node is locked and can not add Parent node.");
-			return;
-		}
-		if ( !isParent ) {
-			alert("Please add Parent node.");
-			return;
-		}
-		treeNode = zTree.addNodes(null, {id:1, pId:0, isParent:isParent, name:"new node"});
-	}
-	if (treeNode) {
-		zTree.editName(treeNode[0]);
-		$("#RTU").hide();
-		$("#TCP").hide(); 
-		$("#ECM").hide();
-		$("#unit").show(); 
-	} else {
-		newCount--;
-		alert("Leaf node is locked and can not add child node.");
-	}
+		return false;
+	});
 };
-function edit() {
-	var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
-		nodes = zTree.getSelectedNodes(),
-		treeNode = nodes[0];
-	zTree.editName(treeNode);
+function showRemoveBtn(treeId, treeNode) {
+	return !treeNode.isParent;
+}
+function showRenameBtn(treeId, treeNode) {
+	return !treeNode.isParent;
+}
+function removeHoverDom(treeId, treeNode) {
+	$("#addBtn_"+treeNode.tId).unbind().remove();
 };
 
 function pSave(){
@@ -533,15 +534,7 @@ function pSave(){
 					window.location.reload();
 					}
 					});
-	} else if (val == "1") {
-		var port = document.getElementById("port").value;
-		var sIp = document.getElementById("sIp").value;
-		$.post("", {id:id, pId:pId, name:name, mode:val, port:port, sIp:sIp, unit:unit, ct:ct, pt:pt}, function(data, status){
-					if (status) {
-					window.location.reload();
-					}
-					});
-	} else if (val == "3") {
+	} else if (val == "1" || val == "3") {
 		var port = document.getElementById("port").value;
 		var sIp = document.getElementById("sIp").value;
 		var ecm = $(".ui.ecm").dropdown("get value");
@@ -555,105 +548,6 @@ function pSave(){
 		return;
 	}
 }
-function remove(e) {
-	var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
-		nodes = zTree.getSelectedNodes(),
-		treeNode = nodes[0];
-	if (nodes.length == 0) {
-		alert("Please select one node at first...");
-		return;
-	} else {
-		var id = treeNode.id;
-		var pId = treeNode.pId;
-		var name = treeNode.name;
-	}
-	for (var i = 0; i < json_text.length; i++) {
-		if (id == json_text[i].tree.id && pId == json_text[i].tree.pId && name == json_text[i].tree.name) {
-			//console.log(JSON.stringify(json_text));
-			$.post("/apps/<?=app.appname?>/remove", {id:id, pId:pId, name:name, json_text:(JSON.stringify(json_text)), filename:"<?=app.appname?>"}, function(data){
-			});
-		}
-	}
-	var callbackFlag = $("#callbackTrigger").attr("checked");
-	zTree.removeNode(treeNode, callbackFlag);
-	location.reload();
-};
-
-
-function fontCss(treeNode) {
-	var aObj = $("#" + treeNode.tId + "_a");
-	aObj.removeClass("copy").removeClass("cut");
-	if (treeNode === curSrcNode) {
-		if (curType == "copy") {
-			aObj.addClass(curType);
-		} else {
-			aObj.addClass(curType);
-		}			
-	}
-};
-var curSrcNode, curType;
-function setCurSrcNode(treeNode) {
-	var zTree = $.fn.zTree.getZTreeObj("treeDemo");
-	if (curSrcNode) {
-		delete curSrcNode.isCur;
-		var tmpNode = curSrcNode;
-		curSrcNode = null;
-		fontCss(tmpNode);
-	}
-	curSrcNode = treeNode;
-	if (!treeNode) return;
-
-	curSrcNode.isCur = true;			
-	zTree.cancelSelectedNode();
-	fontCss(curSrcNode);
-};
-function copy(e) {
-	var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
-		nodes = zTree.getSelectedNodes();
-	if (nodes.length == 0) {
-		alert("Please select one node at first...");
-		return;
-	}
-	curType = "copy";
-	setCurSrcNode(nodes[0]);
-};
-function cut(e) {
-	var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
-		nodes = zTree.getSelectedNodes();
-	if (nodes.length == 0) {
-		alert("Please select one node at first...");
-		return;
-	}
-	curType = "cut";
-	setCurSrcNode(nodes[0]);
-};
-function paste(e) {
-	if (!curSrcNode) {
-		alert("Please select one node to copy or cut at first...");
-		return;
-	}
-	var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
-		nodes = zTree.getSelectedNodes(),
-		targetNode = nodes.length>0? nodes[0]:null;
-	if (curSrcNode === targetNode) {
-		alert("Can't move, the same source node and destination node.");
-		return;
-	} else if (curType === "cut" && ((!!targetNode && curSrcNode.parentTId === targetNode.tId) || (!targetNode && !curSrcNode.parentTId))) {
-		alert("Can't move, source node is the target node's child.");
-		return;
-	} else if (curType === "copy") {
-		targetNode = zTree.copyNode(targetNode, curSrcNode, "inner");
-	} else if (curType === "cut") {
-		targetNode = zTree.moveNode(targetNode, curSrcNode, "inner");
-		if (!targetNode) {
-			alert("Cutting failure, source node is the target node's parent.");
-		}
-		targetNode = curSrcNode;
-	}
-	setCurSrcNode();
-	delete targetNode.isCur;
-	zTree.selectNode(targetNode);
-};
 
 function advance() {
 	var zTree = $.fn.zTree.getZTreeObj("treeDemo");
@@ -672,15 +566,6 @@ function advance() {
 
 $(document).ready(function(){
 	$.fn.zTree.init($("#treeDemo"), setting, zNodes);
-	$("#addParent").bind("click", {isParent:true}, add);
-	$("#addLeaf").bind("click", {isParent:false}, add);
-	$("#remove").bind("click", remove);
-	//	$("#clearChildren").bind("click", clearChildren);
-	$("#edit").bind("click", edit);
-	$("#copy").bind("click", copy);
-	$("#cut").bind("click", cut);
-	$("#paste").bind("click", paste);
-	//	$("#save").bind("click", save);
 	$("#pSave").bind("click", pSave);
 	$("#advance").bind("click", advance);
 	var treeObj = $.fn.zTree.getZTreeObj("treeDemo"); 

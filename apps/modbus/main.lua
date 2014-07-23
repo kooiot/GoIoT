@@ -130,7 +130,7 @@ stream.read = function (t, check, timeout)
 
 			if string.len(stream.buf) > 0 then
 				--print(os.date(), 'DATA CHECK', hex_raw(stream.buf))
-				local r, b, e = check(stream.buf, t, port_config, ecm)
+				local r, b, e = check(stream.buf, t, port_config)
 				if r then
 					return r
 				end
@@ -249,7 +249,7 @@ handlers.on_run = function(app)
 			for k, v in pairs(v.tags) do
 				if v.request.cycle ~= "" then
 					if v.request.cycle and v.request.timer:rest() == 0 then
-						local pdu, err = mclient:request(v, port_config, modbus_mode.ecm)
+						local pdu, err = mclient:request(v, port_config, port_config.ecm)
 						if pdu then
 							local ts = ztimer.absolute_time()
 							local vals = {}
@@ -269,9 +269,9 @@ handlers.on_run = function(app)
 									val = val * multiple
 
 									if ctpt == "2" then
-										val = val * modbus_mode.ct
+										val = val * port_config.ct
 									elseif ctpt == "3" then
-										val = val * modbus_mode.pt
+										val = val * port_config.pt
 									elseif ctpt == "4" then
 										val = val * modbus_mode.ct * modbus_mode.pt
 									else
@@ -291,7 +291,7 @@ handlers.on_run = function(app)
 								end
 							else
 								for k, v in pairs(v.vals) do
-									local name = v.Nmae
+									local name = v.Name
 									local addr = v.Address
 									local data = v.Data
 									name = ioname .. "/unit." .. port_config.unit .. "/inputs/" .. name
