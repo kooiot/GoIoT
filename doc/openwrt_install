@@ -8,7 +8,7 @@ ln -s /etc/cad2/apps /tmp/apps
 mkdir /tmp/backups
 
 mkdir /tmp/cad2
-mount -t squashfs -o loop /etc/cad2/cad2_xz.sfs /tmp/cad2
+mount -t squashfs -o loop /etc/cad2/cad2.sfs /tmp/cad2
 
 export CAD_DIR=/tmp/cad2
 cd /tmp/cad2
@@ -20,7 +20,7 @@ cd -
 
 
 -- 复制cad2_xz.sfs到openwrt中去
-scp cad2_xz.sfs root@192.168.1.1:/etc/cad2/
+scp cad2_xz.sfs root@192.168.1.1:/etc/cad2/cad2.sfs
 
 -- 链接wsapi（执行一下命令)  (TODO: This is A bug!!!!)
 mkdir -p /usr/local/bin
