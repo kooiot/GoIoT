@@ -58,14 +58,13 @@
 	function doitnow() {
 		var status = $('#status');
 		$.post("/store/upgrade", {lname:"<?=lname?>"}, function(data) {
-				status.html(data);
+				window.location.href=data;
 				})
 		.done(function() {
-				//alert("Application Started!!");
 				})
-		.fail(function() {
-				alert("Failed to send start request!!");
-				});
+		.error(function(data) {
+			alert(data.responseText);
+		});
 	};
 </script>
 

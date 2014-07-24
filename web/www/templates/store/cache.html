@@ -48,7 +48,8 @@
 				}
 			},
 			success: function(data, textStatus, jqXHR) {
-				alert('Please click RELOAD button to loading the cached applications');
+				//alert('Please click RELOAD button to loading the cached applications');
+				window.location.href="/waitor?name=store.cache.update&link=%2fstore%23%2fcache";
 			}
 		});
 	};

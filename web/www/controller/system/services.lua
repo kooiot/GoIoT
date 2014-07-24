@@ -5,14 +5,18 @@ return {
 		local name = req:get_arg('name')
 		local r, err
 		if name then
+			res.headers['Content-Type'] = 'application/json; charset=utf8'
 			r, err = api.query(name)
 			if r then
-				r = {r}
+				res:write(cjson.encode(r))
+				--r = {r}
+			else
+				lwf.set_status(403)
 			end
 		else
 			r, err = api.list()
+			res:ltp('system/services.html', {lwf=lwf, app=app, status = r, err = err})
 		end
-		res:ltp('system/services.html', {lwf=lwf, app=app, status = r, err = err})
 	end,
 	post = function(req, res)
 		local api = require 'shared.api.services'

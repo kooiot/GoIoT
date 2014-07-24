@@ -29,6 +29,7 @@ return {
 		local lname = req:get_arg('lname')
 		if not lname then
 			res:write('ERROR', 'The application name is not specified!!')
+			lwf.set_status(403)
 			return
 		end
 
@@ -37,16 +38,19 @@ return {
 		local info = list.find(lname) 
 		if not info then
 			res:write('ERROR: The application is not installed!!')
+			lwf.set_status(403)
 			return
 		end
 		local store = require 'shared.store'
 		local app, err = store.find(info.path)
 		if not app then
 			res:write('ERROR: Applicaiton not found from store cache')
+			lwf.set_status(403)
 			return
 		end
 		if info.version == app.info.version then
 			res:write('ERROR: Application is latest version')
+			lwf.set_status(403)
 			return
 		end
 
@@ -59,9 +63,11 @@ return {
 		local r, err = api.add('store.install.'..lname..'.upgrade', dostr, 'Upgrade '..lname..' ('..path..')')
 		assert(r, err)
 		if r then
-			res:write([[View the progress <a href="/store/backend">here</a>]])
+			--res:write([[View the progress <a href="/store/backend">here</a>]])
+			res:write('/waitor?name=store.install.'..lname..'&link=%2f%23%2fapps');
 		else
 			res:write('ERROR:'..err)
+			lwf.set_status(403)
 		end
 	end
 }
