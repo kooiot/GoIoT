@@ -12,6 +12,10 @@
 		<div class="ui teal ribbon label"><?=_("System Management")?></div>
 		<p>
 		<div id="btn_reboot" class="ui small red button"><?=_("Reboot")?></div>
+		<? if remote_version > version then ?>
+		<div id="btn_upgrade" class="ui small green button"><?=_("Upgrade")?></div>
+		<div class="ui label">New version <?=remote_version?> found </div>
+		<? end ?>
 		</p>
 		<div class="ui teal ribbon label"><?=_("Upgrade System")?></div>
 		<p>
@@ -82,6 +86,18 @@
 				alert("<?=_('Failed to reboot')?>");
 			});
 		});
+
+		$( "#btn_upgrade" ).click(function() {
+			$.post("/system/online_upgrade", {from:"web", version:"<?=remote_version?>"}, function(data) {
+				window.location.href=data;
+			})
+			.done(function() {
+			})
+			.fail(function() {
+				alert("<?=_('Failed to request online upgrade')?>");
+			});
+		});
+
 	})();       
 </script>
 

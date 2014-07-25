@@ -2,7 +2,10 @@
 return {
 	get = function(req, res)
 		if lwf.ctx.user then
-			res:ltp('system/upgrade.html')
+			local system = require 'shared.system'
+			local version = system.version()
+			local remote_version = system.remote_version()
+			res:ltp('system/upgrade.html', {lwf=lwf, app=app, version=tonumber(version), remote_version=tonumber(remote_version)})
 		else
 			res:redirect('/user/login')
 		end
