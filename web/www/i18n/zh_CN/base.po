@@ -27,7 +27,7 @@ msgid "Affected Instance"
 msgstr "受影响的应用实例"
 
 msgid "Application Store"
-msgstr "应用商店"
+msgstr "应用中心"
 
 msgid "Applications"
 msgstr "应用"
@@ -306,7 +306,7 @@ msgid "Stop"
 msgstr "停止"
 
 msgid "Store"
-msgstr "商店"
+msgstr "市场"
 
 msgid "Summary"
 msgstr "摘要"
