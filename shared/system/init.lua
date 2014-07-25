@@ -86,7 +86,7 @@ local function download_sys(version)
 	local cfg = store.get_cfg()
 
 	local src = cfg.srvurl..'/sys/cad2_xz.'..version..'.sfs'
-	local dest = platform.path.temp..'/cad2.'..version..'sfs'
+	local dest = platform.path.temp..'/cad2.'..version..'.sfs'
 
 	log:info('SYSTEM', "Download system from", src, "to", dest)
 	local r, err = download(src, dest)
