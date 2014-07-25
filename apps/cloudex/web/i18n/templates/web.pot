@@ -6,6 +6,10 @@ msgid "Auth Key"
 msgstr ""
 
 
+msgid "Compress"
+msgstr ""
+
+
 msgid "Save"
 msgstr ""
 

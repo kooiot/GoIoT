@@ -125,6 +125,9 @@ msgstr "从应用商店服务器获取应用信息失败,错误:"
 msgid "Failed to reboot"
 msgstr "发送重启指令失败"
 
+msgid "Failed to request online upgrade"
+msgstr "发送在线升级指令失败"
+
 msgid "Failed to send remove request!!"
 msgstr "发送移除指令失败"
 
@@ -368,8 +371,14 @@ msgstr "版本"
 msgid "Value"
 msgstr "值"
 
+msgid "Version"
+msgstr "版本号"
+
 msgid "View"
 msgstr "查看"
+
+msgid "Wait for services running finished!!"
+msgstr "等待服务进程结束运行"
 
 msgid "Website"
 msgstr "网站"
@@ -377,5 +386,3 @@ msgstr "网站"
 msgid "Welcome"
 msgstr "欢迎"
 
-#~ msgid "Services"
-#~ msgstr "服务"
