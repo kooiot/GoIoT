@@ -32,6 +32,14 @@ function class:get()
 	return self.value, self.timestamp, self.quality
 end
 
+--- Set the value type props
+-- @tparam string the type description string in <type>/<usage>. 
+--	e.g. "number/time" "string/uuid" the usage is optional 
+--	default is "number"
+function class:value_type(typ)
+	self.props:add('type', 'value type', typ)	
+end
+
 --- Create new property helper function
 -- set the proper path for prop
 -- @tparam class obj Object
