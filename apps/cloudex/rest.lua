@@ -42,7 +42,7 @@ local function api(method, obj, path)
 	if r and code == 200 then
 		return true, table.concat(re)
 	else
-		local err = 'Error: code['..(code or 'Unknown')..'] status ['..(status or '')..']'
+		local err = 'Error: code['..(code or 'Unknown')..'] status ['..(status or '')..'] url-'..path
 		print(err)
 		return nil, err
 	end

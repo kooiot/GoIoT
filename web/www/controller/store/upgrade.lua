@@ -64,7 +64,7 @@ return {
 		assert(r, err)
 		if r then
 			--res:write([[View the progress <a href="/store/backend">here</a>]])
-			res:write('/waitor?name=store.install.'..lname..'&link=%2f%23%2fapps');
+			res:write('/waitor?name=store.install.'..lname..'.upgrade&link=%2f%23%2fapps');
 		else
 			res:write('ERROR:'..err)
 			lwf.set_status(403)
