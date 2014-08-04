@@ -14,10 +14,8 @@
 	<tbody>
 	<?
 	local has_app = false
-	local cates = 0
 	local counts = 0
 	for cate, lst in pairs(apps) do
-		cates = cates + 1
 		has_app = true
 		for _, v in pairs(lst) do 
 			counts = counts + 1
@@ -84,7 +82,6 @@
 		<tr>
 			<th><?=_("Total")?> <?=counts?></th>
 			<th>
-				<?=_("Types")?> <?= cates?> 
 				<div class="ui tiny teal button" onclick="update_cache();"><?=_("Check for updates")?></div>
 			</th>
 			<th></th>
