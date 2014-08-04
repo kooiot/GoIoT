@@ -45,12 +45,12 @@ _M.check = function(adu, checkmode)
 		checknum = CRC(adu)
 		hv, lv = encode.uint16(checknum)
 		return lv .. hv
-	end
-
-	if checkmode == "2" then
+	elseif checkmode == "2" then
 		checknum = LRC(adu)
 		hv, lv = encode.uint16(checknum)
 		return hv .. lv
+	else
+		return ""
 	end
 end
 

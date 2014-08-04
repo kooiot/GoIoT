@@ -1,8 +1,6 @@
 <? extend'layout.html'?>
 <link rel="stylesheet" href="/static/library/ztree/css/zTreeStyle/zTreeStyle.css" type="text/css"/>
 <script type="text/javascript" src="/static/library/ztree/js/jquery.ztree.all-3.5.min.js"></script>
-<script type="text/javascript" src="/static/library/ztree/js/jquery.ztree.excheck-3.5.js"></script>
-<script type="text/javascript" src="/static/library/ztree/js/jquery.ztree.exedit-3.5.js"></script>
 
 <style type="text/css">
 	.ztree li span.button.add {margin-left:2px; margin-right: -1px; background-position:-144px 0; vertical-align:top; *vertical-align:middle}
@@ -36,6 +34,8 @@
 			<div class="ui segment">
 				<div id="treeDemo" class="ztree"></div>
 			</div>
+			<div class="ui clearing divider"></div>
+			<div class="ui button" id="packet" name="packet_sequencing">Packet Sequencing</div>
 		</div>
 		<div class="ten wide column">
 			<div class="ui basic segment">
@@ -128,10 +128,21 @@
 					<div id="DEVICES" name="DEVICES">
 						<label>UNIT:</label>
 						<input placeholder="UNIT" id="unit" name="unit" type="text" />
-						<label>CT:</label>
-						<input placeholder="CT" id="ct" name="ct" type="text" value=1.000000 />
-						<label>PT:</label>
-						<input placeholder="PT" id="pt" name="pt" type="text" value=1.000000 />
+						<div class="ui accordion">
+							<div class="active title">
+								<i class="dropdown icon"></i>
+								Ratio
+							</div>
+							<div class="content" id="ratios">
+								<label>CT:</label>
+								<input placeholder="CT" id="ct" name="ct" type="text" value=1.000000 />
+								<label>PT:</label>
+								<input placeholder="PT" id="pt" name="pt" type="text" value=1.000000 />
+								<p></p>
+								<div id="ratio" class="ui blue button" onclick="add_ratio();">Add</div>
+								<p></p>
+							</div>
+						</div>
 						<p></p>
 						错误校验:
 						<div class="ui dropdown selection ecm">
@@ -146,7 +157,37 @@
 					</div>
 				</form>
 				<div class="ui clearing divider"></div>
-				<div class="ui button" id="advance" name="advance">高级</div>
+				<div class="ui button" id="advance" name="advance">Advance</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<div class="ui basic small modal">
+	<div class="content">
+		<div class="left">
+			<p>Name</p>
+			<div class="ui small input">
+				<input id="ratio_lname" type="text" placeholder="Name"></input>
+			</div>
+		</div>
+		<div class="right">
+			<p>Value</p>
+			<div class="ui small input">
+				<input id="ratio_value" type="text" placeholder="Value"></input>
+			</div>
+		</div>
+	</div>
+	<div class="actions">
+		<div class="two fluid ui buttons">
+			<div class="ui negative labeled icon button">
+				<i class="remove icon"></i>
+				Cancel
+			</div>
+			<div class="ui positive right labeled icon button">
+				Save
+				<i class="checkmark icon"></i>
 			</div>
 		</div>
 	</div>
@@ -154,6 +195,10 @@
 
 <script type="text/javascript">
 var setting = {
+	check: {
+		enable: true,
+		nocheckInherit: false,
+	},
 	view: {
 		addHoverDom: addHoverDom,
 		removeHoverDom: removeHoverDom,
@@ -190,6 +235,37 @@ var setting = {
 		onRemove: onRemove
 	}
 };
+
+	var ratio = new Object();
+	function add_ratio() {
+		$('.ui.modal')
+			.modal('setting', {
+					closable  : false,
+					onDeny    : function(){
+					//window.alert('Wait not yet!');
+					//return false;
+				},
+				onApprove : function() {
+					//window.alert('Approved!');
+					var lname = $('#ratio_lname').val();
+					lname = lname.trim();
+					var value = $("#ratio_value").val();
+					if (lname.length == 0 || !value) {
+						window.alert("Name/Value cannot be empty");
+						return false;
+					};
+					ratio[lname] = value;
+					console.log(JSON.stringify(ratio));
+
+					//$("#ratios").append("<div> Hello World!<div>");
+					//$("#ratios").append('<div><label>' + lname + ': </label> <input type="text" name=' + lname + ' "id="'+ lname + '" value=' + value +' /></div>');
+					$("#ratios").append('<div><div class="ui label">' + lname + ': </div> <input type="text" name=' + lname + ' "id="'+ lname + '" value=' + value +' /></div>');
+					return true;
+				}
+			})
+			.modal('show')
+			;
+	};
 
 function changeType(obj)
 {
@@ -228,6 +304,7 @@ if (json_text.length == 0) {
 		treenode.id = json_text[0].tree.id;
 		treenode.pId = json_text[0].tree.pId;
 		treenode.name = json_text[0].tree.name;
+		treenode.checked = json_text[0].tree.checked;
 		treenode.isParent = true;
 		tree[0] = treenode;
 	} else {
@@ -236,6 +313,7 @@ if (json_text.length == 0) {
 			treenode.id = json_text[i].tree.id;
 			treenode.pId = json_text[i].tree.pId;
 			treenode.name = json_text[i].tree.name;
+			treenode.checked = json_text[i].tree.checked;
 			tree[i] = treenode;
 		}
 	}
@@ -487,9 +565,9 @@ function addHoverDom(treeId, treeNode) {
 				max = parseInt(json_text[i].tree.id);
 			}
 		}
-			treeNode = zTree.addNodes(treeNode, {id:(max + newCount ), pId:treeNode.id, name:"new node" + (newCount++)});
+			treeNode = zTree.addNodes(treeNode, {id:(max + newCount ), pId:treeNode.id, name:"new node" + (newCount++), checked:true});
 		} else {
-			treeNode = zTree.addNodes(treeNode, {id:(treeNode.id * 10 + newCount ), pId:treeNode.id, name:"new node" + (newCount++)});
+			treeNode = zTree.addNodes(treeNode, {id:(treeNode.id * 10 + newCount ), pId:treeNode.id, name:"new node" + (newCount++), checked:true});
 		}
 		return false;
 	});
@@ -512,6 +590,7 @@ function pSave(){
 		var id = treeNode.id;
 		var pId = treeNode.pId;
 		var name = treeNode.name;
+		var checked = treeNode.checked;
 	} else {
 		alert("Please select one node at first...");
 		return;
@@ -529,7 +608,7 @@ function pSave(){
 		var ecm = $(".ui.ecm").dropdown("get value");
 		console.log("sPort=", sPort, "baud=", baud, "dbs=", dbs, "parity=", parity, "sbs=", sbs, "ecm=", ecm);
 		//alert($(".ui.parity").dropdown("get value"));
-		$.post("", {id:id, pId:pId, name:name, mode:val, sPort:sPort, baud:baud, dbs:dbs, parity:parity, sbs:sbs, ecm:ecm, unit:unit, ct:ct, pt:pt}, function(data, status){
+		$.post("", {id:id, pId:pId, name:name, checked:checked, mode:val, sPort:sPort, baud:baud, dbs:dbs, parity:parity, sbs:sbs, ecm:ecm, unit:unit, ct:ct, pt:pt}, function(data, status){
 					if (status) {
 					window.location.reload();
 					}
@@ -538,7 +617,7 @@ function pSave(){
 		var port = document.getElementById("port").value;
 		var sIp = document.getElementById("sIp").value;
 		var ecm = $(".ui.ecm").dropdown("get value");
-		$.post("", {id:id, pId:pId, name:name, mode:val, port:port, sIp:sIp, unit:unit, ct:ct, pt:pt, ecm:ecm}, function(data, status){
+		$.post("", {id:id, pId:pId, name:name, checked:checked, mode:val, port:port, sIp:sIp, unit:unit, ct:ct, pt:pt, ecm:ecm}, function(data, status){
 					if (status) {
 					window.location.reload();
 					}
@@ -564,12 +643,20 @@ function advance() {
 	window.location.href="/apps/<?=app.appname?>/" + "tree?name=" + treeNode.name;
 }
 
+function packet_sequencing() {
+	window.location.href="/apps/<?=app.appname?>/packet_sequencing";
+}
+
 $(document).ready(function(){
 	$.fn.zTree.init($("#treeDemo"), setting, zNodes);
 	$("#pSave").bind("click", pSave);
 	$("#advance").bind("click", advance);
+	$("#packet").bind("click", packet_sequencing);
 	var treeObj = $.fn.zTree.getZTreeObj("treeDemo"); 
 	treeObj.expandAll(true); 
+	var nodes=treeObj.getNodes();
+	nodes[0].nocheck = true;
+	treeObj.updateNode(nodes[0]);
 });
 
 </script>

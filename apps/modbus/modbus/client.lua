@@ -23,7 +23,7 @@ end
 
 --ecm, error checking methods
 function class:request (t, port_config) 
-	p = pdu[cmd[tonumber(t.request.func)]](t)
+	p = pdu[cmd[tonumber(t.tags.request.func)]](t)
 	if not p then
 		return nil
 	end

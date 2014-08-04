@@ -62,7 +62,7 @@ function _M.check(buf, t, port_config)
 	local adu = nil
 	local transaction = transaction or 0
 	local unit = encode.uint8(port_config.unit)
-	local fc = encode.uint8(t.request.func)
+	local fc = encode.uint8(t.tags.request.func)
 	local hv, lv = encode.uint16(transaction)
 	transaction = hv .. lv
 	hv, lv = encode.uint16(0)

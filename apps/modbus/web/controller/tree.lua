@@ -15,13 +15,28 @@ return {
 		filename = path .. "/" .. app.appname .. "/config/" .. app.appname .. "/" .. filename .."_config.json"
 		local file, err = io.open(filename, "a+")
 		if file then
+			local pfilename = path .. "/" .. app.appname .. "/config/" .. app.appname .. "/" .. app.appname .. "_config.json"
+			local pfile, msg = io.open(pfilename, "a+")
+			if pfile then
+				pconfig = pfile:read("*a")
+				pconfig = cjson.decode(pconfig)
+				for k, v in pairs(pconfig) do
+					if v.tree.name == req:get_arg("name") then
+						id = v.tree.id
+						pId = v.tree.pId
+					end
+				end
+				pfile:close()
+			else
+				res:write(msg)
+			end
 			local config = file:read("*a")
 			if config == "" then
 				devices = {}
 				t = {}
 				t.tree = {}
-				t.tree.id = "1"
-				t.tree.pId = "0"
+				t.tree.id = id
+				t.tree.pId = pId
 				t.tree.name = req:get_arg("name")
 				t.tree.isParent = true
 				t.request = {}
@@ -31,7 +46,6 @@ return {
 				t.request.addr = ""
 				t.request.len = ""
 				table.insert(devices, t)
-				config = cjson.encode(devices)
 				config = cjson.encode(devices)
 				file:write(config)
 			end
@@ -62,9 +76,11 @@ return {
 		local name = req:get_post_arg("name")
 		local id = req:get_post_arg("id")
 		local pId = req:get_post_arg("pId")
+		local checked = req:get_post_arg("checked")
 		t.tree.name = name
 		t.tree.id = id
 		t.tree.pId = pId
+		t.tree.checked = checked
 		t.vals = {}
 		t.request = {}
 		t.request.cycle = cycle

@@ -16,7 +16,7 @@
 <div class="tab segment">
 	<div class="container">
 		<div class="introduction">
-			<h2 class="ui dividing header"> <?=app.appname ?> - <?=name ?> </h2>
+			<h2 class="ui dividing header"> <a href="javascript:history.go(-1);"><?=app.appname ?></a> - <?=name ?> </h2>
 		</div>
 	</div>
 </div>
@@ -113,6 +113,10 @@
 	<SCRIPT type="text/javascript">
 		<!--
 		var setting = {
+			check: {
+				enable: true,
+				nocheckInherit: false,
+			},
 			view: {
 				addHoverDom: addHoverDom,
 				removeHoverDom: removeHoverDom,
@@ -161,6 +165,7 @@
 					treenode.id = json_text[0].tree.id;
 					treenode.pId = json_text[0].tree.pId;
 					treenode.name = json_text[0].tree.name;
+					treenode.checked = json_text[0].tree.checked;
 					treenode.isParent = true;
 					tree[0] = treenode;
 			} else {
@@ -169,6 +174,7 @@
 					treenode.id = json_text[i].tree.id;
 					treenode.pId = json_text[i].tree.pId;
 					treenode.name = json_text[i].tree.name;
+					treenode.checked = json_text[i].tree.checked;
 					tree[i] = treenode;
 				}
 			}
@@ -306,9 +312,9 @@
 						max = parseInt(json_text[i].tree.id);
 						}
 					}
-					treeNode = zTree.addNodes(treeNode, {id:(max + newCount ), pId:treeNode.id, name:"new node" + (newCount++)});
+					treeNode = zTree.addNodes(treeNode, {id:(max + newCount ), pId:treeNode.id, name:"new node" + (newCount++), checked:true});
 				} else {
-					treeNode = zTree.addNodes(treeNode, {id:(treeNode.id * 10 + newCount ), pId:treeNode.id, name:"new node" + (newCount++)});
+					treeNode = zTree.addNodes(treeNode, {id:(treeNode.id * 10 + newCount ), pId:treeNode.id, name:"new node" + (newCount++), checked:true});
 				}
 				return false;
 			});
@@ -331,6 +337,7 @@
 				var id = treeNode.id;
 				var pId = treeNode.pId;
 				var name = treeNode.name;
+				var checked = treeNode.checked;
 			} else {
 				alert("Please select one node at first ...");
 				return;
@@ -342,7 +349,7 @@
 			var len = document.getElementById("len").value;
 			var str = $(document.forms[0]).serialize();
 			console.log(str);
-			$.post("tree", {id:id, pId:pId, name:name, cycle:cycle, time_unit:time_unit, func:func, addr:addr, len:len, values:str, filename:json_text[0].tree.name}, function(data, status){
+			$.post("tree", {id:id, pId:pId, name:name, checked:checked, cycle:cycle, time_unit:time_unit, func:func, addr:addr, len:len, values:str, filename:json_text[0].tree.name}, function(data, status){
 						if (status) {
 							if (parseInt(pId) != 0)
 								window.location.reload();
@@ -355,6 +362,9 @@
 			$("#pSave").bind("click", pSave);
 			var treeObj = $.fn.zTree.getZTreeObj("treeDemo"); 
 			treeObj.expandAll(true); 
+			var nodes=treeObj.getNodes();
+			nodes[0].nocheck = true;
+			treeObj.updateNode(nodes[0]);
 		});
 		//-->
 	</SCRIPT>

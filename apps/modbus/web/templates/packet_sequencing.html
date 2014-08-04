@@ -1,0 +1,114 @@
+<? extend'layout.html'?>
+<link rel="stylesheet" href="/static/library/ztree/css/zTreeStyle/zTreeStyle.css" type="text/css"/>
+<script type="text/javascript" src="/static/library/ztree/js/jquery.ztree.all-3.5.min.js"></script>
+
+<div class="tab segment">
+	<div class="container">
+		<div class="introduction">
+			<h2 class="ui dividing header"> <a href="javascript:history.go(-1);"><?=app.appname ?></a> - Packet Sequencing </h2>
+		</div>
+	</div>
+</div>
+
+<div class="main container">
+	<div class="ui two column relaxed grid basic segment">
+		<div class="column">
+			<div class="ui segment">
+				<ul id="treeDemo" class="ztree"></ul>
+			</div>
+		</div>
+		<div class="ui vertical divider"></div>
+		<div class="column">
+			<div class="huge ui blue submit button" id="save" name="save">
+			Save
+			</div>
+			<div class="huge ui blue submit button" id="default_order" name="default_order">
+			Default
+			</div>
+			<!--
+			<div class="huge ui blue submit button" id="test" name="test">
+			Test
+			</div>
+			-->
+		</div>
+	</div>
+</div>
+
+<SCRIPT type="text/javascript">
+	<!--
+	var setting = {
+		check: {
+		   enable: true,
+		},
+		edit: {
+			enable: true,
+			showRemoveBtn: false,
+			showRenameBtn: false
+		},
+		data: {
+			simpleData: {
+				enable: true
+			}
+		},
+		callback: {
+			beforeDrag: beforeDrag,
+			beforeDrop: beforeDrop
+		}
+	};
+
+	var zNodes = <?=json_text ?>;
+
+	function beforeDrag(treeId, treeNodes) {
+		for (var i=0,l=treeNodes.length; i<l; i++) {
+			if (treeNodes[i].drag === false) {
+				return false;
+			}
+		}
+		return true;
+	}
+	function beforeDrop(treeId, treeNodes, targetNode, moveType) {
+		if (moveType == "inner") 
+		  return false;
+		return targetNode ? targetNode.drop !== false : true;
+	}
+
+	function Save()
+	{
+		var treeObj = $.fn.zTree.getZTreeObj("treeDemo"); 
+		var nodes = treeObj.transformToArray(treeObj.getNodes());
+		$.post("packet_sequencing", {nodes:JSON.stringify(nodes)}, function(data, status){
+					if (status) {
+						window.location.reload();
+					}
+					});
+		/*
+		for (var i=0; i<nodes.length; i++)
+		console.log(nodes[i]);
+		*/
+	}
+
+	function default_order()
+	{
+		zNodes=<?=default_tree ?>;
+		$.fn.zTree.init($("#treeDemo"), setting, zNodes);
+	}
+	
+	function test()
+	{
+		var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
+		var nodes = treeObj.transformToArray(treeObj.getNodes());
+		console.log(JSON.stringify(nodes));
+	}
+	$(document).ready(function(){
+		$.fn.zTree.init($("#treeDemo"), setting, zNodes);
+		$("#save").bind("click", Save);
+		$("#default_order").bind("click", default_order);
+		$("#test").bind("click", test);
+		var treeObj = $.fn.zTree.getZTreeObj("treeDemo"); 
+		treeObj.expandAll(true); 
+		//treeObj.checkAllNodes(true);
+
+	});
+	//-->
+</SCRIPT>
+

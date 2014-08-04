@@ -66,27 +66,16 @@ local function load_tags_conf(app, reload)
 		dev = dev or app.devices:add('unit.'..unit, 'Modbus device (unit:'..unit..')')
 
 		log:debug(ioname, 'Create inputs for device "unit.'..unit..'"')
-		for k, v in pairs(v.tags) do
-			if v.vals then
-				for k,v in pairs(v.vals) do
-					for k, v in pairs(v) do
-						if k == "Name" then
-							name = v
-						end
-						if k == "Description" then
-							desc = v
-						end
-					end
-					local input = dev.inputs:get(name)
-					if not input then
-						input = dev.inputs:add(name, desc)
-						assert(input)
-						local prop = input.props:add('high', 'alarm high condition', 100)
-						prop = input.props:add('low', 'alarm low condition', 20)
-						name = ioname .. "/unit." .. port_config.unit .. "/inputs/" .. name
-						tags[name] = input
-					end
-				end
+
+		for k, v in pairs(v.tags.vals) do
+			local input = dev.inputs:get(v.Name)
+			if not input then
+				input = dev.inputs:add(v.Name, v.Description)
+				assert(input)
+				local prop = input.props:add('high', 'alarm high condition', 100)
+				prop = input.props:add('low', 'alarm low condition', 20)
+				name = ioname .. "/unit." .. port_config.unit .. "/inputs/" .. v.Name
+				tags[name] = input
 			end
 		end
 	end
@@ -236,7 +225,7 @@ end
 handlers.on_run = function(app)
 	--log:info(ioname, 'RUN TIME')
 	--print(os.date(), 'RUN TIME')
-	
+
 	if err_count > 5 then
 		err_count = 1
 		log:warn(ioname, 'Error reach the max count, wait for 30 seconds for retry')
@@ -246,66 +235,64 @@ handlers.on_run = function(app)
 	if not pause then
 		for k, v in pairs(packets) do
 			port_config = v.port_config
-			for k, v in pairs(v.tags) do
-				if v.request.cycle ~= "" then
-					if v.request.cycle and v.request.timer:rest() == 0 then
-						local pdu, err = mclient:request(v, port_config, port_config.ecm)
-						if pdu then
-							local ts = ztimer.absolute_time()
-							local vals = {}
-							fc = tonumber(v.request.func)
-							if fc == 1 or fc == 2 or fc == 3 or fc == 4 then
-								len = decode.uint8(pdu:sub(2, 2))
-								raw = pdu:sub(3)
-								for k, v in pairs(v.vals) do
-									local name = v.Name
-									local multiple = tonumber(v.Multiple)
-									local addr = tonumber(v.Address)
-									local ctpt = v.CTPT
-									local calc = v.Calc
+			if v.tags.request.cycle ~= "" then
+				if v.tags.request.cycle and v.tags.request.timer:rest() == 0 then
+					local pdu, err = mclient:request(v, port_config, port_config.ecm)
+					if pdu then
+						local ts = ztimer.absolute_time()
+						local vals = {}
+						fc = tonumber(v.tags.request.func)
+						if fc == 1 or fc == 2 or fc == 3 or fc == 4 then
+							len = decode.uint8(pdu:sub(2, 2))
+							raw = pdu:sub(3)
+							for k, v in pairs(v.tags.vals) do
+								local name = v.Name
+								local multiple = tonumber(v.Multiple)
+								local addr = tonumber(v.Address)
+								local ctpt = v.CTPT
+								local calc = v.Calc
 
-									local func = require('shared.compat.env').load(calc, nil,nil, create_funcs(raw, addr))
-									val = func()
-									val = val * multiple
+								local func = require('shared.compat.env').load(calc, nil,nil, create_funcs(raw, addr))
+								val = func()
+								val = val * multiple
 
-									if ctpt == "2" then
-										val = val * port_config.ct
-									elseif ctpt == "3" then
-										val = val * port_config.pt
-									elseif ctpt == "4" then
-										val = val * modbus_mode.ct * modbus_mode.pt
-									else
-										val = val
-									end
-
-
-									for k, v in pairs (v) do
-										if k == "Data" then
-											v = val
-										end
-									end
-									name = ioname .. "/unit." .. port_config.unit .. "/inputs/" .. name
-									tags[name]:set(val, ts, 1)
-									vals[#vals+1] = {name = ioname..'.'.. name, value = val, timestamp=ts}
-									--print("addr = ",  addr, "name = ", name, "val = ", val)
+								if ctpt == "2" then
+									val = val * port_config.ct
+								elseif ctpt == "3" then
+									val = val * port_config.pt
+								elseif ctpt == "4" then
+									val = val * modbus_mode.ct * modbus_mode.pt
+								else
+									val = val
 								end
-							else
-								for k, v in pairs(v.vals) do
-									local name = v.Name
-									local addr = v.Address
-									local data = v.Data
-									name = ioname .. "/unit." .. port_config.unit .. "/inputs/" .. name
-									tags[name]:set(data, ts, 1)
-									--vals[#vals+1] = {name = ioname..'.'..name, value = data, timestamp = ts}
-									vals[#vals+1] = {name, value = data, timestamp = ts}
+
+
+								for k, v in pairs (v) do
+									if k == "Data" then
+										v = val
+									end
 								end
+								name = ioname .. "/unit." .. port_config.unit .. "/inputs/" .. name
+								tags[name]:set(val, ts, 1)
+								vals[#vals+1] = {name = ioname..'.'.. name, value = val, timestamp=ts}
+								--print("addr = ",  addr, "name = ", name, "val = ", val)
 							end
-
-							stream.buf = ""
 						else
-							err_count = err_count + 1
-							print(os.date(), 'pa is nil', err)
+							for k, v in pairs(v.tags.vals) do
+								local name = v.Name
+								local addr = v.Address
+								local data = v.Data
+								name = ioname .. "/unit." .. port_config.unit .. "/inputs/" .. name
+								tags[name]:set(data, ts, 1)
+								--vals[#vals+1] = {name = ioname..'.'..name, value = data, timestamp = ts}
+								vals[#vals+1] = {name, value = data, timestamp = ts}
+							end
 						end
+
+						stream.buf = ""
+					else
+						err_count = err_count + 1
+						print(os.date(), 'pa is nil', err)
 					end
 				end
 			end

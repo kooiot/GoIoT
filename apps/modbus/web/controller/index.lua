@@ -53,9 +53,11 @@ return {
 		local name = req:get_post_arg("name")
 		local id = req:get_post_arg("id")
 		local pId = req:get_post_arg("pId")
+		local checked = req:get_post_arg("checked")
 		t.tree.name = name
 		t.tree.id = id
 		t.tree.pId = pId
+		t.tree.checked = checked
 		local ct = req:get_post_arg("ct")
 		local pt = req:get_post_arg("pt")
 		t.config = {}
