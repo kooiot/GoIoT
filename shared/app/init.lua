@@ -111,10 +111,10 @@ function class:init()
 		})
 		zassert(server, err)
 		if self.port_retry ~= 0 and server.bind_to_random_port then
-			self.port, err = server:bind_to_random_port('tcp://*', self.port, 128)
+			self.port, err = server:bind_to_random_port('tcp://127.0.0.1', self.port, 128)
 			zassert(self.port, err)
 		else
-			zassert(server:bind('tcp://*:'..self.port))
+			zassert(server:bind('tcp://127.0.0.1:'..self.port))
 		end
 		self.server = server
 
