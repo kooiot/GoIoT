@@ -21,7 +21,7 @@ local poller = zpoller.new(2)
 local event = require('shared.event').S.new(ctx, poller)
 event:open()
 
-local server, err = ctx:socket{zmq.REP, bind = "tcp://*:5511"}
+local server, err = ctx:socket{zmq.REP, bind = "tcp://127.0.0.1:5511"}
 zassert(server, err)
 
 local send = require('shared.msg.send')(server)

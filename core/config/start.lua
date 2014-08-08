@@ -17,7 +17,7 @@ db.load()
 local ctx = zmq.context()
 local poller = zpoller.new(1)
 
-local server, err = ctx:socket{zmq.REP, bind = "tcp://*:5522"}
+local server, err = ctx:socket{zmq.REP, bind = "tcp://127.0.0.1:5522"}
 zassert(server, err)
 
 local mpft = {} -- message process function table

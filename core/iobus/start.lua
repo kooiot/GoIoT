@@ -17,7 +17,7 @@ db:open('db.sqlite3')
 
 local ctx = zmq.context()
 
-local server, err = ctx:socket{zmq.REP, bind = "tcp://*:5555"}
+local server, err = ctx:socket{zmq.REP, bind = "tcp://127.0.0.1:5555"}
 zassert(server, err)
 
 local pub = require 'pub'

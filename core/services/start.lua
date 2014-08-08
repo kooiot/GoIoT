@@ -27,7 +27,7 @@ local logs = {
 local ctx = zmq.context()
 local poller = zpoller.new(2)
 
-local server, err = ctx:socket{zmq.REP, bind = "tcp://*:5115"}
+local server, err = ctx:socket{zmq.REP, bind = "tcp://127.0.0.1:5115"}
 zassert(server, err)
 
 local send = require('shared.msg.send')(server)
