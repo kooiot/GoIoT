@@ -56,7 +56,7 @@ return {
 						pId = v.tree.pId
 						ratios = v.config.ratio
 						ratios = list(ratios)
-						res:write(cjson.encode(ratios))
+					--	res:write(cjson.encode(ratios))
 					end
 				end
 				pfile:close()
@@ -102,7 +102,7 @@ return {
 		local addr = req:get_post_arg("addr")
 		local len = req:get_post_arg("len")
 		local values = req:get_post_arg("values")
-		res:write(values)
+		--res:write(values)
 
 		local t = {}
 		t.tree = {}
