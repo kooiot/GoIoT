@@ -20,7 +20,13 @@ end
 _M.uname = function(arg)
 	local cmd = 'uname '..arg
 	local f = io.popen(cmd)
+	if not f then
+		return nil, err
+	end
+
 	local s = f:read('*a')
+	f:close()
+
 	return s
 end
 
@@ -28,8 +34,12 @@ end
 -- includes 'total' 'used' 'free'
 -- @treturn table information struct {total=xx, used=xx, free=xx}
 _M.meminfo = function()
-	local f = io.popen('free')
+	local f, err = io.popen('free')
+	if not f then
+		return nil, err
+	end
 	local s = f:read('*a')
+	f:close()
 	local info = s:gmatch("Mem:%s-(%d+)%s-(%d+)%s-(%d+)")
 	local total, used, free = info()
 	return {
@@ -44,7 +54,11 @@ end
 -- @treturn table Refer to description
 _M.loadavg = function()
    local f = io.popen('cat /proc/loadavg')
+	if not f then
+		return nil, err
+	end
    local s = f:read('*a')
+   f:close()
 
    -- Find the idle times in the stdout output
    local tokens = s:gmatch('%s-([%d%.]+)')
@@ -74,7 +88,12 @@ local function network_if(ifname)
 		patt = '[^%s]'
 	end
 	local f = io.popen('LANG=C ifconfig '..ifname)
+	if not f then
+		return nil, err
+	end
 	local s = f:read('*a')
+	f:close()
+
 	local hwaddr = s:match('HWaddr%s-('..patt..'+)')
 	local ipv4 = s:match('inet%s+addr:%s-('..patt..'+)')
 	local ipv6 = s:match('inet6%s+addr:%s-('..patt..'+)')
@@ -90,7 +109,12 @@ _M.network = function()
 	end
 
 	local f = io.popen('cat /proc/net/dev')
+	if not f then
+		return nil, err
+	end
 	local s = f:read('*a')
+	f:close()
+
 	local tokens = s:gmatch('%s-('..patt..'+):')
 	local ifs = {}
 	for w in tokens do
@@ -107,12 +131,17 @@ end
 
 _M.list_serial = function()
 	local f = io.popen('ls /dev/ttyS* /dev/ttyUSB*')
+	if not f then
+		return nil, err
+	end
 
 	local list = {}
 	for line in f:lines() do 
 		local name = line:match('^(/dev/tty.+)$')
 		list[#list + 1] = name
 	end
+
+	f:close()
 
 	return list
 end

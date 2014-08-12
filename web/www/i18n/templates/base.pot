@@ -154,6 +154,10 @@ msgid "Failed to reboot"
 msgstr ""
 
 
+msgid "Failed to request online upgrade"
+msgstr ""
+
+
 msgid "Failed to send remove request!!"
 msgstr ""
 
@@ -478,7 +482,15 @@ msgid "Value"
 msgstr ""
 
 
+msgid "Version"
+msgstr ""
+
+
 msgid "View"
+msgstr ""
+
+
+msgid "Wait for services running finished!!"
 msgstr ""
 
 

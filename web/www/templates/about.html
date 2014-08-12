@@ -1,10 +1,12 @@
 <? extend 'layout.html' ?>
 <div class="tab segment">
 	<div class="container">
+		<div class="introduction">
+			<h2 class="ui diving header"><?=_("Version")?> - <? =version ?> </h2>
+		</div>
 	</div>
 </div>
 <div class="main container">
-<h4 class="ui header">About</h4>
-
-<? include('widget/sysinfo.html', {sysinfo=sysinfo}) ?>
+	<h4 class="ui header"><?=_("About")?></h4>
+	<? include('widget/sysinfo.html', {sysinfo=sysinfo}) ?>
 </div>

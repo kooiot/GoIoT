@@ -1,0 +1,40 @@
+<? extend 'layout.html' ?>
+<div class="tab segment">
+	<div class="container">
+	</div>
+</div>
+
+<div class="main container">
+	<div class="ui basic segment">
+		<div class="ui active inverted dimmer">
+			<div id="loader" class="ui text loader">Loading</div>
+		</div>
+		<p>
+		<? = _("Wait for services running finished!!") ?>
+		</p>
+	</div>
+</div>
+
+<script>
+	$(document).ready(function() {
+		var jump = false;
+		newtimer = setInterval( function () {
+			$.get("system/services", { name: "<?=service?>" }, function(data) {
+				var jdata = data;
+				if (typeof(jdata) != "object") {
+					jdata = JSON.parse(data);
+				}
+				if (jdata.status == 'DONE') {
+					$('#loader').removeClass('active');
+					$('#loader').addClass('disabled');
+					clearInterval(newtimer);
+					window.location.href = '<?=link?>';
+				}
+			})
+			.fail(function() {
+				alert("Query status failed!!");
+				window.location.href = '<?=link?>';
+			});
+		}, 1000 );
+	});
+</script>

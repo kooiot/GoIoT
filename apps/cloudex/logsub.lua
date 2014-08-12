@@ -44,7 +44,7 @@ function _M.open(ctx, poller)
 		if filter and log then
 			local api = _M.api
 			if api then
-				print(log.level, log.content)
+				--print(log.level, log.content)
 				api.on_log(filter, log)
 			end
 		end

@@ -6,7 +6,8 @@ return {
 		else
 			local shared = app.model:get('shared')
 			assert(shared)
-			res:ltp('about.html', {lwf=lwf, app=app, sysinfo=shared.require('util.sysinfo')})
+			local system = shared.require('system')
+			res:ltp('about.html', {lwf=lwf, app=app, sysinfo=shared.require('util.sysinfo'), version=system.version()})
 		end
 	end
 }

@@ -14,7 +14,7 @@ local _M = {}
 
 --- initial/create the publish service
 -- @tparam lzmq.context ctx
--- @tparam[opt] option option default is = { lzmq.PUB, bind="tcp://*:5566" }
+-- @tparam[opt] option option default is = { lzmq.PUB, bind="tcp://127.0.0.1:5566" }
 -- @treturn boolean ok
 -- @raise assert when failed to create the publish services
 function _M.create(ctx, option)
@@ -25,7 +25,7 @@ function _M.create(ctx, option)
 	else
 		_M.option = {
 			zmq.PUB, 
-			bind = "tcp://*:5566"
+			bind = "tcp://127.0.0.1:5566"
 		}
 	end
 

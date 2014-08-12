@@ -157,11 +157,9 @@
 
 	function install_app(lname) {
 		$.post("/store/install", {path:'<?=appname?>', lname:lname}, function(data) {
-				window.location.href="/store/backend";
-				//status.text(data);
+				window.location.href=data;
 				})
 		.done(function() {
-				//alert("Application Started!!");
 				})
 		.fail(function() {
 				alert("<?=('Failed to send start request!!')?>");

@@ -102,7 +102,7 @@ end
 
 local function init()
 	-- Create the handler
-	local srv, err = ctx:socket({zmq.REP, bind="tcp://*:5500"})
+	local srv, err = ctx:socket({zmq.REP, bind="tcp://127.0.0.1:5500"})
 	if not srv and err then
 		if type(err) ~= 'string' then
 			err = tostring(err)

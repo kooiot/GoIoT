@@ -3,7 +3,7 @@
 --
 local app_install = require 'shared.app.install'
 local io_install = require 'shared.io.install'
-local download = require 'shared.store.download'
+local download = require 'shared.util.download'
 local log = require 'shared.log'
 
 --- Create callback function for intalling an application

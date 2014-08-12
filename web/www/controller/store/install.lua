@@ -30,12 +30,14 @@ return {
 			local api = require 'shared.api.services'
 			local r, err = api.add('store.install.'..lname, dostr, 'Install '..lname..' ('..path..')')
 			if r then
-				res:write('View backend for installation status')
+				res:write('/waitor?name=store.install.'..lname..'&link=/apps/'..lname)
 			else
 				res:write('ERROR: ', err)
+				lwf.set_status(403)
 			end
 		else
 			res:write('Error parameter')
+			lwf.set_status(403)
 		end
 	end
 }

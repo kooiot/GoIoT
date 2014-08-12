@@ -16,6 +16,7 @@ return function (filename, cmds)
 	end
 
 	local temp_file = temp_folder..'/'..filename
+	os.execute('rm '..temp_file)
 	os.execute('echo "sleep 3;" >> '..temp_file)
 	for i, cmd in pairs(cmds) do
 		os.execute('echo "'..cmd..';" >> '..temp_file)

@@ -76,6 +76,7 @@ return function(zip_file, apps_folder, dest_name, app, local_app)
 	assert(os.execute('mkdir '..dest_folder))
 
 	assert( unzip(zip_file, dest_folder) )
+	assert(os.execute('rm '..zip_file))
 
 	if not app then
 		app = update_ver(apps_folder, dest_name)

@@ -1,6 +1,9 @@
 <script src="/static/js/table.js"></script>
 
 <table id="applist" class="ui sortable table segment">
+	<div id="loader" class="ui disabled inverted dimmer">
+		<div id="loader" class="ui text loader">Processing</div>
+	</div>
 	<thead>
 		<tr>
 			<th><?=_("Name")?></th>
@@ -11,10 +14,8 @@
 	<tbody>
 	<?
 	local has_app = false
-	local cates = 0
 	local counts = 0
 	for cate, lst in pairs(apps) do
-		cates = cates + 1
 		has_app = true
 		for _, v in pairs(lst) do 
 			counts = counts + 1
@@ -81,7 +82,6 @@
 		<tr>
 			<th><?=_("Total")?> <?=counts?></th>
 			<th>
-				<?=_("Types")?> <?= cates?> 
 				<div class="ui tiny teal button" onclick="update_cache();"><?=_("Check for updates")?></div>
 			</th>
 			<th></th>
@@ -120,43 +120,52 @@
 				}
 			},
 			success: function(data, textStatus, jqXHR) {
-				alert('Please refresh the page a while later');
+				window.location.href="/waitor?name=store.cache.update&link=%2f%23%2fapps";
 			}
 		});
 	};
+	function refresh_page() {
+		var newtimer = setInterval( function () {
+			window.location.reload();
+		}, 1000 );
+	};
 
 	function stop_app(appname) {
+		$('#loader').removeClass('disabled');
+		$('#loader').addClass('active');
 		$.post("/app/ctrl", {action:"close",app:appname}, function(data) {
-				alert(data);
-				})
+		})
 		.done(function() {
-				//alert("Application Started!!");
-				})
+				refresh_page();
+		})
 		.fail(function() {
 				alert("<?=_('Failed to send stop request!!')?>");
-				});
+		});
 	};
 
 	function start_app(appname) {
+		$('#loader').removeClass('disabled');
+		$('#loader').addClass('active');
 		$.post("/app/ctrl", {action:"start",app:appname}, function(data) {
-				alert(data);
-				})
+		})
 		.done(function() {
-				//alert("Application Started!!");
-				})
+				refresh_page();
+		})
 		.fail(function() {
-				alert("<?=_('Failed to send start request!!')?>");
-				});
+			alert("<?=_('Failed to send start request!!')?>");
+		});
 	};
 
 	function remove_app(appname) {
-		$.post("/app/remove", {app:appname}, function(data) {
-				alert(data);
-				})
+		$('#loader').removeClass('disabled');
+		$('#loader').addClass('active');
+		$.post("/store/remove", {app:appname}, function(data) {
+		})
 		.done(function() {
-				})
+			refresh_page();
+		})
 		.fail(function() {
-				alert("<?=_('Failed to send remove request!!')?>");
-				});
+			alert("<?=_('Failed to send remove request!!')?>");
+		});
 	};
 </script>

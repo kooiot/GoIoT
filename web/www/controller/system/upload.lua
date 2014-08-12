@@ -6,60 +6,42 @@ return {
 		end
 		req:read_body()
 
-		local filetype = req:get_post_arg('filetype', 'app')
+		local file = req.post_args['file']
 
-		if not filetype then
-			res:write('<br> Incorrect POST found, we need the filetype')
-		else
-			local file = req.post_args['file']
+		if file and type(file) == 'table' and next(file) then
+			local name = string.match(file.name, "([^:/\\]+)$")
 
-			if file and type(file) == 'table' and next(file) then
-				local name = string.match(file.name, "([^:/\\]+)$")
+			local shared = app.model:get('shared')
+			local platform = shared.require('platform')
 
-				local shared = app.model:get('shared')
-				local platform = shared.require('platform')
-				local delay_exec = shared.import('util.delay_exec')
+			local tmp_file = platform.path.temp..'/'..name
+			local dest, err = io.open(tmp_file, "wb")
+			if dest then
+				dest:write(file.contents)
+				dest:close()
+				res:write("<br> Uploaded "..name.." ("..string.len(file.contents).." bytes)")
 
-				local tmp_file = platform.path.temp..'/'..name
-				local dest, err = io.open(tmp_file, "wb")
-				if dest then
-					dest:write(file.contents)
-					dest:close()
-					res:write("<br> Uploaded "..name.." ("..string.len(file.contents).." bytes)")
+				local appname = req:get_post_arg('appname')
 
-					if filetype == 'sys' then
-						local mv = 'mv '..tmp_file..' '..platform.path.core..'/'..name
-						local start = 'mount '..platform.path.core..'/'..name..' /tmp/cad2'
-						delay_exec('upgrade.sh', {'cd /', '$CAD_DIR/run.sh stop', 'umount /tmp/cad2', mv, 'sleep 3', start, '$CAD_DIR/run.sh start'})
-						res:write('<br> Device is rebooting to upgrade the system....')
-					elseif filetype == 'app' then
-						local appname = req:get_post_arg('appname')
+				if not appname or string.len(appname) == 0 then
+					res:write('<br> Incorrect POST found, we need the appname')
+					appname = "example"
+				end
+				local install = shared.require('app.install')
+				local r, err = install(tmp_file, platform.path.apps, appname)
 
-						if not appname or string.len(appname) == 0 then
-							res:write('<br> Incorrect POST found, we need the appname')
-							appname = "example"
-						end
-						local install = shared.require('app.install')
-						local r, err = install(tmp_file, platform.path.apps, appname)
-
-						-- remove temp file
-						os.remove(tmp_file)
-						if r then
-							res:write('<br> Installed finished!')
-						else
-							res:write('<br> Install error: '..err)
-						end
-					else
-						res:write('<br> Incorrect file type')
-						-- remove temp file
-						os.remove(tmp_file)
-					end
+				-- remove temp file
+				os.remove(tmp_file)
+				if r then
+					res:write('<br> Installed finished!')
 				else
-					res:write("<br> Failed to save file, error:"..err)
+					res:write('<br> Install error: '..err)
 				end
 			else
-				res:write("<br> Please select a local file first")
+				res:write("<br> Failed to save file, error:"..err)
 			end
+		else
+			res:write("<br> Please select a local file first")
 		end
 	end
 }

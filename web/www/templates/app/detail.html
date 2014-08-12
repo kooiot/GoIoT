@@ -112,7 +112,7 @@
 
 		$("#btn_remove").click(function() {
 			var appname = btnremove.attr("appname");
-			$.post("/app/remove", {app:appname}, function(data) {
+			$.post("/store/remove", {app:appname}, function(data) {
 				status.text(data);
 			})
 			.done(function() {

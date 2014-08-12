@@ -7,6 +7,7 @@ local cjson = require "cjson.safe"
 
 local req = require 'shared.req'
 local msg_reply = require 'shared.msg.reply'
+local exec = require 'shared.compat.execute'
 
 local get_reply = function(json, err)
 	if not json then
@@ -148,8 +149,8 @@ function _M.start(insname, debug)
 		log:debug(ioname, "Running application", cmd)
 		]]--
 
-		os.execute(cmd)
-		return true
+		local r, code = exec(cmd)
+		return r, code
 	end
 end
 

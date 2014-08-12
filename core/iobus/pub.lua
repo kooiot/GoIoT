@@ -9,7 +9,7 @@ local ptable = {}
 local publisher = nil
 
 local function init(ctx)
-	local pub, err = ctx:socket{zmq.PUB, bind = "tcp://*:5566"}
+	local pub, err = ctx:socket{zmq.PUB, bind = "tcp://127.0.0.1:5566"}
 	zassert(pub, err)
 	publisher = pub
 	return publisher
