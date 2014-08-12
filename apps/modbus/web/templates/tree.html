@@ -88,7 +88,16 @@
 								{ name: 'Data', display: 'Data', type: 'text', ctrlAttr: { maxlength: 100 }, value: 0 },
 								{ name: 'Unit', display: 'Unit', type: 'text', ctrlAttr: { maxlength: 100 }, value: " " },
 								{ name: 'Multiple', display: 'Multiple', type: 'text', ctrlAttr: { maxlength: 100 }, value: "1.000000" },
-								{ name: 'CTPT', display: 'CT&PT', type: 'select', ctrlOptions: { 1: 'NONE', 2: '* CT', 3: '* PT', 4: '* CT * PT', 0: 'Others'} },
+								{ name: 'CTPT', display: 'Ratios', type: 'select', ctrlOptions:{ 
+								0: "None",
+								<? for k, v in pairs(ratios) do ?>
+									<? local str = "" ?>
+									<? for k, v in pairs(v) do ?>
+										<? str  = str  .. "*" .. v ?>
+									<? end ?>
+									"<?=str?>":"<?=str?>",
+								<? end ?>
+								}},
 								{ name: 'Endianness', display: 'Endianness', type: 'select', ctrlOptions: {0: 'Others', 1: 'bit', 2: 'unsigned word (high to low)', 3: 'unsigned word(low to high)', 4: 'signed word(high to low)', 5: 'signed word(low to high)', 6: 'signed byte(high)', 7: 'unsigned byte(low)', 8: 'signed byte(high)', 9: 'unsigned byte(low)', 10: 'unsigend dword(high to low, high first)', 11: 'signed dword(high to low, high first)', 12: 'unsigned dword(low to high, high first)', 13: 'signed dword(low to high, high first)', 14: 'unsigned dword(high to low, low first)', 15: 'signed dword(high to low, low first)', 16: 'unsigned dword(low to high, low first)', 17: 'signed dword(low to high, low first)'}, ctrlCss: { width: '100px'},onChange: function(evt, rowIndex) {
 		var endianness = $('#tblAppendGrid').appendGrid('getCtrlValue', 'Endianness', rowIndex);
 		if (endianness != 0)
@@ -97,12 +106,29 @@
 			$('#tblAppendGrid').appendGrid('setCtrlValue', 'Calc', rowIndex, "");
 	}},
 								{ name: 'Calc', display: 'Calc', type: 'text', ctrlAttr: { maxlength: 100 }, value: " "},
-]
+								],
+								rowDragging: true,
+								//hideButtons: { moveUp: true, moveDown: true }
 					});
 
 });
 					</script>
 					<div id="divSource">
+						<datalist id="dlOption">
+						<? for k, v in pairs(ratios) do ?>
+								<option value="<?=v.Name?>"></option>
+						<? end ?>
+						<option value="Option 1">
+						</option>
+						<option value="Option 2">
+						</option>
+						<option value="Option 3">
+						</option>
+						<option value="Option 4">
+						</option>
+						<option value="Option 5">
+						</option>
+						</datalist>
 						<table id="tblAppendGrid">
 						</table>
 					</div>

@@ -46,8 +46,8 @@ _M.string = function (data, len)
 end
 
 _M.bit = function (raw, addr, index)
-	val = math.floor(addr / 8)
-	data = decode.uint8(raw:sub(addr + val, addr + val))
+	val = math.ceil(index / 8)
+	data = decode.uint8(raw:sub(val, val))
 	return bit32.band(1, bit32.rshift(data, index % 8))
 end
 

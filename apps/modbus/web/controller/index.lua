@@ -60,6 +60,7 @@ return {
 		t.tree.checked = checked
 		local ct = req:get_post_arg("ct")
 		local pt = req:get_post_arg("pt")
+		local ratio = req:get_post_arg("ratio")
 		t.config = {}
 		if mode == "1" or mode == "3" then
 			local port = req:get_post_arg("port")
@@ -70,6 +71,7 @@ return {
 			t.config.unit = unit
 			t.config.ct = ct
 			t.config.pt = pt
+			t.config.ratio = cjson.decode(ratio)
 			local ecm = req:get_post_arg("ecm") -- error checking method
 			t.config.ecm = ecm
 		elseif mode == "0" or mode == "2" then
@@ -89,6 +91,7 @@ return {
 			t.config.unit = unit
 			t.config.ct = ct
 			t.config.pt = pt
+			t.config.ratio = ratio
 		else
 			res:write("error")
 		end

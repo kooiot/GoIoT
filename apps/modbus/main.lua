@@ -256,6 +256,15 @@ handlers.on_run = function(app)
 								val = func()
 								val = val * multiple
 
+								for w in string.gmatch(ctpt, "%w+") do
+									for k, v in pairs(port_config.ratio) do
+										if w == v.Name then
+											val = val * v.Value
+										end
+									end
+								end
+
+								--[[
 								if ctpt == "2" then
 									val = val * port_config.ct
 								elseif ctpt == "3" then
@@ -265,7 +274,7 @@ handlers.on_run = function(app)
 								else
 									val = val
 								end
-
+								--]]
 
 								for k, v in pairs (v) do
 									if k == "Data" then

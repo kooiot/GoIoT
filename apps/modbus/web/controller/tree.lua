@@ -2,7 +2,36 @@ cjson = require "cjson.safe"
 --config_path = "/opt/work/SymlinkV3/v3/core/apps/modbus/config/"
 url = require "socket.url"
 platform = require "shared.platform"
+bit32 = require 'shared.compat.bit'
 path = platform.path.apps
+
+local function sortFunc(a, b)
+	return #a < #b
+end
+
+local function combination(s)
+	local t = {}
+	local n = math.pow(2, #s) - 1
+	for i = 1, n do
+		local tmp = {}
+		for j = 0, #s - 1 do
+			if bit32.btest(i, bit32.lshift(1, j)) then
+				tmp[#tmp + 1] = s[j + 1]
+			end
+		end
+		t[#t + 1] = tmp
+	end
+	table.sort(t, sortFunc)
+	return t
+end
+
+local function list(t)
+	local s = {}
+	for i = 2, #t do
+		s[#s + 1] = t[i].Name
+	end
+	return combination(s)
+end
 
 return {
 	get = function(req, res)
@@ -15,6 +44,7 @@ return {
 		filename = path .. "/" .. app.appname .. "/config/" .. app.appname .. "/" .. filename .."_config.json"
 		local file, err = io.open(filename, "a+")
 		if file then
+			ratios = {}
 			local pfilename = path .. "/" .. app.appname .. "/config/" .. app.appname .. "/" .. app.appname .. "_config.json"
 			local pfile, msg = io.open(pfilename, "a+")
 			if pfile then
@@ -24,6 +54,9 @@ return {
 					if v.tree.name == req:get_arg("name") then
 						id = v.tree.id
 						pId = v.tree.pId
+						ratios = v.config.ratio
+						ratios = list(ratios)
+						res:write(cjson.encode(ratios))
 					end
 				end
 				pfile:close()
@@ -50,7 +83,7 @@ return {
 				file:write(config)
 			end
 			file:close()
-			res:ltp('tree.html', {lwf=lwf, app=app, json_text = config, name = req:get_arg("name")})
+			res:ltp('tree.html', {lwf=lwf, app=app, json_text = config, name = req:get_arg("name"), ratios = ratios})
 		else
 			res:write(err)
 		end

@@ -133,13 +133,18 @@
 								<i class="dropdown icon"></i>
 								Ratio
 							</div>
-							<div class="content" id="ratios">
-								<label>CT:</label>
-								<input placeholder="CT" id="ct" name="ct" type="text" value=1.000000 />
-								<label>PT:</label>
-								<input placeholder="PT" id="pt" name="pt" type="text" value=1.000000 />
-								<p></p>
-								<div id="ratio" class="ui blue button" onclick="add_ratio();">Add</div>
+							<div class="content">
+								<div class="ui blue button" id="Add" onclick="addRow('ratios');"> Add</div>
+								<!--
+								<div class="ui blue button" id="test" onclick="tableToJson('ratios');"> test</div>
+								-->
+								<table class="ui table segment" id="ratios">
+									<tbody>
+										<th>Name</th>
+										<th>Value</th>
+										<th>Remove</th>
+									</tbody>
+								</table>
 								<p></p>
 							</div>
 						</div>
@@ -169,13 +174,13 @@
 		<div class="left">
 			<p>Name</p>
 			<div class="ui small input">
-				<input id="ratio_lname" type="text" placeholder="Name"></input>
+				<input id="ratio_lname" type="text"></input>
 			</div>
 		</div>
 		<div class="right">
 			<p>Value</p>
 			<div class="ui small input">
-				<input id="ratio_value" type="text" placeholder="Value"></input>
+				<input id="ratio_value" type="text"></input>
 			</div>
 		</div>
 	</div>
@@ -236,17 +241,13 @@ var setting = {
 	}
 };
 
-	var ratio = new Object();
-	function add_ratio() {
+	function addRow() {
 		$('.ui.modal')
 			.modal('setting', {
 					closable  : false,
 					onDeny    : function(){
-					//window.alert('Wait not yet!');
-					//return false;
 				},
 				onApprove : function() {
-					//window.alert('Approved!');
 					var lname = $('#ratio_lname').val();
 					lname = lname.trim();
 					var value = $("#ratio_value").val();
@@ -254,18 +255,49 @@ var setting = {
 						window.alert("Name/Value cannot be empty");
 						return false;
 					};
-					ratio[lname] = value;
-					console.log(JSON.stringify(ratio));
-
-					//$("#ratios").append("<div> Hello World!<div>");
-					//$("#ratios").append('<div><label>' + lname + ': </label> <input type="text" name=' + lname + ' "id="'+ lname + '" value=' + value +' /></div>');
-					$("#ratios").append('<div><div class="ui label">' + lname + ': </div> <input type="text" name=' + lname + ' "id="'+ lname + '" value=' + value +' /></div>');
+					var table = document.getElementById("ratios");
+					var row = table.insertRow(1);
+					var cell1 = row.insertCell(0);
+					var cell2 = row.insertCell(1);
+					cell1.innerHTML = lname;
+					cell2.innerHTML = value;
+					var cell3 = row.insertCell(2);
+					var element3 = document.createElement("input");
+					element3.type = "button";
+					element3.name = "Remove";
+					element3.value = "Remove";
+					element3.setAttribute("onclick", "deleteRow(this)");
+					cell3.appendChild(element3);
 					return true;
 				}
 			})
 			.modal('show')
 			;
 	};
+
+function deleteRow(r) {
+	var i=r.parentNode.parentNode.rowIndex;
+	document.getElementById('ratios').deleteRow(i)
+}
+
+function tableToJson(table) {
+	var myRows = [];
+	var $headers = $("th");
+	var $rows = $("tbody tr").each(function(index) {
+				$cells = $(this).find("td");
+				myRows[index] = {};
+				$cells.each(function(cellIndex) {
+					myRows[index][$($headers[cellIndex]).html()] = $(this).html();
+					});    
+				});
+
+	// Let's put this in the object like you want and convert to JSON (Note: jQuery will also do this for you on the Ajax request)
+	//var myObj = {};
+	//myObj.myrows = myRows;
+	console.log(JSON.stringify(myRows));
+	//console.log(JSON.stringify(myObj));
+	return JSON.stringify(myRows);
+}
 
 function changeType(obj)
 {
@@ -373,8 +405,23 @@ function onClick(event, treeId, treeNode, clickFlag) {
 				document.getElementById("port").value = json_text[i].config.port;
 				document.getElementById("sIp").value = json_text[i].config.sIp;
 				document.getElementById("unit").value = json_text[i].config.unit;
-				document.getElementById("ct").value = json_text[i].config.ct ? json_text[i].config.ct : "1.000000";
-				document.getElementById("pt").value = json_text[i].config.pt ? json_text[i].config.pt : "1.000000";
+				var data = '<tbody> <th>Name</th> <th>Value</th> <th>Remove</th> </tbody>';
+				$("#ratios").html(data);
+				for (var j = 1; j < json_text[i].config.ratio.length; j++) {
+					var table = document.getElementById("ratios");
+					var row = table.insertRow(1);
+					var cell1 = row.insertCell(0);
+					var cell2 = row.insertCell(1);
+					cell1.innerHTML = json_text[i].config.ratio[j].Name;
+					cell2.innerHTML = json_text[i].config.ratio[j].Value;
+					var cell3 = row.insertCell(2);
+					var element3 = document.createElement("input");
+					element3.type = "button";
+					element3.name = "Remove";
+					element3.value = "Remove";
+					element3.setAttribute("onclick", "deleteRow(this)");
+					cell3.appendChild(element3);
+				}
 				$(".ui.ecm")
 					.data()
 					.moduleDropdown
@@ -386,8 +433,6 @@ function onClick(event, treeId, treeNode, clickFlag) {
 				document.getElementById("port").value = "";
 				document.getElementById("sIp").value = "";
 				document.getElementById("unit").value = "";
-				document.getElementById("ct").value = "1.000000";
-				document.getElementById("pt").value = "1.000000";
 				$(".ui.ecm")
 					.data()
 					.moduleDropdown
@@ -437,8 +482,23 @@ function onClick(event, treeId, treeNode, clickFlag) {
 					.activate(undefined, json_text[i].config.ecm)
 					;
 				document.getElementById("unit").value = json_text[i].config.unit;
-				document.getElementById("ct").value = json_text[i].config.ct ? json_text[i].config.ct : "1.000000";
-				document.getElementById("pt").value = json_text[i].config.pt ? json_text[i].config.pt : "1.000000";
+				var data = '<tbody> <th>Name</th> <th>Value</th> <th>Remove</th> </tbody>';
+				$("#ratios").html(data);
+				for (var j = 1; j < json_text[i].config.ratio.length; j++) {
+					var table = document.getElementById("ratios");
+					var row = table.insertRow(1);
+					var cell1 = row.insertCell(0);
+					var cell2 = row.insertCell(1);
+					cell1.innerHTML = json_text[i].config.ratio[j].Name;
+					cell2.innerHTML = json_text[i].config.ratio[j].Value;
+					var cell3 = row.insertCell(2);
+					var element3 = document.createElement("input");
+					element3.type = "button";
+					element3.name = "Remove";
+					element3.value = "Remove";
+					element3.setAttribute("onclick", "deleteRow(this)");
+					cell3.appendChild(element3);
+				}
 				break;
 			} else {
 				$(".ui.sPort")
@@ -478,8 +538,6 @@ function onClick(event, treeId, treeNode, clickFlag) {
 					.activate(undefined, "0")
 					;
 				document.getElementById("unit").value = "";
-				document.getElementById("ct").value = "1.000000";
-				document.getElementById("pt").value = "1.000000";
 			}
 		}
 	} else {
@@ -596,8 +654,6 @@ function pSave(){
 		return;
 	}
 	var unit = document.getElementById("unit").value;
-	var ct = document.getElementById("ct").value;
-	var pt = document.getElementById("pt").value;
 	var val = changeType();
 	if (val == "0" || val == "2") {
 		var sPort = $(".ui.sPort").dropdown("get value");
@@ -606,20 +662,22 @@ function pSave(){
 		var parity = $(".ui.parity").dropdown("get value");
 		var sbs = $(".ui.stop_bits").dropdown("get value");
 		var ecm = $(".ui.ecm").dropdown("get value");
-		console.log("sPort=", sPort, "baud=", baud, "dbs=", dbs, "parity=", parity, "sbs=", sbs, "ecm=", ecm);
+		var ratio = tableToJson('ratios');
+		//console.log("sPort=", sPort, "baud=", baud, "dbs=", dbs, "parity=", parity, "sbs=", sbs, "ecm=", ecm);
 		//alert($(".ui.parity").dropdown("get value"));
-		$.post("", {id:id, pId:pId, name:name, checked:checked, mode:val, sPort:sPort, baud:baud, dbs:dbs, parity:parity, sbs:sbs, ecm:ecm, unit:unit, ct:ct, pt:pt}, function(data, status){
+		$.post("", {id:id, pId:pId, name:name, checked:checked, mode:val, sPort:sPort, baud:baud, dbs:dbs, parity:parity, sbs:sbs, ecm:ecm, unit:unit, ratio:ratio}, function(data, status){
 					if (status) {
-					window.location.reload();
+						window.location.reload();
 					}
 					});
 	} else if (val == "1" || val == "3") {
 		var port = document.getElementById("port").value;
 		var sIp = document.getElementById("sIp").value;
 		var ecm = $(".ui.ecm").dropdown("get value");
-		$.post("", {id:id, pId:pId, name:name, checked:checked, mode:val, port:port, sIp:sIp, unit:unit, ct:ct, pt:pt, ecm:ecm}, function(data, status){
+		var ratio = tableToJson('ratios');
+		$.post("", {id:id, pId:pId, name:name, checked:checked, mode:val, port:port, sIp:sIp, unit:unit, ecm:ecm, ratio:ratio}, function(data, status){
 					if (status) {
-					window.location.reload();
+						window.location.reload();
 					}
 					});
 	} else {
