@@ -1,0 +1,185 @@
+<? extend 'layout.html' ?>
+<script src="/static/js/table.js"></script>
+
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<link rel="stylesheet" href="/static/library/ztree/css/zTreeStyle/zTreeStyle.css" type="text/css"/>
+	<link href="/static/library/appendgrid/css/jquery.appendGrid-1.3.5.css" rel="stylesheet"/>
+	<link rel="stylesheet" href="/static/library/appendgrid/css/jquery-ui.css" type="text/css"/>
+	<script src="/static/library/appendgrid/js/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="/static/library/ztree/js/jquery.ztree.all-3.5.min.js"></script>
+	<script src="/static/library/appendgrid/js/jquery.appendGrid-1.3.5.js"></script>
+<!--
+<style type="text/css">
+	.ztree li span.button.add {margin-left:2px; margin-right: -1px; background-position:-144px 0; vertical-align:top; *vertical-align:middle}
+</style>
+-->
+<div class="tab segment">
+	<div class="container">
+		<div class="introduction">
+			<h2 class="ui dividing header"> <?=_("Edit")?> - <?=app.appname ?> </h2>
+			<div class="ui breadcrumb">
+				<a class="section" href="/app/view/<?=app.appname?>"><?=_("App Control")?></a>
+				<i class="right arrow icon divider"></i>
+				<a class="section" href="/apps/<?=app.appname?>"><?=_("App Home")?></a>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="main container">
+	<div class="ui accordion" style="width:1000px">	
+	<!---------------------------------------------------------->
+		<div class="active title">
+			<i class="dropdown icon"></i>
+			<?=_("Humidity")?>
+		</div>
+		<div class="active content">
+		<div class="ui simple divider"></div>
+		<div class="inline field" name="user_mod_mes" id="user_mod_mes">
+			<div class="ui pointing right label">
+				<form class="ui form "method="post" action="/edit">
+					<table id="tblAppendGrid">
+					</table>
+					<button id="btnLoad" type="button" method="post"  onclick ="query_panel();" action="/edit">
+						Demo: Load Data</button>
+					<button id="btnGetValue" type="button">
+  						Demo: jQuery Serialize</button>
+				</form>
+			</div>
+				<i class="info icon"></i>
+				<input placeholder="Message" type="text" name="user_mod_mes" id="user_mod_mes">
+		</div>
+		</div>
+	<!------------------------------------------------------------>
+		<div class="title">
+			<i class="dropdown icon"></i>
+			<?=_("Dampness")?>
+		</div>
+		<div class="content">
+		<div class="ui simple divider"></div>
+		<div class="inline field" name="user_mod_mes" id="user_mod_mes">
+			<div class="ui pointing right label">
+				<i class="info icon"></i>
+				<?=_('Message')?>
+			</div>
+			<input placeholder="Message" type="text" name="user_mod_mes" id="user_mod_mes">
+		</div>
+		</div>
+	<!----------------------------------------------------------->
+		<div class="title">
+			<i class="dropdown icon"></i>
+			<?=_("Flame")?>
+		</div>
+		<div class="content">
+		<div class="ui simple divider"></div>
+		<div class="inline field" name="user_mod_mes" id="user_mod_mes">
+			<div class="ui pointing right label">
+				<i class="info icon"></i>
+				<?=_('Message')?>
+			</div>
+			<input placeholder="Message" type="text" name="user_mod_mes" id="user_mod_mes">
+		</div>
+		</div>
+		<div class="title">
+			<i class="dropdown icon"></i>
+			<?=_("Hazardousgas")?>
+		</div>
+		<div class="content">
+		<div class="ui simple divider"></div>
+		<div class="inline field" name="user_mod_mes" id="user_mod_mes">
+			<div class="ui pointing right label">
+				<i class="info icon"></i>
+				<?=_('Message')?>
+			</div>
+			<input placeholder="Message" type="text" name="user_mod_mes" id="user_mod_mes">
+		</div>
+		</div>
+	</div>
+
+
+
+
+<script type="text/javascript">
+	var contant = new Array()
+	var number=0;
+	contant[0] = {'Number': '13001143649', 'Name': '代振宇', 'RecordId': 123}
+	contant[1] = {'Number': '13522213784', 'Name': '高数月', 'RecordId': 125}
+	contant[2] = {'Number': '13325736636', 'Name': '常翠海', 'RecordId': 127}
+	$(function() {
+	    // Initialize appendGrid
+	    $('#tblAppendGrid').appendGrid({
+		caption:'Message be send to',
+		initRows:1,
+		columns:[
+		        { name: 'Number', display: 'Number', type: 'text', ctrlAttr: { maxlength: 100 }, ctrlCss: { width: '160px'} },
+		        { name: 'Name', display: 'Name', type: 'text', ctrlAttr: { maxlength: 100 }, ctrlCss: { width: '100px'} },
+		        { name: 'RecordId', type: 'hidden', value: 0 }
+		    ]
+	    });
+	    // Handle `Load` button click
+	    $('#btnLoad').button().click(function () {
+		$('#tblAppendGrid').appendGrid('load',contant);
+	    });
+	    // Handle `Serialize` button click
+	    //$('#btnSerialize').button().click(function () {
+		//alert('Here is the serialized data!!\n' + $(document.forms[0]).serialize());
+	    //});
+	    $('#btnGetValue').button().click(function () {
+			var rowCount=$('#tblAppendGrid').appendGrid('getRowCount');
+			if (rowCount<=1){
+				alert('Waring: Row2 is not found');
+			}else{
+				number = ($('#tblAppendGrid').appendGrid('getCtrlValue','Number',1))
+				alert(number);
+			}
+		});
+	
+	});
+	function query_panel(){
+			alert ("*****************");
+		$.get("/apps/<?=app.appname?>/edit", {}, function(data){
+			alert ("((((((((((((((((((((");
+			alert (data);
+			 });						
+		};
+</script>
+
+
+
+
+<!----
+<script type=text/javascript>
+	var id=1;
+	function f_del(x){
+			alert(x)
+	for(i=0;i<tab1.rows.length;i++)
+		if (x==parselnt(tab1.rows[i].cells[0].innerHTML))
+		{tab1.deleteRow(i);break;}
+	}
+	function f_add(){
+	n=tab1.rows.length;
+	r=tab1.insertRow(n);
+	r.insertCell(0).innerHTML='<button onclick=f_del('+id+')>删除</button>';
+	r.insertCell(0).innerHTML='<input placeholder="Number" type="text" id="n">';
+
+	id++;
+	}
+
+	function number(){
+		for(i=0;i<tab1.rows.length;i++){
+			var mod = $("#n");
+			var val = mod.val();
+			alert(val);
+		}
+	}	
+
+f_add();
+
+</script>
+---->
+
+
+
+
+
+

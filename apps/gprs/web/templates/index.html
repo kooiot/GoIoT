@@ -1,0 +1,207 @@
+<? extend 'layout.html' ?>
+<script src="/static/js/table.js"></script>
+<div class="tab segment">
+	<div class="container">
+		<div class="introduction">
+			<h2 class="ui dividing header"> <?=_("GPRS Controller")?> - <?=app.appname ?> </h2>
+		</div>
+	</div>
+</div>
+
+<div class="main container">
+	<div class="two column stackable ui grid">
+		<div class="column">
+			<div class="ui segment">
+				<div class="ui top attached label"><b><?=_('State')?></b></div>
+				
+			<form method="post">
+				<div class="ui divided selection list">
+					<a class="item">
+						<div class="ui red circular label"><b><?=_('Signal')?></b></div>
+						<label id="status_1"><?=signal or '&nbsp;'?></label>
+						<i class="signal icon"></i>
+					</a>
+					<a class="item">
+						<div class="ui purple circular label"><b><?=_('GSM')?></b></div>
+						<label id="status_2"><?=state or '&nbsp;'?></label>
+						<i class="warning icon"></i>
+					</a>
+					<a class="item">
+						<div class="ui black circular label"><b><?=_('Message')?></b></div>
+						<label id="status"><?=message or '&nbsp;'?></label>
+						<i class="mail icon"></i>
+					</a>
+					<a class="item">
+						<a class="ui black circular label" href="/apps/<?=app.appname?>/direction" ><b><?=_('Directions')?></b></a>
+						<i class="text file icon"></i>
+						<label id="status"><?=directions or '&nbsp;'?></label>
+					</a>
+				</div>
+			</form>
+	
+			<!--	<div id="panel"></div>  -->
+			</div>
+		</div>
+		<div class="column">
+			<div class="ui segment">
+				<div class="ui top attached label"><b><?=_('Test')?></b></div>
+					<form class="ui form" method="post" action="/apps/<?=app.appname?>/mod">
+					 <div class="ui simple divider"></div>
+					 <div class="inline field">
+				 		<div class="ui pointing right label">
+							<i class="phone icon"></i>
+							<?=_('Number')?>
+						</div>
+						<input placeholder="Telephone number" type="text" name="user_mod_num" id="user_mod_num">
+					</div>
+					<div class="ui simple divider"></div>
+					 <div class="inline field" name="user_mod_mes" id="user_mod_mes">
+					 	<div class="ui pointing right label">
+							<i class="info icon"></i>
+							<?=_('Message')?>
+						</div>
+						<input placeholder="Message" type="text" name="user_mod_mes" id="user_mod_mes">
+					</div>
+				
+						<input class="ui green button" type="submit" onclick="set_panel()" value="<?=_('Send')?>"/>
+						<input class="ui right floated teal submit button" type="button" value="<?=_('Save')?>"/>
+
+					</form>
+				
+				</div>
+			</div>
+		</div>
+	
+<!--	<div class="ui message" id="status"></div>   -->
+		<div class="ui divider"></div>
+		<div class="two column stackable ui grid">
+			<div class="column">
+				<div class="ui segment">
+					<div class "ui top attached lable"><b><?=_('Management')?></b></div>
+					<div class="ui group">
+						<a class="ui teal button" href="/apps/<?=app.appname?>/port"><?=_('Settings')?></a>
+						<a class="ui teal button" href="/apps/<?=app.appname?>/edit"><?=_('Edit')?></a>
+					</div>
+				</div>
+			</div>
+			<div class="column">
+				<div class="ui segment">
+					<div class "ui top attached lable"><b><?=_('Management')?></b></div>
+					<div class="ui group">
+						<a class="ui teal button" href="/apps/<?=app.appname?>/port"><?=_('Settings')?></a>
+						<a class="ui teal button" href="/apps/<?=app.appname?>/edit"><?=_('Edit')?></a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+						
+
+
+
+<script>
+	(function() {
+	 
+	 newtimer = setInterval( function () {
+		query_result();
+//		gprs_state();
+		console.log("aaaaaaaaaaa");
+		}, 1000 );
+
+	 setInterval( function(){
+			 gprs_state();
+			 },10000);
+		var status = $('#status');
+		$('form').ajaxForm({
+			beforeSend: function() {
+				status.text(' ');
+			},
+			success: function() {
+			},
+			complete: function(xhr) {
+				status.text(xhr.responseText);
+			}
+		}); 
+		query_panel();
+	})();
+
+	function query_panel() {
+		$.get("/apps/<?=app.appname?>/mod", {}, function(data) {
+			//	var mod = $('#user_mod_num');
+			//	mod.val(data);
+			//	var m=str.split("*#!");
+			//	alert (m[1]);
+			//	alert (m[2])
+				var panel = $('#status');
+				panel.html(data);
+				})
+		.done(function() {
+				})
+		.fail(function() {
+				alert("Failed to send save mod request!!");
+				});
+	};
+
+function set_panel() {
+	var mod_num = $('#user_mod_num');
+	var mod_mes = $('#user_mod_mes');
+//	var val = mod.val();
+//	var panel = $('#panel');
+//	panel.html(val);
+
+	setTimeout('query_panel()', 3000);
+	alert("Send")
+	};
+function send_command(cmd) {
+		var status = $('#status');
+		$.post("", {command:cmd}, function(data) {
+				status.text(data);
+				})
+		.done(function() {
+				//alert("Application Started!!");
+				})
+		.fail(function() {
+				alert("Failed to send command request!!");
+				});
+	};
+/*
+function myrefresh()
+{
+//		   window.location.reload();
+}
+*/
+//setTimeout('myrefresh()',10000); //
+
+function query_result() {      //signal 显示
+	$.post("", {action:'result'}, function(data){
+	var result = $('#status_1');
+			result.val(data);
+			if(data.length != 0) {
+				var status = $('#status_1');
+				status.text(data);
+			}
+	})
+	.done(function() {
+			})
+	.fail(function() {
+			});
+}
+
+function gprs_state() {      //GSM state 显示
+	$.post("", {action:'gprs_state'}, function(data){
+	var result = $('#status_2');
+			result.val(data);
+			if(data.length != 0) {
+				var status = $('#status_2');
+				status.text(data);
+			}
+	})
+	.done(function() {
+			})
+	.fail(function() {
+			});
+}
+
+
+</script>

@@ -1,0 +1,53 @@
+<head>
+	<style>
+.right
+{
+	position:absolute;
+	right:0px;
+	width:500px;
+}
+
+.button
+{
+	position:absolute;
+	left:0px;
+	.button1
+}
+	</style>
+</head>
+
+<h1>
+	GSM: --------- 
+
+</h1>
+<A NAME="5"></A><HR>
+<html>
+	<body id="kooweb" class="" ontouchstart="">
+		<div class="button">
+		<input class="ui green button" type="button" onclick="alert('<?=(c)?>');" value="<?=_('分组编辑')?>"/><hr><hr>
+		<input class="ui green button" type="button" onclick="alert('<?=(c)?>');" value="<?=_('配置')?>"/>
+		</div>
+		<div class="right">
+			<table border="1">
+			<tr>
+				<td> row1, cell1 </td>
+				<td> row1 </td>
+			</tr>
+			<tr>
+				<td> row2, cell1 </td>
+				<td> row2, cell2 </td>
+			</tr>
+			</table>
+		</div>
+	</body>
+</html>
+
+<script>
+	function set_panel() {
+		var mod = $('#user_mod');
+		var val = mod.val();
+		var panel = $('#panel');
+		panel.html(val);
+	};	
+</script>
+

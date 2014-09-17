@@ -1,0 +1,65 @@
+<? extend 'layout.html'?>
+<script src="/static/js/table.js"></script>
+
+<div class="tab segment">
+	<div class="container">
+		<div class="introduction">
+			<h2 class="ui dividing header"> <?=_("GPRS Controller")?> - <?=app.appname ?> </h2>
+			<div class="ui breadcrumb">
+				<a class="section" href="/app/view/<?=app.appname?>"><?=_("App Control")?></a>
+				<i class="right arrow icon divider"></i>
+				<a class="section" href="/apps/<?=app.appname?>"><?=_("App Home")?></a>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="main container">
+	<div class="two column stackable ui grid">
+		<div class="column">
+			<div class="ui segment">
+				<div class="ui top attached label"><b><?=_('Settings')?></b></div>
+
+				<form class="ui form" method="post" action="">
+					<div class="ui inline field">
+						<div class="ui label"> <?=_('Serial Port')?>: </div>
+						<div class="ui selection labeled dropdown">
+							<input name="port" type="hidden" value="<?=port or ''?>"/>
+							<div class="default text"><?=port or '' ?> </div>
+							<i class="dropdown icon"></i>
+							<div class="menu">
+								<? for _, v in pairs(list) do ?>
+								<div class="item" data-value="<?=v?>"><?=v?></div>
+								<? end ?>
+							</div>
+						</div>
+					</div>
+					<input class="ui right floated teal submit button" type="submit" value="<?=_('Save')?>"/>
+				</form>
+
+			</div>
+		</div>
+		<div class="column">
+		</div>
+	</div>
+
+	<div class="ui message" id="status"><?=info or '&nbsp;'?></div>
+</div>
+
+
+<script>
+	(function() {
+		var status = $('#status');
+		$('form').ajaxForm({
+			beforeSend: function() {
+				status.text(' ');
+			},
+			success: function() {
+			},
+			complete: function(xhr) {
+				status.text(xhr.responseText);
+			}
+		}); 
+		query_panel();
+	})();
+</script>

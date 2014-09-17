@@ -1,0 +1,37 @@
+<? extend 'layout.html'?>
+<script src="/static/js/table.js"></script>
+
+<div class="tab segment">
+	<div class="container">
+		<div class="introduction">
+			<h2 class="ui dividing header"> <?=_("Directions")?> - <?=app.appname ?> </h2>
+			<div class="ui breadcrumb">
+				<a class="section" href="/app/view/<?=app.appname?>"><?=_("App Control")?></a>
+				<i class="right arrow icon divider"></i>
+				<a class="section" href="/apps/<?=app.appname?>"><?=_("App Home")?></a>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="main container">
+	<div class="two column stackable ui grid">
+		<div class="column">
+			<h2 align=center> <p>操作说明</p></h2>
+			<h3 align=left> <p>一、信号</p></h3>
+			<p style="text-indent:2em"> <font size = 3 color="black"> 1、如果<a href="http://baike.baidu.com/view/116812.htm?from_id=210860&type=syn&fromtitle=gsm&fr=aladdin">GSM</a>设备成功启动，则信号会动态显示，偶尔显示异常纯属正常。</font>
+			</p>
+			
+			<p style="text-indent:2em"> <font size = 3 color="black">2、信号范围在10-40内皆正常，若小于10，则最好将设备天线接入。</font>
+			
+			<p style="text-indent:2em"> <font size = 3 color="black"> 3、GSM 标签显示GSM状态，一般若有信号，GSM工作皆正常。</font>
+			</p>
+			<p style="text-indent:2em"> <font size = 3 color="black"> 4、Message 显示测试信息发送状态。</font>
+			</p>
+			</p>
+		</div>
+		<div class="column">
+		</div>
+	</div>
+
+</div>
