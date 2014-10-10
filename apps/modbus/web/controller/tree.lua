@@ -93,6 +93,7 @@ return {
 		req:read_body()
 		local filename = req:get_post_arg("filename")
 		filename = path .. "/" .. app.appname .. "/config/" .. app.appname .. "/" .. filename .."_config.json"
+		local operation = req:get_post_arg("operation")
 		local cycle = req:get_post_arg("cycle")
 		if not cycle then
 			res:write("error!")
@@ -116,6 +117,7 @@ return {
 		t.tree.checked = checked
 		t.vals = {}
 		t.request = {}
+		t.request.operation = operation
 		t.request.cycle = cycle
 		t.request.time_unit = time_unit
 		t.request.func = func

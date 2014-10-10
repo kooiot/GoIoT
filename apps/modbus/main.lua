@@ -23,6 +23,7 @@ local err_count = 1
 -- TODO: use the ltn12 utility from luasocket ??????
 local stream = {}
 stream.buf = ''
+local commands = {}
 
 
 -- Load tags from file
@@ -39,6 +40,35 @@ local function remove_tags()
 			end
 		end
 	end
+end
+
+local function add_device_cmd(app, device, name, cmd, desc)
+	if not device or not name then
+		return nil, 'How dare U!!'
+	end
+
+	local dev = app.devices:get(device)
+	if not dev then
+		dev = app.devices:add(device, 'Modbus Devices ['..device..']')
+	end
+	if not dev then
+		return nil, 'Cannot create devices for '..device
+	end
+
+	print('Added command '..device..':'..name)
+	local obj = dev.commands:get(name)
+	if not obj then
+		local r, err = dev.commands:add(name, desc or 'Control command', {})
+		if not r then 
+			return nil, err
+		end
+	end
+
+	if cmd then
+		commands[device] = commands[device] or {}
+		commands[device][name] = cmd
+	end
+	return true
 end
 
 local function load_tags_conf(app, reload)
@@ -195,6 +225,8 @@ handlers.on_start = function(app)
 		io_ports.main = tcpc.new(app.ctx, app.poller, remote_addr, port)
 		io_ports.main:open(on_rev)
 	end
+
+	return add_device_cmd(app, "modbus", "WRITE_OPERATION", "write_operation")
 end
 
 handlers.on_pause = function(app)
@@ -317,9 +349,37 @@ handlers.on_write = function(app, path, value, from)
 	return nil, 'FIXME'
 end
 
+local function write_operation(value)
+	local port_config = {}
+	for k, v in pairs(packets) do
+		if v.port_config == v.unit then
+			port_config = v.port_config
+			for k, tag in pairs(v.tags.vals) do
+				if tag.Name == value.name then
+					local pdu, err = mclient:request(v, port_config, port_config.ecm)
+					if pdu then
+						return true
+					end
+					return false
+				end
+			end
+		end
+	end
+end
+
+cjson = require "cjson"
 handlers.on_command = function(app, path, value, from)
-	log:debug(ioname, 'on_command called')
-	return nil, 'FIXME'
+	local match = '^'..ioname..'/([^/]+)/commands/(.+)'
+	local devname, cmd = path:match(match)
+	local ret
+
+	print(cjson.encode(value))
+
+	if devname == "modbus" and cmd == "WRITE_OPERATION" then
+		ret = write_operation(value)
+	end
+	return ret
+
 end
 
 handlers.on_import = require('import').import
