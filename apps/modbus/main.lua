@@ -134,7 +134,7 @@ local function on_rev(port, msg)
 	print("RECV", hex_raw(stream.buf))
 end
 
-stream.read = function (t, check, timeout)
+stream.read = function (t, check, timeout, isOnCommand)
 	local ztimer = require 'lzmq.timer'
 	local timer = ztimer.monotonic(timeout)
 	timer:start()
@@ -154,7 +154,9 @@ stream.read = function (t, check, timeout)
 					return r
 				end
 			end
-			abort = coroutine.yield(false, 50)
+			if not isOnCommand then
+				abort = coroutine.yield(false, 50)
+			end
 		else
 			if string.len(stream.buf) > 0 then
 				--print(os.date(), 'DATA CHECK', hex_raw(stream.buf))
@@ -163,7 +165,9 @@ stream.read = function (t, check, timeout)
 					return r
 				end
 			end
-			abort = coroutine.yield(false, 50)
+			if not isOnCommand then
+				abort = coroutine.yield(false, 50)
+			end
 		end
 	end
 	stream.buf = ''
@@ -267,7 +271,7 @@ handlers.on_run = function(app)
 	if not pause then
 		for k, v in pairs(packets) do
 			port_config = v.port_config
-			if v.tags.request.cycle ~= "" then
+			if v.tags.request.cycle ~= "0" then
 				if v.tags.request.cycle and v.tags.request.timer:rest() == 0 then
 					local pdu, err = mclient:request(v, port_config, port_config.ecm)
 					if pdu then
@@ -349,31 +353,27 @@ handlers.on_write = function(app, path, value, from)
 	return nil, 'FIXME'
 end
 
+cjson = require "cjson"
 local function write_operation(value)
 	local port_config = {}
 	for k, v in pairs(packets) do
-		if v.port_config == v.unit then
+		if v.port_config.unit == value.unit then
 			port_config = v.port_config
-			for k, tag in pairs(v.tags.vals) do
-				if tag.Name == value.name then
-					local pdu, err = mclient:request(v, port_config, port_config.ecm)
-					if pdu then
-						return true
-					end
-					return false
+			if v.tags.tree.name == value.name then
+				local pdu, err = mclient:request(v, port_config, port_config.ecm, true)
+				if pdu then
+					return true
 				end
 			end
 		end
 	end
+	return false
 end
 
-cjson = require "cjson"
 handlers.on_command = function(app, path, value, from)
 	local match = '^'..ioname..'/([^/]+)/commands/(.+)'
 	local devname, cmd = path:match(match)
 	local ret
-
-	print(cjson.encode(value))
 
 	if devname == "modbus" and cmd == "WRITE_OPERATION" then
 		ret = write_operation(value)

@@ -22,7 +22,7 @@ local function hex_raw(raw)
 end
 
 --ecm, error checking methods
-function class:request (t, port_config) 
+function class:request (t, port_config, isOnCommand) 
 	p = pdu[cmd[tonumber(t.tags.request.func)]](t)
 	if not p then
 		return nil
@@ -35,7 +35,7 @@ function class:request (t, port_config)
 	self.stream.send(apdu_raw)
 
 	--local raw = fiber.await(self.internal.read())
-	local raw = self.stream.read(t, packet_check(self.apdu, port_config), 1000)
+	local raw = self.stream.read(t, packet_check(self.apdu, port_config), 1000, isOnCommand)
 	if not raw then
 		return nil, 'Packet timeout'
 	end

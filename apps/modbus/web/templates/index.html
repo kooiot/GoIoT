@@ -294,7 +294,7 @@ function tableToJson(table) {
 	// Let's put this in the object like you want and convert to JSON (Note: jQuery will also do this for you on the Ajax request)
 	//var myObj = {};
 	//myObj.myrows = myRows;
-	console.log(JSON.stringify(myRows));
+	//console.log(JSON.stringify(myRows));
 	//console.log(JSON.stringify(myObj));
 	return JSON.stringify(myRows);
 }
@@ -407,20 +407,22 @@ function onClick(event, treeId, treeNode, clickFlag) {
 				document.getElementById("unit").value = json_text[i].config.unit;
 				var data = '<tbody> <th>Name</th> <th>Value</th> <th>Remove</th> </tbody>';
 				$("#ratios").html(data);
-				for (var j = 1; j < json_text[i].config.ratio.length; j++) {
-					var table = document.getElementById("ratios");
-					var row = table.insertRow(1);
-					var cell1 = row.insertCell(0);
-					var cell2 = row.insertCell(1);
-					cell1.innerHTML = json_text[i].config.ratio[j].Name;
-					cell2.innerHTML = json_text[i].config.ratio[j].Value;
-					var cell3 = row.insertCell(2);
-					var element3 = document.createElement("input");
-					element3.type = "button";
-					element3.name = "Remove";
-					element3.value = "Remove";
-					element3.setAttribute("onclick", "deleteRow(this)");
-					cell3.appendChild(element3);
+				if (!treeNode.isParent) {
+					for (var j = 1; j < json_text[i].config.ratio.length; j++) {
+						var table = document.getElementById("ratios");
+						var row = table.insertRow(1);
+						var cell1 = row.insertCell(0);
+						var cell2 = row.insertCell(1);
+						cell1.innerHTML = json_text[i].config.ratio[j].Name;
+						cell2.innerHTML = json_text[i].config.ratio[j].Value;
+						var cell3 = row.insertCell(2);
+						var element3 = document.createElement("input");
+						element3.type = "button";
+						element3.name = "Remove";
+						element3.value = "Remove";
+						element3.setAttribute("onclick", "deleteRow(this)");
+						cell3.appendChild(element3);
+					}
 				}
 				$(".ui.ecm")
 					.data()
@@ -484,20 +486,22 @@ function onClick(event, treeId, treeNode, clickFlag) {
 				document.getElementById("unit").value = json_text[i].config.unit;
 				var data = '<tbody> <th>Name</th> <th>Value</th> <th>Remove</th> </tbody>';
 				$("#ratios").html(data);
-				for (var j = 1; j < json_text[i].config.ratio.length; j++) {
-					var table = document.getElementById("ratios");
-					var row = table.insertRow(1);
-					var cell1 = row.insertCell(0);
-					var cell2 = row.insertCell(1);
-					cell1.innerHTML = json_text[i].config.ratio[j].Name;
-					cell2.innerHTML = json_text[i].config.ratio[j].Value;
-					var cell3 = row.insertCell(2);
-					var element3 = document.createElement("input");
-					element3.type = "button";
-					element3.name = "Remove";
-					element3.value = "Remove";
-					element3.setAttribute("onclick", "deleteRow(this)");
-					cell3.appendChild(element3);
+				if (!treeNode.isParent) {
+					for (var j = 1; j < json_text[i].config.ratio.length; j++) {
+						var table = document.getElementById("ratios");
+						var row = table.insertRow(1);
+						var cell1 = row.insertCell(0);
+						var cell2 = row.insertCell(1);
+						cell1.innerHTML = json_text[i].config.ratio[j].Name;
+						cell2.innerHTML = json_text[i].config.ratio[j].Value;
+						var cell3 = row.insertCell(2);
+						var element3 = document.createElement("input");
+						element3.type = "button";
+						element3.name = "Remove";
+						element3.value = "Remove";
+						element3.setAttribute("onclick", "deleteRow(this)");
+						cell3.appendChild(element3);
+					}
 				}
 				break;
 			} else {
@@ -657,12 +661,17 @@ function pSave(){
 	var val = changeType();
 	if (val == "0" || val == "2") {
 		var sPort = $(".ui.sPort").dropdown("get value");
-		var baud = $(".ui.baud").dropdown("get value");
-		var dbs = $(".ui.data_bits").dropdown("get value");
-		var parity = $(".ui.parity").dropdown("get value");
-		var sbs = $(".ui.stop_bits").dropdown("get value");
-		var ecm = $(".ui.ecm").dropdown("get value");
-		var ratio = tableToJson('ratios');
+		var baud = $(".ui.baud").dropdown("get value") ? $(".ui.baud").dropdown("get value") : 9600;
+		var dbs = $(".ui.data_bits").dropdown("get value") ? $(".ui.data_bits").dropdown("get value") : 8;
+		var parity = $(".ui.parity").dropdown("get value") ? $(".ui.parity").dropdown("get value") : 0;
+		var sbs = $(".ui.stop_bits").dropdown("get value") ? $(".ui.stop_bits").dropdown("get value") : 1;
+		if (!treeNode.isParent) {
+			var ecm = $(".ui.ecm").dropdown("get value");
+			var ratio = tableToJson('ratios');
+		} else {
+			ecm = "";
+			ratio = "";
+		}
 		//console.log("sPort=", sPort, "baud=", baud, "dbs=", dbs, "parity=", parity, "sbs=", sbs, "ecm=", ecm);
 		//alert($(".ui.parity").dropdown("get value"));
 		$.post("", {id:id, pId:pId, name:name, checked:checked, mode:val, sPort:sPort, baud:baud, dbs:dbs, parity:parity, sbs:sbs, ecm:ecm, unit:unit, ratio:ratio}, function(data, status){
@@ -673,8 +682,13 @@ function pSave(){
 	} else if (val == "1" || val == "3") {
 		var port = document.getElementById("port").value;
 		var sIp = document.getElementById("sIp").value;
+		if (!treeNode.isParent) {
 		var ecm = $(".ui.ecm").dropdown("get value");
 		var ratio = tableToJson('ratios');
+		} else {
+			ecm = "";
+			ratio = "";
+		}
 		$.post("", {id:id, pId:pId, name:name, checked:checked, mode:val, port:port, sIp:sIp, unit:unit, ecm:ecm, ratio:ratio}, function(data, status){
 					if (status) {
 						window.location.reload();

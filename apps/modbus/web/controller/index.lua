@@ -58,8 +58,6 @@ return {
 		t.tree.id = id
 		t.tree.pId = pId
 		t.tree.checked = checked
-		local ct = req:get_post_arg("ct")
-		local pt = req:get_post_arg("pt")
 		local ratio = req:get_post_arg("ratio")
 		t.config = {}
 		if mode == "1" or mode == "3" then
@@ -69,8 +67,6 @@ return {
 			t.config.port = port
 			t.config.sIp = sIp
 			t.config.unit = unit
-			t.config.ct = ct
-			t.config.pt = pt
 			t.config.ratio = cjson.decode(ratio)
 			local ecm = req:get_post_arg("ecm") -- error checking method
 			t.config.ecm = ecm
@@ -89,9 +85,7 @@ return {
 			t.config.sbs = sbs
 			t.config.ecm = ecm
 			t.config.unit = unit
-			t.config.ct = ct
-			t.config.pt = pt
-			t.config.ratio = ratio
+			t.config.ratio = cjson.decode(ratio)
 		else
 			res:write("error")
 		end
