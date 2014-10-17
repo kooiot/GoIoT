@@ -315,7 +315,7 @@ local send_message = function (phone_number, message)
 		sleep(300)
 	port:write(p_n,4000)
 		sleep(300)
---	port:write("\x1a\r\n", 1000)
+	port:write("\x1a\r\n", 1000)----------------send the message
 		sleep(300)
 	local e,data,size =port:read(128,1000)
 	print ('CTRL+Z====the data & size is ', e, data, size, '\r\n')
@@ -594,7 +594,7 @@ handlers.on_command = function(app, path, value, from)
 	local match = '^'..ioname..'/([^/]+)/commands/(.+)'
 	local devname, cmd = path:match(match)
 
-	print ("***************************")
+	print ("***************************",devname,cmd)
 
 	if devname == "GPRS" and cmd == "SEND_MESSAGE" then
 		print ("----------read---SEND--------",app,path,devname,cmd,value.tel,value.mes,from)
