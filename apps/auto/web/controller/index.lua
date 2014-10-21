@@ -1,4 +1,29 @@
-local function doi(req, res, info)
+local cjson = require 'cjson.safe'
+platform = require "shared.platform"
+path_plat = platform.path.apps
+
+local function doi(req, res)
+	local path_plat = path_plat .. "/" .. app.appname .. "/config/" .. app.appname .. "/"
+	local excute = "mkdir " .. path_plat .. " -p"
+	if not os.execute(excute) then
+		res:write(app.appname)
+		return
+	end
+	local filename = path_plat .. app.appname .. "_config.json"
+	local file, err = io.open(filename, "a+")
+
+	if file then
+		local config = file:read("*a")
+		if config == "" then
+			devices = {}
+			t = {}
+			table.insert(devices,t)
+			config = cjson.encode(devices)
+			file:write(config)
+		end
+		file:close()
+		
+		
 	local api = require 'shared.api.iobus.client'
 	local client = api.new('web')
 	local cjson = require 'cjson.safe'
@@ -41,45 +66,64 @@ local function doi(req, res, info)
 	end
 	
 	local conf={}
-	local config = require 'shared.api.config'
-	local conf, err = config.get(app.appname..'.read') or
+	local config_path = require 'shared.api.config'
+	local conf, err = config_path.get(app.appname..'.read') or
 	[[conf.path="/nill/nill/nill"]]
 
 	rules = rules or { ['test1/unit.1/inputs/data2'] = {
 [[ return function(path, value, client) local last_value = GET_LAST_VALUE(path, value.value) if last_value == value.value then return end if value.value == 1 then SEND_CMD('gree\/GREE\/commands\/开机', {'GREE\/开机'}) end end ]]}}
 
 	rules = cjson.encode(rules)
-
-	res:ltp('index.html', {lwf=lwf, app=app, rules=rules, commands=commands, inputs=inputs, info=info, conf=conf})
+--		res:write(config)
+		res:ltp('index.html', {lwf=lwf, app=app, rules=rules, commands=commands, inputs=inputs,  conf=conf, data_data = 1, json_text=config})
+end
 end
 return {
 	get = 	doi,
 	post = function(req, res)
-		local cjson = require 'cjson.safe'
 
-		local rules = req:get_arg('rules')
-		if not rules then
-			res:write("incorrect post")
-			return
-		end
-		rules, err = cjson.decode(rules)
-		if not rules then
+		req:read_body()
+		local path = path_plat .. "/" .. app.appname .. "/config/" .. app.appname .. "/"
+		local filename = path .. app.appname .. "_config.json"
+		res:write(app.appname)
+		local t = {}
+		t.config={}
+		local ratio = req:get_post_arg("ratio")
+		res:write(ratio)
+		t.config.ratio = cjson.decode(ratio)
+
+		local file, err = io.open(filename, "a+")
+		if not file then
 			res:write(err)
 			return
 		end
+--		file:write(ratio)
 
-		local appapi = require 'shared.api.app'
-		local port, err = appapi.find_app_port(app.appname)
-		if not port then
-			res:write(err or 'Error when trying to find application mgr port')
-		else
-			local client = appapi.new(port)
-			local r, err = client:request('set_rule', rules)
-			if r then
-				res:write('Done, you need restart the application mannually')
-			else
-				res:write(err..' '.. app.appname)
+		local json_text = file:read("*a")
+		local tags = cjson.decode(json_text)
+		local flags = false
+		if tags then	
+			for k, v in pairs(tags)	do
+				if v.config.ratio then
+					tags[k] = t
+					flags = true
+			--		res:write ("*********************************")
+					break
+				end
 			end
+			if flags == false then
+				table.insert(tags, t)
+			end
+		else
+			table.insert(tags. t)
 		end
+	
+		file:close()
+		file = io.open(filename, "w")
+		file:write(cjson.encode(tags))
+--]]
+		file:close()
+
 	end
 }
+

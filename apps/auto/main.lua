@@ -9,6 +9,9 @@ local config = require 'shared.api.config'
 local api = require 'shared.api.iobus'
 local cjson = require 'cjson.safe'
 
+platform = require "shared.platform"
+path_plat = platform.path.apps
+
 local ioname = arg[1]
 assert(ioname, 'Applicaiton needs to have a name')
 
@@ -22,115 +25,117 @@ local function sleep(n)
 end
 
 local function load_conf()
-	local conf, err = config.get(ioname..'.conf')
-	return conf or {
-		--rules = { ['^.+'] = {' return function(path, value, client) print(path, value, client) end '}}
-		--rules = { ['eeee/unit.1/inputs/data2'] = {[[ return function(path, value, client) SEND_CMD('gree/ir/commands/send', {'GREE/开机'}) end ]]}}
-		--rules = { ['eeee/unit.1/inputs/data2'] = {[[ return function(path, value, client) SEND_CMD('gree/GREE/commands/开机', {'GREE/开机'}) end ]]}}
-	}
+
+	local path_plat = path_plat .. "/" .. ioname .. "/config/" .. ioname .. "/"
+	local filename = path_plat .. ioname .. "_config.json"
+	local file, err = io.open(filename, "a+")
+
+	if file then
+		local config = file:read("*a")
+		if config == "" then
+			devices = {}
+			t = {}
+			table.insert(devices,t)
+			config = cjson.encode(devices)
+			file:write(config)
+		end
+		file:close()
+		config = cjson.decode(config)
+		return config
+	end
+
 end
 
 local conf = load_conf()
 local rules = {}
 local client = api.new(arg[1], info.ctx, info.poller)
 
-function SEND_CMD(path, vars, desc)
-	log:warn(ioname, desc or 'Action triggered for path: '..path)
-	return client:command(path, vars)
-end
-
-local last_values = {}
-function GET_LAST_VALUE(path, new_value)
-	local value = last_values[path]
-	last_values[path] = new_value
-	return value
-end
-
-client:onupdate(function(namespace) 
-	--print('New namesapce online ', namespace)
-end)
-
-local function cov(path, value)
-	--print('data changed on ', path)
-	for k, v in pairs(rules) do
-		if path:match(k) then
-			--print('Matched rule', k)
-			for _, f in pairs(v) do
-				f(path, value, client)
-			end
-		end
-	end
-end
 
 local function on_start()
-	local CE = require 'shared.compat.env'
-	local load = CE.load
-	if conf.rules then
-		for k, v in pairs(conf.rules) do
-			log:debug(ioname, 'Subscribe path '..k)
-			client:subscribe(k, cov)
-			rules[k] = {}
-			local t = rules[k]
-			for _, dostr in pairs(v) do
-				local f = load(dostr)
-				if f then
-					t[#t + 1] = f()
-				end
-			end
+	print ("---on start---",conf)
+	for k, v in pairs (conf) do
+		if type(v)=="table" then
+			conf = v
+			print (conf)
 		end
-	else
-		log:debug(ioname, 'No auto-control rules found in configuration')
 	end
 end
 
 local function action_ctrl(vars,path)
-		local config = require 'shared.api.config'
-		local conf_temp = config.get(ioname ..'.light')
+	local Unit = 0
+	local Name = ""
+	local api = require 'shared.api.iobus.client'
+	local client = api.new("auto")
+	local commands = {}
+	local nss, err = client:enum('.+')
 
-
-		local api = require 'shared.api.iobus.client'
-		local client = api.new('web')
-		local r, err = client:read(path)
-
-		print ("irrrrrrrrrrrrrrrrrrrrrrrr",r.value)  --刷新的监测数据-------------------
-
-		if conf_temp.onlight_less ~= "NULL" then
-			if vars <  tonumber(conf_temp.onlight_less) then--光强小于设定值 -----------------
-					local api = require 'shared.api.iobus.client'
-					local client = api.new("client")
-					local commands = {}
-
-					print ("---------------------1-------------------")	
-					local nss, err = client:enum('.+')
-
-					if nss then
-					print ("---------------------2-------------------")	
-						for ns, devs in pairs(nss) do
-
-							local tree, err = client:tree(ns)
-
-							if tree then
-								for k, dev in pairs(tree.devices) do
-									for k, v in pairs(dev.commands) do
-										commands[#commands + 1] = {name=v.name, desc=v.desc, path=v.path}
-										
-										local r, err = client:command(v.path, {unit=1,Name="光照"})
-										print ("the commands is ..", v.path,v.name, v.devname)
-									end
-								end
-							end
-						end	
-					else
-						log:error("what the info is error",err)
+		if conf.config.ratio then
+			for k,v in pairs(conf.config.ratio) do
+		--		sleep (1000)
+		--		local r, err = client:read("sys/dev/inputs/time")
+				local r, err = client:read(v.Command)
+					if r == nil then
+						print ("nill")
 					end
-				print ("****************num**************",conf_temp.onlight_less)
-				print ("****************num**************",conf_temp.onlight_more)
-				print ("****************num**************",conf_temp.command_less)
-			end
-		else
-			return
-		end
+				if r then
+					print ("------command and value ------",v.Command,r.value)
+					v.Value = tonumber(v.Value)
+					r.value = tonumber(r.value)
+					if v.Value == nil or r.value == nil then
+						print ("v and r is nill")	
+					else
+						if v.Compare == "&gt;" then
+							print (">>>>>>>>",v.Value,r.value)
+							if r.value > v.Value then   --r is true data v is config data
+						--		print (">>>>>>")
+						--		print ("v.Value",v.Value)	
+						--		print ("v.Command",v.Command)	
+								Unit =v.Unit
+								Name = v.Name
+							end
+						end
+						if v.Compare == "&lt;" then
+							if r.value > v.Value then
+						--		print ("<<<<<<<<<")
+						--		print ("v.Value",v.Value)	
+						--		print ("v.Command",v.Command)
+								Unit =v.Unit
+								Name = v.Name
+							end
+						end
+						if v.Compare == "=" then
+						--	print ("=======")
+						--	print ("v.Value",v.Value)	
+						--	print ("v.Command",v.Command)	
+							Unit =v.Unit
+							Name = v.Name
+						end
+							if nss then
+							print ("---------------------2-------------------")	
+								for ns, devs in pairs(nss) do
 
+									local tree, err = client:tree(ns)
+
+									if tree then
+										for k, dev in pairs(tree.devices) do
+											for k, v in pairs(dev.commands) do
+												commands[#commands + 1] = {name=v.name, desc=v.desc, path=v.path}
+												
+												local r, err = client:command(v.path, {unit=Unit,Name=Name})
+											--	print ("the commands is ..", v.path,v.name, v.devname,v.value)
+											end
+										end
+									end
+								end	
+							else
+								log:error("what the info is error",err)
+							end
+					end
+				else
+					log:error("nil",err)
+				end
+			end
+		end
 	
 end
 
@@ -143,16 +148,9 @@ function ctrl_data(state)
 	client:close()
 end
 function func()
-	local config = require 'shared.api.config'
-	local conf = config.get(ioname ..'.read')
-	print("********************conf*****************",conf.value, conf.path, conf)
-	if type(conf.value) == "number" then
-			sleep (10000)
-			ctrl_data(conf.path)
-			action_ctrl(conf.value,conf.path)
-	else
-	end
-	
+--	sleep (3000)
+--	ctrl_data()
+	action_ctrl()
 end		
 
 
@@ -175,10 +173,10 @@ app:reg_request_handler('set_rule', function(app, vars)
 end)
 
 app:reg_request_handler('get_rule', function(app, vars)
-	local config = require 'shared.api.config'
-	local conf = config.get(ioname ..'.read')
-	action_ctrl(conf.value, conf.path)
-	local reply = {'get_rule',  {result=true, rules=conf.rules}}
+	--local config = require 'shared.api.config'
+--	local conf = config.get(ioname ..'.read')
+--	action_ctrl(conf.value, conf.path)
+	local reply = {'get_rule',  {result=true, rules=conf}}
 	app.server:send(cjson.encode(reply))
 end)
 
