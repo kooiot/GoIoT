@@ -241,13 +241,13 @@ function onClick(event) {
 
 
 function pSave(){
-		alert ("---1---");
+	//	alert ("---1---");
 		var ratio = tableToJson('ratios');
 		$.post("/apps/<?=app.appname?>/index", {ratio:ratio}, function(data, status){
-			alert(data);
+	//		alert(data);
 			if (status) {
 				window.location.reload();
-				alert (status);
+	//			alert (status);
 			} else {
 					alert("error");
 					return;

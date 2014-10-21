@@ -71,7 +71,7 @@ local function action_ctrl(vars,path)
 
 		if conf.config.ratio then
 			for k,v in pairs(conf.config.ratio) do
-		--		sleep (1000)
+				sleep (1000)
 		--		local r, err = client:read("sys/dev/inputs/time")
 				local r, err = client:read(v.Command)
 					if r == nil then
@@ -85,7 +85,6 @@ local function action_ctrl(vars,path)
 						print ("v and r is nill")	
 					else
 						if v.Compare == "&gt;" then
-							print (">>>>>>>>",v.Value,r.value)
 							if r.value > v.Value then   --r is true data v is config data
 						--		print (">>>>>>")
 						--		print ("v.Value",v.Value)	
@@ -121,7 +120,7 @@ local function action_ctrl(vars,path)
 											for k, v in pairs(dev.commands) do
 												commands[#commands + 1] = {name=v.name, desc=v.desc, path=v.path}
 												
-												local r, err = client:command(v.path, {unit=Unit,Name=Name})
+												local r, err = client:command(v.path, {unit=Unit,name=Name})
 											--	print ("the commands is ..", v.path,v.name, v.devname,v.value)
 											end
 										end
