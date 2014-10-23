@@ -9,12 +9,15 @@
 </div>
 
 <div class="main container">
-		<div class = "ui label">auto ctrl config:</div>
 		<form class="ui form">
 			<div class="content">
 				<div class="ui blue button" id="Add" onclick="addRow('ratios');"> Add</div>
 				<div class="ui button" id="pSave" name="pSave">Save</div>
+
+				<iframe name="sinaWeatherTool" src="http://weather.news.sina.com.cn/chajian/iframe/weatherStyle0.html?city=%E5%8C%97%E4%BA%AC" width="200" height="20" marginwidth="0" marginheight="0" hspace="0" vspace="0" frameborder="0" scrolling="no"></iframe>
+
 				<table class="ui table segment" id="ratios">
+		<div class = "ui label" text-align:center><h2>auto ctrl config</h2></div>
 					<tbody>
 						<th>Unit</th>
 						<th>Name</th>
@@ -44,7 +47,7 @@
 			
 			<p>Compare</p>
 			<div class="ui small input">
-				<div class="ui selection labeled dropdown">
+				<div class="ui selection labeled dropdown" onChange="changeType(this)">
 				<input id="ratio_compare" name="ratio_compare" type="hidden" value=">"/>
 				<div class="default text"><? = ">" ?> </div>
 				<i class="dropdown icon"></i>
@@ -52,6 +55,7 @@
 					<div class="item" data-value=">"><?="大于"?></div>
 					<div class="item" data-value="<"><?="小于"?></div>
 					<div class="item" data-value="="><?="等于"?></div>
+					<div class="item" data-value="[x,y]"><?="区间"?></div>
 				</div>
 				</div>
 			</div>
@@ -122,6 +126,19 @@ var setting = {
 		}); 
 	})();
 		
+function changeType(obj){
+
+	var val = $("#ratio_compare").attr("value");
+		if (val == "[x,y]"){
+			var val = $("#ratio_value").val("[x,y]");
+		}else{
+			var val = $("#ratio_value").val("");
+		}
+}
+
+
+
+
 var json_text = <?=json_text ?>;
 function query_result() {      //天气预报显示
 	$.get("/apps/<?=app.appname?>/index", {}, function(data){
@@ -149,8 +166,10 @@ function query_result() {      //天气预报显示
 					var command = $('#ratio_command').val();
 					command = command.trim();
 					var value = $("#ratio_value").val();
-					if (lname.length == 0 || !value) {
-						window.alert("Name/Value cannot be empty");
+					value = value.trim();
+					
+					if (lname.length == 0 || !value || !uname) {
+						window.alert("Name/Value/Unit cannot be empty");
 						return false;
 					};
 					var table = document.getElementById("ratios");

@@ -71,19 +71,17 @@ local function action_ctrl(vars,path)
 
 		if conf.config.ratio then
 			for k,v in pairs(conf.config.ratio) do
-				sleep (1000)
+				sleep (10)
 		--		local r, err = client:read("sys/dev/inputs/time")
 				local r, err = client:read(v.Command)
 					if r == nil then
 						print ("nill")
 					end
 				if r then
-					print ("------command and value ------",v.Command,r.value)
-					v.Value = tonumber(v.Value)
-					r.value = tonumber(r.value)
-					if v.Value == nil or r.value == nil then
-						print ("v and r is nill")	
-					else
+					print ("------command and value ------",v.Command,r.value,v.Compare)
+					if type(tonumber(v.Value))=="number" then
+						v.Value=tonumber(v.Value)
+						r.value=tonumber(r.value)
 						if v.Compare == "&gt;" then
 							if r.value > v.Value then   --r is true data v is config data
 						--		print (">>>>>>")
@@ -94,7 +92,7 @@ local function action_ctrl(vars,path)
 							end
 						end
 						if v.Compare == "&lt;" then
-							if r.value > v.Value then
+							if r.value < v.Value then
 						--		print ("<<<<<<<<<")
 						--		print ("v.Value",v.Value)	
 						--		print ("v.Command",v.Command)
@@ -109,8 +107,28 @@ local function action_ctrl(vars,path)
 							Unit =v.Unit
 							Name = v.Name
 						end
+					
+					else  -----------此处的数据不是单独的数字，而是字符串
+						if v.Compare == "[x,y]" then
+							local x, y = string.find(v.Value,"%w%w")
+							if x== nil or y==nil then
+								log:error("Please input the format like this [x,y]  x<y")
+							end
+						--	x,y = string.sub(v.Value,string.find(v.Value,"%w,%w"))
+							x, y = string.match(v.Value,"(%w+),(%w+)")
+							x = tonumber(x)
+							y = tonumber(y)
+							if r.value > x and r.value < y then
+							--	print ("[][][][][][][][][][]")
+							--	print ("x and y are ",x,y)	
+							--	print ("v.Command",v.Command)	
+								Unit =v.Unit
+								Name = v.Name
+							end
+						end
+					end
 							if nss then
-							print ("---------------------2-------------------")	
+								print ("---------------------2-------------------")	
 								for ns, devs in pairs(nss) do
 
 									local tree, err = client:tree(ns)
@@ -129,7 +147,6 @@ local function action_ctrl(vars,path)
 							else
 								log:error("what the info is error",err)
 							end
-					end
 				else
 					log:error("nil",err)
 				end

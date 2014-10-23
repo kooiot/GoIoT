@@ -103,6 +103,7 @@ return {
 		local tags = cjson.decode(json_text)
 		local flags = false
 		if tags then	
+			tags = {}
 			for k, v in pairs(tags)	do
 				if v.config.ratio then
 					tags[k] = t
