@@ -1,0 +1,144 @@
+<? extend 'layout.html'?>
+<script src="/static/js/table.js"></script>
+
+<div class="tab segment">
+	<div class="container">
+		<div class="introduction">
+			<h2 class="ui dividing header"> <?=_("Light Controller")?> - <?=app.appname ?> </h2>
+			<div class="ui breadcrumb">
+				<a class="section" href="/app/view/<?=app.appname?>"><?=_("App Control")?></a>
+				<i class="right arrow icon divider"></i>
+				<a class="section" href="/apps/<?=app.appname?>"><?=_("App Home")?></a>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="main container">
+	<div class="two column stackable ui grid">
+		<div class="column">
+			<div class="ui segment">
+				<div class="ui top attached label"><b><?=_('Settings')?></b></div>
+
+				<form class="ui form" method="post" action="">
+					
+						<!-- 光照强度 LUX -->
+						<div class="ui top attached label">
+											光强小于：
+											<div class="ui selection labeled dropdown">
+												<input name="onlight_less" type="hidden" value="<?=conf.onlight_less or 'NULL'?>"/>
+												<div class="default text"><?=conf.onlight_less or 'NULL' ?> </div>
+												<i class="dropdown icon" ></i>
+												<div class="menu">
+													<? for k, v in pairs(list_onlight) do?>
+														<div class="item" data-value="<? =v ?>"><?=v?></div>
+													<? end ?>
+												</div>
+											</div><?=_('Lux')?> <?=_('动作')?>		
+						</div></br></br></br>
+		
+
+					<div class="ui segment">
+											
+								<div class="ui label"> <?=_('Command')?>: </div>
+								<div class="ui selection labeled dropdown">
+									<? local def = (#commands ~= 0 and commands[1].path or '') ?>
+									<input id="command" name="command_less" type="hidden" value="<?=def?>"/>
+									<div class="default text"><? = def ?> </div>
+									<i class="dropdown icon"></i>
+									<div class="menu">
+										<? for _, v in pairs(commands) do ?>
+										<div class="item" data-value="<?=v.path?>"><?=v.path?></div>
+										<? end ?>
+									</div>
+								</div>
+					
+					</div>
+				
+			</div>
+		</div>
+		<div class="column">
+		
+		<div class="ui segment">
+				<div class="ui top attached label"><b><?=_('Settings')?></b></div>
+
+					
+						<!-- 光照强度 LUX -->
+						<div class="ui top attached label">
+											光强大于：
+											<div class="ui selection labeled dropdown">
+												<input name="onlight_more" type="hidden" value="<?=conf.onlight_more or 'NULL'?>"/>
+												<div class="default text"><?=conf.onlight_more or 'NULL' ?> </div>
+												<i class="dropdown icon" ></i>
+												<div class="menu">
+													<? for k, v in pairs(list_onlight) do?>
+														<div class="item" data-value="<? =v ?>"><?=v?></div>
+													<? end ?>
+												</div>
+											</div><?=_('Lux')?> <?=_('动作')?>		
+						</div></br></br></br>
+		
+
+					<div class="ui segment">
+					
+								<div class="ui label"> <?=_('Command')?>: </div>
+								<div class="ui selection labeled dropdown">
+									<? local def = (#commands ~= 0 and commands[1].path or '') ?>
+									<input id="command" name="command" type="hidden" value="<?=def?>"/>
+									<div class="default text"><? = def ?> </div>
+									<i class="dropdown icon"></i>
+									<div class="menu">
+										<? for _, v in pairs(commands) do ?>
+										<div class="item" data-value="<?=v.path?>"><?=v.path?></div>
+										<? end ?>
+									</div>
+								</div>
+					
+					</div>
+				
+           <!-------------------------------------------------------------->
+				
+		<!-------------------------------------------------------------------->
+		
+				
+
+
+			</div>
+					<input class="ui right floated teal submit button" type="submit" value="<?=_('Save')?>" onclick="send_command('TTTTTTTTTTT');"/>
+				</form>
+		</div>
+	</div>
+
+	<div class="ui message" id="status"><?=info or '&nbsp;'?></div>
+</div>
+
+
+<script>
+	(function() {
+		var status = $('#status');
+		$('form').ajaxForm({
+			beforeSend: function() {
+				status.text(' ');
+			},
+			success: function() {
+			},
+			complete: function(xhr) {
+				status.text(xhr.responseText);
+			}
+		}); 
+		query_panel();
+	})();
+
+function query_panel(){
+	document.getElementById('e').value = location.href;
+}
+
+function send_command(value){
+	
+	var value_light = document.getElementById('check_light').checked;
+	var value_light_1 = document.getElementById('check_light_1').checked;
+	var value_light_2 = document.getElementById('check_light_2').checked;
+	alert(value_light_1);
+}
+
+</script>
