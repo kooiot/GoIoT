@@ -82,25 +82,25 @@ local function action_ctrl(vars,path)
 					if type(tonumber(v.Value))=="number" then
 						v.Value=tonumber(v.Value)
 						r.value=tonumber(r.value)
-						if v.Compare == "&gt;" and r.value > v.Value then
-						--	if r.value > v.Value then   --r is true data v is config data
+						if v.Compare == "&gt;" then
+							if r.value > v.Value then   --r is true data v is config data
 						--		print (">>>>>>")
 						--		print ("v.Value",v.Value)	
 						--		print ("v.Command",v.Command)	
 								Unit =v.Unit
 								Name = v.Name
-						--	end
+							end
 						end
-						if v.Compare == "&lt;" and r.value < v.Value then
-						--	if r.value < v.Value then
+						if v.Compare == "&lt;" then
+							if r.value < v.Value then
 						--		print ("<<<<<<<<<")
 						--		print ("v.Value",v.Value)	
 						--		print ("v.Command",v.Command)
 								Unit =v.Unit
 								Name = v.Name
-						--	end
+							end
 						end
-						if v.Compare == "=" and r.value == v.Value then
+						if v.Compare == "=" then
 						--	print ("=======")
 						--	print ("v.Value",v.Value)	
 						--	print ("v.Command",v.Command)	
