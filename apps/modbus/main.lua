@@ -134,7 +134,7 @@ local function on_rev(port, msg)
 	print("RECV", hex_raw(stream.buf))
 end
 
-stream.read = function (t, check, timeout, isOnCommand)
+stream.read = function (t, check, timeout, isECM)
 	local ztimer = require 'lzmq.timer'
 	local timer = ztimer.monotonic(timeout)
 	timer:start()
@@ -154,7 +154,7 @@ stream.read = function (t, check, timeout, isOnCommand)
 					return r
 				end
 			end
-			if not isOnCommand then
+			if not isECM then
 				abort = coroutine.yield(false, 50)
 			end
 		else
@@ -165,7 +165,7 @@ stream.read = function (t, check, timeout, isOnCommand)
 					return r
 				end
 			end
-			if not isOnCommand then
+			if not isECM then
 				abort = coroutine.yield(false, 50)
 			end
 		end
