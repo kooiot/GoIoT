@@ -55,6 +55,7 @@ local rules = {}
 
 local function on_start()
 	print ("---on start---",conf)
+	log:info(ioname, 'Starting application[SmartHome]')
 	--[[
 	for k, v in pairs (conf) do
 		if type(v)=="table" then
@@ -97,6 +98,8 @@ local function action_ctrl(vars,path)
 			local str = v.config.str
 			--print(str)
 			local func = require("shared.compat.env").load(str, nil, nil, create_funcs(v.tree.id))
+			if func == nil then
+			else
 			local val = func()
 			print(v.config.unit, v.tree.name)
 			print(val)
@@ -121,7 +124,7 @@ local function action_ctrl(vars,path)
 				else
 					log:error("what the info is error",err)
 				end
-			end
+			end  end
 		end
 	end
 end
