@@ -15,6 +15,7 @@ path_plat = platform.path.apps
 local ioname = arg[1]
 assert(ioname, 'Applicaiton needs to have a name')
 
+
 local info = {}
 info.port = 5631
 info.ctx = zmq.context()
@@ -40,6 +41,7 @@ local function load_conf()
 			file:write(config)
 		end
 		file:close()
+		print(config)
 		config = cjson.decode(config)
 		return config
 	end
@@ -48,109 +50,82 @@ end
 
 local conf = load_conf()
 local rules = {}
-local client = api.new(arg[1], info.ctx, info.poller)
+--local client = api.new(arg[1], info.ctx, info.poller)
 
 
 local function on_start()
 	print ("---on start---",conf)
+	--[[
 	for k, v in pairs (conf) do
 		if type(v)=="table" then
 			conf = v
-			print (conf)
 		end
 	end
+	--]]
+end
+
+local api = require "shared.api.iobus.client"
+local client = api.new("config")
+local function create_funcs(parentID)
+	return {
+		get_val = function(name)
+--			local api = require "shared.api.iobus.client"
+--			local client = api.new("config")
+			for k, v in pairs(conf) do
+				if v.tree.name == name and v.tree.pId == parentID then
+					name = v.config.input
+					local r, err = client:read(name)
+					if not r then
+						return nil, err
+					end
+					return r.value
+				end
+			end
+		end
+	}
 end
 
 local function action_ctrl(vars,path)
 	local Unit = 0
 	local Name = ""
-	local api = require 'shared.api.iobus.client'
-	local client = api.new("auto")
+--	local api = require 'shared.api.iobus.client'
+--	local client = api.new("auto")
 	local commands = {}
 	local nss, err = client:enum('.+')
+	for k, v in pairs(conf) do
+		if tonumber(v.tree.level) == 1 then
+			local str = v.config.str
+			--print(str)
+			local func = require("shared.compat.env").load(str, nil, nil, create_funcs(v.tree.id))
+			local val = func()
+			print(v.config.unit, v.tree.name)
+			print(val)
+			if val then
+				local unit = v.config.unit
+				local name = v.tree.name
+				if nss then
+					for ns, devs in pairs(nss) do
 
-		if conf.config.ratio then
-			for k,v in pairs(conf.config.ratio) do
-				sleep (1000)
-		--		local r, err = client:read("sys/dev/inputs/time")
-				local r, err = client:read(v.Command)
-					if r == nil then
-						print ("nill")
-					end
-				if r then
-					print ("------command and value ------",v.Command,r.value)
-					v.Value = tonumber(v.Value)
-					r.value = tonumber(r.value)
-					if v.Value == nil or r.value == nil then
-						print ("v and r is nill")	
-					else
-						if v.Compare == "&gt;" then
-							if r.value > v.Value then   --r is true data v is config data
-						--		print (">>>>>>")
-						--		print ("v.Value",v.Value)	
-						--		print ("v.Command",v.Command)	
-								Unit =v.Unit
-								Name = v.Name
+						local tree, err = client:tree(ns)
+
+						if tree then
+							for k, dev in pairs(tree.devices) do
+								for k, v in pairs(dev.commands) do
+									commands[#commands + 1] = {name=v.name, desc=v.desc, path=v.path}
+
+									local r, err = client:command(v.path, {unit=unit,name=name})
+								end
 							end
 						end
-						if v.Compare == "&lt;" then
-							if r.value > v.Value then
-						--		print ("<<<<<<<<<")
-						--		print ("v.Value",v.Value)	
-						--		print ("v.Command",v.Command)
-								Unit =v.Unit
-								Name = v.Name
-							end
-						end
-						if v.Compare == "=" then
-						--	print ("=======")
-						--	print ("v.Value",v.Value)	
-						--	print ("v.Command",v.Command)	
-							Unit =v.Unit
-							Name = v.Name
-						end
-							if nss then
-							print ("---------------------2-------------------")	
-								for ns, devs in pairs(nss) do
-
-									local tree, err = client:tree(ns)
-
-									if tree then
-										for k, dev in pairs(tree.devices) do
-											for k, v in pairs(dev.commands) do
-												commands[#commands + 1] = {name=v.name, desc=v.desc, path=v.path}
-												
-												local r, err = client:command(v.path, {unit=Unit,name=Name})
-											--	print ("the commands is ..", v.path,v.name, v.devname,v.value)
-											end
-										end
-									end
-								end	
-							else
-								log:error("what the info is error",err)
-							end
-					end
+					end	
 				else
-					log:error("nil",err)
+					log:error("what the info is error",err)
 				end
 			end
 		end
-	
+	end
 end
 
-
-function ctrl_data(state)
-	local appapi = require 'shared.api.app'
-	local port, err = appapi.find_app_port(ioname)
-	local client = appapi.new(port)
-	local r, err = client:request('get_rule', {result = state})
-	client:close()
-end
-function func()
---	sleep (3000)
---	ctrl_data()
-	action_ctrl()
-end		
 
 
 local app = nil
@@ -162,6 +137,7 @@ end
 
 app = require('shared.app').new(info, {on_start = on_start, on_close = on_close})
 app:init()
+--[[
 app:reg_request_handler('set_rule', function(app, vars)
 	print("----------------",cjson.encode(vars))
 	conf.rules = vars
@@ -172,20 +148,17 @@ app:reg_request_handler('set_rule', function(app, vars)
 end)
 
 app:reg_request_handler('get_rule', function(app, vars)
-	--local config = require 'shared.api.config'
---	local conf = config.get(ioname ..'.read')
---	action_ctrl(conf.value, conf.path)
 	local reply = {'get_rule',  {result=true, rules=conf}}
 	app.server:send(cjson.encode(reply))
 end)
-
+--]]
 -- The mail loop
 local ms = 1000
 while not aborting do
 	local timer = ztimer.monotonic(ms)
 	timer:start()
 	while timer:rest() > 0 do
-		func()
+		action_ctrl()
 		app:run(timer:rest())
 	end
 end
