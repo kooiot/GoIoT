@@ -146,29 +146,16 @@ stream.read = function (t, check, timeout, isECM)
 			if r and data then
 				on_rev(nil, data)
 			end
+		end
 
-			if string.len(stream.buf) > 0 then
-				--print(os.date(), 'DATA CHECK', hex_raw(stream.buf))
-				local r, b, e = check(stream.buf, t, port_config)
-				if r then
-					return r
-				end
-			end
-			if not isECM then
-				abort = coroutine.yield(false, 50)
-			end
-		else
-			if string.len(stream.buf) > 0 then
-				--print(os.date(), 'DATA CHECK', hex_raw(stream.buf))
-				local r, b, e = check(stream.buf, t, port_config)
-				if r then
-					return r
-				end
-			end
-			if not isECM then
-				abort = coroutine.yield(false, 50)
+		if string.len(stream.buf) > 0 then
+			--print(os.date(), 'DATA CHECK', hex_raw(stream.buf))
+			local r, b, e = check(stream.buf, t, port_config)
+			if r then
+				return r
 			end
 		end
+		abort = coroutine.yield(false, 50)
 	end
 	stream.buf = ''
 	return nil, 'timeout'
@@ -273,12 +260,12 @@ handlers.on_run = function(app)
 			port_config = v.port_config
 			if v.tags.request.cycle ~= "0" then
 				if v.tags.request.cycle and v.tags.request.timer:rest() == 0 then
+					v.tags.request.timer:start()
 					local pdu, err = mclient:request(v, port_config, port_config.ecm)
 					if pdu then
 						local ts = ztimer.absolute_time()
 						local vals = {}
-						fc = tonumber(v.tags.request.func)
-						if fc == 1 or fc == 2 or fc == 3 or fc == 4 then
+						if tonumber(v.tags.request.operation) == 1 then
 							len = decode.uint8(pdu:sub(2, 2))
 							raw = pdu:sub(3)
 							for k, v in pairs(v.tags.vals) do
@@ -299,18 +286,6 @@ handlers.on_run = function(app)
 										end
 									end
 								end
-
-								--[[
-								if ctpt == "2" then
-									val = val * port_config.ct
-								elseif ctpt == "3" then
-									val = val * port_config.pt
-								elseif ctpt == "4" then
-									val = val * modbus_mode.ct * modbus_mode.pt
-								else
-									val = val
-								end
-								--]]
 
 								for k, v in pairs (v) do
 									if k == "Data" then
@@ -333,12 +308,11 @@ handlers.on_run = function(app)
 								vals[#vals+1] = {name, value = data, timestamp = ts}
 							end
 						end
-
-						stream.buf = ""
 					else
 						err_count = err_count + 1
 						print(os.date(), 'pa is nil', err)
 					end
+					stream.buf = ""
 				end
 			end
 		end
