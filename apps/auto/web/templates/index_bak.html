@@ -1,0 +1,136 @@
+<? extend 'layout.html' ?>
+
+
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css">
+<!-- DataTables -->
+<script type="text/javascript" charset="utf-8" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
+
+<div class="segment">
+	<div class="container">
+	</div>
+</div>
+
+
+<script type="text/javascript">
+	// for tag count changes
+	var last_count = 0;
+	$.fn.dataTableExt.oApi.fnReloadAjax = function ( oSettings, sNewSource, fnCallback, bStandingRedraw )
+	{
+		if ( typeof sNewSource != 'undefined' && sNewSource != null )
+		{
+			oSettings.sAjaxSource = sNewSource;
+		}
+		//this.oApi._fnProcessingDisplay( oSettings, true );
+		// Do not show the process dialog....
+		this.oApi._fnProcessingDisplay( oSettings, false );
+		var that = this;
+		var iStart = oSettings._iDisplayStart;
+
+		oSettings.fnServerData( oSettings.sAjaxSource, [], function(json) {
+				/* Clear the old information from the table */
+				that.oApi._fnClearTable( oSettings );
+
+				/* Got the data - add it to the table */
+				for ( var i=0 ; i<json.tags.length ; i++ )
+				{
+					that.oApi._fnAddData( oSettings, json.tags[i] );
+				}
+
+				oSettings.aiDisplay = oSettings.aiDisplayMaster.slice();
+				that.fnDraw( that );
+
+				if ( typeof bStandingRedraw != 'undefined' && bStandingRedraw != true && last_count == json.tags.length )
+				{
+					oSettings._iDisplayStart = iStart;
+					that.fnDraw( false );
+				}
+				last_count = json.tags.length;
+
+				that.oApi._fnProcessingDisplay( oSettings, false );
+
+				/* Callback user function - for event handlers etc */
+				if ( typeof fnCallback == 'function' && fnCallback != null )
+				{
+					fnCallback( oSettings );
+				}
+		}, oSettings );
+	}
+
+	$(document).ready(function () {
+		var oTable = $('#mytable').dataTable({
+			"bProcessing": true,
+			"bStateSave": true,
+			//"bServerSide": true, // ServerSide true will append the columns name to server side with the get request
+			"sAjaxSource": "/data/query",
+			"sAjaxDataProp": "tags",
+			"aoColumns": [
+			{ "mDataProp": "name" },
+			{ "mDataProp": "desc" },
+			{ "mDataProp": "value" },
+			{ "mDataProp": "timestamp" },
+			]
+		});
+
+		newtimer = setInterval( function () {
+			oTable.fnReloadAjax(null, null, false);
+		}, 1000 );
+
+		var timer_running = true;
+
+		$("#stop").click(function() {
+			if (timer_running) {
+				clearInterval(newtimer)
+				timer_running = false;
+			}
+		});
+		$("#start").click(function() {
+			if(!timer_running) {
+				newtimer = setInterval( function () {
+					oTable.fnReloadAjax(null, null, false);
+				}, 1000 );
+				timer_running = true;
+			}
+		});
+	});
+</script>
+
+<div class="main container">
+	<div class="ui icon buttons tiny">
+		<div class=" ui icon button" id="start">
+			<i class="play teal icon" ></i>
+			开始刷新
+		</div>
+		<div class="or"></div>
+		<div class="ui icon button" id="stop">
+			<i class="stop red icon" ></i>
+			停止刷新
+		</div>
+		<div class="or"></div>
+		<a class="ui icon button" href="/apps/<?=app.appname?>/config"><i class="setting blue icon"></i>配置界面</a>
+		<iframe name="sinaWeatherTool" src="http://weather.news.sina.com.cn/chajian/iframe/weatherStyle2.html?city=%E5%8C%97%E4%BA%AC" width="200" height="20" marginwidth="0" marginheight="0" hspace="0" vspace="0" frameborder="0" scrolling="no"></iframe>
+	</div>
+	<div class="ui divider"></div>
+
+	<table cellpadding="0" cellspacing="0" border="0" class="display" id="mytable">
+		<thead>
+			<tr>
+				<th>Name</th>
+				<th>Description</th>
+				<th>Value</th>
+				<th>Timestamp</th>
+			</tr>
+		</thead>
+		<tbody>
+
+		</tbody>
+		<tfoot>
+			<tr>
+				<th>Name</th>
+				<th>Description</th>
+				<th>Value</th>
+				<th>Timestamp</th>
+			</tr>
+		</tfoot>
+	</table>
+</div>
