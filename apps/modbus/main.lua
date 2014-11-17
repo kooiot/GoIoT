@@ -18,6 +18,7 @@ local app = nil
 local mclient = nil
 local io_ports = {}
 local err_count = 1
+local cmd_table = {}
 
 -- the stream object used by modbus lib
 -- TODO: use the ltn12 utility from luasocket ??????
@@ -134,7 +135,7 @@ local function on_rev(port, msg)
 	print("RECV", hex_raw(stream.buf))
 end
 
-stream.read = function (t, check, timeout, isECM)
+stream.read = function (t, check, timeout)
 	local ztimer = require 'lzmq.timer'
 	local timer = ztimer.monotonic(timeout)
 	timer:start()
@@ -152,6 +153,7 @@ stream.read = function (t, check, timeout, isECM)
 			--print(os.date(), 'DATA CHECK', hex_raw(stream.buf))
 			local r, b, e = check(stream.buf, t, port_config)
 			if r then
+				stream.buf = ""
 				return r
 			end
 		end
@@ -245,6 +247,23 @@ local create_funcs = function(raw, addr)
 	}
 end
 
+local function write_operation(value)
+	local port_config = {}
+	for k, v in pairs(packets) do
+		if v.port_config.unit == value.unit then
+			port_config = v.port_config
+			if v.tags.tree.name == value.name then
+				print(value.unit, value.name)
+				local pdu, err = mclient:request(v, port_config, port_config.ecm)
+				if pdu then
+					return coroutine.yield(false, 50)
+				end
+			end
+		end
+	end
+	return false
+end
+
 handlers.on_run = function(app)
 	--log:info(ioname, 'RUN TIME')
 	--print(os.date(), 'RUN TIME')
@@ -256,6 +275,10 @@ handlers.on_run = function(app)
 	end
 
 	if not pause then
+		for k, v in pairs(cmd_table) do
+			write_operation(v)
+			cmd_table[k] = nil
+		end
 		for k, v in pairs(packets) do
 			port_config = v.port_config
 			if v.tags.request.cycle ~= "0" then
@@ -327,32 +350,16 @@ handlers.on_write = function(app, path, value, from)
 	return nil, 'FIXME'
 end
 
-cjson = require "cjson"
-local function write_operation(value)
-	local port_config = {}
-	for k, v in pairs(packets) do
-		if v.port_config.unit == value.unit then
-			port_config = v.port_config
-			if v.tags.tree.name == value.name then
-				local pdu, err = mclient:request(v, port_config, port_config.ecm, true)
-				if pdu then
-					return true
-				end
-			end
-		end
-	end
-	return false
-end
-
 handlers.on_command = function(app, path, value, from)
 	local match = '^'..ioname..'/([^/]+)/commands/(.+)'
 	local devname, cmd = path:match(match)
 	local ret
 
 	if devname == "modbus" and cmd == "WRITE_OPERATION" then
-		ret = write_operation(value)
+		cmd_table[#cmd_table + 1] = value
+		--ret = write_operation(value)
 	end
-	return ret
+	return true
 
 end
 
