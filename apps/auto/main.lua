@@ -156,7 +156,7 @@ app:reg_request_handler('get_rule', function(app, vars)
 end)
 --]]
 -- The mail loop
-local ms = 1000
+local ms = 5000
 while not aborting do
 	local timer = ztimer.monotonic(ms)
 	timer:start()

@@ -1,4 +1,5 @@
 local cjson = require 'cjson.safe'
+local api = require "shared.api.iobus.client"
 platform = require "shared.platform"
 path_plat = platform.path.apps
 
@@ -38,7 +39,7 @@ return {
 		end
 	end
 --	res:write(len)
-	local api = require "shared.api.iobus.client"
+	--local api = require "shared.api.iobus.client"
 	local client = api.new('web')
 
 --		res:write(config[2].config.input)
@@ -60,6 +61,7 @@ return {
 		
 		config = cjson.encode(config)
 		res:ltp('index.html', {lwf = lwf, app = app,json_text = config})
+		collectgarbage('collect')
 	end,
 
 	post = function(req, res)
@@ -88,7 +90,6 @@ return {
 	end
 --	res:write(len)
 
-	local api = require "shared.api.iobus.client"
 	local client = api.new('web')
 
 --		res:write(config[2].config.input)

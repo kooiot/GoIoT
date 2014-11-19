@@ -253,11 +253,11 @@ local function write_operation(value)
 		if v.port_config.unit == value.unit then
 			port_config = v.port_config
 			if v.tags.tree.name == value.name then
-				print(value.unit, value.name)
+				--print(value.unit, value.name)
 				local pdu, err = mclient:request(v, port_config, port_config.ecm)
-				if pdu then
-					return coroutine.yield(false, 50)
-				end
+				--if pdu then
+				--	return coroutine.yield(false, 50)
+				--end
 			end
 		end
 	end
