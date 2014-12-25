@@ -30,6 +30,18 @@ _M.uname = function(arg)
 	return s
 end
 
+local function proc_mem_info()
+	local f, err = io.popen('cat /proc/meminfo')
+	if not f then
+		return nil, err
+	end
+	local s = f:read('*a')
+	f:close()
+	local free = s:match("Free:%s-(%d)")
+	local used = s:match("Used:%s-(%d)")
+
+end
+
 --- Get the memory information
 -- includes 'total' 'used' 'free'
 -- @treturn table information struct {total=xx, used=xx, free=xx}
@@ -42,11 +54,15 @@ _M.meminfo = function()
 	f:close()
 	local info = s:gmatch("Mem:%s-(%d+)%s-(%d+)%s-(%d+)")
 	local total, used, free = info()
-	return {
-		total = total,
-		used = used,
-		free = free
-	}
+	if total then
+		return {
+			total = total,
+			used = used,
+			free = free
+		}
+	else
+		return proc_mem_info()
+	end
 end
 
 --- Get he loadavg

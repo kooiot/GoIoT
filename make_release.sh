@@ -43,7 +43,7 @@ echo $VERSION > __install/version
 
 # Create the cramfs image
 sudo chown -R root:root __install
-#mkfs.cramfs __install __release/cad2.cramfs
+#mkfs.cramfs __install __release/cad2.$VERSION.cramfs
 mksquashfs __install __release/cad2_gz.$VERSION.sfs
 #mksquashfs __install __release/cad2_mips.sfs -nopad -noappend -root-owned -comp xz -Xpreset 9 -Xe -Xlc 0 -Xlp 2 -Xpb 2
 mksquashfs __install __release/cad2_xz.$VERSION.sfs -comp xz
