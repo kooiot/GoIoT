@@ -22,7 +22,7 @@ local function hex_raw(raw)
 end
 
 --ecm, error checking methods
-function class:request (t, port_config) 
+function class:request (t, port_config, ecm) 
 	p = pdu[cmd[tonumber(t.tags.request.func)]](t)
 	if not p then
 		return nil

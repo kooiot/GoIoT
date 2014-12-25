@@ -33,9 +33,33 @@ return {
 			end
 			file:close()
 
-			local list = require("shared.util.sysinfo").list_serial()
+			local api = require "shared.api.iobus.client"
+			local client = api.new("web")
 
-			res:ltp("index.html", {lwf=lwf, app=app, json_text = config, list=list})
+			local commands = {}
+			local inputs = {}
+
+			local nss, err = client:enum(".+")
+
+			if nss then
+				for ns, devs in pairs(nss) do
+					local tree, err = client:tree(ns)
+					if tree then
+						for k, dev in pairs(tree.devices) do
+							for k, v in pairs(dev.commands) do
+								commands[#commands + 1] = {name = v.name, desc = v.desc, path = v.path}
+							end
+							for k, v in pairs(dev.inputs) do
+								inputs[#inputs + 1] = {name = v.name, desc = v.desc, path = v.path}
+							end
+						end
+					end
+				end
+			else
+				info = err
+			end
+
+			res:ltp("config.html", {lwf=lwf, app=app, json_text = config, list=list, commands = commands, inputs = inputs})
 		else
 			res:write(err)
 		end
@@ -47,48 +71,22 @@ return {
 		local filename = path .. app.appname .. "_config.json"
 		res:write(app.appname)
 		local unit = req:get_post_arg("unit")
-		local mode = req:get_post_arg("mode")
+		local str = req:get_post_arg("str")
+		local input = req:get_post_arg("input")
 		local t = {}
 		t.tree = {}
 		local name = req:get_post_arg("name")
 		local id = req:get_post_arg("id")
 		local pId = req:get_post_arg("pId")
-		local checked = req:get_post_arg("checked")
+		local level = req:get_post_arg("level")
 		t.tree.name = name
 		t.tree.id = id
 		t.tree.pId = pId
-		t.tree.checked = checked
-		local ratio = req:get_post_arg("ratio")
+		t.tree.level = level
 		t.config = {}
-		if mode == "1" or mode == "3" then
-			local port = req:get_post_arg("port")
-			local sIp = req:get_post_arg("sIp")
-			t.config.mode = mode
-			t.config.port = port
-			t.config.sIp = sIp
-			t.config.unit = unit
-			t.config.ratio = cjson.decode(ratio)
-			local ecm = req:get_post_arg("ecm") -- error checking method
-			t.config.ecm = ecm
-		elseif mode == "0" or mode == "2" then
-			local sPort = req:get_post_arg("sPort")
-			local baud = req:get_post_arg("baud")
-			local dbs = req:get_post_arg("dbs") -- Data bits
-			local parity = req:get_post_arg("parity")
-			local sbs = req:get_post_arg("sbs") -- Stop bits
-			local ecm = req:get_post_arg("ecm") -- error checking method
-			t.config.mode = mode
-			t.config.sPort = sPort
-			t.config.baud = baud
-			t.config.dbs = dbs
-			t.config.parity = parity
-			t.config.sbs = sbs
-			t.config.ecm = ecm
-			t.config.unit = unit
-			t.config.ratio = cjson.decode(ratio)
-		else
-			res:write("error")
-		end
+		t.config.unit = unit
+		t.config.str = str
+		t.config.input = input
 
 		local file, err = io.open(filename, "a+")
 		if not file then

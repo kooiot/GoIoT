@@ -83,7 +83,7 @@ return {
 
 			for k, v in pairs(packets) do
 				if v.tags.request.cycle then
-					v.tags.request.timer = ztimer.monotonic(v.tags.request.cycle)
+					v.tags.request.timer = ztimer.monotonic(tonumber(v.tags.request.cycle))
 					v.tags.request.timer:start()
 				end
 			end

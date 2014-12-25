@@ -18,11 +18,13 @@ local app = nil
 local mclient = nil
 local io_ports = {}
 local err_count = 1
+local cmd_table = {}
 
 -- the stream object used by modbus lib
 -- TODO: use the ltn12 utility from luasocket ??????
 local stream = {}
 stream.buf = ''
+local commands = {}
 
 
 -- Load tags from file
@@ -39,6 +41,35 @@ local function remove_tags()
 			end
 		end
 	end
+end
+
+local function add_device_cmd(app, device, name, cmd, desc)
+	if not device or not name then
+		return nil, 'How dare U!!'
+	end
+
+	local dev = app.devices:get(device)
+	if not dev then
+		dev = app.devices:add(device, 'Modbus Devices ['..device..']')
+	end
+	if not dev then
+		return nil, 'Cannot create devices for '..device
+	end
+
+	print('Added command '..device..':'..name)
+	local obj = dev.commands:get(name)
+	if not obj then
+		local r, err = dev.commands:add(name, desc or 'Control command', {})
+		if not r then 
+			return nil, err
+		end
+	end
+
+	if cmd then
+		commands[device] = commands[device] or {}
+		commands[device][name] = cmd
+	end
+	return true
 end
 
 local function load_tags_conf(app, reload)
@@ -116,25 +147,17 @@ stream.read = function (t, check, timeout)
 			if r and data then
 				on_rev(nil, data)
 			end
-
-			if string.len(stream.buf) > 0 then
-				--print(os.date(), 'DATA CHECK', hex_raw(stream.buf))
-				local r, b, e = check(stream.buf, t, port_config)
-				if r then
-					return r
-				end
-			end
-			abort = coroutine.yield(false, 50)
-		else
-			if string.len(stream.buf) > 0 then
-				--print(os.date(), 'DATA CHECK', hex_raw(stream.buf))
-				local r, b, e = check(stream.buf, t, port_config)
-				if r then
-					return r
-				end
-			end
-			abort = coroutine.yield(false, 50)
 		end
+
+		if string.len(stream.buf) > 0 then
+			--print(os.date(), 'DATA CHECK', hex_raw(stream.buf))
+			local r, b, e = check(stream.buf, t, port_config)
+			if r then
+				stream.buf = ""
+				return r
+			end
+		end
+		abort = coroutine.yield(false, 50)
 	end
 	stream.buf = ''
 	return nil, 'timeout'
@@ -195,6 +218,8 @@ handlers.on_start = function(app)
 		io_ports.main = tcpc.new(app.ctx, app.poller, remote_addr, port)
 		io_ports.main:open(on_rev)
 	end
+
+	return add_device_cmd(app, "modbus", "WRITE_OPERATION", "write_operation")
 end
 
 handlers.on_pause = function(app)
@@ -222,6 +247,23 @@ local create_funcs = function(raw, addr)
 	}
 end
 
+local function write_operation(value)
+	local port_config = {}
+	for k, v in pairs(packets) do
+		if v.port_config.unit == value.unit then
+			port_config = v.port_config
+			if v.tags.tree.name == value.name then
+				--print(value.unit, value.name)
+				local pdu, err = mclient:request(v, port_config, port_config.ecm)
+				--if pdu then
+				--	return coroutine.yield(false, 50)
+				--end
+			end
+		end
+	end
+	return false
+end
+
 handlers.on_run = function(app)
 	--log:info(ioname, 'RUN TIME')
 	--print(os.date(), 'RUN TIME')
@@ -233,16 +275,20 @@ handlers.on_run = function(app)
 	end
 
 	if not pause then
+		for k, v in pairs(cmd_table) do
+			write_operation(v)
+			cmd_table[k] = nil
+		end
 		for k, v in pairs(packets) do
 			port_config = v.port_config
-			if v.tags.request.cycle ~= "" then
+			if v.tags.request.cycle ~= "0" then
 				if v.tags.request.cycle and v.tags.request.timer:rest() == 0 then
+					v.tags.request.timer:start()
 					local pdu, err = mclient:request(v, port_config, port_config.ecm)
 					if pdu then
 						local ts = ztimer.absolute_time()
 						local vals = {}
-						fc = tonumber(v.tags.request.func)
-						if fc == 1 or fc == 2 or fc == 3 or fc == 4 then
+						if tonumber(v.tags.request.operation) == 1 then
 							len = decode.uint8(pdu:sub(2, 2))
 							raw = pdu:sub(3)
 							for k, v in pairs(v.tags.vals) do
@@ -263,18 +309,6 @@ handlers.on_run = function(app)
 										end
 									end
 								end
-
-								--[[
-								if ctpt == "2" then
-									val = val * port_config.ct
-								elseif ctpt == "3" then
-									val = val * port_config.pt
-								elseif ctpt == "4" then
-									val = val * modbus_mode.ct * modbus_mode.pt
-								else
-									val = val
-								end
-								--]]
 
 								for k, v in pairs (v) do
 									if k == "Data" then
@@ -297,12 +331,11 @@ handlers.on_run = function(app)
 								vals[#vals+1] = {name, value = data, timestamp = ts}
 							end
 						end
-
-						stream.buf = ""
 					else
 						err_count = err_count + 1
 						print(os.date(), 'pa is nil', err)
 					end
+					stream.buf = ""
 				end
 			end
 		end
@@ -318,8 +351,16 @@ handlers.on_write = function(app, path, value, from)
 end
 
 handlers.on_command = function(app, path, value, from)
-	log:debug(ioname, 'on_command called')
-	return nil, 'FIXME'
+	local match = '^'..ioname..'/([^/]+)/commands/(.+)'
+	local devname, cmd = path:match(match)
+	local ret
+
+	if devname == "modbus" and cmd == "WRITE_OPERATION" then
+		cmd_table[#cmd_table + 1] = value
+		--ret = write_operation(value)
+	end
+	return true
+
 end
 
 handlers.on_import = require('import').import

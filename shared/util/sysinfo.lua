@@ -146,7 +146,7 @@ _M.network = function()
 end
 
 _M.list_serial = function()
-	local f = io.popen('ls /dev/ttyS* /dev/ttyUSB*')
+	local f = io.popen('ls /dev/ttyS* /dev/ttyUSB* /dev/ttyACM*')
 	if not f then
 		return nil, err
 	end
