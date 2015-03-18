@@ -13,6 +13,22 @@ semantic.modal.ready = function() {
   handler = {
 
   };
+
+    $('.animation.dropdown')
+      .dropdown({
+        onChange: function(value) {
+          $('.standard.test.modal')
+            .modal('setting', 'transition', value)
+            .modal('show')
+          ;
+        }
+      })
+    ;
+    $('.ui.checkbox')
+      .checkbox()
+    ;
+
+
 };
 
 

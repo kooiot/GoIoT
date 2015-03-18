@@ -1,19 +1,36 @@
 <? extend 'layout.html' ?>
-<? include 'top.html' ?>
+
+<div class="tab header segment">
+	<div class="container">
+		<div class="introduction">
+			<h1 class="ui header">
+				SymLink V3
+			</h1>
+			<p><?=_("A iot platform")?></p>
+		</div>
+		<div class="four item tabular ui menu">
+			<a class="item active" data-tab="overview">Overview</a>
+			<? if lwf.ctx.user then ?>
+			<a class="item" data-tab="apps">Apps</a>
+			<a class="item" data-tab="settings">Settings</a>
+			<? end ?>
+		</div>
+
+		<div class="fluid vertical ui menu">
+			<a class="item active" data-tab="overview">Overview</a>
+			<? if lwf.ctx.user then ?>
+			<a class="item" data-tab="apps">Apps</a>
+			<a class="item" data-tab="settings">Settings</a>
+			<? end ?>
+		</div>
+
+	</div>
+</div>
+
+
 <div class="main container">
 	<div class="ui tab active" data-tab="overview">
 		<? include 'overview.html' ?>	
-
-		<div class="ui fluid accordion">
-			<div class="active title">
-				<i class="dropdown icon"></i>
-				What is a dog?
-			</div>
-			<div class="active content">
-				<p>A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.</p>
-			</div>
-		</div>
-
 	</div>
 	<? if lwf.ctx.user then ?>
 	<div class="ui tab" data-tab="apps">

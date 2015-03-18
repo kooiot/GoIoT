@@ -9,7 +9,7 @@ export LWF_APP_NAME='v3'
 export LWF_APP_PATH=$CAD_DIR/web/www
 
 # The fix for openwrt. The path does not includes the /usr/sbin in its system env
-export PATH=/usr/sbin:$PATH
+export PATH=/usr/sbin:/sbin:$PATH
 
 echo $CAD_DIR
 

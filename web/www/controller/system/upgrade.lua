@@ -4,8 +4,8 @@ return {
 		if lwf.ctx.user then
 			local system = require 'shared.system'
 			local version = system.version()
-			local remote_version = system.remote_version()
-			res:ltp('system/upgrade.html', {lwf=lwf, app=app, version=tonumber(version), remote_version=tonumber(remote_version)})
+			local remote_version, err = system.remote_version()
+			res:ltp('system/upgrade.html', {lwf=lwf, app=app, version=tonumber(version), remote_version=tonumber(remote_version or 0)})
 		else
 			res:redirect('/user/login')
 		end
