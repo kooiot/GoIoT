@@ -29,7 +29,7 @@ end
 
 --- Save the application list
 local function save()
-	local file, err = io.open('/tmp/apps/_list', "w")
+	local file, err = io.open('/tmp/apps/_list', "w+")
 	if file then
 		for name, node in pairs(list) do
 			for k, v in pairs(node.insts) do

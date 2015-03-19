@@ -10,6 +10,10 @@ msgid "About"
 msgstr ""
 
 
+msgid "Account Settings"
+msgstr ""
+
+
 msgid "Action"
 msgstr ""
 
@@ -310,6 +314,10 @@ msgid "Network"
 msgstr ""
 
 
+msgid "New Password"
+msgstr ""
+
+
 msgid "No application?! Install ONE"
 msgstr ""
 
@@ -319,6 +327,10 @@ msgstr ""
 
 
 msgid "Open source iot platform"
+msgstr ""
+
+
+msgid "Original Password"
 msgstr ""
 
 

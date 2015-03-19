@@ -7,6 +7,14 @@ local function get_sub_apps()
 	}
 end
 
+local function get_auth_file()
+	--[[
+	local plat = require 'shared.platform'
+	return plat.path.core..'/auth.key'
+	]]--
+	return '/tmp/core/auth.db'
+end
+
 return {
 	static = 'static',
 	session={
@@ -17,6 +25,7 @@ return {
 	i18n = true,
 
 	auth = 'simple',
+	auth_file = get_auth_file(),
 
 	debug={
 		on = true,

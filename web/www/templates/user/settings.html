@@ -1,0 +1,45 @@
+<? extend 'layout.html' ?>
+
+<div class="tab header segment">
+	<div class="container">
+		<div class="introduction">
+			<h1 class="ui dividing header">
+				<?=_("Account Settings")?>
+			</h1>
+			<br>
+		</div>
+	</div>
+</div>
+<div class="main container">
+	<h2 class="ui dividing header"><?=_("Password")?></h2>
+	<form class="ui form segment" action="" method="post" >
+		<input type="hidden" name="action" value="passwd"/>
+		<div class="inline field">
+			<label><?=_("Original Password")?>:</label>
+			<input type="password" name="org_pass" placeholder="original password" value=""/>
+		</div>
+		<div class="inline field"?>
+			<label><?=_("New Password")?>:</label>
+			<div class="ui input">
+				<input type="password" name="new_pass" placeholder="new password" value=""/>
+			</div>
+			<div class="ui input field">
+				<input type="password" name="new_pass2" placeholder="new password retype" value=""/>
+			</div>
+		</div>
+		<input class="ui submit blue button" type="submit" value="<?=_('Apply')?>"/>
+	</form>
+
+	<? if info then ?>
+	<div class="ui warning message">
+		<i class="close icon"></i>
+		<div class="header">
+			Warning!!
+		</div>
+		<?=info ?>
+	</div>
+	<? end ?>
+
+
+</div>
+

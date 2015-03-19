@@ -132,7 +132,17 @@
 		</div>
 		<? end ?>
 
-		<a class="item" href="/user/logout"><i class="sign out icon"></i> <?=_("Logout")?></a>
+		<div class="item">
+			<b> <?=lwf.ctx.user.username ?></b>
+			<div class="menu">
+				<a class="item" href="/user/settings">
+					<i class="inverted teal settings icon"></i> <?=_("Settings")?>
+				</a>
+				<a class="item" href="/user/logout">
+					<i class="inverted red sign out icon"></i> <?=_("Logout")?>
+				</a>
+			</div>
+		</div>
 		<? end ?>
 
 		<div class="item">

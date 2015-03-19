@@ -17,6 +17,9 @@ msgstr "终止"
 msgid "About"
 msgstr "关于"
 
+msgid "Account Settings"
+msgstr "账户设置"
+
 msgid "Action"
 msgstr "动作"
 
@@ -242,6 +245,9 @@ msgstr "名字空间"
 msgid "Network"
 msgstr "网络"
 
+msgid "New Password"
+msgstr "新密码"
+
 msgid "No application?! Install ONE"
 msgstr "没有安装任何应用？！ 现在进行安装"
 
@@ -250,6 +256,9 @@ msgstr "操作系统"
 
 msgid "Open source iot platform"
 msgstr "开源物联网平台"
+
+msgid "Original Password"
+msgstr "旧密码"
 
 msgid "Overview"
 msgstr "总览"
