@@ -24,6 +24,7 @@
 				<i class="dropdown icon"></i> <?=_("Device Settings")?>
 			</div>
 			<div class="content">
+				<p> Not implemented!!! </p>
 				<div class="ui segment">
 					<form action="/system/settings" method="post" class="ui fluid form">
 						<input type="hidden" name="type" value="device" />
@@ -37,6 +38,7 @@
 								<input name="sn" placeholder="<?=_('SN')?>" type="text">
 							</div>
 						</div>
+						<div class="field">
 						<div class="accordion">
 							<div class="title">
 								<i class="icon dropdown"></i>
@@ -47,7 +49,8 @@
 								<input name="authkey" placeholder="<?=_('KEY')?>" type="text">
 							</div>
 						</div>
-						<input type="submit" class="ui right floated tiny blue submit button" value="<?=_('Apply')?>"/>
+						</div>
+						<input type="submit" class="disabled ui right floated tiny blue submit button" value="<?=_('Apply')?>"/>
 					</form>
 				</div>
 			</div>

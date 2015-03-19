@@ -186,6 +186,10 @@ msgid "Failed to send stop request!!"
 msgstr ""
 
 
+msgid "Finding"
+msgstr ""
+
+
 msgid "Forum"
 msgstr ""
 
@@ -331,6 +335,10 @@ msgstr ""
 
 
 msgid "Password"
+msgstr ""
+
+
+msgid "Please wait!!!"
 msgstr ""
 
 

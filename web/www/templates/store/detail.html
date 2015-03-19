@@ -1,18 +1,19 @@
 <? extend 'layout.html' ?>
 <script src="/static/js/modal.js"></script>
 
-<div class="tab segment">
+<div class="tab header segment">
 	<div class="container">
 		<div class="introduction">
 			<? local author, name = appname:match('([^/]-)/(.+)') ?>
-			<h2 class="ui dividing header"> <?=name or 'Unkonwn' ?> </h2>
-			<div class="ui breadcrumb">
+			<h1 class="ui dividing header"> <?=name or 'Unkonwn' ?> </h1>
+			<div class="ui huge breadcrumb">
 				<a class="section" href="/"><?=_("Home")?></a>
 				<i class="right arrow icon divider"></i>
 				<a class="section" href="/store"><?=_("Store")?></a>
 				<i class="right arrow icon divider"></i>
 				<div class="active section"><?=_("Details")?></div>
 			</div>
+			<br>
 		</div>
 	</div>
 </div>
@@ -50,7 +51,7 @@
 
 <div class="main container">
 	<i class="ui large user icon"></i>
-	<a href="/user/<?=author or 'symtech' ?>" > <?=author or 'Symtech Inc' ?> </a>
+	<a href="/store/author/<?=author or 'symtech' ?>" > <?=author or 'Symtech Inc' ?> </a>
 	<div id="btn_install" class="ui disabled button blue right floated" onclick="ask_for_lname();"><?=_("Install")?></div>
 	<div>
 		<div>

@@ -149,6 +149,9 @@ msgstr "发送启动指令失败"
 msgid "Failed to send stop request!!"
 msgstr "发送停止指令失败"
 
+msgid "Finding"
+msgstr ""
+
 msgid "Forum"
 msgstr "论坛"
 
@@ -259,6 +262,9 @@ msgstr "报文"
 
 msgid "Password"
 msgstr "密码"
+
+msgid "Please wait!!!"
+msgstr "请耐心等待!!!"
 
 msgid "Populars"
 msgstr "热门"
