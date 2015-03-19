@@ -1,49 +1,55 @@
-<div class="ui fluid accordion">
+<div class="ui styled fluid accordion">
 	<div class="active title">
 		<i class="dropdown icon"></i> <?=_("System Settings")?>
 	</div>
 	<div class="active content">
+		<!--
 		<p><?=_("System wide settings")?></p>
+		-->
 
-		<div class="active title">
-			<i class="dropdown icon"></i>
-			<?=_("Management")?>
-		</div>
-		<div class="active content">
-			<div class="ui small buttons">
-				<a href="/system/upgrade" class="ui button"><?=_("Upgrade")?></a>
-				<div class="or"> </div>
-				<a href="/system/backup" class="ui button"><?=_("Backup")?></a>
+		<div class="accordion">
+			<div class="active title">
+				<i class="dropdown icon"></i>
+				<?=_("Management")?>
 			</div>
-		</div>
+			<div class="active content">
+				<div class="ui small buttons">
+					<a href="/system/upgrade" class="ui button"><?=_("Upgrade")?></a>
+					<div class="or"> </div>
+					<a href="/system/backup" class="ui button"><?=_("Backup")?></a>
+				</div>
+			</div>
 
-		<div class="title">
-			<i class="dropdown icon"></i> <?=_("Device Settings")?>
-		</div>
-		<div class="content">
-			<div class="ui segment">
-				<form action="/system/settings" method="post" class="ui fluid form">
-					<input type="hidden" name="type" value="device" />
-					<div class="two fields">
-						<div class="inline field">
-							<div class="ui pointing right label"><b><?=_("Name")?></b></div>
-							<input name="name" placeholder="<?=_('Name')?>" type="text">
+			<div class="title">
+				<i class="dropdown icon"></i> <?=_("Device Settings")?>
+			</div>
+			<div class="content">
+				<div class="ui segment">
+					<form action="/system/settings" method="post" class="ui fluid form">
+						<input type="hidden" name="type" value="device" />
+						<div class="two fields">
+							<div class="inline field">
+								<div class="ui pointing right label"><b><?=_("Name")?></b></div>
+								<input name="name" placeholder="<?=_('Name')?>" type="text">
+							</div>
+							<div class="inline field">
+								<div class="ui pointing right label"><b><?=_("SN")?></b></div>
+								<input name="sn" placeholder="<?=_('SN')?>" type="text">
+							</div>
 						</div>
-						<div class="inline field">
-							<div class="ui pointing right label"><b><?=_("SN")?></b></div>
-							<input name="sn" placeholder="<?=_('SN')?>" type="text">
+						<div class="accordion">
+							<div class="title">
+								<i class="icon dropdown"></i>
+								<?=_("More")?>
+							</div>
+							<div class="content field">
+								<label><?=_("Auth Key")?></label>
+								<input name="authkey" placeholder="<?=_('KEY')?>" type="text">
+							</div>
 						</div>
-					</div>
-					<div class="title">
-						<i class="icon dropdown"></i>
-						<?=_("More")?>
-					</div>
-					<div class="content field">
-						<label><?=_("Auth Key")?></label>
-						<input name="authkey" placeholder="<?=_('KEY')?>" type="text">
-					</div>
-					<input type="submit" class="ui right floated tiny blue submit button" value="<?=_('Apply')?>"/>
-				</form>
+						<input type="submit" class="ui right floated tiny blue submit button" value="<?=_('Apply')?>"/>
+					</form>
+				</div>
 			</div>
 		</div>
 	</div>
