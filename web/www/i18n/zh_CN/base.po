@@ -248,6 +248,9 @@ msgstr "操作系统"
 msgid "Open source iot platform"
 msgstr "开源物联网平台"
 
+msgid "Overview"
+msgstr "总览"
+
 msgid "PID"
 msgstr "进程号"
 
@@ -412,9 +415,6 @@ msgstr "欢迎"
 
 #~ msgid "Application Store"
 #~ msgstr "应用中心"
-
-#~ msgid "Overview"
-#~ msgstr "总览"
 
 #~ msgid "Types"
 #~ msgstr "种类"

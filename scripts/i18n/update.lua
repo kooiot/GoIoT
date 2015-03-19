@@ -39,7 +39,7 @@ for c in f:lines() do
 		local ff = io.open(pot)
 		if ff then
 			print(string.format("Updating %-40s", c))
-			local r, code, status = os.execute('msgmerge -U -N '..c..' '..pot);
+			local r, code, status = os.execute('msgmerge -U -N --no-wrap '..c..' '..pot);
 			if not r or code ~= 'exit' then
 				print(string.format('failed to merge %s', status))
 			else

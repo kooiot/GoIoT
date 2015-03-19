@@ -318,6 +318,10 @@ msgid "Open source iot platform"
 msgstr ""
 
 
+msgid "Overview"
+msgstr ""
+
+
 msgid "PID"
 msgstr ""
 
