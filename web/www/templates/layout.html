@@ -170,12 +170,7 @@
 			</a>
 			<? end ?>
 
-			<? if not lwf.ctx.user then ?>
-			<a class="icon item" href="/user/login">
-				<i class="sign in icon"></i><?=_('Sign In')?>
-			</a>
-			<? else ?>
-				<? if lwf.ctx.session:get('advance') == 'true' then ?>
+			<? if lwf.ctx.user and lwf.ctx.session:get('advance') == 'true' then ?>
 				<div class="section ui page dropdown link item">
 					<i class="list layout icon"></i>
 					<span class="count">
@@ -193,7 +188,6 @@
 						</a>
 					</div>
 				</div>
-				<? end ?>
 			<? end ?>
 
 			<div class="right menu">
@@ -233,6 +227,10 @@
 						<a class="item" href="/user/logout"><i class="sign out icon"></i> <?=_("Logout")?></a>
 					</div>
 				</div>
+				<? else ?>
+				<a class="icon item" href="/user/login">
+					<i class="sign in icon"></i><?=_('Sign In')?>
+				</a>
 				<? end ?>
 			</div>
 		</div>
