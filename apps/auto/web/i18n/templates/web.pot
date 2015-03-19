@@ -2,7 +2,11 @@ msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
 
-msgid "Auto Control"
+msgid "App Control"
+msgstr ""
+
+
+msgid "App Home"
 msgstr ""
 
 
@@ -10,11 +14,15 @@ msgid "Command"
 msgstr ""
 
 
-msgid "Input"
+msgid "Config"
 msgstr ""
 
 
-msgid "Read"
+msgid "Light Controller"
+msgstr ""
+
+
+msgid "Lux"
 msgstr ""
 
 
@@ -22,7 +30,19 @@ msgid "Save"
 msgstr ""
 
 
-msgid "Send"
+msgid "Settings"
+msgstr ""
+
+
+msgid "SmartHome"
+msgstr ""
+
+
+msgid "Temp Controller"
+msgstr ""
+
+
+msgid "动作"
 msgstr ""
 
 

@@ -22,10 +22,6 @@ msgid "Affected Instance"
 msgstr ""
 
 
-msgid "Application Store"
-msgstr ""
-
-
 msgid "Applications"
 msgstr ""
 
@@ -43,6 +39,10 @@ msgstr ""
 
 
 msgid "Backup System"
+msgstr ""
+
+
+msgid "CLA"
 msgstr ""
 
 
@@ -102,7 +102,15 @@ msgid "Confirm"
 msgstr ""
 
 
+msgid "Contribute"
+msgstr ""
+
+
 msgid "Controls"
+msgstr ""
+
+
+msgid "Create Applicatoin"
 msgstr ""
 
 
@@ -126,11 +134,19 @@ msgid "Details"
 msgstr ""
 
 
+msgid "Development Reference"
+msgstr ""
+
+
 msgid "Device Events"
 msgstr ""
 
 
 msgid "Device Settings"
+msgstr ""
+
+
+msgid "Device Templates"
 msgstr ""
 
 
@@ -190,6 +206,10 @@ msgid "Help"
 msgstr ""
 
 
+msgid "Help Make TipsyDate Better"
+msgstr ""
+
+
 msgid "Home"
 msgstr ""
 
@@ -219,6 +239,10 @@ msgstr ""
 
 
 msgid "Instance Name..."
+msgstr ""
+
+
+msgid "Issue Tracker"
 msgstr ""
 
 
@@ -290,7 +314,7 @@ msgid "OS"
 msgstr ""
 
 
-msgid "Overview"
+msgid "Open source iot platform"
 msgstr ""
 
 
@@ -430,11 +454,19 @@ msgid "TIME"
 msgstr ""
 
 
+msgid "TipsyDate Network"
+msgstr ""
+
+
+msgid "TipsyDate is an open source platform for internet of things stuff. Please follow us on GitHub!!!"
+msgstr ""
+
+
 msgid "Total"
 msgstr ""
 
 
-msgid "Types"
+msgid "Translation Hub"
 msgstr ""
 
 
@@ -459,6 +491,10 @@ msgstr ""
 
 
 msgid "Used"
+msgstr ""
+
+
+msgid "User Documents"
 msgstr ""
 
 
@@ -491,10 +527,6 @@ msgstr ""
 
 
 msgid "Wait for services running finished!!"
-msgstr ""
-
-
-msgid "Website"
 msgstr ""
 
 

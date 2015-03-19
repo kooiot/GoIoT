@@ -14,7 +14,7 @@
 <link rel="image_src" type="image/jpeg" href="/static/img/logo.png">
 
 <!-- Site Properities -->
-<title>SymLink V3 - <? = lwf.ctx.request.path ?></title>
+<title>TipsyDate - <? = lwf.ctx.request.path ?></title>
 
 <script>
 (function () {
@@ -157,7 +157,7 @@
 			</a>
 
 			<div class="title item">
-				<b>SymLink:</b> V3
+				<b>TipsyDate:</b> Go
 			</div>
 
 			<a class="popup icon item" data-content="Go home" href="/">
@@ -198,7 +198,7 @@
 
 			<div class="right menu">
 				<div class="vertically fitted borderless item">
-					<span class="github-btn" data-user="srdgame" data-repo="srdgame" data-type="watch" data-count="1"></span>
+					<span class="github-btn" data-user="zeromq" data-repo="lzmq" data-type="watch" data-count="1"></span>
 				</div>
 				<a class="popup icon github item" data-content="View Source Code" href="http://gitlab.symid.com/tipsydate/core">
 					<i class="alternate github icon"></i>
@@ -245,32 +245,26 @@
 		<div class="container">
 			<div class="ui stackable inverted divided relaxed grid">
 				<div class="eight wide column">
-					<h3 class="ui inverted header">Help Make Semantic UI Better</h3>
-					<p>Maintaining an open source UI library is no small task. 
-					Support for the continued development of Semantic UI comes directly from
-					the community.</p>
-					<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-						<input name="cmd" value="_s-xclick" type="hidden">
-						<input name="hosted_button_id" value="7ZAF2Q8DBZAQL" type="hidden">
-						<button type="submit" class="ui teal button">Donate Today</button>
-					</form>
+					<h3 class="ui inverted header"><?=_('Help Make TipsyDate Better')?></h3>
+					<p><?=_('TipsyDate is an open source platform for internet of things stuff. Please follow us on GitHub!!!')?></p>
+					<span class="github-btn" data-user="zeromq" data-repo="lzmq" data-type="follow" data-count="1"></span>
 				</div>
 				<div class="four wide column">
-					<h5 class="ui teal inverted header">Contribute</h5>
+					<h5 class="ui teal inverted header"><?=_('Contribute')?></h5>
 					<div class="ui inverted link list">
-						<a class="item" href="https://www.transifex.com/organization/semantic-org/" target="_blank">Translation Hub</a>
-						<a class="item" href="https://github.com/Semantic-Org/Semantic-UI" target="_blank">Issue Tracker</a>
-						<a class="item" href="http://semantic-ui.com/cla.html" target="_blank">CLA</a>
-						<a class="disabled item">Create Themes</a>
+						<a class="item" href="https://www.transifex.com/organization/tipsydate/" target="_blank"><?=_('Translation Hub')?></a>
+						<a class="item" href="http://tipsydate.symid.com/core" target="_blank"><?=_('Issue Tracker')?></a>
+						<a class="item" href="http://tipsydate.symid.com/core/cla.html" target="_blank"><?=_('CLA')?></a>
+						<a class="item" href="http://tipsydate.symid.com/core/app.html" target="_blank"><?=_('Create Applicatoin')?></a>
 					</div>
 				</div>
 				<div class="four wide column">
-					<h5 class="ui teal inverted header">Semantic Network</h5>
+					<h5 class="ui teal inverted header"><?=_('TipsyDate Network')?></h5>
 					<div class="ui inverted link list">
-						<a class="item" href="http://legacy.semantic-ui.com/">Legacy Docs</a>
-						<a class="item" href="http://www.learnsemantic.com/">Learn Semantic</a>
-						<a class="disabled item">Semantic Themes</a>
-						<a class="disabled item">Semantic Layouts</a>
+						<a class="item" href="http://tipsydate.symid.com/"><?=_('User Documents')?></a>
+						<a class="item" href="http://tipsydate.symid.com/"><?=_('Development Reference')?></a>
+						<a class="disabled item"><?=_('Applications')?></a>
+						<a class="disabled item"><?=_('Device Templates')?></a>
 					</div>
 				</div>
 			</div>

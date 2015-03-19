@@ -26,9 +26,6 @@ msgstr "高级模式"
 msgid "Affected Instance"
 msgstr "受影响的应用实例"
 
-msgid "Application Store"
-msgstr "应用中心"
-
 msgid "Applications"
 msgstr "应用"
 
@@ -43,6 +40,9 @@ msgstr "备份"
 
 msgid "Backup System"
 msgstr "备份系统"
+
+msgid "CLA"
+msgstr "贡献许可说明"
 
 msgid "CPU"
 msgstr "处理器"
@@ -86,8 +86,14 @@ msgstr "配置项"
 msgid "Confirm"
 msgstr "确认"
 
+msgid "Contribute"
+msgstr "贡献"
+
 msgid "Controls"
 msgstr "控制项"
+
+msgid "Create Applicatoin"
+msgstr "创建应用"
 
 msgid "DATETIME"
 msgstr "日期时间"
@@ -104,11 +110,17 @@ msgstr "描述"
 msgid "Details"
 msgstr "详细"
 
+msgid "Development Reference"
+msgstr "开发手册"
+
 msgid "Device Events"
 msgstr "设备事件"
 
 msgid "Device Settings"
 msgstr "设备配置"
+
+msgid "Device Templates"
+msgstr "设备模板"
 
 msgid "Devices"
 msgstr "设备"
@@ -152,6 +164,9 @@ msgstr "主机名称"
 msgid "Help"
 msgstr "帮助"
 
+msgid "Help Make TipsyDate Better"
+msgstr "帮助TipsyDate进步"
+
 msgid "Home"
 msgstr "主页"
 
@@ -175,6 +190,9 @@ msgstr "实例名称不能为空"
 
 msgid "Instance Name..."
 msgstr "实例名.."
+
+msgid "Issue Tracker"
+msgstr "问题跟踪系统"
 
 msgid "KEY"
 msgstr "密匙"
@@ -227,8 +245,8 @@ msgstr "没有安装任何应用？！ 现在进行安装"
 msgid "OS"
 msgstr "操作系统"
 
-msgid "Overview"
-msgstr "总览"
+msgid "Open source iot platform"
+msgstr "开源物联网平台"
 
 msgid "PID"
 msgstr "进程号"
@@ -332,11 +350,17 @@ msgstr "系统级配置"
 msgid "TIME"
 msgstr "时间"
 
+msgid "TipsyDate Network"
+msgstr ""
+
+msgid "TipsyDate is an open source platform for internet of things stuff. Please follow us on GitHub!!!"
+msgstr "TipsyData是为物联网而生的开源开放的平台。请在GitHub上关注我们!!!"
+
 msgid "Total"
 msgstr "总数"
 
-msgid "Types"
-msgstr "种类"
+msgid "Translation Hub"
+msgstr "翻译中心"
 
 msgid "Update"
 msgstr "更新"
@@ -355,6 +379,9 @@ msgstr "更新中"
 
 msgid "Used"
 msgstr "使用"
+
+msgid "User Documents"
+msgstr "使用文档"
 
 msgid "User Key"
 msgstr "用户密匙"
@@ -380,9 +407,17 @@ msgstr "查看"
 msgid "Wait for services running finished!!"
 msgstr "等待服务进程结束运行"
 
-msgid "Website"
-msgstr "网站"
-
 msgid "Welcome"
 msgstr "欢迎"
 
+#~ msgid "Application Store"
+#~ msgstr "应用中心"
+
+#~ msgid "Overview"
+#~ msgstr "总览"
+
+#~ msgid "Types"
+#~ msgstr "种类"
+
+#~ msgid "Website"
+#~ msgstr "网站"
