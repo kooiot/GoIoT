@@ -1,153 +1,112 @@
-<div class="ui fluid accordion">
-	<div class="accordion">
-		<div class="active title">
-			<i class="dropdown icon"></i>
-			<?=_("SYSTEM")?>
-		</div>
+<h2 class="ui dividing header"> <?=_("SYSTEM")?></h2>
+<h3 class="ui dividing header"><?=_("TIME")?> </h3>
+<table class="ui celled table">
+	<thead>
+		<tr>
+			<th><?=_("DATETIME")?></th>
+			<th><?=_("LOCALE")?></th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td><?=os.date() ?> </td>
+			<td><?=os.getenv('LANG') ?> </td>
+		</tr>
+	</tbody>
+</table>
+<h3 class="ui dividing header"><?=_("HARDWARE")?> </h3>
+<table class="ui celled table">
+	<thead>
+		<tr>
+			<th><?=_("CPU")?></th>
+			<th><?=_("HOSTNAME")?></th>
+			<th><?=_("OS")?></th>
+			<th><?=_("VERSION")?></th>
+		</tr>
+	</thead>
+	<tbody>
+		<?
+	   local mem = sysinfo.meminfo()
+	   ?>
+	   <tr>
+		   <td><?=sysinfo.cpu_model() ?> </td>
+		   <td><?=sysinfo.uname('-n') ?> </td>
+		   <td><?=sysinfo.uname('-s') ?> </td>
+		   <td><?=sysinfo.uname('-r') ?> </td>
+	   </tr>
+	</tbody>
+</table>
+<h3 class="dividing header"><?=_("MEMOERY")?> </h3>
+<table class="ui celled table">
+	<thead>
+		<tr>
+			<th><?=_("Total")?></th>
+			<th><?=_("Used")?></th>
+			<th><?=_("Free")?></th>
+		</tr>
+	</thead>
+	<tbody>
+		<?
+	   local mem = sysinfo.meminfo()
+	   ?>
+	   <tr>
+		   <td><?=mem.total/1000 ?> M </td>
+		   <td><?=mem.used/1000 ?> M</td>
+		   <td><?=mem.free/1000 ?> M</td>
+	   </tr>
+	</tbody>
+</table>
+<h3 class="ui dividing header"><?=_("CPU LOAD")?> </h3>
+<table class="ui celled table">
+	<thead>
+		<tr>
+			<th><?=_("Name")?></th>
+			<th><?=_("Value")?></th>
+		</tr>
+	</thead>
 
-		<div class="active content">
-			<div class="active title">
-				<i class="dropdown icon"></i>
-				<?=_("TIME")?>
-			</div>
-			<div class="active content">
-				<table class="ui table segment">
-					<thead>
-						<tr>
-							<th><?=_("DATETIME")?></th>
-							<th><?=_("LOCALE")?></th>
-						</tr>
-					</thead>
-					<tbody>
-					<tr>
-						<td><?=os.date() ?> </td>
-						<td><?=os.getenv('LANG') ?> </td>
-					</tr>
-					</tbody>
-				</table>
-			</div>
-			<div class="title">
-				<i class="dropdown icon"></i>
-				<?=_("HARDWARE")?>
-			</div>
-			<div class="content">
-				<table class="ui table segment">
-					<thead>
-						<tr>
-							<th><?=_("CPU")?></th>
-							<th><?=_("HOSTNAME")?></th>
-							<th><?=_("OS")?></th>
-							<th><?=_("VERSION")?></th>
-						</tr>
-					</thead>
-					<tbody>
-					<?
-					local mem = sysinfo.meminfo()
-					?>
-					<tr>
-						<td><?=sysinfo.cpu_model() ?> </td>
-						<td><?=sysinfo.uname('-n') ?> </td>
-						<td><?=sysinfo.uname('-s') ?> </td>
-						<td><?=sysinfo.uname('-r') ?> </td>
-					</tr>
-					</tbody>
-				</table>
-			</div>
-			<div class="title">
-				<i class="dropdown icon"></i>
-				<?=_("MEMOERY")?>
-			</div>
-			<div class="content">
-				<table class="ui table segment">
-					<thead>
-						<tr>
-							<th><?=_("Total")?></th>
-							<th><?=_("Used")?></th>
-							<th><?=_("Free")?></th>
-						</tr>
-					</thead>
-					<tbody>
-					<?
-					local mem = sysinfo.meminfo()
-					?>
-					<tr>
-						<td><?=mem.total/1000 ?> M </td>
-						<td><?=mem.used/1000 ?> M</td>
-						<td><?=mem.free/1000 ?> M</td>
-					</tr>
-					</tbody>
-				</table>
-			</div>
-			<div class="title">
-				<i class="dropdown icon"></i>
-				<?=_("CPU LOAD")?>
-			</div>
-			<div class="content">
-				<table class="ui table segment">
-					<thead>
-						<tr>
-							<th><?=_("Name")?></th>
-							<th><?=_("Value")?></th>
-						</tr>
-					</thead>
+	<tbody>
+		<?
+		local avg = sysinfo.loadavg()
+		for k, v in pairs(avg) do
+		?>
+		<tr>
+			<td><?=tostring(k):upper() ?> </td>
+			<td><?=v ?> </td>
+		</tr>
+		<?
+		end
+		?>
+	</tbody>
+</table>
 
-					<tbody>
-					<?
-					local avg = sysinfo.loadavg()
-					for k, v in pairs(avg) do
-					?>
-					<tr>
-						<td><?=tostring(k):upper() ?> </td>
-						<td><?=v ?> </td>
-					</tr>
-					<?
-					end
-					?>
-					</tbody>
-				</table>
-			</div>
-		</div>
-	</div>
-	<div class="title">
-		<i class="dropdown icon"></i>
-		<?=_("NETWORK")?>
-	</div>
-	<div class="content">
-		<div class="accordion">
-			<?
-			local ninfo = sysinfo.network()
-			for ifname, v in pairs(ninfo) do
-			?>
-			<div class="active title">
-				<i class="dropdown icon"></i>
-				<?=ifname:upper() ?>
-			</div>
-			<div class="active content">
-				<table class="ui table segment">
-					<thead>
-						<tr><th><?=_("Name")?></th>
-							<th><?=_("Value")?></th>
-						</tr>
-					</thead>
+<h2 class="ui dividing header"><?=_("NETWORK")?> </h2>
+<?
+local ninfo = sysinfo.network()
+for ifname, v in pairs(ninfo) do
+?>
+<h3 class="ui dividing header"><?=ifname:upper() ?> </h3>
+<table class="ui celled table">
+	<thead>
+		<tr><th><?=_("Name")?></th>
+			<th><?=_("Value")?></th>
+		</tr>
+	</thead>
 
-					<tbody>
+	<tbody>
 
-					<?
-					for key, val in pairs(v) do
-					?>
-					<tr>
-						<td><?=tostring(key):upper() ?> </td>
-						<td><?=tostring(val):upper() ?> </td>
-					</tr>
-					<?
-					end
-					?>
-					</tbody>
-				</table>
-			</div>
-			<?
-			end
-			?>
-		</div>
-	</div>
-</div>
+		<?
+		for key, val in pairs(v) do
+		?>
+		<tr>
+			<td><?=tostring(key):upper() ?> </td>
+			<td><?=tostring(val):upper() ?> </td>
+		</tr>
+		<?
+		end
+		?>
+	</tbody>
+</table>
+<?
+end
+?>
