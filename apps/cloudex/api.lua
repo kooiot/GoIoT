@@ -244,6 +244,7 @@ _M.pull_extra = function()
 			rest.call('POST', {name=name, id=id, result=r, err=err}, 'actions/system')
 		elseif name == 'list' then
 			--- List applications
+			log:debug(ioname, 'List Applications')
 			local list = list_apps()
 			rest.call('POST', {name=name, id=id, result=true, list=list}, 'actions/system')
 		elseif name == 'list_services' then
