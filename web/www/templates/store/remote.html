@@ -58,20 +58,25 @@
 		} else {
 			list_place = $('#pop_list');
 		}
-		var text = '<div class="ui stackable items">'
+		var text = '<div class="ui divided  items">'
 		for (var user in data)
 		{
 			var list = data[user];
 			for (var i in list) {
 				var app = list[i];
-				var msg = '<div class="app item" id="' + app.name + '" path="' + app.info.path + '" onclick="jump_app(this);">'
+				var msg = '<div class="item" id="' + app.name + '" path="' + app.info.path + '" onclick="jump_app(this);">'
 							+ '<div class="image">'
 							+ '<img src="http://<?=srvurl or "store.symid.com"?>/static/releases/'+app.info.path+'/icon.png">'
 							+ '</div>'
 							+ '<div class="content">'
+							+ '<div class="header">' + app.name + '</div>'
 							+ '<div class="meta">' + app.info.version + '</div>'
-							+ '<div class="name">' + app.name + '</div>'
-							+ '<div class="extra right">' + app.info.desc + '</div>'
+							+ '<div class="description">'
+							+ '<div class="ui basic segment" style="word-wrap:break-word">' + app.info.desc + '</div>'
+							+ '</div>'
+							+ '<div class="extra">'
+							+ '<div class="ui label"><i class="user icon"></i>' + app.info.path + '</div>'
+							+ '</div>'
 							+ '</div>'
 							+ '</div>'
 				text = text + msg;
