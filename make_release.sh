@@ -67,5 +67,13 @@ sudo rm -rf __install
 # Release Modbus
 ./scripts/release_app.sh modbus
 
+###################
+##
+##################
+cd __release
+mkdir kooiot-1.4.0
+cp core_xz.$VERSION.sfs kooiot-1.4.0
+tar czvf kooiot-1.4.0.tar.gz kooiot-1.4.0
+
 # Done
 echo 'DONE'
