@@ -1,28 +1,27 @@
-<!DOCTYPE html>
-<HTML>
-<HEAD>
-	<? extend'layout.html'?>
-	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-	<link rel="stylesheet" href="/static/library/ztree/css/zTreeStyle/zTreeStyle.css" type="text/css"/>
-	<link href="/static/library/appendgrid/css/jquery.appendGrid-1.4.1.css" rel="stylesheet"/>
-	<link rel="stylesheet" href="/static/library/jqueryui/jquery-ui.min.css" type="text/css"/>
-	<script src="/static/library/jqueryui/jquery-ui.min.js"></script>
-	<script src="/static/library/jqueryui/jquery-ui-1.10.2.custom.min.js"></script>
-	<script type="text/javascript" src="/static/library/ztree/js/jquery.ztree.all-3.5.min.js"></script>
-	<script src="/static/library/appendgrid/js/jquery.appendGrid-1.4.1.js"></script>
+<? extend'layout.html'?>
+
+<link rel="stylesheet" href="/static/library/ztree/css/zTreeStyle/zTreeStyle.css" type="text/css"/>
+<link href="/static/library/appendgrid/css/jquery.appendGrid-1.4.1.css" rel="stylesheet"/>
+<link rel="stylesheet" href="/static/library/jqueryui/jquery-ui.min.css" type="text/css"/>
+
+<script src="/static/library/jqueryui/jquery-ui.min.js"></script>
+<script src="/static/library/jqueryui/jquery-ui-1.10.2.custom.min.js"></script>
+<script type="text/javascript" src="/static/library/ztree/js/jquery.ztree.all-3.5.min.js"></script>
+<script src="/static/library/appendgrid/js/jquery.appendGrid-1.4.1.js"></script>
 
 <style type="text/css">
 	.ztree li span.button.add {margin-left:2px; margin-right: -1px; background-position:-144px 0; vertical-align:top; *vertical-align:middle}
 </style>
-<div class="tab segment">
+<div class="tab header segment">
 	<div class="container">
 		<div class="introduction">
 			<h2 class="ui dividing header"> <a href="javascript:history.go(-1);"><?=app.appname ?></a> - <?=name ?> </h2>
+			<br>
 		</div>
 	</div>
 </div>
 
-<div class="main container">
+<div class="main wide container">
 	<div class="ui two column relaxed grid basic segment">
 		<div class="four wide column">
 			<div class="ui segment">
@@ -137,11 +136,13 @@
 						<table id="tblAppendGrid">
 						</table>
 					</div>
+					</div>
+				</div>
 		</form>
 	</div>
 </div>
 
-	<SCRIPT type="text/javascript">
+	<script type="text/javascript">
 		<!--
 		var setting = {
 			check: {
@@ -444,7 +445,4 @@
 			treeObj.updateNode(nodes[0]);
 		});
 		//-->
-	</SCRIPT>
-</HEAD>
-
-</HTML>
+	</script>

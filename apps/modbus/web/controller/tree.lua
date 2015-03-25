@@ -26,6 +26,7 @@ local function combination(s)
 end
 
 local function list(t)
+	local t = t or {}
 	local s = {}
 	for i = 2, #t do
 		s[#s + 1] = t[i].Name
