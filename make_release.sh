@@ -1,6 +1,6 @@
 # !/usr/bin/env sh
 
-rm __release -rf
+rm __release/* -rf
 # Make the release folder
 mkdir -p __release
 

@@ -34,7 +34,7 @@ _M.upgrade = function(file)
 		--- Name is ignored
 		--local name = string.match(file.name, "([^:/\\]+)$")
 
-		local tmp_file = platform.path.temp..'/kooiot.sfs'
+		local tmp_file = platform.path.temp..'/core.sfs'
 		local dest, err = io.open(tmp_file, "wb")
 		if not dest then
 			return nil, "Failed to save file, error:"..err
@@ -43,8 +43,8 @@ _M.upgrade = function(file)
 		dest:write(file.contents)
 		dest:close()
 
-		local mv = 'mv '..tmp_file..' '..platform.path.core..'/kooiot.sfs'
-		local start = 'mount '..platform.path.core..'/kooiot.sfs '..platform.path.kooiot
+		local mv = 'mv '..tmp_file..' '..platform.path.core..'/core.sfs'
+		local start = 'mount '..platform.path.core..'/core.sfs '..platform.path.kooiot
 		local umount = 'umount '..platform.path.kooiot
 		delay_exec('upgrade.sh', {'cd /', platform.path.kooiot..'/run.sh stop', umount, mv, 'sleep 3', start, platform.path.kooiot..'/run.sh start'})
 	elseif type(file) == 'string' then
@@ -53,8 +53,8 @@ _M.upgrade = function(file)
 			return nil, err
 		end
 
-		local mv = 'mv '..file..' '..platform.path.core..'/kooiot.sfs'
-		local start = 'mount '..platform.path.core..'/kooiot.sfs '..platform.path.kooiot
+		local mv = 'mv '..file..' '..platform.path.core..'/core.sfs'
+		local start = 'mount '..platform.path.core..'/core.sfs '..platform.path.kooiot
 		local umount = 'umount '..platform.path.kooiot
 		delay_exec('upgrade.sh', {'cd /', platform.path.kooiot..'/run.sh stop', umount, mv, 'sleep 3', start, platform.path.kooiot..'/run.sh start'})
 	else
