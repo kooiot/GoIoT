@@ -14,7 +14,7 @@ _M.version = function()
 		return _M.VERSION
 	end
 
-	local f, err = io.open(platform.path.cad..'/version')
+	local f, err = io.open(platform.path.kooiot..'/version')
 	if f then
 		_M.VERSION = f:read('*a')
 		f:close()
@@ -34,7 +34,7 @@ _M.upgrade = function(file)
 		--- Name is ignored
 		--local name = string.match(file.name, "([^:/\\]+)$")
 
-		local tmp_file = platform.path.temp..'/cad2.sfs'
+		local tmp_file = platform.path.temp..'/kooiot.sfs'
 		local dest, err = io.open(tmp_file, "wb")
 		if not dest then
 			return nil, "Failed to save file, error:"..err
@@ -43,20 +43,20 @@ _M.upgrade = function(file)
 		dest:write(file.contents)
 		dest:close()
 
-		local mv = 'mv '..tmp_file..' '..platform.path.core..'/cad2.sfs'
-		local start = 'mount '..platform.path.core..'/cad2.sfs '..platform.path.cad
-		local umount = 'umount '..platform.path.cad
-		delay_exec('upgrade.sh', {'cd /', platform.path.cad..'/run.sh stop', umount, mv, 'sleep 3', start, platform.path.cad..'/run.sh start'})
+		local mv = 'mv '..tmp_file..' '..platform.path.core..'/kooiot.sfs'
+		local start = 'mount '..platform.path.core..'/kooiot.sfs '..platform.path.kooiot
+		local umount = 'umount '..platform.path.kooiot
+		delay_exec('upgrade.sh', {'cd /', platform.path.kooiot..'/run.sh stop', umount, mv, 'sleep 3', start, platform.path.kooiot..'/run.sh start'})
 	elseif type(file) == 'string' then
 		local f, err = io.open(file)
 		if not f then
 			return nil, err
 		end
 
-		local mv = 'mv '..file..' '..platform.path.core..'/cad2.sfs'
-		local start = 'mount '..platform.path.core..'/cad2.sfs '..platform.path.cad
-		local umount = 'umount '..platform.path.cad
-		delay_exec('upgrade.sh', {'cd /', platform.path.cad..'/run.sh stop', umount, mv, 'sleep 3', start, platform.path.cad..'/run.sh start'})
+		local mv = 'mv '..file..' '..platform.path.core..'/kooiot.sfs'
+		local start = 'mount '..platform.path.core..'/kooiot.sfs '..platform.path.kooiot
+		local umount = 'umount '..platform.path.kooiot
+		delay_exec('upgrade.sh', {'cd /', platform.path.kooiot..'/run.sh stop', umount, mv, 'sleep 3', start, platform.path.kooiot..'/run.sh start'})
 	else
 		return nil, "Please select a local file first"
 	end
@@ -85,8 +85,8 @@ local function download_sys(version)
 	local store = require 'shared.store'
 	local cfg = store.get_cfg()
 
-	local src = cfg.srvurl..'/sys/cad2_xz.'..version..'.sfs'
-	local dest = platform.path.temp..'/cad2.'..version..'.sfs'
+	local src = cfg.srvurl..'/sys/kooiot_xz.'..version..'.sfs'
+	local dest = platform.path.temp..'/kooiot.'..version..'.sfs'
 
 	log:info('SYSTEM', "Download system from", src, "to", dest)
 	local r, err = download(src, dest)

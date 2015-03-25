@@ -212,7 +212,7 @@ end
 
 local function start_application(name, lname)
 	local platform = require 'shared.platform'
-	local cmd = platform.path.cad..'/scripts/run_app.sh start '..name..' '..lname
+	local cmd = platform.path.kooiot..'/scripts/run_app.sh start '..name..' '..lname
 	log:debug('STORE', "Running application", cmd)
 	os.execute(cmd)
 	log:debug('SOTRE', 'Starting application '..lname..' ....')

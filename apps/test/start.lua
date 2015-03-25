@@ -1,6 +1,6 @@
 #!/usr/bin/env lua
 
-local m_path = os.getenv('CAD_DIR') or "."
+local m_path = os.getenv('KOOIOT_DIR') or "."
 local m_package_path = package.path  
 package.path = string.format("%s;%s/?.lua;%s/?/init.lua", m_package_path, m_path, m_path)  
 

@@ -123,8 +123,8 @@ function _M.start(insname, debug)
 	if not app then
 		return nil, 'The application['..insname..'] is not installed'
 	else
-		local caddir = require('shared.platform').path.cad
-		local cmd = caddir..'/scripts/run_app.sh start '..app.name..' '..insname
+		local basedir = require('shared.platform').path.kooiot
+		local cmd = basedir..'/scripts/run_app.sh start '..app.name..' '..insname
 		if debug then
 			if debug.addr then
 				local file, err = io.open('/tmp/apps/_debug', "w")

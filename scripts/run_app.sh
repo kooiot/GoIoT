@@ -1,8 +1,8 @@
 NAME=$2
 INSNAME=$3
 
-if [ -z $CAD_DIR ]; then
-	CAD_DIR=/tmp/cad2
+if [ -z $KOOIOT_DIR ]; then
+	KOOIOT_DIR=/tmp/kooiot
 fi
 if [ -z $FID_FOLDER ]; then
 	PID_FOLDER=/tmp/
