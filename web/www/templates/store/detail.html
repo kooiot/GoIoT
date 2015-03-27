@@ -68,7 +68,7 @@
 		</div>
 	</div>
 <!-- 多说评论框 start -->
-<div class="ds-thread" data-thread-key="<?=appname?>" data-title="<?=appname?>" data-url="http://www.kooiot.com/app/detail/<?=appname?>"></div>
+<div class="ds-thread" data-thread-key="<?=appname?>" data-title="<?=appname?>" data-url="http://www.kooiot.in/app/detail/<?=appname?>"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
@@ -107,7 +107,7 @@
 		$.ajax({
 			type: "GET",
 			dataType: "jsonp",
-			url: "http://<?=srvurl or 'store.symid.com'?>/app/queryinfo",
+			url: "http://<?=srvurl?>/app/queryinfo",
 			data:{ path : path },
 			error: function(jqXHR, textStatus, errorThrown) {
 				if (textStatus == "error") {

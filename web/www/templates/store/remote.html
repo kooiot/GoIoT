@@ -66,7 +66,7 @@
 				var app = list[i];
 				var msg = '<div class="item" id="' + app.name + '" path="' + app.info.path + '" onclick="jump_app(this);">'
 							+ '<div class="image">'
-							+ '<img src="http://<?=srvurl or "store.symid.com"?>/static/releases/'+app.info.path+'/icon.png">'
+							+ '<img src="http://<?=srvurl?>/static/releases/'+app.info.path+'/icon.png">'
 							+ '</div>'
 							+ '<div class="content">'
 							+ '<div class="header">' + app.name + '</div>'
@@ -90,7 +90,7 @@
 		$.ajax({
 			type: "GET",
 			dataType: "jsonp",
-			url: "http://<?=srvurl or 'store.symid.com'?>/app/search",
+			url: "http://<?=srvurl?>/app/search",
 			data:{ type:typ, key : key, limit : 10 },
 			error: function(jqXHR, textStatus, errorThrown) {
 				if (textStatus == "error") {

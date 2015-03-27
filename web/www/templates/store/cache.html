@@ -70,7 +70,7 @@
 				var app = list[i];
 				var msg = '<div class="app item" id="' + app.name + '" path="' + app.info.path + '" onclick="cache_jump_app(this);">'
 							+ '<div class="image">'
-							+ '<img src="http://<?=srvurl or "store.symid.com"?>/static/releases/'+app.info.path+'/icon.png">'
+							+ '<img src="http://<?=srvurl?>/static/releases/'+app.info.path+'/icon.png">'
 							+ '</div>'
 							+ '<div class="content">'
 							+ '<div class="meta">' + app.info.version + '</div>'
