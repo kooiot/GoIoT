@@ -10,18 +10,20 @@ local _M = {}
 --- Get the current system version
 -- @treturn string version string
 _M.version = function()
-	if _M.VERSION then
-		return _M.VERSION
+	if _M.VERSION and _M.REVISION then
+		return _M.VERSION, _M.REVISION
 	end
 
 	local f, err = io.open(platform.path.kooiot..'/version')
 	if f then
-		_M.VERSION = f:read('*a')
+		_M.VERSION = f:read('*l')
+		_M.REVISION = f:read('*l')
 		f:close()
 	else
 		_M.VERSION = '0'
+		_M.REVISION = '0'
 	end
-	return _M.VERSION
+	return _M.VERSION, _M.REVISION
 end
 
 --- Upgrade system

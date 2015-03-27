@@ -35,8 +35,17 @@ cd ../..
 ################################
 du __install -sh
 
+### Get the version by count the commits
 VERSION=`git log --oneline | wc -l | tr -d ' '`
+
+### Generate the revision by last commit
+set -- $(git log -1 --format="%ct %h")
+R_SECS="$(($1 % 86400))"
+R_YDAY="$(date --utc --date="@$1" "+%y.%j")"
+REVISION="$(printf 'git-%s.%05d-%s' "$R_YDAY" "$R_SECS" "$2")"
+
 echo $VERSION > __install/version
+echo $REVISION >> __install/version
 
 # Compile lua files
 # ./scripts/compile_lua.sh 
