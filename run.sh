@@ -61,5 +61,5 @@ if [ -f /tmp/apps/_list ]; then
 		$KOOIOT_DIR/scripts/run_app.sh $1 $NAME $INSNAME
 	done < /tmp/apps/_list
 fi
-
+  
 exit 0
