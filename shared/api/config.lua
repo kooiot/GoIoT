@@ -6,7 +6,7 @@ require "shared.zhelpers"
 local zmq = require "lzmq"
 local cjson = require "cjson.safe"
 
-local req = require "shared.req"
+local req = require "shared.comm.req"
 local client = req.new()
 
 client:open({zmq.REQ, linger = 0, connect="tcp://localhost:5522", rcvtimeo = 300}, 3)

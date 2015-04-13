@@ -3,7 +3,6 @@
 --
 
 local configs = require 'shared.api.config'
-local setting = require 'shared.io.setting'
 local ztimer = require 'lzmq.timer'
 local cjson = require 'cjson.safe'
 local pp = require 'shared.PrettyPrint'
@@ -44,81 +43,6 @@ local function  app_meta()
 		ports = _M.ports,
 		settings = _M.settings,
 	}
-end
-
---- Add settings item
--- @tparam table item Setting item
--- @treturn nil
-function _M.add_setting(item)
-	table.insert(_M.settings, item:meta())
-end
-
---- Get settings item according to name
--- @tparam string name The setting name
--- @treturn table item or nil
--- @treturn string error message
-function _M.get_setting(name)
-	if config.settings then
-		for k, v in config.settings do 
-			if v.name == name then
-				return setting.from(config.settings[name])
-			end
-		end
-	end
-
-	if _M.settings[name] then
-		return setting.from(_M.settings[name])
-	end
-	return nil, 'no such setting'
-end
-
---- Add ports item
--- @tparam string name Port item
--- @tparam table types Port Types in string table
--- @tparam table default Default port object table
--- @treturn nil
-function _M.add_port(name, types, default)
-	local port = require 'shared.io.port'
-	_M.ports[#_M.ports + 1] = {name=name, types = types, default = port[default..'_conf']()}
-end
-
---- Get port settings
--- @tparam string name Port name
--- @treturn table Port configuration
--- @treturn string error message
-local function get_port_conf(name)
-	local conf = nil
-	for k,v in pairs(_M.ports) do
-		if v.name == name then
-			conf = v.default
-		end
-	end
-
-	if conf and config.ports and config.ports[name] then
-		local ports = config.ports[name]
-		for k, v in pairs(ports.props) do
-			if conf.props[k] then
-				conf.props[k].value = v
-			end
-		end
-	end
-
-	return conf, 'no such port'
-end
-
---- Get port object
--- @tparam string name Port name
--- @treturn table Port object 
--- @treturn string error message
-function _M.get_port(name)
-	local conf, err = get_port_conf(name)
-	if not conf then
-		return nil, err
-	end
-
-	local port = require 'shared.io.port'
-
-	return port.create(app, conf), conf
 end
 
 --- Import the default configration

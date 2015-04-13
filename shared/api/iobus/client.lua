@@ -97,7 +97,7 @@ local function new(from)
 	local ctx = zmq.context()
 	local poller = zpoller.new(1)
 
-	local req = require "shared.req"
+	local req = require "shared.comm.req"
 	local client = req.new(ctx)
 
 	client:open()

@@ -5,7 +5,7 @@ require "shared.zhelpers"
 local zmq = require "lzmq"
 local cjson = require "cjson.safe"
 
-local req = require "shared.req"
+local req = require "shared.comm.req"
 local msg_reply = require 'shared.msg.reply'
 
 local client = req.new()

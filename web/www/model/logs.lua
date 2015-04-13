@@ -1,5 +1,5 @@
 local zmq = require "lzmq"
-local req = require "shared.req"
+local req = require "shared.comm.req"
 local cjson = require 'cjson.safe'
 
 local msg_reply = require 'shared.msg.reply'

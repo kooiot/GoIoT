@@ -118,7 +118,7 @@ local function init()
 		end
 	end)
 
-	local pub = require 'shared.pub'
+	local pub = require 'shared.comm.pub'
 	pub.create(ctx, {
 		zmq.PUB, 
 		bind = "tcp://*:5577"
