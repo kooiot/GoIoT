@@ -1,10 +1,10 @@
+--- System operation functions module
+--
 local download = require 'shared.util.download'
 local platform = require 'shared.platform'
 local delay_exec = require('shared.util.delay_exec')
 local log = require 'shared.log'
 
---- The system module
---
 local _M = {}
 
 --- Get the current system version
@@ -66,6 +66,8 @@ _M.upgrade = function(file)
 	return true, 'System will be restarted soon'
 end
 
+--- Get latest version in store
+-- @treturn number version
 function _M.remote_version()
 	local http = require 'socket.http'
 	local store = require 'shared.store'
@@ -81,6 +83,10 @@ function _M.remote_version()
 	return version
 end
 
+--- Download system upgrade file from store
+-- @tparam number version
+-- @treturn string the downloaded file path
+-- @treturn string error
 local function download_sys(version)
 	local version = version or 'latest'
 
@@ -99,6 +105,11 @@ local function download_sys(version)
 	return dest
 end
 
+--- Upgrade system to specified version
+--  which will download the specified version from store and then upgrade it
+--  @tparam number version
+--  @treturn boolean result
+--  @treturn string error
 function _M.store_upgrade(version)
 	local path, err = download_sys(version)
 	if not path then

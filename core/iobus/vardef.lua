@@ -26,7 +26,7 @@ function _M.load()
 			desc = 'symlink device',
 			inputs = {
 				sn = {name='sn', desc='Serial Number of device', value='xxx-xxxx-xxxx-xxxxxxxx', ['type']='string/uuid'},
-				modal = {name='modal', desc='Modal of device', value='Symlink V3 Test', ['type']='string'},
+				modal = {name='modal', desc='Modal of device', value='TipsyDate Test', ['type']='string'},
 				time = {name='system time', desc='Device system time', value=os.time(), ['type']='number/time'}
 			},
 			commands = {

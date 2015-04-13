@@ -1,0 +1,526 @@
+<? extend 'layout.html'?>
+<script src="/static/js/table.js"></script>
+
+<link rel="stylesheet" href="/static/library/jqueryui/jquery-ui.min.css" type="text/css"/>
+<link href="/static/library/appendgrid/css/jquery.appendGrid-1.4.1.css" rel="stylesheet"/>
+
+<script src="/static/library/jqueryui/jquery-ui.min.js"></script>
+<script src="/static/library/jqueryui/jquery-ui-1.10.2.custom.min.js"></script>
+<script src="/static/library/appendgrid/js/jquery.appendGrid-1.4.1.js"></script>
+
+<div class="tab header segment">
+	<div class="container">
+		<div class="introduction">
+			<h1 class="ui dividing header">
+				IR Controller - <?=app.appname ?>
+			</h1>
+			<br>
+		</div>
+	</div>
+</div>
+
+<div class="main wide container">
+	<div class="ui grid" style="min-height: 460px">
+		<div class="four wide column">
+			<div class="ui pointing vertical menu">
+				<div class="item">
+					<h3> Templates </h3>
+				</div>
+				<div class="item">
+					<b> Frames </b> <i class="large teal plus link icon" id="add_frame"></i>
+					<div class="frame menu">
+					</div>
+				</div>
+
+				<div class="item">
+					<b> Task </b> <i class="large teal plus link icon" id="add_task"></i>
+					<div class="task menu">
+					</div>
+				</div>
+
+				<div class="item">
+					<b> Process </b> <i class="large teal plus link icon" id="add_process"></i>
+					<div class="process menu">
+					</div>
+				</div>
+
+				<div class="item">
+					<b> Device </b>
+					<div class="menu">
+						<a class="device item" id="inputs">Inputs</a>
+						<a class="device item" id="outputs">Outputs</a>
+						<a class="device item" id="commands">Commands</a>
+					</div>
+				</div>
+			</div>
+
+		</div>
+		<div class="twelve wide column">
+			<div class="ui segment" id="seg_first">
+				<div class="ui top attached label"><b>Help</b></div>
+				<div>
+				This is the template editor
+				</div>
+			</div>
+			<div class="ui segment" id="seg_frame" style="display:none">
+				<div class="ui top attached label"><b>Frame Editor</b></div>
+				<div class="ui dividing header">
+					<h3 id="title_frame"></h3>
+				</div>
+
+				<table id="table_frmvars">
+				</table>
+
+				<div class="ui dividing header">
+				</div>
+				<table id="table_frmbuild">
+				</table>
+			</div>
+			<div class="ui segment" id="seg_task" style="display:none">
+				<div class="ui top attached label"><b>Task Editor</b></div>
+				<div id="title_task"></div>
+			</div>
+			<div class="ui segment" id="seg_process" style="display:none">
+				<div class="ui top attached label"><b>Process Editor</b></div>
+				<div id="title_process"></div>
+			</div>
+			<div class="ui segment" id="seg_dev_inputs" style="display:none">
+				<div class="ui top attached label"><b>Device Inputs Editor</b></div>
+				<div id="title_device"></div>
+			</div>
+			<div class="ui segment" id="seg_dev_outputs" style="display:none">
+				<div class="ui top attached label"><b>Device Outputs Editor</b></div>
+				<div id="title_device"></div>
+			</div>
+			<div class="ui segment" id="seg_dev_commands" style="display:none">
+				<div class="ui top attached label"><b>Device Commands Editor</b></div>
+				<div id="title_device"></div>
+			</div>
+
+
+		</div>
+	</div>
+</div>
+
+<div class="ui frame add modal">
+	<div class="header">
+		Create new Frame
+	</div>
+	<div class="content">
+		<div class="ui compact form">
+			<div class="two fields">
+				<div class="inline field">
+					<label>ID</label>
+					<div class="ui input">
+						<input placeholder="ID..." id="new_frame_id" name="id" type="text">
+					</div>
+				</div>
+				<div class="inline field">
+					<label>Name</label>
+					<div class="ui input">
+						<input placeholder="Name..." id="new_frame_name" name="id" type="text">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="actions">
+		<div class="ui cancel button">Cancel</div>
+		<div class="ui ok green button">OK</div>
+	</div>
+</div>
+<div class="ui process add modal">
+	<div class="header">
+		Create new Process
+	</div>
+	<div class="content">
+		<div class="ui compact form">
+			<div class="two fields">
+				<div class="inline field">
+					<label>ID</label>
+					<div class="ui input">
+						<input placeholder="ID..." id="new_process_id" name="id" type="text">
+					</div>
+				</div>
+				<div class="inline field">
+					<label>Name</label>
+					<div class="ui input">
+						<input placeholder="Name..." id="new_process_name" name="id" type="text">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="actions">
+		<div class="ui cancel button">Cancel</div>
+		<div class="ui ok green button">OK</div>
+	</div>
+</div>
+<div class="ui task add modal">
+	<div class="header">
+		Create new Task 
+	</div>
+	<div class="content">
+		<div class="ui compact form">
+			<div class="two fields">
+				<div class="inline field">
+					<label>ID</label>
+					<div class="ui input">
+						<input placeholder="ID..." id="new_task_id" name="id" type="text">
+					</div>
+				</div>
+				<div class="inline field">
+					<label>Name</label>
+					<div class="ui input">
+						<input placeholder="Name..." id="new_task_name" name="id" type="text">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="actions">
+		<div class="ui cancel button">Cancel</div>
+		<div class="ui ok green button">OK</div>
+	</div>
+</div>
+
+
+<script>
+	(function() {
+		var status = $('#status');
+		cur_seg = $('#seg_first');
+		has_change = false;
+
+		$('#add_frame')
+			.on('click', function(event) {
+				$('.frame.add.modal')
+					.modal({
+						closable  : false,
+						onApprove : function() {
+							var id_input = $('#new_frame_id');
+							var name_input = $('#new_frame_name');
+							var id = id_input.val();
+							var name = name_input.val();
+							if (id.length == 0) {
+								window.alert('ID is empty!');
+								return false;
+							}
+							if (name.length == 0) {
+								window.alert('Name is empty!');
+								return false;
+							}
+							id_input.val('');
+							name_input.val('');
+							frames[frames.length] = {name:name, id:id};
+							show_frames();
+
+							change_editor('frame');
+							frame_bind(id);
+						}
+					})
+				.modal('show')
+			})
+		;
+
+		$('#add_task')
+			.on('click', function(event) {
+				$('.task.add.modal')
+					.modal({
+						closable  : false,
+						onApprove : function() {
+							var id_input = $('#new_task_id');
+							var name_input = $('#new_task_name');
+							var id = id_input.val();
+							var name = name_input.val();
+							if (id.length == 0) {
+								window.alert('ID is empty!');
+								return false;
+							}
+							if (name.length == 0) {
+								window.alert('Name is empty!');
+								return false;
+							}
+							id_input.val('');
+							name_input.val('');
+							tasks[tasks.length] = {name:name, id:id};
+							show_tasks();
+
+							change_editor('task');
+							task_bind(id);
+						}
+					})
+				.modal('show')
+			})
+		;
+
+		$('#add_process')
+			.on('click', function(event) {
+				$('.process.add.modal')
+					.modal({
+						closable  : false,
+						onApprove : function() {
+							var id_input = $('#new_process_id');
+							var name_input = $('#new_process_name');
+							var id = id_input.val();
+							var name = name_input.val();
+							if (id.length == 0) {
+								window.alert('ID is empty!');
+								return false;
+							}
+							if (name.length == 0) {
+								window.alert('Name is empty!');
+								return false;
+							}
+							id_input.val('');
+							name_input.val('');
+							processes[processes.length] = {name:name, id:id, system:false};
+							show_processes();
+
+							change_editor('process');
+							process_bind(id);
+						}
+					})
+				.modal('show')
+			})
+		;
+
+		$('.device.item')
+			.on('click', function(event) {
+				change_editor('dev_'+this.id);
+			})
+		;
+
+		$('form').ajaxForm({
+			beforeSend: function() {
+				status.text(' ');
+			},
+			success: function() {
+			},
+			complete: function(xhr) {
+				status.text(xhr.responseText);
+			}
+		}); 
+
+		frames = [
+			{name:'五号命令', id:'f05'},
+			{name:'三号命令', id:'f03'},
+		];
+		show_frames();
+
+		tasks = [
+			{name:'TimeSync', id:'timesync'},
+			{name:'Connect', id:'connect'},
+		];
+		show_tasks();
+
+		processes = [
+			{name:'Startup', id:'startup', system:true},
+			{name:'Teardown', id:'teardown', system:true},
+			{name:'Main', id:'main', system:true},
+			{name:'Process One', id:'p1', system:false},
+		];
+		show_processes();
+
+
+		$('#table_frmvars').appendGrid({
+			caption: 'Frame Variables',
+			initRows: 1,
+			columns: [
+			{ name: 'name', display: 'Name', type: 'text', ctrlAttr: { maxlength: 32 }, ctrlCss: { width: '100px'} },
+			{ name: 'type', display: 'Type', type: 'select', ctrlOptions: { 0: '{Choose}', 1: 'Number', 2: 'String'} },
+			{ name: 'default', display: 'Default Value', type: 'text', ctrlAttr: { maxlength: 128 }, ctrlCss: { width: '120px'} }
+			]
+		});
+
+		$('#table_frmbuild').appendGrid({
+			caption: 'Frame Builder',
+			initRows: 1,
+			columns: [
+			{ name: 'name', display: 'Name', type: 'text', ctrlAttr: { maxlength: 32 }, ctrlCss: { width: '100px'} },
+			{ name: 'type', display: 'Type', type: 'select', ctrlOptions: { 0: '{Choose}', 1: 'String', 2: 'Int8', 3: 'UInt8', 4: 'Int16', 5: 'UInt16', 6: 'Int32', 7: 'UInt32'},
+				onChange: function(evt, rowIndex) {
+					var val = $('#table_frmbuild').appendGrid('getCtrlValue', 'type', rowIndex);
+					var lens = ['0','0','1','1','2','2','4','4'];
+					if (val == 0) {
+						$('#table_frmbuild').appendGrid('setCtrlValue', 'length', rowIndex, "");
+						$('#table_frmbuild').appendGrid('setCtrlValue', 'endian', rowIndex, "0");
+					} else if (val == 1) {
+						$('#table_frmbuild').appendGrid('setCtrlValue', 'length', rowIndex, "");
+						$('#table_frmbuild').appendGrid('setCtrlValue', 'endian', rowIndex, "3");
+					}else {
+						$('#table_frmbuild').appendGrid('setCtrlValue', 'length', rowIndex, lens[val]);
+					}
+				}
+			},
+			{ name: 'endian', display: 'Endian', type: 'select', ctrlOptions: { 0: '{Choose}', 1: 'Big Endian', 2: 'Little Endian', 3: 'RAW'} },
+			{ name: 'length', display: 'Length (Bytes)', type: 'text', ctrlAttr: { maxlength: 100 }, ctrlCss: { width: '150px'} },
+			{ name: 'value', display: 'Value', type: 'text', ctrlAttr: { maxlength: 128 }, ctrlCss: { width: '200px'} }
+			]
+		});
+	})();
+
+	function change_editor(name) {
+		if (has_change) {
+			var r = confirm("You have unsaved changes!! do you want to save it");
+			if (r == true) {
+				alert("Saved!");
+			} else {
+				alert("Discarded!");
+			}
+		};
+		cur_seg.hide();
+		cur_seg = $('#seg_'+name);
+		cur_seg.show();
+	};
+
+	function show_frames() {
+		var frame_menu = $('.frame.menu');
+		frame_menu.html('');
+		for(var i = 0; i < frames.length; i++){
+			create_frame(frames[i].id, frames[i].name);
+		}
+	};
+	function frame_click(obj) {
+		change_editor('frame');
+		frame_bind(obj.id);
+
+		$(obj)
+			.addClass('active')
+			.closest('.ui.menu')
+			.find('.item')
+			.not($(obj))
+			.removeClass('active')
+			;
+	};
+	function get_frame_by_id(id) {
+		for(var i = 0; i < frames.length; i++) {
+			if (frames[i].id == id) {
+				return frames[i];
+			}
+		}
+	};
+	function frame_bind(id) {
+		var title = $('#title_frame');
+		var f = get_frame_by_id(id);
+		title.html('Frame ID : <i>' + f.id + ' - ' + f.name + '</i>');
+	};
+	function create_frame(id, name) {
+		var frame_item_html = '<a class="item" id="'
+				+id+'" onclick="frame_click(this)">'
+				+'<i class="red large delete link icon" onclick="frame_delete(\''+id+'\')"></i>'
+				+name+'</a>'
+		var frame_menu = $('.frame.menu');
+		frame_menu.append(frame_item_html);
+	};
+	function frame_delete(id) {
+		var r = confirm("Delete process???");
+		if (r == true) {
+		} else {
+			return;
+		}
+		for(var i = 0; i < frames.length; i++) {
+			if (frames[i].id == id) {
+				frames.splice(i, 1);
+				break;
+			}
+		}
+		show_frames();
+	}
+
+	function show_processes() {
+		var process_menu = $('.process.menu');
+		process_menu.html('');
+		for(var i = 0; i < processes.length; i++){
+			create_process(processes[i].id, processes[i].name, processes[i].system);
+		}
+	};
+	function process_click(obj) {
+		change_editor('process');
+		process_bind(obj.id);
+		$(obj)
+			.addClass('active')
+			.closest('.ui.menu')
+			.find('.item')
+			.not($(obj))
+			.removeClass('active')
+			;
+	};
+	function process_bind(id) {
+		var title = $('#title_process');
+		title.html('Process ID : <i>' + id + '</i>');
+	};
+	function create_process(id, name, sys) {
+		var item_html_sys = '<a class="item" id="'+id+'" onclick="process_click(this)">'
+							+'<i class="disabled large red delete link icon"></i>'+name+'</a>'
+
+		var item_html = '<a class="item" id="'+id+'" onclick="process_click(this)">'
+							+'<i class="large red delete link icon" onclick="process_delete(\''+id+'\')"></i>'+name+'</a>'
+
+		var process_menu = $('.process.menu');
+		if (sys) {
+			process_menu.append(item_html_sys);
+		} else {
+			process_menu.append(item_html);
+		}
+	};
+	function process_delete(id) {
+		var r = confirm("Delete process???");
+		if (r == true) {
+		} else {
+			return;
+		}
+
+		for(var i = 0; i < processes.length; i++) {
+			if (processes[i].id == id) {
+				processes.splice(i, 1);
+				break;
+			}
+		}
+		show_processes();
+	}
+
+	function show_tasks() {
+		var task_menu = $('.task.menu');
+		task_menu.html('');
+		for(var i = 0; i < tasks.length; i++){
+			create_task(tasks[i].id, tasks[i].name);
+		}
+	};
+	function task_click(obj) {
+		change_editor('task');
+		task_bind(obj.id);
+		$(obj)
+			.addClass('active')
+			.closest('.ui.menu')
+			.find('.item')
+			.not($(obj))
+			.removeClass('active')
+			;
+	};
+	function task_bind(id) {
+		var title = $('#title_task');
+		title.html('Process ID : <i>' + id + '</i>');
+	};
+	function create_task(id, name) {
+		var item_html = '<a class="item" id="'+id+'" onclick="task_click(this)">'
+							+'<i class="large red delete link icon" onclick="task_delete(\''+id+'\')"></i>'+name+'</a>'
+
+		var task_menu = $('.task.menu');
+		task_menu.append(item_html);
+	};
+	function task_delete(id) {
+		var r = confirm("Delete task???");
+		if (r == true) {
+		} else {
+			return;
+		}
+
+		for(var i = 0; i < tasks.length; i++) {
+			if (tasks[i].id == id) {
+				tasks.splice(i, 1);
+				break;
+			}
+		}
+		show_tasks();
+	}
+</script>

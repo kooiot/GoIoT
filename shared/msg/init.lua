@@ -1,6 +1,10 @@
---- The socket message helper functions
+--- Socket Message helper utility functions module
+
+
+--- Create an new helper object contains: send_result, send_err, reply
+-- @function Module
 -- @tparam object con the connection object which has send function
--- @treturn table the module table has send_result, send_err, reply
+-- @treturn table 
 return function(con)
 	local send = require('shared.msg.send')(con)
 	local reply = require 'shared.msg.reply'

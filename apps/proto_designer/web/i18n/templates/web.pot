@@ -1,0 +1,60 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+
+msgid "App Control"
+msgstr ""
+
+
+msgid "App Home"
+msgstr ""
+
+
+msgid "Command Saving"
+msgstr ""
+
+
+msgid "Download"
+msgstr ""
+
+
+msgid "IR Controller"
+msgstr ""
+
+
+msgid "Local Name"
+msgstr ""
+
+
+msgid "Name Alias"
+msgstr ""
+
+
+msgid "Save"
+msgstr ""
+
+
+msgid "Serial Port"
+msgstr ""
+
+
+msgid "Settings"
+msgstr ""
+
+
+msgid "Start Learning"
+msgstr ""
+
+
+msgid "Stop Learning"
+msgstr ""
+
+
+msgid "Templates Store"
+msgstr ""
+
+
+msgid "Upload"
+msgstr ""
+
+

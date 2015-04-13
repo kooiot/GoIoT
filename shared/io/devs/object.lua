@@ -33,7 +33,7 @@ function class:get()
 end
 
 --- Set the value type props
--- @tparam string the type description string in <type>/<usage>. 
+-- @tparam string typ the type description string in <type>/<usage>. 
 --	e.g. "number/time" "string/uuid" the usage is optional 
 --	default is "number"
 function class:value_type(typ)

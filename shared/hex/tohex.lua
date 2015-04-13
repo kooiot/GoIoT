@@ -1,4 +1,10 @@
+--- HexDump helper function
+--
 
+--- Convert binrary string to readable hex string
+-- @tparam string buf
+-- @tparam string sep the seperator for print the hex, default is space(' ')
+-- @treturn string
 local function str2hex(buf, sep)
 	local re = {}
 	for byte=1, #buf, 16 do

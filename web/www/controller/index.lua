@@ -123,7 +123,7 @@ return {
 						icon = 'green ok sign',
 					},
 					date = "Just moments ago",
-					summary = "<a>Symlink V3 </a> running well without any event fired",
+					summary = "System running well without any event fired",
 				}
 			}
 		end

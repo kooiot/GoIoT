@@ -1,7 +1,15 @@
+--- HexDump helper function
+--
+
 --[[
 http://lua-users.org/wiki/HexDump
 ]]--
 
+--- Dump binrary string to readable hex content
+-- @tparam string buf
+-- @tparam number first start of the hex string position
+-- @tparam number last end of hex string position
+-- @treturn string
 function hex_dump(buf,first,last)
 	local function align(n) return math.ceil(n/16) * 16 end
 	local re = {}
