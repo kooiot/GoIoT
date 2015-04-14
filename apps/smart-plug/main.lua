@@ -65,7 +65,7 @@ local function query_tree(ns)
 	if trees then
 		local verinfo = trees.verinfo
 		--[[
-		local pp = require 'shared.PrettyPrint'
+		local pp = require 'shared.util.PrettyPrint'
 		print(pp(trees))
 		print(pp(verinfo))
 		]]--

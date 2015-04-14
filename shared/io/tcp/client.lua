@@ -24,7 +24,7 @@ function class:open(cb)
 	end
 	self.cb = cb
 
-	--print(require('shared.PrettyPrint')({zmq.STREAM, linger=0, identity='abcde', connect="tcp://"..self.sip..":"..self.sport}))
+	--print(require('shared.util.PrettyPrint')({zmq.STREAM, linger=0, identity='abcde', connect="tcp://"..self.sip..":"..self.sport}))
 
 	local client, err = self.ctx:socket({zmq.STREAM, linger=0, identity='abcde', connect="tcp://"..self.sip..":"..self.sport})
 	zassert(client, err)

@@ -2,7 +2,7 @@
 local http = require 'socket.http'
 local ltn12 = require 'ltn12'
 local url = require 'socket.url'
-local pp = require 'shared.PrettyPrint'
+local pp = require 'shared.util.PrettyPrint'
 local cjson = require 'cjson.safe'
 
 local KEY = nil

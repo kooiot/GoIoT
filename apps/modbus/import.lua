@@ -1,4 +1,4 @@
-local pp = require ('shared.PrettyPrint')
+local pp = require ('shared.util.PrettyPrint')
 local log = require('shared.log')
 local cjson = require('cjson.safe')
 

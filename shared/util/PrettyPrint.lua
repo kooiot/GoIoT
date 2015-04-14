@@ -13,7 +13,7 @@ Usage
 
 --- Pretty Print helper module
 -- @usage 
--- local prettyprint = require 'shared.PrettyPrint'
+-- local prettyprint = require 'shared.util.PrettyPrint'
 -- pretty_output = prettyprint(table)
 
 local PrettyPrint do

@@ -219,7 +219,7 @@ handlers.on_command = function(app, path, value, from)
 		if type(value) ~= 'table' then
 			value = {value}
 		end
-		local pp = require 'shared.PrettyPrint'
+		local pp = require 'shared.util.PrettyPrint'
 		print(pp(value))
 
 		local errs = {}

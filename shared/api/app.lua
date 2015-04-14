@@ -129,7 +129,7 @@ function _M.start(insname, debug)
 			if debug.addr then
 				local file, err = io.open('/tmp/apps/_debug', "w")
 				if file then
-					local pp = require 'shared.PrettyPrint'
+					local pp = require 'shared.util.PrettyPrint'
 					local cfg = {}
 					cfg.addr = debug.addr
 					cfg.port = debug.port or 8172

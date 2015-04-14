@@ -125,7 +125,7 @@ local function init()
 	})
 
 	local logsrv = require('shared.log.server')(ctx, poller, function(log)
-		--local pp = require 'shared.PrettyPrint'
+		--local pp = require 'shared.util.PrettyPrint'
 		--print(pp(log))
 		if not log.level then
 			return nil, 'Incorrect log object'

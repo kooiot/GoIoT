@@ -5,7 +5,6 @@
 local configs = require 'shared.api.config'
 local ztimer = require 'lzmq.timer'
 local cjson = require 'cjson.safe'
-local pp = require 'shared.PrettyPrint'
 local platform = require 'shared.platform'
 local log = require 'shared.log'
 local iobus = require 'shared.api.iobus'
