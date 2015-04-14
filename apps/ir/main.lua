@@ -137,7 +137,7 @@ local function reading(app)
 	while not abort  and timer:rest() > 0 and learn_table.learning do
 		local r, data, size = port:read(1)
 		if r then
-			print('2', hex.dump(data))
+			--print('2', hex.tohex(data))
 			learn_table.result = learn_table.result..data
 			if len and string.len(learn_table.result) == len then
 				print('finished reading', len)
@@ -163,7 +163,7 @@ handlers.on_run = function(app)
 	while not abort and learn_table.learning do
 		local r, data, size = port:read(1)
 		if r then
-			print('1', hex.dump(data))
+			--print('1', hex.tohex(data))
 			if not learn_table.result and  data ~= string.char(0xFF) then
 				print('Start receving learn result')
 				learn_table.result = data
@@ -185,7 +185,7 @@ end
 
 
 local function _send_cmd(cmd)
-	print(hex.dump(cmd))
+	--print(hex.dump(cmd))
 	port:write(string.char(0xe3))
 	for i = 1, string.len(cmd) do
 		port:write(cmd:sub(i, i))
@@ -193,7 +193,7 @@ local function _send_cmd(cmd)
 	end
 	local r, data, size = port:read(1, 500)
 	if r and data then
-		print(hex.dump(data))
+		--print(hex.dump(data))
 	end
 	return r, err
 end
@@ -316,7 +316,7 @@ local function learn()
 		return nil, "Start learn failure, err: "..( data or 'timeout')
 	end
 	if data ~= string.char(0xE0) then
-		return nil, "Start learn failure, returns "..hex.dump(data)
+		return nil, "Start learn failure, returns "..hex.tohex(data)
 	end
 	return true
 end
@@ -334,7 +334,7 @@ end)
 gapp:reg_request_handler('learn_result', function(app, vars)
 	local learn_result = nil
 	if not learn_table.learning and learn_table.result then
-		learn_result = hex.dump(learn_table.result)
+		learn_result = hex.tohex(learn_table.result)
 	end
 	local reply = {'learn_result', {result = learn_result and true or false, learn = learn_result}}
 	app.server:send(cjson.encode(reply))

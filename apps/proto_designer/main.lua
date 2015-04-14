@@ -124,7 +124,6 @@ local function reading(app)
 	while not abort  and timer:rest() > 0 and learn_table.learning do
 		local r, data, size = port:read(1)
 		if r then
-			print('2', hex.dump(data))
 			learn_table.result = learn_table.result..data
 			if len and string.len(learn_table.result) == len then
 				print('finished reading', len)
@@ -150,7 +149,6 @@ handlers.on_run = function(app)
 	while not abort and learn_table.learning do
 		local r, data, size = port:read(1)
 		if r then
-			print('1', hex.dump(data))
 			if not learn_table.result and  data ~= string.char(0xFF) then
 				print('Start receving learn result')
 				learn_table.result = data
@@ -172,7 +170,7 @@ end
 
 
 local function _send_cmd(cmd)
-	print(hex.dump(cmd))
+	--print(hex.dump(cmd))
 	port:write(string.char(0xe3))
 	for i = 1, string.len(cmd) do
 		port:write(cmd:sub(i, i))
@@ -180,7 +178,7 @@ local function _send_cmd(cmd)
 	end
 	local r, data, size = port:read(1, 500)
 	if r and data then
-		print(hex.dump(data))
+		--print(hex.dump(data))
 	end
 	return r, err
 end

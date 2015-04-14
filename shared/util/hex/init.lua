@@ -2,8 +2,8 @@
 -- @author Dirk Chang
 --
 
-local dump = require 'shared.hex.dump'
-local tohex = require 'shared.hex.tohex'
+local dump = require 'shared.util.hex.dump'
+local tohex = require 'shared.util.hex.tohex'
 
 --- A dump function
 -- Dump string to readable hex formated content
