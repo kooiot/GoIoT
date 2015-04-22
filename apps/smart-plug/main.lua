@@ -1,143 +1,202 @@
-#!/usr/bin/env lua
 
-local api = require 'shared.api.iobus'
-local cjson = require 'cjson.safe'
-local zpoller =  require 'lzmq.poller'
-local zmq = require 'lzmq'
-local ztimer = require 'lzmq.timer'
-local cloudapi = require 'api'
-local logsub = require 'logsub'
+local ioapp = require 'shared.io'
 local log = require 'shared.log'
-local config = require 'shared.api.config'
-
-require 'shared.zhelpers'
-
-local buf = require 'dbuf'
+local ztimer = require 'lzmq.timer'
+local cjson = require 'cjson.safe'
+local hex = require 'shared.util.hex'
+local devctrl = require 'devctrl'
 
 local ioname = arg[1]
 assert(ioname, 'Applicaiton needs to have a name')
 
-local info = {}
-info.port = 5611
-info.ctx = zmq.context()
-info.poller = zpoller.new()
-info.name = ioname
+local DEVS = {
+	--[ 'dev1' = { ip = "xxx.xx.xx.xx", ver = 1}
+}
 
-local client = api.new(arg[1], info.ctx, info.poller)
-logsub.open(info.ctx, info.poller)
+local function save_conf(app)
+	local config = require 'shared.api.config'
+	config.set(ioname..'.devs', cjson.encode({DEVS=DEVS}))
+end
 
-local function load_conf()
-	local config, err = config.get(ioname..'.conf')
-	if config and type(config) == 'string' then
-		config, err = cjson.decode(config)
+local function load_conf(app)
+	local config = require 'shared.api.config'
+	local r, err = config.get(ioname..'.devs')
+	if r then
+		local t, err = cjson.decode(r)
+		if t then
+			DEVS = t.DEVS
+			r, err = create_vdevs(app)
+		end
 	end
-	config = config or {}
-	config.key = config.key or "6015c744795762df41e9ebfa25fd625c"
-	config.url = config.url or 'http://172.30.1.121:8080/api/'
-	config.timeout = config.timeout or 5
-	config.gzip = config.gzip or false
-	return config
+	return r, err
 end
 
-local function on_write(path, value)
-	log:warn(ioname, 'Write on path ', path)
-	return client:write(path, value)
+local function add_device_cmd(app, device, name, desc)
+	if not device or not name then
+		return nil, 'How dare U!!'
+	end
+
+	local dev = app.devices:get(device)
+	if not dev then
+		dev = app.devices:add(device, 'Smart-Plug devices ['..device..']')
+	end
+	if not dev then
+		return nil, 'Cannot create devices for '..device
+	end
+
+	print('Added command '..device..':'..name)
+	local obj = dev.commands:get(name)
+	if not obj then
+		local r, err = dev.commands:add(name, desc or 'Control command', {})
+		if not r then 
+			return nil, err
+		end
+	end
+
+	return true
 end
 
-local function on_command(path, args)
-	log:warn(ioname, 'Command on path ', path)
-	return client:command(path, args)
+
+
+local add_device = function (app, name, dev)
+	if not name or not dev.ip then
+		return nil, "Incorrect device properties"
+	end
+	if DEVS[name] then
+		return nil, "The device name has been used"
+	end
+	dev.ver = dev.ver or 1
+	DEVS[name] = dev
+
+	save_conf(app)
+
+	add_device_cmd(app, name, 'relay_on', 'Turn on the switch')
+	add_device_cmd(app, name, 'relay_off', 'Turn off the switch')
+	if dev.ver > 1 then 
+		add_device_cmd(app, name, 'light_on', 'Turn on the switch')
+		add_device_cmd(app, name, 'light_off', 'Turn off the switch')
+	end
+
+	return true
 end
 
-local conf = load_conf()
+local function del_device(app, name)
+	DEVS[name] = nil
+	return true
+end
 
-log:debug(ioname, 'SERVER ', conf.url)
+local function create_vdevs(app)
+	for name, dev in pairs(DEVS) do
+		add_device_cmd(app, name, 'relay_on', 'Turn on the switch')
+		add_device_cmd(app, name, 'relay_off', 'Turn off the switch')
+		if dev.ver > 1 then 
+			add_device_cmd(app, name, 'light_on', 'Turn on the switch')
+			add_device_cmd(app, name, 'light_off', 'Turn off the switch')
+		end
+	end
+	return true
+end
 
-cloudapi.init(conf, on_write, on_command)
+local handlers = {}
+handlers.on_start = function(app)
+	return load_conf(app)
+end
 
-buf.set_api(cloudapi)
-logsub.set_api(cloudapi)
+handlers.on_reload = function(app)
+	-- TODO:
+end
 
-local function query_tree(ns)
-	assert(ns, 'Namespace cannot be nil')
-	local trees, err = client:tree(ns)
-
-	if trees then
-		local verinfo = trees.verinfo
+local function reading(app)
+	local abort = false
+	local timer = ztimer.monotonic(1000)
+	timer:start()
 		--[[
-		local pp = require 'shared.util.PrettyPrint'
-		print(pp(trees))
-		print(pp(verinfo))
+	while not abort  and timer:rest() > 0 do
+		local r, data, size = port:read(1)
+		if r then
+			--print('2', hex.tohex(data))
+			learn_table.result = learn_table.result..data
+			if len and string.len(learn_table.result) == len then
+				print('finished reading', len)
+				break
+			end
+		else
+			abort = coroutine.yield(false, 50)
+		end
+	end
 		]]--
-		for k, v in pairs(trees.devices) do
-			v.version = verinfo
-			buf.add_dev(v)
-		end
-	else
-		log:error(ioname, err)
+end
+
+handlers.on_run = function(app)
+	local abort = false
+	while not abort do
+		--reading(app)
+		abort = coroutine.yield(false, 1000)
 	end
+	--
+	return coroutine.yield(false, 1000)
 end
 
-client:onupdate(function(namespace) 
-	query_tree(namespace)
-end)
-
-local function cov(path, value)
-	return buf.add_cov(path, value)
+handlers.on_write = function(app, path, value, from)
+	return nil, 'FIXME'
 end
 
-local function on_start()
-	client:subscribe('^.+', cov)
-	local devs, err = client:enum('.+')
-	if not devs then
-		log:error(ioname, err)
+handlers.on_command = function(app, path, value, from)
+	local match = '^'..ioname..'/([^/]+)/commands/(.+)'
+	local devname, cmd = path:match(match)
+	local dev = DEVS[devname]
+	if not dev then
+		return nil, "No such device "..devname
+	end
+	local func = devctrl[cmd]
+	if not func then
+		return nil, "No such command "..cmd
+	end
+	return func(dev.ip)
+end
+
+handlers.on_import = function(app, filename)
+	local f, err = io.open(filename)
+	if not f then
 		return nil, err
-	else
-		for ns, dlist in pairs(devs) do
-			query_tree(ns)
+	end
+	local c = f:read('*a')
+	local cmds, err = cjson.decode(c)
+	if not cmds then
+		return nil, err
+	end
+
+	for dev, v in pairs(cmds) do
+		print(v)	
+		for k, v in pairs(v) do
+			add_device_cmd(app, dev, k, v)
 		end
 	end
+	save_conf(app)
+
 	return true
 end
 
-local app = nil
-local aborting = false
-local function on_close()
-	app:close()
-	aborting = true
-	return true
-end
+local gapp = ioapp.init(ioname, handlers)
+assert(gapp)
 
-app = require('shared.app').new(info, {on_start = on_start, on_close = on_close})
-app:init()
-app:reg_request_handler('list_devices', function(app, vars)
-	local devs = {}
-	--[[
-	for name, dev in pairs(dtree) do
-		table.insert(devs, {name=name, id=dev.id})
-	end
-	]]
-	local reply = {'list_devices',  {result=true, devs=devs}}
+gapp:reg_request_handler('list', function(app, vars)
+	print('LIST')
+	local reply = {'list', DEVS}
 	app.server:send(cjson.encode(reply))
 end)
 
-local function task_run(cb)
-	--log:debug(ioname, 'One run')
-	cloudapi.ping()
-	cloudapi.pull(cb)
-	buf.on_create(cb)
-	buf.on_send(cb)
-	cloudapi.push(cb)
-end
+gapp:reg_request_handler('add', function(app, vars)
+	local r, err = add_device(app, vars.name, vars.dev)
+	local reply = {'add', {result=r, err = err}}
+	app.server:send(cjson.encode(reply))
+end)
 
--- The mail loop
-local ms = 1000 * 3
-while not aborting do
-	task_run(function() app:run(50) end)
-	local timer = ztimer.monotonic(ms)
-	timer:start()
-	while timer:rest() > 0 do
-		app:run(timer:rest())
-	end
-end
+gapp:reg_request_handler('del', function(app, vars)
+	local r, err = del_device(app, vars.name)
+	local reply = {'del', {result=r, err = err}}
+	app.server:send(cjson.encode(reply))
+end)
+
+ioapp.run()
 

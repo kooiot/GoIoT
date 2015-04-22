@@ -1,37 +1,101 @@
 <? extend 'layout.html'?>
-<div class="tab segment">
+<div class="tab header segment">
 	<div class="container">
 		<div class="introduction">
-			<h2 class="ui dividing header"> <?=_("SymLink Cloud")?> - <?=app.appname ?> </h2>
+			<h2 class="ui dividing header"> <?=_("Kankun SmartPlug Controls")?> - <?=app.appname ?> </h2>
 		</div>
+		<br>
 	</div>
 </div>
 
 <div class="main container">
 	<div class="ui message"><?=info or ''?></div>
-	<form class="ui form" method="post">
 
-		<div class="inline field">
-			<div class="ui toggle checkbox">
-				<input name="gzip" type="checkbox" <?=gzip?>>
-				<label><b><?=_("Compress")?></b></label>
-			</div>
+	<table id="applist" class="ui sortable table segment">
+		<div id="loader" class="ui disabled inverted dimmer">
+			<div id="loader" class="ui text loader">Processing</div>
 		</div>
+		<thead>
+			<tr>
+				<th><?=_("Name")?></th>
+				<th><?=_("Information")?></th>
+				<th><?=_("Controls")?></th>
+			</tr>
+		</thead>
+		<tbody>
+		<?
+		local counts = 0
+		for name, dev in pairs(devs) do
+			counts = counts + 1
+		?>
+			<tr>
+				<td>
+					<a href="view/<? =escape_url(name) ?>"><b><?=name?></b></a>
+				</td>
+				<td>
+					<a href="http://<?=dev.ip?>/">
+						<b><?=dev.ip?></b>
+					</a> 
+					Type:
+						<b>
+							<a href="/store/author/<?=dev.ver?>">
+								<?=dev.ver or 1?>
+							</a>
+						</b>
+					</i>
+				</td>
+				<td>
+					<div class="ui mini icon button" onclick="dev_ctrl('<?=name?>', 'relay_on')">
+						<i class="ui teal stop icon"></i>
+						<?=translate("RELAY ON")?>
+					</div>
+					<div class="ui mini icon button" onclick="dev_ctrl('<?=name?>', 'relay_off')">
+						<i class="ui teal play icon"></i>
+						<?=translate("RELAY OFF")?>
+					</div>
+					<div class="ui mini icon button" onclick="dev_ctrl('<?=name?>', 'light_on')">
+						<i class="ui red trash icon"></i>
+						<?=translate("LIGHT ON")?>
+					</div>
+					<div class="ui mini icon button" onclick="dev_ctrl('<?=name?>', 'light_off')">
+						<i class="ui red trash icon"></i>
+						<?=translate("LIGHT OFF")?>
+					</div>
+				</td>
+			</tr>
+		<? end ?>
 
-		<div class="ui inline label"> <?=_('Auth Key')?>: </div>
-		<div class="ui left labeled input">
-			<input class="ui input" type="text" name="key" value="<?=key or ''?>"/>
-		</div>
-		<div class="ui inline label"> <?=_('Server URL')?>: </div>
-		<div class="ui left labeled input">
-			<input class="ui input" type="text" name="url" value="<?=url or ''?>"/>
-		</div>
-		<div class="ui inline label"> <?=_('Timeout')?>: </div>
-		<div class="ui left labeled input">
-			<input class="ui input" type="text" name="timeout" value="<?=timeout or ''?>"/>
-		</div>
+		</tbody>
+		<tfoot>
+			<tr>
+				<th><?=_("Total")?> <?=counts?></th>
+				<th>
+				</th>
+				<th></th>
+			</tr>
+		</tfoot>
+	</table>
 
-		<input class="ui teal button submit" type="submit" value="<?=_('Save')?>"/>
-	</form>
 </div>
 
+<script type="text/javascript">
+	function refresh_page() {
+		var newtimer = setInterval( function () {
+			window.location.reload();
+		}, 1000 );
+	}
+
+	function dev_ctrl(name, cmd) {
+		$('#loader').removeClass('disabled');
+		$('#loader').addClass('active');
+		$.post("/app/<?=app.appname?>", {command:cmd, name:name}, function(data) {
+		})
+		.done(function() {
+				refresh_page();
+		})
+		.fail(function() {
+				alert("<?=_('Failed to send request!!')?>");
+		});
+	};
+
+</script>

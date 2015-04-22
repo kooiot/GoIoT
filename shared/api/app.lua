@@ -94,6 +94,7 @@ function _M.find_app_port(appname)
 			return status[appname].port
 		end
 	end
+	return nil, "Cannot find the application listensing port"
 end
 
 --- Stop application by instance name

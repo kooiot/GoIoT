@@ -18,3 +18,4 @@
 - Online debugger?
 - Modbus TCP server	
 - Web overview page contains the register event interfaces 
+- IOBUS dynamic update, online adding/erasing stuff
