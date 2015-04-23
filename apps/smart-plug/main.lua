@@ -10,7 +10,8 @@ local ioname = arg[1]
 assert(ioname, 'Applicaiton needs to have a name')
 
 local DEVS = {
-	--[ 'dev1' = { ip = "xxx.xx.xx.xx", ver = 1}
+	sp2 = { ip = "192.168.10.100", ver = 2, state= { relay="ON", light="OFF"}},
+	sp1 = { ip = "192.168.10.105", ver = 1, state= { relay="ON"}}
 }
 
 local function save_conf(app)
@@ -99,6 +100,7 @@ end
 
 local handlers = {}
 handlers.on_start = function(app)
+	devctrl.set_timeout(1) -- timeout 1 second
 	return load_conf(app)
 end
 
@@ -106,32 +108,34 @@ handlers.on_reload = function(app)
 	-- TODO:
 end
 
-local function reading(app)
-	local abort = false
-	local timer = ztimer.monotonic(1000)
-	timer:start()
-		--[[
-	while not abort  and timer:rest() > 0 do
-		local r, data, size = port:read(1)
-		if r then
-			--print('2', hex.tohex(data))
-			learn_table.result = learn_table.result..data
-			if len and string.len(learn_table.result) == len then
-				print('finished reading', len)
-				break
-			end
-		else
-			abort = coroutine.yield(false, 50)
-		end
-	end
-		]]--
-end
-
 handlers.on_run = function(app)
 	local abort = false
 	while not abort do
-		--reading(app)
-		abort = coroutine.yield(false, 1000)
+		for name, dev in pairs(DEVS) do
+			local r, state = devctrl.relay(dev.ip)
+			if r then
+			--	print(name..'.RELAY: '..state)
+				dev.state['relay'] = state
+			end
+			abort = coroutine.yield(false, 50)
+			if abort then
+				break
+			end
+
+			if dev.ver == 2 then
+				local r, state = devctrl.light(dev.ip)
+				if r then
+			--		print(name..'.LIGHT: '..state)
+					dev.state['light'] = state
+				end
+				abort = coroutine.yield(false, 50)
+				if abort then
+					break
+				end
+			end
+		end
+
+		abort = coroutine.yield(false, 3000)
 	end
 	--
 	return coroutine.yield(false, 1000)
@@ -152,6 +156,11 @@ handlers.on_command = function(app, path, value, from)
 	if not func then
 		return nil, "No such command "..cmd
 	end
+
+	local c, s = cmd:match('^(.+)_(.-)$')
+	print(c, s)
+	DEVS[devname].state[c] = s:upper()
+
 	return func(dev.ip)
 end
 

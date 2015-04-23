@@ -8,6 +8,11 @@ if [ -z $FID_FOLDER ]; then
 	PID_FOLDER=/tmp/
 fi
 
+if [ -f /tmp/apps/$INSNAME/debug~ ]; then
+	echo "Application disabled, please used it only for debug"
+	exit 0;
+fi
+
 # Only run the application if main.lua exists
 if [ -f /tmp/apps/$INSNAME/main.lua ]; then
 	if [ $1 = "start" ] ; then

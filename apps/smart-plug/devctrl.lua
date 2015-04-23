@@ -10,7 +10,8 @@ local _M = {
 
 local function api(ip, path, param)
 	assert(path)
-	local fpath = 'http://'..ip..'/'..path
+	path = '/cgi-bin/'..path
+	local fpath = 'http://'..ip..path
 	if param then
 		fpath = fpath..'?'..param
 	end
@@ -41,21 +42,21 @@ end
 
 
 --- Initialize the api, and set the write/command callback function
-_M.init = function(timeout)
+_M.set_timeout = function(timeout)
 	http.TIMEOUT = timeout or 5
-	load_conf()
 end
 
 _M.state = function(ip, cgi)
 	local r, re = api(ip, cgi, 'state')
+	--print(r, re)
 	if not r then
 		return nil, re
 	end
 
-	if _M.ON == re:upper() then
+	if re:upper():match('^'.._M.ON) then
 		return true, _M.ON
 	end
-	if _M.OFF == re:upper() then
+	if re:upper():match('^'.._M.OFF) then
 		return true, _M.OFF
 	end
 

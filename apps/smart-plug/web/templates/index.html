@@ -9,17 +9,19 @@
 </div>
 
 <div class="main container">
-	<div class="ui message"><?=info or ''?></div>
+	<div id="message_text" class="ui message"><?=info or '>'?></div>
 
-	<table id="applist" class="ui sortable table segment">
+	<table id="applist" class="ui celled table">
 		<div id="loader" class="ui disabled inverted dimmer">
 			<div id="loader" class="ui text loader">Processing</div>
 		</div>
 		<thead>
 			<tr>
 				<th><?=_("Name")?></th>
-				<th><?=_("Information")?></th>
+				<th><?=_("Ver")?></th>
+				<th><?=_("IP")?></th>
 				<th><?=_("Controls")?></th>
+				<th><?=_("Refresh")?></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -30,36 +32,53 @@
 		?>
 			<tr>
 				<td>
-					<a href="view/<? =escape_url(name) ?>"><b><?=name?></b></a>
+					<a href=""><b><?=name?></b></a>
+				</td>
+				<td>
+					<b>
+						<a href="">
+							<?=dev.ver or 1?>
+						</a>
+					</b>
 				</td>
 				<td>
 					<a href="http://<?=dev.ip?>/">
 						<b><?=dev.ip?></b>
 					</a> 
-					Type:
-						<b>
-							<a href="/store/author/<?=dev.ver?>">
-								<?=dev.ver or 1?>
-							</a>
-						</b>
-					</i>
 				</td>
 				<td>
-					<div class="ui mini icon button" onclick="dev_ctrl('<?=name?>', 'relay_on')">
-						<i class="ui teal stop icon"></i>
-						<?=translate("RELAY ON")?>
+					<div class="ui two column center aligned grid">
+						<div class="column">
+							<?=("RELAY")?> :
+							<? if dev.state['relay'] == 'ON' then ?>
+							<div class="ui fitted toggle checkbox relay checked" id="<?=name..'_relay_state'?>" >
+								<input type="checkbox" checked="checked" onchange="relay_change(this, '<?=name ?>')">
+							<? else ?>
+							<div class="ui fitted toggle checkbox relay" id="<?=name..'_relay_state'?>" >
+								<input type="checkbox" onchange="relay_change(this, '<?=name ?>')">
+							<? end ?>
+								<label></label>
+							</div>
+						</div>
+						<div class="column">
+						<? if dev.ver == 2 then ?>
+							<?=("LIGHT")?> :
+							<? if dev.state['light'] == 'ON' then ?>
+							<div class="ui fitted toggle checkbox checked" id="<?=name..'_light_state'?>" >
+								<input type="checkbox" checked="checked" onchange="light_change(this, '<?=name ?>')">
+							<? else ?>
+							<div class="ui fitted toggle checkbox" id="<?=name..'_light_state'?>" >
+								<input type="checkbox" onchange="light_change(this, '<?=name ?>')">
+							<? end ?>
+								<label></label>
+							</div>
+						<? end ?>
+						</div>
 					</div>
-					<div class="ui mini icon button" onclick="dev_ctrl('<?=name?>', 'relay_off')">
-						<i class="ui teal play icon"></i>
-						<?=translate("RELAY OFF")?>
-					</div>
-					<div class="ui mini icon button" onclick="dev_ctrl('<?=name?>', 'light_on')">
-						<i class="ui red trash icon"></i>
-						<?=translate("LIGHT ON")?>
-					</div>
-					<div class="ui mini icon button" onclick="dev_ctrl('<?=name?>', 'light_off')">
-						<i class="ui red trash icon"></i>
-						<?=translate("LIGHT OFF")?>
+				</td>
+				<td>
+					<div class="ui tiny green icon button" onclick="refresh_state('<?=name?>')">
+						<i class="undo icon"></i>
 					</div>
 				</td>
 			</tr>
@@ -68,8 +87,9 @@
 		</tbody>
 		<tfoot>
 			<tr>
-				<th><?=_("Total")?> <?=counts?></th>
-				<th>
+				<th></th>
+				<th colspan="3">
+					<?=_("Total")?> <?=counts?>
 				</th>
 				<th></th>
 			</tr>
@@ -79,23 +99,95 @@
 </div>
 
 <script type="text/javascript">
+	var not_by_hand = false;
 	function refresh_page() {
 		var newtimer = setInterval( function () {
 			window.location.reload();
 		}, 1000 );
+	};
+
+	function loader_disable(text) {
+		var newtimer = setInterval( function () {
+			$('#loader').removeClass('active');
+			$('#loader').addClass('disabled');
+			clearInterval(newtimer)
+			$('#message_text').text(text);
+			not_by_hand = false;
+		}, 100 );
 	}
 
-	function dev_ctrl(name, cmd) {
+	function refresh_state(name) {
+		not_by_hand = true;
+		$('#message_text').text('Please Wait');
 		$('#loader').removeClass('disabled');
 		$('#loader').addClass('active');
-		$.post("/app/<?=app.appname?>", {command:cmd, name:name}, function(data) {
+		$.post("", {action:'state', name:name}, function(data) {
 		})
-		.done(function() {
-				refresh_page();
+		.done(function(re) {
+			loader_disable("<?=_('DONE') ?>");
+			var c = 'uncheck';
+			if (re.state.relay == 'ON') {
+				c = 'check';
+			}
+			var kk = $('#'+name + '_relay_state');
+			if (kk) {
+				kk.checkbox(c);
+			} else {
+				alert('DOM Finding error!');
+			}
+
+			if (re.state.light != undefined) {
+				if (re.state.light == 'ON') {
+					c = 'check';
+				} else {
+					c = 'uncheck'
+				}
+				var kk = $('#'+name + '_light_state');
+				if (kk) {
+					kk.checkbox(c);
+				} else {
+					alert('LIGHT DOM Finding error!');
+				}
+			}
+
 		})
 		.fail(function() {
-				alert("<?=_('Failed to send request!!')?>");
+			loader_disable("<?=_('Failed to send request!!')?>");
 		});
 	};
 
+	function dev_ctrl(name, cmd) {
+		$('#message_text').text('Please Wait');
+		$('#loader').removeClass('disabled');
+		$('#loader').addClass('active');
+		$.post("", {action:'command', command:cmd, name:name}, function(data) {
+		})
+		.done(function() {
+			loader_disable("<?=_('DONE') ?>");
+		})
+		.fail(function() {
+			loader_disable("<?=_('Failed to send request!!')?>");
+		});
+
+	};
+	function relay_change(obj, name) {
+		if (not_by_hand) {
+			return;
+		}
+		if (obj.checked) {
+			dev_ctrl(name, 'relay_on');
+		} else {
+			dev_ctrl(name, 'relay_off');
+		}
+	};
+	function light_change(obj, name) {
+		if (not_by_hand) {
+			return;
+		}
+		if (obj.checked) {
+			dev_ctrl(name, 'light_on');
+		} else {
+			dev_ctrl(name, 'light_off');
+		}
+	};
 </script>
