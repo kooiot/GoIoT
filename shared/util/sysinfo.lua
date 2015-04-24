@@ -37,9 +37,11 @@ local function proc_mem_info()
 	end
 	local s = f:read('*a')
 	f:close()
-	local free = s:match("Free:%s-(%d)")
-	local used = s:match("Used:%s-(%d)")
+	local total = s:match("MemTotal:%s-(%d+)")
+	local free = s:match("MemFree:%s-(%d+)")
+	local used = total - free
 
+	return {total = total, used = used, free=free}
 end
 
 --- Get the memory information
@@ -55,11 +57,7 @@ _M.meminfo = function()
 	local info = s:gmatch("Mem:%s-(%d+)%s-(%d+)%s-(%d+)")
 	local total, used, free = info()
 	if total then
-		return {
-			total = total,
-			used = used,
-			free = free
-		}
+		return { total = total, used = used, free = free }
 	else
 		return proc_mem_info()
 	end
