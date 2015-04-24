@@ -1,0 +1,79 @@
+<? extend 'layout.html'?>
+
+<div class="tab header segment">
+	<div class="container">
+		<div class="introduction">
+			<h1 class="ui dividing header"> <?=_("IR Controller")?> - <?=app.appname ?> </h1>
+			<br>
+		</div>
+	</div>
+</div>
+
+<div class="main container">
+	<a class="ui teal button" id="start_learn" href=""><?=_('Start Learning')?></a>
+	<a class="ui teal button" href="learn_stop"><?=_('Stop Learning')?></a>
+	<div class="ui icon green message">
+		<i class="info icon"></i>
+		<div class="content">
+			<div id="status" class="header">
+				<? =info ?>
+			</div>
+		</div>
+	</div>
+
+
+	<form method="post" class="ui fluid form">
+		<textarea class="ui fluid textarea" name="learn_result" id="learn_result"></textarea>
+		<input type="hidden" class="ui input" name="action" value="save"/>
+		<h3 class="ui dividing header"> <?=_("Command Saving")?> </h2>
+		<div class="ui two fields">
+			<div class="ui field">
+				<input class="ui input" type="text" name="devname" placeholder="device name..."/>
+			</div>
+			<div class="ui field">
+				<input class="ui input" type="text" name="name" placeholder="command name..."/>
+			</div>
+		</div>
+		<input class="ui teal submit button" type="submit" value="<?=_('Save')?>"/>
+	</form>
+</div>
+
+<script>
+(function() {
+	newtimer = setInterval( function () {
+		query_result();
+		}, 1000 );
+
+	$(document).ready(function() {
+		var btnstart = $('#start_learn');
+		btnstart.addClass('disabled');
+
+		$('form').ajaxForm({
+			success: function(data) {
+				$('#status').html('<i>' + data + '</i>');
+			},
+			error: function(data) {
+				$('#status').html('<b>' + data + '</b>');
+			},
+		});
+	});
+})()
+
+function query_result() {
+	$.post("", {action:'result'}, function(data){
+			var result = $('#learn_result');
+			result.val(data);
+			if(data.length != 0) {
+				var status = $('#status');
+				status.text('Learning Done');
+				clearInterval(newtimer);
+				var btnstart = $('#start_learn');
+				btnstart.removeClass('disabled');
+			}
+	})
+	.done(function() {
+			})
+	.fail(function() {
+			});
+}
+</script>

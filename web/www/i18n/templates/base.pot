@@ -542,10 +542,6 @@ msgid "Value"
 msgstr ""
 
 
-msgid "Version"
-msgstr ""
-
-
 msgid "View"
 msgstr ""
 

@@ -48,8 +48,8 @@ local function parse_cfg(file)
 end
 
 
-local pp = require 'PrettyPrint'
+--local pp = require 'shared.util.PrettyPrint'
 
 local f, err = io.open('interfaces')
 parse_cfg(f)
-print(pp(cfg))
+--print(pp(cfg))

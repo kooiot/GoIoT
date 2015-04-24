@@ -43,7 +43,7 @@ end
 --- Bind COV callback function
 -- @tparam function func COV callback functions
 function class:bindcov(func)
-	--@todo TODO: FIXME: current all devices namespaces are binded
+	--@todo TODO: FIXME: currently all devices namespaces are binded
 	pub.bind(func)
 end
 

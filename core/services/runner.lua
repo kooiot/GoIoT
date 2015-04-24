@@ -9,7 +9,7 @@ function _M.run(name, luafile)
 	assert(name, luafile)
 	local pidfile = pid_file(name)
 	local pid = 0
-	local r, code = execute('start-stop-daemon --start --make-pidfile --pidfile '..pidfile..' --background --chdir $CAD_DIR/core/services --startas /usr/bin/lua -- run.lua '..luafile..' "'..name..'"')
+	local r, code = execute('start-stop-daemon --start --make-pidfile --pidfile '..pidfile..' --background --chdir $KOOIOT_DIR/core/services --startas /usr/bin/lua -- run.lua '..luafile..' "'..name..'"')
 	if not r or code ~= 0 then
 		return nil, 'Same name services has been runned'
 	end

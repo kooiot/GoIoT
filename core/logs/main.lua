@@ -5,7 +5,7 @@
 
 -- TODO: not use the appbase for this core log
 
-local m_path = os.getenv('CAD_DIR') or "."
+local m_path = os.getenv('KOOIOT_DIR') or "."
 local m_package_path = package.path  
 package.path = string.format("%s;%s/?.lua;%s/?/init.lua", m_package_path, m_path, m_path)  
 
@@ -118,14 +118,14 @@ local function init()
 		end
 	end)
 
-	local pub = require 'shared.pub'
+	local pub = require 'shared.comm.pub'
 	pub.create(ctx, {
 		zmq.PUB, 
 		bind = "tcp://*:5577"
 	})
 
 	local logsrv = require('shared.log.server')(ctx, poller, function(log)
-		--local pp = require 'shared.PrettyPrint'
+		--local pp = require 'shared.util.PrettyPrint'
 		--print(pp(log))
 		if not log.level then
 			return nil, 'Incorrect log object'

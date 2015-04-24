@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Dirk <dirk.chang@symid.com>\n"
+"Last-Translator: Dirk <dirk@kooiot.com>\n"
 "Language-Team: \n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
@@ -416,9 +416,6 @@ msgstr "版本"
 msgid "Value"
 msgstr "值"
 
-msgid "Version"
-msgstr "版本号"
-
 msgid "View"
 msgstr "查看"
 
@@ -427,6 +424,9 @@ msgstr "等待服务进程结束运行"
 
 msgid "Welcome"
 msgstr "欢迎"
+
+#~ msgid "Version"
+#~ msgstr "版本号"
 
 #~ msgid "Application Store"
 #~ msgstr "应用中心"

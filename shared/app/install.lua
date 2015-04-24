@@ -10,7 +10,7 @@ local lfs = require 'lfs'
 local unzip = require 'shared.util.unzip'
 local list = require 'shared.app.list'
 local newinst = require 'shared.app.newinst'
-local pp = require 'shared.PrettyPrint'
+local pp = require 'shared.util.PrettyPrint'
 local log  = require 'shared.log'
 
 --- Update the version lua file

@@ -1,6 +1,6 @@
 # !/usr/bin/env sh
 
-rm __release -rf
+rm __release/* -rf
 # Make the release folder
 mkdir -p __release
 
@@ -35,18 +35,27 @@ cd ../..
 ################################
 du __install -sh
 
+### Get the version by count the commits
 VERSION=`git log --oneline | wc -l | tr -d ' '`
+
+### Generate the revision by last commit
+set -- $(git log -1 --format="%ct %h")
+R_SECS="$(($1 % 86400))"
+R_YDAY="$(date --utc --date="@$1" "+%y.%j")"
+REVISION="$(printf 'git-%s.%05d-%s' "$R_YDAY" "$R_SECS" "$2")"
+
 echo $VERSION > __install/version
+echo $REVISION >> __install/version
 
 # Compile lua files
 # ./scripts/compile_lua.sh 
 
 # Create the cramfs image
 sudo chown -R root:root __install
-#mkfs.cramfs __install __release/cad2.$VERSION.cramfs
-mksquashfs __install __release/cad2_gz.$VERSION.sfs
-#mksquashfs __install __release/cad2_mips.sfs -nopad -noappend -root-owned -comp xz -Xpreset 9 -Xe -Xlc 0 -Xlp 2 -Xpb 2
-mksquashfs __install __release/cad2_xz.$VERSION.sfs -comp xz
+#mkfs.cramfs __install __release/kooiot.$VERSION.cramfs
+mksquashfs __install __release/core_gz.$VERSION.sfs
+#mksquashfs __install __release/kooiot_mips.sfs -nopad -noappend -root-owned -comp xz -Xpreset 9 -Xe -Xlc 0 -Xlp 2 -Xpb 2
+mksquashfs __install __release/core_xz.$VERSION.sfs -comp xz
 # Clean up the rootfs files
 sudo rm -rf __install
 
@@ -66,6 +75,14 @@ sudo rm -rf __install
 ./scripts/release_app.sh autoctrl
 # Release Modbus
 ./scripts/release_app.sh modbus
+
+###################
+##
+##################
+cd __release
+mkdir kooiot-1.4.0
+cp core_xz.$VERSION.sfs kooiot-1.4.0
+tar czvf kooiot-1.4.0.tar.gz kooiot-1.4.0
 
 # Done
 echo 'DONE'

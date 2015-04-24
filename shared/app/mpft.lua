@@ -54,7 +54,7 @@ end
 -- Get the application meta information
 mpft['meta'] = function(app, vars)
 	local meta = app:meta()
-	--print(require('shared.PrettyPrint')(meta))
+	--print(require('shared.util.PrettyPrint')(meta))
 	local reply = {'meta', meta=meta}
 
 	--print(cjson.encode(reply))

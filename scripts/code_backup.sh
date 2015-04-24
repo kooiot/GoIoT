@@ -1,7 +1,7 @@
-mkdir -p ../cad2_backup
-git archive master | tar -x -C ../cad2_backup
+mkdir -p ../v3_backup
+git archive master | tar -x -C ../v3_backup
 cd ../
-tar -zcf cad2/__release/cad2.tar.gz cad2_backup
-rm -rf cad2_backup
-cd cad2
+tar -zcf v3/__release/code.tar.gz v3_backup
+rm -rf v3_backup
+cd v3
 

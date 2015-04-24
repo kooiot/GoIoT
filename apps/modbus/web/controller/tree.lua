@@ -1,5 +1,4 @@
 cjson = require "cjson.safe"
---config_path = "/opt/work/SymlinkV3/v3/core/apps/modbus/config/"
 url = require "socket.url"
 platform = require "shared.platform"
 bit32 = require 'shared.compat.bit'

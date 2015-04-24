@@ -3,6 +3,12 @@
 
 local cjson = require 'cjson.safe'
 
+--- Decode the raw data to message object
+-- @function Module
+-- @tparam string raw the raw data
+-- @tparam string msg the message id to verify the raw data to make sure they have same id
+-- @treturn table message object
+-- @treturn string error message
 return function(raw, msg)
 	-- Try to decode as json
 	local obj, err = cjson.decode(raw)

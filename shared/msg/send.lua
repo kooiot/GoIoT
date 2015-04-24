@@ -2,10 +2,19 @@
 
 local cjson = require 'cjson.safe'
 
+--- Create an new send helper object contains: result, err
+-- @function Module
+-- @tparam the connection object which has send function
+-- @treturn table
 return function(con)
 	assert(con)
 	local con = con
 
+	--- Send result to peer
+	-- @function result
+	-- @tparam string msg the message id
+	-- @tparam object result object
+	-- @tparam strint err error information
 	local result_f = function(msg, result, err)
 		local reply = {msg, result, err}
 		local rep_json, json_err = cjson.encode(reply)
@@ -13,8 +22,12 @@ return function(con)
 			rep_json, err = cjson.encode({msg, nil, json_err})
 			assert(rep_json, err)
 		end
-		con:send(rep_json)
+		return con:send(rep_json)
 	end
+	--- Send error information to peer
+	-- @function err
+	-- @tparam string msg message id
+	-- @tparam string err error information
 	local err_f = function(msg, err)
 		assert(msg)
 		assert(err)

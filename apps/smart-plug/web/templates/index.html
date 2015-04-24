@@ -1,0 +1,249 @@
+<? extend 'layout.html'?>
+<div class="tab header segment">
+	<div class="container">
+		<div class="introduction">
+			<h2 class="ui dividing header"> <?=_("Kankun SmartPlug Controls")?> - <?=app.appname ?> </h2>
+		</div>
+		<br>
+	</div>
+</div>
+
+<div class="main container">
+	<div id="message_text" class="ui message"><?=info or '>'?></div>
+
+	<table id="applist" class="ui celled table">
+		<div id="loader" class="ui disabled inverted dimmer">
+			<div id="loader" class="ui text loader">Processing</div>
+		</div>
+		<thead>
+			<tr>
+				<th><?=_("Device")?></th>
+				<th><?=_("IP")?></th>
+				<th><?=_("States")?></th>
+				<th><?=_("Controls")?></th>
+			</tr>
+		</thead>
+		<tbody>
+		<?
+		local counts = 0
+		for name, dev in pairs(devs) do
+			counts = counts + 1
+		?>
+			<tr>
+				<td>
+					<a href=""><b><?=name?></b></a>
+					<i>
+					&nbsp; &nbsp;[version <?=dev.ver or 1?>]
+					</i>
+				</td>
+				<td>
+					<a href="http://<?=dev.ip?>/">
+						<b><?=dev.ip?></b>
+					</a> 
+				</td>
+				<td>
+					<div class="ui two column center aligned grid">
+						<div class="column">
+							<?=("RELAY")?> :
+							<? if dev.state['relay'] == 'ON' then ?>
+							<div class="ui fitted toggle checkbox relay checked" id="<?=name..'_relay_state'?>" >
+								<input type="checkbox" checked="checked" onchange="relay_change(this, '<?=name ?>')">
+							<? else ?>
+							<div class="ui fitted toggle checkbox relay" id="<?=name..'_relay_state'?>" >
+								<input type="checkbox" onchange="relay_change(this, '<?=name ?>')">
+							<? end ?>
+								<label></label>
+							</div>
+						</div>
+						<div class="column">
+						<? if dev.ver == 2 then ?>
+							<?=("LIGHT")?> :
+							<? if dev.state['light'] == 'ON' then ?>
+							<div class="ui fitted toggle checkbox checked" id="<?=name..'_light_state'?>" >
+								<input type="checkbox" checked="checked" onchange="light_change(this, '<?=name ?>')">
+							<? else ?>
+							<div class="ui fitted toggle checkbox" id="<?=name..'_light_state'?>" >
+								<input type="checkbox" onchange="light_change(this, '<?=name ?>')">
+							<? end ?>
+								<label></label>
+							</div>
+						<? end ?>
+						</div>
+					</div>
+				</td>
+				<td>
+					<div class="ui green icon button" onclick="refresh_state('<?=name?>')">
+						<i class="undo icon"></i>
+						<? =_('Refresh') ?>
+					</div>
+					<div class="ui right floated red icon button" onclick="del_dev('<?=name?>')">
+						<i class="trash icon"></i>
+						<? =_('Delete') ?>
+					</div>
+				</td>
+			</tr>
+		<? end ?>
+
+		</tbody>
+		<tfoot>
+			<tr>
+				<th>
+					<?=_("Total")?> 
+				</th>
+				<th colspan="3">
+					<?=counts?>
+				</th>
+			</tr>
+		</tfoot>
+	</table>
+
+	<div class="ui accordion field">
+		<div class="title">
+			<i class="icon dropdown"></i>
+			<?=_('Add More')?>
+		</div>
+		<div class="six wide content field">
+			<form class="ui form segment" action="" method="post">
+				<input type="hidden" name="action" value="add" />
+				<div class="field">
+					<label><?=_("Name")?></label>
+					<div class="ui input">
+						<input placeholder="Device Name" name="name" type="text">
+					</div>
+				</div>
+				<div class="field">
+					<label><?=_("IP")?></label>
+					<div class="ui input">
+						<input placeholder="Device IP" type="text" name="ip">
+					</div>
+				</div>
+				<div class="field">
+					<label><?=_("Version")?></label>
+					<div class="ui input">
+						<input placeholder="Device Version 1 or 2" type="text" name="ver">
+					</div>
+				</div>
+				<div class="field">
+					<input type="submit" class="ui blue submit button" value="<?=_('Login')?>">
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('form').ajaxForm({
+			success: function(data) {
+			refresh_page();
+			},
+			error: function(data) {
+				loader_disable(data.responseText);
+			},
+		});
+	});
+	var not_by_hand = false;
+	function refresh_page() {
+		var newtimer = setInterval( function () {
+			window.location.reload();
+		}, 300 );
+	};
+
+	function loader_disable(text) {
+		var newtimer = setInterval( function () {
+			$('#loader').removeClass('active');
+			$('#loader').addClass('disabled');
+			clearInterval(newtimer)
+			$('#message_text').text(text);
+			not_by_hand = false;
+		}, 100 );
+	}
+
+	function refresh_state(name) {
+		not_by_hand = true;
+		$('#message_text').text('Please Wait');
+		$('#loader').removeClass('disabled');
+		$('#loader').addClass('active');
+		$.post("", {action:'state', name:name}, function(data) {
+		})
+		.done(function(re) {
+			loader_disable("<?=_('DONE') ?>");
+			var c = 'uncheck';
+			if (re.state.relay == 'ON') {
+				c = 'check';
+			}
+			var kk = $('#'+name + '_relay_state');
+			if (kk) {
+				kk.checkbox(c);
+			} else {
+				alert('DOM Finding error!');
+			}
+
+			if (re.state.light != undefined) {
+				if (re.state.light == 'ON') {
+					c = 'check';
+				} else {
+					c = 'uncheck'
+				}
+				var kk = $('#'+name + '_light_state');
+				if (kk) {
+					kk.checkbox(c);
+				} else {
+					alert('LIGHT DOM Finding error!');
+				}
+			}
+
+		})
+		.fail(function() {
+			loader_disable("<?=_('Failed to send request!!')?>");
+		});
+	};
+
+	function dev_ctrl(name, cmd) {
+		$('#message_text').text('Please Wait');
+		$('#loader').removeClass('disabled');
+		$('#loader').addClass('active');
+		$.post("", {action:'command', command:cmd, name:name}, function(data) {
+		})
+		.done(function() {
+			loader_disable("<?=_('DONE') ?>");
+		})
+		.fail(function() {
+			loader_disable("<?=_('Failed to send request!!')?>");
+		});
+
+	};
+	function relay_change(obj, name) {
+		if (not_by_hand) {
+			return;
+		}
+		if (obj.checked) {
+			dev_ctrl(name, 'relay_on');
+		} else {
+			dev_ctrl(name, 'relay_off');
+		}
+	};
+	function light_change(obj, name) {
+		if (not_by_hand) {
+			return;
+		}
+		if (obj.checked) {
+			dev_ctrl(name, 'light_on');
+		} else {
+			dev_ctrl(name, 'light_off');
+		}
+	};
+	function del_dev(name) {
+		$('#message_text').text('Please Wait');
+		$('#loader').removeClass('disabled');
+		$('#loader').addClass('active');
+		$.post("", {action:'del', name:name}, function(data) {
+		})
+		.done(function() {
+			refresh_page();
+		})
+		.fail(function() {
+			loader_disable("<?=_('Failed to send request!!')?>");
+		});
+	};
+</script>

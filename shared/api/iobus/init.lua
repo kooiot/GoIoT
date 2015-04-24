@@ -176,7 +176,7 @@ end
 local function new(from, ctx, poller)
 	assert(from and ctx and poller)
 
-	local req = require "shared.req"
+	local req = require "shared.comm.req"
 	local client = req.new(ctx)
 
 	client:open()

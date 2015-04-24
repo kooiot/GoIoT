@@ -32,7 +32,7 @@ return {
 
 					if filetype == 'sys' then
 						local mv = 'mv '..tmp_file..' '..platform.path.core..'/'..name
-						delay_exec('upgrade.sh', {'cd /', '$CAD_DIR/run.sh stop', 'umount /tmp/cad2', mv, 'sleep 3', 'reboot'})
+						delay_exec('upgrade.sh', {'cd /', '$KOOIOT_DIR/run.sh stop', 'umount /tmp/kooiot', mv, 'sleep 3', 'reboot'})
 						res:write('<br> Device is rebooting to upgrade the system....')
 					else
 						res:write('<br> Incorrect file type')
