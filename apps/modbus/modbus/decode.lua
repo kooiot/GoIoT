@@ -52,8 +52,11 @@ _M.bit = function (raw, addr, index)
 end
 
 _M.byte = function (raw, addr, index)
+	--[[
 	data = raw:sub(addr)
 	return string.byte(data, index)
+	]]--
+	return string.byte(raw, addr + index)
 end
 
 _M.get_len = function (name, len)
