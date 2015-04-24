@@ -10,6 +10,28 @@ local function list_devs(appname)
 	return devs, err
 end
 
+local function add_dev(appname, name, ip, ver)
+	assert(appname)
+	local api = require 'shared.api.app'
+	local port, err = api.find_app_port(appname)
+	if port then
+		local client = api.new(port)
+		return client:request('add', {name=name, dev={ip=ip, ver=ver}})
+	end
+	return nil, err
+end
+
+local function del_dev(appname, name)
+	assert(appname)
+	local api = require 'shared.api.app'
+	local port, err = api.find_app_port(appname)
+	if port then
+		local client = api.new(port)
+		return  client:request('del', {name=name})
+	end
+	return nil, err
+end
+
 return {
 	get = 	function(req, res)
 		local devs, err = list_devs(app.appname)
@@ -45,6 +67,24 @@ return {
 						return
 					end
 				end
+			else
+				info = err
+			end
+		elseif action == 'add' then
+			local name = req:get_arg('name')
+			local ver = req:get_arg('ver')
+			local ip = req:get_arg('ip')
+			local r, err = add_dev(app.appname, name, ip, ver)
+			if r then
+				info = 'DONE'
+			else
+				info = err
+			end
+		elseif action == 'del' then
+			local name = req:get_arg('name')
+			local r, err = del_dev(app.appname, name)
+			if r then
+				info = 'DONE'
 			else
 				info = err
 			end

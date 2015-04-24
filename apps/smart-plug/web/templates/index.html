@@ -17,11 +17,10 @@
 		</div>
 		<thead>
 			<tr>
-				<th><?=_("Name")?></th>
-				<th><?=_("Ver")?></th>
+				<th><?=_("Device")?></th>
 				<th><?=_("IP")?></th>
+				<th><?=_("States")?></th>
 				<th><?=_("Controls")?></th>
-				<th><?=_("Refresh")?></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -33,13 +32,9 @@
 			<tr>
 				<td>
 					<a href=""><b><?=name?></b></a>
-				</td>
-				<td>
-					<b>
-						<a href="">
-							<?=dev.ver or 1?>
-						</a>
-					</b>
+					<i>
+					&nbsp; &nbsp;[version <?=dev.ver or 1?>]
+					</i>
 				</td>
 				<td>
 					<a href="http://<?=dev.ip?>/">
@@ -77,8 +72,13 @@
 					</div>
 				</td>
 				<td>
-					<div class="ui tiny green icon button" onclick="refresh_state('<?=name?>')">
+					<div class="ui green icon button" onclick="refresh_state('<?=name?>')">
 						<i class="undo icon"></i>
+						<? =_('Refresh') ?>
+					</div>
+					<div class="ui right floated red icon button" onclick="del_dev('<?=name?>')">
+						<i class="trash icon"></i>
+						<? =_('Delete') ?>
 					</div>
 				</td>
 			</tr>
@@ -87,23 +87,66 @@
 		</tbody>
 		<tfoot>
 			<tr>
-				<th></th>
-				<th colspan="3">
-					<?=_("Total")?> <?=counts?>
+				<th>
+					<?=_("Total")?> 
 				</th>
-				<th></th>
+				<th colspan="3">
+					<?=counts?>
+				</th>
 			</tr>
 		</tfoot>
 	</table>
 
+	<div class="ui accordion field">
+		<div class="title">
+			<i class="icon dropdown"></i>
+			<?=_('Add More')?>
+		</div>
+		<div class="six wide content field">
+			<form class="ui form segment" action="" method="post">
+				<input type="hidden" name="action" value="add" />
+				<div class="field">
+					<label><?=_("Name")?></label>
+					<div class="ui input">
+						<input placeholder="Device Name" name="name" type="text">
+					</div>
+				</div>
+				<div class="field">
+					<label><?=_("IP")?></label>
+					<div class="ui input">
+						<input placeholder="Device IP" type="text" name="ip">
+					</div>
+				</div>
+				<div class="field">
+					<label><?=_("Version")?></label>
+					<div class="ui input">
+						<input placeholder="Device Version 1 or 2" type="text" name="ver">
+					</div>
+				</div>
+				<div class="field">
+					<input type="submit" class="ui blue submit button" value="<?=_('Login')?>">
+				</div>
+			</form>
+		</div>
+	</div>
 </div>
 
 <script type="text/javascript">
+	$(document).ready(function() {
+		$('form').ajaxForm({
+			success: function(data) {
+			refresh_page();
+			},
+			error: function(data) {
+				loader_disable(data.responseText);
+			},
+		});
+	});
 	var not_by_hand = false;
 	function refresh_page() {
 		var newtimer = setInterval( function () {
 			window.location.reload();
-		}, 1000 );
+		}, 300 );
 	};
 
 	function loader_disable(text) {
@@ -189,5 +232,18 @@
 		} else {
 			dev_ctrl(name, 'light_off');
 		}
+	};
+	function del_dev(name) {
+		$('#message_text').text('Please Wait');
+		$('#loader').removeClass('disabled');
+		$('#loader').addClass('active');
+		$.post("", {action:'del', name:name}, function(data) {
+		})
+		.done(function() {
+			refresh_page();
+		})
+		.fail(function() {
+			loader_disable("<?=_('Failed to send request!!')?>");
+		});
 	};
 </script>

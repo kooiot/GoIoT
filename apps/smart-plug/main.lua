@@ -19,19 +19,6 @@ local function save_conf(app)
 	config.set(ioname..'.devs', cjson.encode({DEVS=DEVS}))
 end
 
-local function load_conf(app)
-	local config = require 'shared.api.config'
-	local r, err = config.get(ioname..'.devs')
-	if r then
-		local t, err = cjson.decode(r)
-		if t then
-			DEVS = t.DEVS
-			r, err = create_vdevs(app)
-		end
-	end
-	return r, err
-end
-
 local function add_device_cmd(app, device, name, desc)
 	if not device or not name then
 		return nil, 'How dare U!!'
@@ -66,7 +53,8 @@ local add_device = function (app, name, dev)
 	if DEVS[name] then
 		return nil, "The device name has been used"
 	end
-	dev.ver = dev.ver or 1
+	dev.ver = tonumber(dev.ver) or 1
+	dev.state = dev.state or {}
 	DEVS[name] = dev
 
 	save_conf(app)
@@ -96,6 +84,19 @@ local function create_vdevs(app)
 		end
 	end
 	return true
+end
+
+local function load_conf(app)
+	local config = require 'shared.api.config'
+	local r, err = config.get(ioname..'.devs')
+	if r then
+		local t, err = cjson.decode(r)
+		if t then
+			DEVS = t.DEVS
+			r, err = create_vdevs(app)
+		end
+	end
+	return r, err
 end
 
 local handlers = {}
@@ -196,6 +197,7 @@ gapp:reg_request_handler('list', function(app, vars)
 end)
 
 gapp:reg_request_handler('add', function(app, vars)
+	print('ADD', vars.name, vars.dev.ip, vars.dev.ver)
 	local r, err = add_device(app, vars.name, vars.dev)
 	local reply = {'add', {result=r, err = err}}
 	app.server:send(cjson.encode(reply))
