@@ -3,7 +3,6 @@
 local io = require('shared.io')
 local pp = require('shared.util.PrettyPrint')
 local modbus = require('modbus.init')
-local port = require('shared.io.port')
 local log = require('shared.log')
 local ztimer = require 'lzmq.timer'
 local decode = require "modbus.decode"

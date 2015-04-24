@@ -12,6 +12,8 @@
 	Make the framework for application to easy's its web development?
 - I18N[DONE]
 	Copy openwrt's i18n solution
+- Change the coroutine as what copas does
+	Copas is a good approch
 --Q&A Online
 	Question and Anwser online link
 - Tag online editor
