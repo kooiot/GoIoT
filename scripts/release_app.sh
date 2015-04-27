@@ -6,7 +6,7 @@ fi
 
 # zip files
 cd ./apps/$1
-zip -r -q ../../__release/$1.zip *
+zip -r -q ../../__release/$1.zip * -x debug~
 cd ../../
 
 # copy to web server folder

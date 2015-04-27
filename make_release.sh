@@ -75,13 +75,15 @@ sudo rm -rf __install
 ./scripts/release_app.sh autoctrl
 # Release Modbus
 ./scripts/release_app.sh modbus
+# Release Smart-Plug
+./scripts/release_app.sh smart-plug
 
 ###################
 ##
 ##################
 cd __release
 mkdir kooiot-1.4.0
-cp core_xz.$VERSION.sfs kooiot-1.4.0
+cp core_xz.$VERSION.sfs kooiot-1.4.0/core.sfs
 tar czvf kooiot-1.4.0.tar.gz kooiot-1.4.0
 
 # Done

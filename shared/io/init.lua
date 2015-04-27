@@ -113,7 +113,7 @@ function _M.init(name, handlers)
 		if _M.handlers.on_command then
 			local r, err = _M.handlers.on_command(app, path, args, from)
 			if not r then
-				log:error(name, 'Write operation failed', err)
+				log:error(name, 'Command operation failed', err)
 			end
 			return r, err
 		else

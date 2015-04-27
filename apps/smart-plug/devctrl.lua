@@ -68,7 +68,10 @@ _M.change = function(ip, cgi, state)
 	if not r then
 		return nil, re
 	end
-	return re:lower() == state:lower(), re:upper()
+	if re:upper():match('^OK') then
+		return true
+	end
+	return nil, re:upper()
 end
 
 --- Keep the device online?
