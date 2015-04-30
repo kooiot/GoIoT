@@ -53,6 +53,12 @@ else
 	rm $PID_FOLDER/core_logs.pid
 fi
 
+if [ ! -f /tmp/apps/_list ]; then
+	if [ -f $KOOIOT_DIR/apps/_list ]; then
+		cp -r $KOOIOT_DIR/apps/* /tmp/apps/
+	fi
+fi
+
 if [ -f /tmp/apps/_list ]; then
 	while read line
 	do

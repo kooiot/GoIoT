@@ -28,6 +28,8 @@ mkdir wsapi
 cp -r ../../web/wsapi/* wsapi/
 rm wsapi/shared
 ln -s ../../shared wsapi/shared
+rm -f www/static/semantic/semantic.css
+rm -f www/static/semantic/semantic.js
 cd ../..
 
 #################################
@@ -46,6 +48,10 @@ REVISION="$(printf 'git-%s.%05d-%s' "$R_YDAY" "$R_SECS" "$2")"
 
 echo $VERSION > __install/version
 echo $REVISION >> __install/version
+
+# For pre-installed applications
+mkdir __install/apps
+./scripts/pre_inst.sh cloudex admin 1.2.0
 
 # Compile lua files
 # ./scripts/compile_lua.sh 
@@ -85,6 +91,8 @@ cd __release
 mkdir kooiot-1.4.0
 cp core_xz.$VERSION.sfs kooiot-1.4.0/core.sfs
 tar czvf kooiot-1.4.0.tar.gz kooiot-1.4.0
+rm -rf kooiot-1.4.0
 
+cd -
 # Done
 echo 'DONE'

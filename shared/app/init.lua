@@ -5,6 +5,7 @@ local zmq = require 'lzmq'
 local event = require 'shared.event'
 local zpoller = require 'lzmq.poller'
 local cjson = require 'cjson.safe'
+local copas = require 'copas'
 
 local mpft = require 'shared.app.mpft'
 local empft = require 'shared.app.empft'
@@ -13,7 +14,12 @@ local _ver = require '_ver'
 
 --- Application class
 -- @type class
-local class = {}
+local class = {
+	zmq = zmq,
+	zpoller = zpoller,
+	cjson = cjson,
+	event = event,
+}
 
 --- Fire event to target
 -- @tparam string dest the event target application
@@ -208,6 +214,16 @@ end
 function class:close()
 	self:send_notice('exit')
 	self.closed = true
+end
+
+--- Add thread
+-- Call this adding your own thread
+function class:add_thread(task)
+	copas.addthread(task)
+end
+
+function class:sleep(ms)
+	copas.sleep(0)
 end
 
 --- Module functions
