@@ -2,27 +2,59 @@ msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
 
-msgid "Auth Key"
+msgid "Add"
 msgstr ""
 
 
-msgid "Compress"
+msgid "Add More"
 msgstr ""
 
 
-msgid "Save"
+msgid "Controls"
 msgstr ""
 
 
-msgid "Server URL"
+msgid "DONE"
 msgstr ""
 
 
-msgid "SymLink Cloud"
+msgid "Delete"
 msgstr ""
 
 
-msgid "Timeout"
+msgid "Device"
+msgstr ""
+
+
+msgid "Failed to send request!!"
+msgstr ""
+
+
+msgid "IP"
+msgstr ""
+
+
+msgid "Kankun SmartPlug Controls"
+msgstr ""
+
+
+msgid "Name"
+msgstr ""
+
+
+msgid "Refresh"
+msgstr ""
+
+
+msgid "States"
+msgstr ""
+
+
+msgid "Total"
+msgstr ""
+
+
+msgid "Version"
 msgstr ""
 
 

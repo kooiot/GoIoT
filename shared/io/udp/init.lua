@@ -25,7 +25,7 @@ function class:open(cb)
 
 		while true do
 			print("receiving...")
-			local s, ip, port  = skt:receive(2048)
+			local s, ip, port  = skt:receivefrom(2048)
 			if not s then
 				print("Receive error: ", ip)
 				return
