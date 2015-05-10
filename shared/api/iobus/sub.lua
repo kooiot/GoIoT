@@ -24,7 +24,7 @@ end
 
 --- Open the connection
 function class:open()
-	printf("Collecting updates from publish server ...\n")
+	--log:debug("IOBUS_API", "Collecting updates from publish server ...")
 	-- Socket to talk to server
 	local subscriber, err = self.context:socket(self.option)
 	zassert(subscriber, err)

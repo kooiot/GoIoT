@@ -1,11 +1,6 @@
 --- TCP server wrapper
 -- 
 
-
-require 'shared.zhelpers'
-local zmq = require 'lzmq'
-local zpoller = require 'lzmq.poller'
-
 --- metatable class 
 -- @type class
 local class = {}
@@ -100,13 +95,13 @@ local _M = {}
 -- @section
 
 --- Create new server object
--- @tparam zmq.content ctx
--- @tparam zmq.poller poller
+-- @tparam shared.app app application object from io.init()
 -- @tparam string ip local binded ip
 -- @tparam number port local binded port
-_M.new = function(ctx, poller, ip, port)
-	local ctx = ctx or zmq.context()
-	local poller = poller or zpoller.new()
+_M.new = function(app, ip, port)
+	local ctx = app.ctx
+	local poller = app.poller
+	assert(ctx and poller)
 	return setmetatable({
 		ctx = ctx,
 		poller = poller,

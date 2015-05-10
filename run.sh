@@ -5,7 +5,7 @@ if [ -z $KOOIOT_DIR ]; then
 fi
 
 export LWF_ROOT=$KOOIOT_DIR/web/lwf
-export LWF_APP_NAME='v3'
+export LWF_APP_NAME='GO'
 export LWF_APP_PATH=$KOOIOT_DIR/web/www
 
 # The fix for openwrt. The path does not includes the /usr/sbin in its system env

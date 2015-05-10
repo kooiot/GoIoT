@@ -1,0 +1,28 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+
+msgid "Auth Key"
+msgstr ""
+
+
+msgid "Compress"
+msgstr ""
+
+
+msgid "Save"
+msgstr ""
+
+
+msgid "Server URL"
+msgstr ""
+
+
+msgid "SymLink Cloud"
+msgstr ""
+
+
+msgid "Timeout"
+msgstr ""
+
+

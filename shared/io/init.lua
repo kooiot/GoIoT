@@ -75,7 +75,6 @@ function _M.init(name, handlers)
 		_M.handlers.on_close = function(app)
 			log:warn(app.name, "Received on_close event")
 			app:close()
-			_M.abort()
 			return true
 		end
 	end
@@ -183,52 +182,16 @@ function _M.init(name, handlers)
 	return app
 end
 
---- Aborting flag
-local aborting = false
---- Abort the application running
-function _M.abort()
-	log:warn(app.name, 'Aborting application')
-	aborting = true
-end
-
---- The minimum running time for application run loop
-local MIN_MS = 50
-local delay_start = os.time() + 2
-
 --- The IO Application running loop
+-- Blocks until abort been called
 function _M.run()
-	aborting = false
-
-	local co = coroutine.create(function (abort)
-		local abort = abort or false
-		while not abort do
-			--- Set a delay before calling the on_run handler
-			if delay_start and os.time() < delay_start then
-				abort = coroutine.yield(false, 1000)
-			else
-				if _M.handlers.on_run then
-					abort = _M.handlers.on_run(app)
-				else
-					abort = coroutine.yield(false, 1000)
-				end
-			end
-		end
-	end)
-
-	local r = true
-	local ms = MIN_MS
-	while not aborting do
-		while not aborting do
-			r, aborting, ms = assert(coroutine.resume(co, aborting))
-			ms = ms or MIN_MS
-
-			local timer = ztimer.monotonic(ms)
-			timer:start()
-			while timer:rest() > 0 do
-				app:run(timer:rest())
-			end
-		end
+	if _M.handlers.on_run then
+		app:add_thread(function()
+			app:sleep(0)
+			_M.handlers.on_run(app)
+		end)
 	end
+	app:run()
 end
 
 return _M

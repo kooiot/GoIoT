@@ -1,10 +1,6 @@
 --- TCP wrapper module
--- Wrapp the zmq raw socket
+-- Wrap the zmq raw socket
 --
-
-require 'shared.zhelpers'
-local zmq = require 'lzmq'
-local zpoller = require 'lzmq.poller'
 
 --- metatable class 
 -- @type class
@@ -83,14 +79,14 @@ local _M = {}
 -- @section
 
 --- Create new tcp client object
--- @tparam lzmq.content ctx
--- @tparam lzmq.poller poller
+-- @tparam shared.app app application object (returns from io.init())
 -- @tparam string sip server ip
 -- @tparam number sport server listen port
 -- @treturn class
-_M.new = function(ctx, poller, sip, sport)
-	local ctx = ctx or zmq.context()
-	local poller = poller or zpoller.new()
+_M.new = function(app, sip, sport)
+	local ctx = app.ctx
+	local poller = app.poller
+	assert(ctx and poller)
 	return setmetatable({
 		ctx = ctx,
 		poller = poller,

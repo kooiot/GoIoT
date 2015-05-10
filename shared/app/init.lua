@@ -10,16 +10,11 @@ local copas = require 'copas'
 local mpft = require 'shared.app.mpft'
 local empft = require 'shared.app.empft'
 
-local _ver = require '_ver'
+local _ver = require '_ver' or {}
 
 --- Application class
 -- @type class
-local class = {
-	zmq = zmq,
-	zpoller = zpoller,
-	cjson = cjson,
-	event = event,
-}
+local class = {}
 
 --- Fire event to target
 -- @tparam string dest the event target application
@@ -155,6 +150,23 @@ function class:init()
 	-- Send the notice once before calling on_start, because it may take a few seconds for application initialization
 	self:send_notice()
 
+	-- Added default tasks
+	self:add_thread(function()
+		local monlast = 0
+		while not self.closed do
+			self:sleep(0)
+			-- Sent out notice
+			local now = os.time()
+			if now - monlast >= 2 then
+				monlast = now + 1
+				self:send_notice()
+			end
+			-- Let the zmq run
+			self.poller:poll(50)
+		end
+
+	end)
+
 	if self.handlers.on_start then
 		self.handlers.on_start(self)
 	end
@@ -171,25 +183,11 @@ function class:send_notice(typ)
 end
 
 --- Application run loop
--- @tparam number ms the maxmium time running inside this loop
+-- This function will block until app:close() been called
 -- @treturn nil
-function class:run(ms)
-	if self.closed then
-		return
-	end
-
-	-- make sure there will no longger than 3 second blocked in poller
-	if ms > 3000 then
-		ms = 3000
-	end
-	if ms then
-		self.poller:poll(ms)
-	end
-
-	local now = os.time()
-	if now - self.monlast >= 2 then
-		self.monlast = now + 1
-		self:send_notice()
+function class:run()
+	while not self.closed do
+		copas.step(1)
 	end
 end
 
@@ -218,12 +216,27 @@ end
 
 --- Add thread
 -- Call this adding your own thread
+-- @tparam function task task main function
 function class:add_thread(task)
-	copas.addthread(task)
+	return copas.addthread(task)
 end
 
-function class:sleep(ms)
-	copas.sleep(0)
+--- Add server
+-- call this adding your own server
+-- @tparam socket server LuaSocket server socket created using socket.bind()
+-- @tparam function handler function that receives a LuaSocket client socket and handles the communication with that client
+-- @tparam number timeout (optional) the timeout for blocking I/O in seconds. The handler will be executed in parallel with other threads and the registered handlers as long as it uses the Copas socket functions.
+function class:add_server(server, handler, timeout)
+	return copas.addserver(server, handler, timeout)
+end
+
+--- Sleep function which will pause current thread
+-- @tprarm number sec  seconds to pause, (nil means 0)
+-- @treturn boolean whether the application closed
+function class:sleep(sec)
+	local sec = math.floor(sec or 0)
+	copas.sleep(sec)
+	return self.closed
 end
 
 --- Module functions
@@ -251,13 +264,18 @@ end
 local function new(info, handlers)
 	assert(info.name, 'App port must be specified')
 
-	local obj = {}
+	local obj = {
+		zmq = zmq,
+		zpoller = zpoller,
+		cjson = cjson,
+		event = event,
+	}
 	obj.version = _ver.version or '0.1'
 	obj.build = _ver.build or '000001'
 	obj.name = info.name or _ver.name 
 	obj.desc = _ver.desc or 'unknown application'
 	obj.web = _ver.web or false -- the application pack has its own web pages
-	obj.manufactor = _ver.manufactor or 'OpenGate'
+	obj.manufactor = _ver.manufactor or 'KooIoT'
 	obj.port = info.port or 5515
 	obj.port_retry = info.no_port_retry and 0 or 128
 	obj.server = nil
@@ -282,7 +300,6 @@ local function new(info, handlers)
 	end
 
 	-- Monitor application interfaces, which will be updated automatically
-	obj.monlast = 0
 	obj.monclient = nil
 
 	-- Closed flag
