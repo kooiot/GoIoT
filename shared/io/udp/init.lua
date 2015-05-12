@@ -14,34 +14,40 @@ local class = {}
 -- @treturn boolean result
 -- @treturn string error
 function class:open(cb)
+	self.cb = cb
 	local server = socket.udp()
 	if self.port then
 		server:setsockname(self.ip or "*", self.port)
 	end
+	server:setoption('broadcast', true)
 
 	function handler(skt)
 		skt = copas.wrap(skt)
 		print("UDP connection handler")
 
 		while true do
-			print("receiving...")
+			--print("receiving...")
 			local s, ip, port  = skt:receivefrom(2048)
 			if not s then
 				print("Receive error: ", ip)
 				return
 			end
 
-			print("Received data, bytes:" , #s)
+			--print("Received data, bytes:" , #s)
 			if self.cb then
 				self.cb(s, ip, port)
 			end
 		end
 	end
 	self.skt = server
-	self.app:add_server(server, handler, 1)
+	return self.app:add_server(server, handler, 1)
 end
 
 function class:send(s, ip, port)
+	if not self.skt then
+		return nil, "not opened"
+	end
+	local port = port or self.port
 	return self.skt:sendto(s, ip, port)
 end
 
