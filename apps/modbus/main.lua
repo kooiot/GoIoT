@@ -139,8 +139,7 @@ stream.read = function (t, check, timeout)
 	local timer = ztimer.monotonic(timeout)
 	timer:start()
 
-	local abort = false
-	while not abort and timer:rest() > 0 do
+	while not app:sleep(50) and timer:rest() > 0 do
 		if modbus_mode.mode == "0" or modbus_mode.mode == "2" then
 			local r, data, size = io_ports.port:read(1024, 1000)
 			if r and data then
@@ -156,7 +155,6 @@ stream.read = function (t, check, timeout)
 				return r
 			end
 		end
-		abort = coroutine.yield(false, 50)
 	end
 	stream.buf = ''
 	return nil, 'timeout'
@@ -173,7 +171,7 @@ stream.send = function(msg)
 end
 
 local handlers = {}
-handlers.on_start = function(app)
+handlers.start = function(app)
 	log:info(ioname, 'Starting application[MODBUS]')
 	load_tags_conf(app)
 	if modbus_mode.mode == "0"  or modbus_mode.mode == "3" then
@@ -221,14 +219,14 @@ handlers.on_start = function(app)
 	return add_device_cmd(app, "modbus", "WRITE_OPERATION", "write_operation")
 end
 
-handlers.on_pause = function(app)
+handlers.pause = function(app)
 	--print(os.date(), 'Received Stop Event')
 	log:info(ioname, 'Received event [PAUSE]')
 	pause = true
 	return true
 end
 
-handlers.on_reload = function(app)
+handlers.reload = function(app)
 	--print(os.date(), "On Reload")
 	log:info(ioname, 'Received event [RELOAD]')
 
@@ -263,22 +261,33 @@ local function write_operation(value)
 	return false
 end
 
-handlers.on_run = function(app)
+handlers.run = function(app)
 	--log:info(ioname, 'RUN TIME')
 	--print(os.date(), 'RUN TIME')
 
-	if err_count > 5 then
-		err_count = 1
-		log:warn(ioname, 'Error reach the max count, wait for 30 seconds for retry')
-		return coroutine.yield(false,  30000)
-	end
+	while app:sleep(0) do
 
-	if not pause then
+		if err_count > 5 then
+			err_count = 1
+			log:warn(ioname, 'Error reach the max count, wait for 30 seconds for retry')
+			app:sleep(30000)
+		end
+		while app.closed and pause do
+			app:sleep(100)
+		end
+
 		for k, v in pairs(cmd_table) do
+			if not app:sleep(0) then
+				break
+			end
 			write_operation(v)
 			cmd_table[k] = nil
 		end
+
 		for k, v in pairs(packets) do
+			if app:sleep(0) then
+				break
+			end
 			port_config = v.port_config
 			if v.tags.request.cycle ~= "0" then
 				if v.tags.request.cycle and v.tags.request.timer:rest() == 0 then
@@ -339,17 +348,15 @@ handlers.on_run = function(app)
 			end
 		end
 	end
-
-	return coroutine.yield(false, 1000)
 end
 
 -- Onwrite
-handlers.on_write = function(app, path, value, from)
+handlers.write = function(app, path, value, from)
 	log:debug(ioname, 'on_write called')
 	return nil, 'FIXME'
 end
 
-handlers.on_command = function(app, path, value, from)
+handlers.command = function(app, path, value, from)
 	local match = '^'..ioname..'/([^/]+)/commands/(.+)'
 	local devname, cmd = path:match(match)
 	local ret
@@ -362,7 +369,7 @@ handlers.on_command = function(app, path, value, from)
 
 end
 
-handlers.on_import = require('import').import
+handlers.import = require('import').import
 
 --io.add_port('main', {port.tcp_client, port.serial}, port.tcp_client) 
 --io.add_port('backup', {port.tcp_client, port.serial}, port.tcp_client) 
