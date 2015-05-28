@@ -1,7 +1,6 @@
 
 local ioapp = require 'shared.io'
 local log = require 'shared.log'
-local ztimer = require 'lzmq.timer'
 local cjson = require 'cjson.safe'
 local hex = require 'shared.util.hex'
 local udp = require 'shared.io.udp'

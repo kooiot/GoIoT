@@ -153,7 +153,7 @@ function class:init()
 	-- Added default tasks
 	self:add_thread(function()
 		local monlast = 0
-		while not self.closed do
+		while not self._closed do
 			self:sleep(0)
 			-- Sent out notice
 			local now = os.time()
@@ -175,7 +175,7 @@ end
 --- Send notice to monitor services tells it we are aliving
 -- @tparam string typ the notice type, current only support to be nil or 'exit'
 function class:send_notice(typ)
-	if not self.closed then
+	if not self._closed then
 		--print(os.date(), 'send notice')
 		local req = {'notice', {name=self.name, desc=self.desc, port=self.port, typ=typ}}
 		self.monclient:send(cjson.encode(req))
@@ -186,7 +186,7 @@ end
 -- This function will block until app:close() been called
 -- @treturn nil
 function class:run()
-	while not self.closed do
+	while not self._closed do
 		copas.step(1)
 	end
 end
@@ -211,7 +211,7 @@ end
 --  Call this when application is closing
 function class:close()
 	self:send_notice('exit')
-	self.closed = true
+	self._closed = true
 end
 
 --- Add thread
@@ -237,7 +237,13 @@ end
 function class:sleep(sec)
 	local sec = math.floor(sec or 0)
 	copas.sleep(sec)
-	return self.closed
+	return self._closed
+end
+
+--- Check whether application is closing
+-- @treturn boolean whether the application closed
+function class:closed()
+	return self._closed
 end
 
 --- Module functions
@@ -304,7 +310,7 @@ local function new(info, handlers)
 	obj.monclient = nil
 
 	-- Closed flag
-	obj.closed = false
+	obj._closed = false
 
 	return setmetatable(obj, {__index = class})
 end

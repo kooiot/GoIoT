@@ -272,7 +272,7 @@ handlers.run = function(app)
 			log:warn(ioname, 'Error reach the max count, wait for 30 seconds for retry')
 			app:sleep(30000)
 		end
-		while app.closed and pause do
+		while not app.closed() and pause do
 			app:sleep(100)
 		end
 
