@@ -147,7 +147,7 @@ function class:init()
 		-- DO NOTHING on return
 	end)
 
-	-- Send the notice once before calling on_start, because it may take a few seconds for application initialization
+	-- Send the notice once before calling handler.start, because it may take a few seconds for application initialization
 	self:send_notice()
 
 	-- Added default tasks
@@ -167,8 +167,8 @@ function class:init()
 
 	end)
 
-	if self.handlers.on_start then
-		self.handlers.on_start(self)
+	if self.handlers.start then
+		self.handlers.start(self)
 	end
 end
 
@@ -227,7 +227,8 @@ end
 -- @tparam function handler function that receives a LuaSocket client socket and handles the communication with that client
 -- @tparam number timeout (optional) the timeout for blocking I/O in seconds. The handler will be executed in parallel with other threads and the registered handlers as long as it uses the Copas socket functions.
 function class:add_server(server, handler, timeout)
-	return copas.addserver(server, handler, timeout)
+	copas.addserver(server, handler, timeout)
+	return true
 end
 
 --- Sleep function which will pause current thread

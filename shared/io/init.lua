@@ -46,13 +46,13 @@ end
 
 --- Import the default configration
 local function import_default_conf()
-	if _M.handlers.on_import then
+	if _M.handlers.import then
 		local path = platform.path.appdefconf..'/'..app.name..'/config.csv'
 		local file, err = io.open(path, 'r')
 		if file then
 			file:close()
 			log:info(app.name, 'Import the defconf install with application')
-			local r, err = _M.handlers.on_import(app, path)
+			local r, err = _M.handlers.import(app, path)
 			if not r then
 				log:error(app.name, 'Load default configuration failure:', err)
 			end
@@ -71,9 +71,9 @@ function _M.init(name, handlers)
 	_M.handlers = handlers
 	_M.handlers.app_meta = app_meta
 
-	if not _M.handlers.on_close then
-		_M.handlers.on_close = function(app)
-			log:warn(app.name, "Received on_close event")
+	if not _M.handlers.close then
+		_M.handlers.close = function(app)
+			log:warn(app.name, "Received close event")
 			app:close()
 			return true
 		end
@@ -109,14 +109,14 @@ function _M.init(name, handlers)
 			log:error(name, 'Command operation could only perform on commands object')
 			return nil, 'Invalid path'
 		end
-		if _M.handlers.on_command then
-			local r, err = _M.handlers.on_command(app, path, args, from)
+		if _M.handlers.command then
+			local r, err = _M.handlers.command(app, path, args, from)
 			if not r then
 				log:error(name, 'Command operation failed', err)
 			end
 			return r, err
 		else
-			log:error(name, 'on_command not implemented')
+			log:error(name, 'command not implemented')
 			return nil, 'Not implemented'
 		end
 	end)
@@ -127,13 +127,13 @@ function _M.init(name, handlers)
 			log:error(name, 'Write only could perform on output/value objects', path)
 			return nil, 'Invalid path'
 		else
-			if _M.handlers.on_write then
-				local r, err = _M.handlers.on_write(app, path, value, from)
+			if _M.handlers.write then
+				local r, err = _M.handlers.write(app, path, value, from)
 				if not r then 
 					log:error(name, 'Write operation failed', err)
 				end
 			else
-				log:error(name, 'on_write not implemented')
+				log:error(name, 'write not implemented')
 				return nil, 'Not implemented'
 			end
 		end
@@ -150,8 +150,8 @@ function _M.init(name, handlers)
 		local re = false
 		local err = 'Incorrect request found for msg:import'
 		if vars.filename  then
-			if _M.handlers.on_import then
-				re, err = _M.handlers.on_import(app, vars.filename)
+			if _M.handlers.import then
+				re, err = _M.handlers.import(app, vars.filename)
 			else
 				err = 'Import not implemented'
 			end
@@ -185,10 +185,10 @@ end
 --- The IO Application running loop
 -- Blocks until abort been called
 function _M.run()
-	if _M.handlers.on_run then
+	if _M.handlers.run then
 		app:add_thread(function()
 			app:sleep(0)
-			_M.handlers.on_run(app)
+			_M.handlers.run(app)
 		end)
 	end
 	app:run()

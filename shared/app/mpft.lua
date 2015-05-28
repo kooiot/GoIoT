@@ -25,28 +25,28 @@ mpft['version'] = function(app, vars)
 end
 
 mpft['status'] = function(app, vars)
-	local status, err = call_handler('on_status', app, vars)
+	local status, err = call_handler('status', app, vars)
 	local reply = { 'status', status, err}
 	app.server:send(cjson.encode(reply))
 end
 
 --- Pause the work loop function
 mpft['pause'] = function(app, vars)
-	local r, err = call_handler('on_pause', app, vars)
+	local r, err = call_handler('pause', app, vars)
 	local reply = { 'pause', r, err}
 	app.server:send(cjson.encode(reply))
 end
 
 --- Close current application
 mpft['close'] = function(app, vars)
-	local r, err = call_handler('on_close', app, vars)
+	local r, err = call_handler('close', app, vars)
 	local reply = { 'close', r, err}
 	app.server:send(cjson.encode(reply))
 end
 
 --- Reload the application's configruation
 mpft['reload'] = function(app, vars)
-	local r, err = call_handler('on_reload', app, vars)
+	local r, err = call_handler('reload', app, vars)
 	local reply = { 'reload', r, err}
 	app.server:send(cjson.encode(reply))
 end

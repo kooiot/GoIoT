@@ -4,13 +4,15 @@ local log = require 'shared.log'
 local ztimer = require 'lzmq.timer'
 local cjson = require 'cjson.safe'
 local hex = require 'shared.util.hex'
+local udp = require 'shared.io.udp'
 
 local ioname = arg[1]
 assert(ioname, 'Applicaiton needs to have a name')
+local server = nil
 
 local DEVS = {
-	sp2 = { ip = "192.168.10.100", ver = 2, state= { relay="ON", light="OFF"}},
-	sp1 = { ip = "192.168.10.105", ver = 1, state= { relay="ON"}}
+	sp2 = { ip = "192.168.10.100", online=os.time(), used=false},
+	sp1 = { ip = "192.168.10.105", online=os.time(), used=false},
 }
 
 local function save_conf(app)
@@ -45,9 +47,8 @@ end
 
 
 
-local function scan_device(app, name)
-	DEVS[name] = nil
-	return true
+local function scan_device(app)
+	return send('VER:')
 end
 
 local function create_vdevs(app)
@@ -75,32 +76,48 @@ local function load_conf(app)
 	return r, err
 end
 
+local function send(data, ip)
+	if server then
+		return server:send(data, ip or '255.255.255.255', 4000)
+	else
+		return nil, 'No UDP socket'
+	end
+end
+
+local function on_recv(data, ip, port)
+	print(data, ip, port)
+end
+
 local handlers = {}
-handlers.on_start = function(app)
+handlers.start = function(app)
+	print('Start')
+	server = udp.new(app, "*", 4004)
+	assert(server:open(on_recv))
 	return load_conf(app)
 end
 
-handlers.on_reload = function(app)
+handlers.reload = function(app)
 	-- TODO:
 end
 
-handlers.on_run = function(app)
+handlers.run = function(app)
 	local abort = false
 	while not abort do
 		for name, dev in pairs(DEVS) do
-			abort = app:sleep(1)
+			abort = app:sleep(3)
 			if abort then
 				break
 			end
+			send('VER:')
 		end
 	end
 end
 
-handlers.on_write = function(app, path, value, from)
+handlers.write = function(app, path, value, from)
 	return nil, 'FIXME'
 end
 
-handlers.on_command = function(app, path, value, from)
+handlers.command = function(app, path, value, from)
 	local match = '^'..ioname..'/([^/]+)/commands/(.+)'
 	local devname, cmd = path:match(match)
 	local dev = DEVS[devname]
@@ -123,7 +140,7 @@ handlers.on_command = function(app, path, value, from)
 	]]--
 end
 
-handlers.on_import = function(app, filename)
+handlers.import = function(app, filename)
 	local f, err = io.open(filename)
 	if not f then
 		return nil, err
@@ -156,8 +173,8 @@ end)
 
 gapp:reg_request_handler('scan', function(app, vars)
 	print('SCAN')
-	local r, err = scan_device(app, vars.name, vars.dev)
-	local reply = {'add', {result=r, err = err}}
+	local r, err = scan_device(app)
+	local reply = {'scan', {result=r, err = err}}
 	app.server:send(cjson.encode(reply))
 end)
 
