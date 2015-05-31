@@ -86,7 +86,7 @@ local function cov(path, value)
 	return buf.add_cov(path, value)
 end
 
-local function on_start()
+local function on_start(app)
 	client:subscribe('^.+', cov)
 	local devs, err = client:enum('.+')
 	if not devs then
@@ -108,7 +108,7 @@ local function on_close()
 	return true
 end
 
-app = require('shared.app').new(info, {on_start = on_start, on_close = on_close})
+app = require('shared.app').new(info, {start = on_start, close = on_close})
 app:init()
 app:reg_request_handler('list_devices', function(app, vars)
 	local devs = {}

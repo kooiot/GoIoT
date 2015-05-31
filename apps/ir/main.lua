@@ -109,7 +109,7 @@ local port = serial.new()
 local learn_table = {}
 
 local handlers = {}
-handlers.on_start = function(app)
+handlers.start = function(app)
 	log:info(ioname, 'Starting application[IR]')
 	if port:is_open() then
 		return true
@@ -125,7 +125,7 @@ handlers.on_start = function(app)
 	return load_conf(app)
 end
 
-handlers.on_reload = function(app)
+handlers.reload = function(app)
 	-- TODO:
 end
 
@@ -158,28 +158,27 @@ local function reading(app)
 	learn_table.learning = false
 end
 
-handlers.on_run = function(app)
-	local abort = false
-	while not abort and learn_table.learning do
-		local r, data, size = port:read(1)
-		if r then
-			--print('1', hex.tohex(data))
-			if not learn_table.result and  data ~= string.char(0xFF) then
-				print('Start receving learn result')
-				learn_table.result = data
-				reading(app)
-				break
+handlers.run = function(app)
+	while not app:sleep(1) do
+		while not app:closed() and learn_table.learning do
+			local r, data, size = port:read(1)
+			if r then
+				--print('1', hex.tohex(data))
+				if not learn_table.result and  data ~= string.char(0xFF) then
+					print('Start receving learn result')
+					learn_table.result = data
+					reading(app)
+					break
+				end
+			else
+				print('warting...')
+				app:sleep(0)
 			end
-		else
-			print('warting...')
-			abort = coroutine.yield(false, 50)
 		end
 	end
-	--
-	return coroutine.yield(false, 1000)
 end
 
-handlers.on_write = function(app, path, value, from)
+handlers.write = function(app, path, value, from)
 	return nil, 'FIXME'
 end
 
@@ -225,7 +224,7 @@ local function send_cmd(app, device, name)
 	return true
 end
 
-handlers.on_command = function(app, path, value, from)
+handlers.command = function(app, path, value, from)
 	local match = '^'..ioname..'/([^/]+)/commands/(.+)'
 	local devname, cmd = path:match(match)
 	if devname == 'ir' and cmd == 'send' then
@@ -259,7 +258,7 @@ handlers.on_command = function(app, path, value, from)
 	end
 end
 
-handlers.on_import = function(app, filename)
+handlers.import = function(app, filename)
 	local f, err = io.open(filename)
 	if not f then
 		return nil, err

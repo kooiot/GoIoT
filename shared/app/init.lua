@@ -187,7 +187,10 @@ end
 -- @treturn nil
 function class:run()
 	while not self._closed do
-		copas.step(1)
+		local r, err = copas.step(1)
+		if r == nil then
+			return nil, err
+		end
 	end
 end
 

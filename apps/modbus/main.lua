@@ -270,10 +270,10 @@ handlers.run = function(app)
 		if err_count > 5 then
 			err_count = 1
 			log:warn(ioname, 'Error reach the max count, wait for 30 seconds for retry')
-			app:sleep(30000)
+			app:sleep(30)
 		end
 		while not app.closed() and pause do
-			app:sleep(100)
+			app:sleep(1)
 		end
 
 		for k, v in pairs(cmd_table) do

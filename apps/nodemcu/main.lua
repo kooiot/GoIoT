@@ -108,6 +108,7 @@ handlers.run = function(app)
 				break
 			end
 			send('VER:')
+			print('aaaaa')
 		end
 	end
 end

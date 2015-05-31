@@ -25,7 +25,7 @@ function class:open(cb)
 		skt = copas.wrap(skt)
 		print("UDP connection handler")
 
-		while not self.app.closed() do
+		while not self.app:closed() do
 			--print("receiving...")
 			local s, ip, port  = skt:receivefrom(2048)
 			if not s then
