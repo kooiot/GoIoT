@@ -5,7 +5,8 @@ rm __release/* -rf
 mkdir -p __release
 
 # Clean up the cramfs folder
-sudo rm -rf __install
+#sudo rm -rf __install
+rm -rf __install
 mkdir __install
 
 # Copy files
@@ -14,10 +15,12 @@ cp -r shared __install/shared
 cp -r web __install/web
 cp -r scripts __install/scripts
 cp run.sh __install/run.sh
+
 # remove the release the script
 rm __install/scripts/release*
 rm __install/scripts/code_backup.sh
 rm __install/scripts/compile_lua.sh
+
 # copy lwf files
 cd __install/web
 rm -f lwf
@@ -32,11 +35,6 @@ rm -f www/static/semantic/semantic.css
 rm -f www/static/semantic/semantic.js
 cd ../..
 
-#################################
-# Count the file sizes
-################################
-du __install -sh
-
 ### Get the version by count the commits
 VERSION=`git log --oneline | wc -l | tr -d ' '`
 
@@ -46,6 +44,8 @@ R_SECS="$(($1 % 86400))"
 R_YDAY="$(date --utc --date="@$1" "+%y.%j")"
 REVISION="$(printf 'git-%s.%05d-%s' "$R_YDAY" "$R_SECS" "$2")"
 
+echo 'Version:'$VERSION
+echo 'Revision:'$REVISION
 echo $VERSION > __install/version
 echo $REVISION >> __install/version
 
@@ -57,13 +57,22 @@ mkdir __install/apps
 # ./scripts/compile_lua.sh 
 
 # Create the cramfs image
-sudo chown -R root:root __install
+#sudo chown -R root:root __install
 #mkfs.cramfs __install __release/kooiot.$VERSION.cramfs
-mksquashfs __install __release/core_gz.$VERSION.sfs
+mksquashfs __install __release/core_gz.$VERSION.sfs -all-root > /dev/null
 #mksquashfs __install __release/kooiot_mips.sfs -nopad -noappend -root-owned -comp xz -Xpreset 9 -Xe -Xlc 0 -Xlp 2 -Xpb 2
-mksquashfs __install __release/core_xz.$VERSION.sfs -comp xz
+mksquashfs __install __release/core_xz.$VERSION.sfs -all-root -comp xz > /dev/null
+
+#################################
+# Count the file sizes
+################################
+du __install -sh
+du __release/* -sh
+
 # Clean up the rootfs files
-sudo rm -rf __install
+#sudo rm -rf __install
+
+rm -rf __install
 
 # Release example (modbus)
 ./scripts/release_app.sh example
@@ -90,9 +99,9 @@ sudo rm -rf __install
 cd __release
 mkdir kooiot-1.4.0
 cp core_xz.$VERSION.sfs kooiot-1.4.0/core.sfs
-tar czvf kooiot-1.4.0.tar.gz kooiot-1.4.0
+tar czvf kooiot-1.4.0.tar.gz kooiot-1.4.0 > /dev/null
 rm -rf kooiot-1.4.0
 
-cd -
+cd - > /dev/null
 # Done
-echo 'DONE'
+echo 'May GOD with YOU always!'
