@@ -4,6 +4,7 @@
 local zmq = require 'lzmq'
 local event = require 'shared.event'
 local zpoller = require 'lzmq.poller'
+local ztimer = require 'lzmq.timer'
 local cjson = require 'cjson.safe'
 local copas = require 'copas'
 
@@ -154,7 +155,7 @@ function class:init()
 	self:add_thread(function()
 		local monlast = 0
 		while not self._closed do
-			self:sleep(0)
+			self:sleep(50)
 			-- Sent out notice
 			local now = os.time()
 			if now - monlast >= 2 then
@@ -235,11 +236,15 @@ function class:add_server(server, handler, timeout)
 end
 
 --- Sleep function which will pause current thread
--- @tprarm number sec  seconds to pause, (nil means 0)
+-- @tprarm number ms  milli seconds to pause, (nil means 0)
 -- @treturn boolean whether the application closed
-function class:sleep(sec)
-	local sec = math.floor(sec or 0)
-	copas.sleep(sec)
+function class:sleep(ms)
+	local timer = ztimer.monotonic(ms)
+	timer:start()
+	copas.sleep(ms / 1000)
+	while timer:rest() > 0 do
+		copas.sleep(0)
+	end
 	return self._closed
 end
 

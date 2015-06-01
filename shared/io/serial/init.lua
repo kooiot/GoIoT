@@ -40,7 +40,7 @@ function class:open(port_name, opt, callback)
 
 	self.app:add_thread(function()
 		while not self._close do
-			if self.app:sleep(0) then
+			if self.app:sleep(50) then
 				break
 			end
 			local r, data, size = self:read(64, 10)
@@ -89,7 +89,7 @@ function class:close()
 		return
 	end
 	self._close = true
-	self.app:sleep(10)
+	self.app:sleep(100)
 
 	-- close
 	assert(self.port:close() == rs232.RS232_ERR_NOERROR)

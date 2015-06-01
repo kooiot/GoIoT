@@ -159,7 +159,7 @@ local function reading(app)
 end
 
 handlers.run = function(app)
-	while not app:sleep(1) do
+	while not app:sleep(1000) do
 		while not app:closed() and learn_table.learning do
 			local r, data, size = port:read(1)
 			if r then

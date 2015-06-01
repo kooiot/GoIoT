@@ -103,7 +103,7 @@ handlers.run = function(app)
 	local abort = false
 	while not abort do
 		for name, dev in pairs(DEVS) do
-			abort = app:sleep(3)
+			abort = app:sleep(3000)
 			if abort then
 				break
 			end
