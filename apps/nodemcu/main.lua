@@ -10,8 +10,8 @@ assert(ioname, 'Applicaiton needs to have a name')
 local server = nil
 
 local DEVS = {
-	sp2 = { ip = "192.168.10.100", online=os.time(), used=false},
-	sp1 = { ip = "192.168.10.105", online=os.time(), used=false},
+	["192.168.10.100"] = { ip = "192.168.10.100", name="dev1", online=os.time(), used=false},
+	["192.168.10.105"] = { ip = "192.168.10.105", name="dev2", online=os.time(), used=false},
 }
 
 local function save_conf(app)
@@ -44,19 +44,34 @@ local function add_device_cmd(app, device, name, desc)
 	return true
 end
 
-
+local function add_device_input(app, device, name, desc, typ)
+	assert(app)
+	assert(device, name)
+	local dev = app.devices:get(device) or app.devices:add(device, 'NodeMCU devices')
+	if not dev then
+		return nil, 'Cannot create device for '..device
+	end
+	print('Add input '..device..':'..name)
+	local obj = dev.inputs:get(name)
+	if not obj then
+		local r, err = dev.inputs:add(name, desc or 'Input')
+		if r then
+			r:value_type('number/integer')
+		end
+	end
+	return true
+end
 
 local function scan_device(app)
 	return send('VER:')
 end
 
 local function create_vdevs(app)
-	for name, dev in pairs(DEVS) do
-		add_device_cmd(app, name, 'relay_on', 'Turn on the switch')
-		add_device_cmd(app, name, 'relay_off', 'Turn off the switch')
-		if dev.ver > 1 then 
-			add_device_cmd(app, name, 'light_on', 'Turn on the switch')
-			add_device_cmd(app, name, 'light_off', 'Turn off the switch')
+	for ip, dev in pairs(DEVS) do
+		add_device_input(app, dev.name, 'ADC', 'ADC input')
+		for i = i, i < 8 do 
+			add_device_cmd(app, dev.name, 'gpio'..i, 'Change GPIO'..i..' state')
+			add_device_input(app, dev.name, 'GPIO', 'GPIO input')
 		end
 	end
 	return true
@@ -77,7 +92,7 @@ end
 
 local function send(data, ip)
 	if server then
-		return server:send(data, ip or '255.255.255.255', 4000)
+		return server:send(data, ip or '255.255.255.255', 6000)
 	else
 		return nil, 'No UDP socket'
 	end
@@ -85,12 +100,29 @@ end
 
 local function on_recv(data, ip, port)
 	print(data, ip, port)
+	if data:sub(1, 4) == 'ADC:' then
+	end
+	if data:sub(1, 5) == 'GPIO:' then
+	end
+	if data:sub(1, 4) == 'VER:' then
+		local ver = data:sub(5)
+		if not DEVS[ip] then
+			DEVS[ip] = {
+				ip = ip,
+				name = 'unamed',
+				port = port,
+				ver = ver,
+				online = os.time(),
+				used = false,
+			}
+		end
+	end
 end
 
 local handlers = {}
 handlers.start = function(app)
 	print('Start')
-	server = udp.new(app, "*", 4004)
+	server = udp.new(app, "*", 6006)
 	assert(server:open(on_recv))
 	return load_conf(app)
 end
@@ -102,13 +134,13 @@ end
 handlers.run = function(app)
 	local abort = false
 	while not abort do
-		for name, dev in pairs(DEVS) do
+		for ip, dev in pairs(DEVS) do
 			abort = app:sleep(3000)
 			if abort then
 				break
 			end
 			send('VER:')
-			print('aaaaa')
+			log:debug(ioname, 'Sending request of version')
 		end
 	end
 end
@@ -120,7 +152,7 @@ end
 handlers.command = function(app, path, value, from)
 	local match = '^'..ioname..'/([^/]+)/commands/(.+)'
 	local devname, cmd = path:match(match)
-	local dev = DEVS[devname]
+	local dev = find_dev(devname)
 	if not dev then
 		return nil, "No such device "..devname
 	end
@@ -138,28 +170,6 @@ handlers.command = function(app, path, value, from)
 
 	return func(dev.ip)
 	]]--
-end
-
-handlers.import = function(app, filename)
-	local f, err = io.open(filename)
-	if not f then
-		return nil, err
-	end
-	local c = f:read('*a')
-	local cmds, err = cjson.decode(c)
-	if not cmds then
-		return nil, err
-	end
-
-	for dev, v in pairs(cmds) do
-		print(v)	
-		for k, v in pairs(v) do
-			add_device_cmd(app, dev, k, v)
-		end
-	end
-	save_conf(app)
-
-	return true
 end
 
 local gapp = ioapp.init(ioname, handlers)
