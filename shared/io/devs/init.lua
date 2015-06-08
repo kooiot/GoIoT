@@ -18,7 +18,9 @@ local class = {}
 function class:add(name, desc, virtual)
 	assert(not self.devices[name], 'Please check device existing before calling add')
 	-- Device
-	local dev = device(self.namespace, name, desc, virtual)
+	local dev = device(self.namespace, name, desc, virtual, function(action, kind, key) 
+		self(action, name, kind, key)
+	end)
 	self.devices[name] = dev
 	return dev
 end
@@ -51,7 +53,7 @@ end
 -- @treturn string Json text string
 function class:save()
 	local data = {namespace = self.namesapce, devices = self.devices}
-	local json_text = cjson.encode(data)
+	local json_text = assert(cjson.encode(data))
 	return json_text
 end
 
@@ -74,13 +76,14 @@ end
 --- Create new interfaces
 -- @tparam string namespace Namespace for all devices
 -- @treturn class Interface object
-local function new(namespace)
+local function new(namespace, update_cb)
+	local cb = update_cb or function() end
 	local obj = {
 		namespace = namespace,
 		devices = {},
 	}
 
-	return setmetatable(obj, {__index=class})
+	return setmetatable(obj, {__index=class, __call=cb})
 end
 
 ---

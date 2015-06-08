@@ -155,7 +155,7 @@ function class:init()
 	self:add_thread(function()
 		local monlast = 0
 		while not self._closed do
-			self:sleep(50)
+			self:sleep(0)
 			-- Sent out notice
 			local now = os.time()
 			if now - monlast >= 2 then
@@ -236,16 +236,32 @@ function class:add_server(server, handler, timeout)
 end
 
 --- Sleep function which will pause current thread
--- @tprarm number ms  milli seconds to pause, (nil means 0)
+-- @tprarm number sec seconds to pause, if sec is less than 1, we will using timer for ms sleep
 -- @treturn boolean whether the application closed
-function class:sleep(ms)
-	local timer = ztimer.monotonic(ms)
-	timer:start()
-	copas.sleep(ms / 1000)
-	while timer:rest() > 0 do
+function class:sleep(sec)
+	local sec = sec or 0
+	if sec == 0 then
 		copas.sleep(0)
+		return self._closed
 	end
+
+	if sec < 1 and sec >= 0.001 then
+		local timer = ztimer.monotonic(sec * 1000)
+		timer:start()
+		while timer:rest() > 0 do
+			copas.sleep(0)
+		end
+	else
+		copas.sleep(sec)
+	end
+
 	return self._closed
+end
+
+-- Get system time in ms
+-- @return number ms
+function class:time()
+	return ztimer.absolute_time()
 end
 
 --- Check whether application is closing

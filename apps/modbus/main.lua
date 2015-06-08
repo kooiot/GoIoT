@@ -139,7 +139,7 @@ stream.read = function (t, check, timeout)
 	local timer = ztimer.monotonic(timeout)
 	timer:start()
 
-	while not app:sleep(50) and timer:rest() > 0 do
+	while not app:sleep(0) and timer:rest() > 0 do
 		if modbus_mode.mode == "0" or modbus_mode.mode == "2" then
 			local r, data, size = io_ports.port:read(1024, 1000)
 			if r and data then
@@ -270,10 +270,10 @@ handlers.run = function(app)
 		if err_count > 5 then
 			err_count = 1
 			log:warn(ioname, 'Error reach the max count, wait for 30 seconds for retry')
-			app:sleep(30000)
+			app:sleep(30)
 		end
 		while not app.closed() and pause do
-			app:sleep(1000)
+			app:sleep(1)
 		end
 
 		for k, v in pairs(cmd_table) do

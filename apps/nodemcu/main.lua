@@ -10,9 +10,12 @@ assert(ioname, 'Applicaiton needs to have a name')
 local server = nil
 
 local DEVS = {
-	["192.168.10.100"] = { ip = "192.168.10.100", name="dev1", online=os.time(), used=false},
-	["192.168.10.105"] = { ip = "192.168.10.105", name="dev2", online=os.time(), used=false},
+	["172.16.0.185"] = { ip = "172.16.0.185", name="test", online=os.time(), used=true},
 }
+
+local INPUTS = {}
+
+local gapp = nil
 
 local function save_conf(app)
 	local config = require 'shared.api.config'
@@ -54,24 +57,26 @@ local function add_device_input(app, device, name, desc, typ)
 	print('Add input '..device..':'..name)
 	local obj = dev.inputs:get(name)
 	if not obj then
-		local r, err = dev.inputs:add(name, desc or 'Input')
-		if r then
-			r:value_type('number/integer')
+		obj, err = dev.inputs:add(name, desc or 'Input')
+		if obj then
+			obj:value_type('number/integer')
 		end
 	end
-	return true
-end
-
-local function scan_device(app)
-	return send('VER:')
+	return obj
 end
 
 local function create_vdevs(app)
 	for ip, dev in pairs(DEVS) do
-		add_device_input(app, dev.name, 'ADC', 'ADC input')
-		for i = i, i < 8 do 
-			add_device_cmd(app, dev.name, 'gpio'..i, 'Change GPIO'..i..' state')
-			add_device_input(app, dev.name, 'GPIO', 'GPIO input')
+		if dev.used then
+			local t = INPUTS[dev.name] or {}
+
+			t['ADC'] = add_device_input(app, dev.name, 'ADC', 'ADC input')
+			for i = 1, 12 do 
+				add_device_cmd(app, dev.name, 'GPIO'..i, 'Change GPIO'..i..' state')
+				t['GPIO'..i] = add_device_input(app, dev.name, 'GPIO'..i, 'GPIO '..i..' input')
+			end
+
+			INPUTS[dev.name] = t
 		end
 	end
 	return true
@@ -84,9 +89,10 @@ local function load_conf(app)
 		local t, err = cjson.decode(r)
 		if t then
 			DEVS = t.DEVS
-			r, err = create_vdevs(app)
 		end
 	end
+	
+	r, err = create_vdevs(app)
 	return r, err
 end
 
@@ -98,23 +104,71 @@ local function send(data, ip)
 	end
 end
 
+local function scan_device(app)
+	log:debug(ioname, 'Sending request of version')
+	return send('VER:')
+end
+
+local function read_gpio(app)
+	return send('GPIO:a')
+end
+
+local function read_adc(app)
+	return send('ADC:0')
+end
+
+
 local function on_recv(data, ip, port)
 	print(data, ip, port)
 	if data:sub(1, 4) == 'ADC:' then
+		local dev = DEVS[ip]
+		if dev then
+			local ts = gapp:time()
+			local tags = INPUTS[dev.name]
+			if tags then
+				local v = tonumber(data:sub(5))
+				local tag = tags['ADC']
+				if v and tag then
+					tag:set(v, ts, 1)	
+				end
+			end
+		end
 	end
 	if data:sub(1, 5) == 'GPIO:' then
+		local dev = DEVS[ip]
+		if dev then
+			local ts = gapp:time()
+			local tags = INPUTS[dev.name]
+			if tags and data:sub(6, 7) == 'a:' then
+				local s = data:sub(8)
+				local t = {}
+				for v in s:gmatch('([^:]+)') do
+					t[#t + 1] = v
+				end
+				for k, v in pairs(t) do
+					local tag = tags['GPIO'..k]
+					if tag and tonumber(v) then
+						tag:set(tonumber(v), ts, 1)
+					else
+						print('GPIO'..k..' is not exits')
+					end
+				end
+			end
+		end
 	end
 	if data:sub(1, 4) == 'VER:' then
 		local ver = data:sub(5)
 		if not DEVS[ip] then
+			print('New device found', ip, ver)
 			DEVS[ip] = {
 				ip = ip,
-				name = 'unamed',
+				name = 'NodeMCU',
 				port = port,
 				ver = ver,
 				online = os.time(),
-				used = false,
+				used = true,
 			}
+			create_vdevs(gapp)
 		end
 	end
 end
@@ -133,15 +187,23 @@ end
 
 handlers.run = function(app)
 	local abort = false
+	local count = 0
 	while not abort do
+		abort = app:sleep(1)
 		for ip, dev in pairs(DEVS) do
-			abort = app:sleep(3000)
+			abort = app:sleep(0)
 			if abort then
 				break
 			end
-			send('VER:')
-			log:debug(ioname, 'Sending request of version')
+			if dev.used then
+				read_gpio(app)
+				read_adc(app)
+			end
 		end
+		if count == 0 then
+			scan_device(app)
+		end
+		count = (count + 1) % 60
 	end
 end
 
@@ -172,7 +234,7 @@ handlers.command = function(app, path, value, from)
 	]]--
 end
 
-local gapp = ioapp.init(ioname, handlers)
+gapp = ioapp.init(ioname, handlers)
 assert(gapp)
 
 gapp:reg_request_handler('list', function(app, vars)

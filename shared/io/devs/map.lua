@@ -27,6 +27,7 @@ return function (factory)
 	-- @tparam string name Item name
 	function class:erase(name)
 		self[name] = nil
+		self(name)
 	end
 
 	--- Get an item by name
@@ -40,9 +41,10 @@ return function (factory)
 		--- Create an new map instance
 		-- @tparam table newindex __newindex metatable
 		-- @treturn class Map object
-		new = function(newindex)
+		new = function(newindex, deleted)
+			local cb = deleted or function() end
 			local map = {}
-			return setmetatable(map, {__index=class, __newindex=newindex})
+			return setmetatable(map, {__index=class, __newindex=newindex, __call=cb})
 		end
 	}
 end

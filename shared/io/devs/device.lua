@@ -10,10 +10,18 @@ local object = require 'shared.io.devs.object'
 local class = {}
 
 --- set the proper path for prop
-local function newchild(obj, sub)
+local function newchild(obj, sub, cb)
 	return function(table, key, prop)
 		prop.path = obj.path..'/'..sub..'/'..key
 		rawset(table, key, prop)
+		cb('add', sub, key)
+	end
+end
+
+--- get prop removed message
+local function delchild(cb, name)
+	return function(table, key)
+		cb('del', name, key)
 	end
 end
 
@@ -23,7 +31,7 @@ end
 -- @tparam string name Device name
 -- @tparam string desc Device description
 -- @tparam boolean virtual Device type (virtual or real)
-local new = function (namespace, name, desc, virtual)
+local new = function (namespace, name, desc, virtual, update_cb)
 	local props = map(prop)
 	local objects = map(object)
 	local commands = map(command)
@@ -39,25 +47,25 @@ local new = function (namespace, name, desc, virtual)
 	--- Map of properties
 	-- @see io.devs.prop
 	-- @see io.devs.map
-	device.props = props.new(newchild(device, 'props'))
+	device.props = props.new(newchild(device, 'props', update_cb), delchild(update_cb, 'props'))
 
 	--- Map of input object
 	-- @see io.devs.object
 	-- @see io.devs.map
-	device.inputs = objects.new(newchild(device, 'inputs'))
+	device.inputs = objects.new(newchild(device, 'inputs', update_cb), delchild(update_cb, 'inputs'))
 
 	--- Map of output object
 	-- @see device.inputs
-	device.outputs = objects.new(newchild(device, 'outputs'))
+	device.outputs = objects.new(newchild(device, 'outputs', update_cb), delchild(update_cb, 'outputs'))
 
 	--- Map of value object
 	-- @see device.inputs
-	device.values = objects.new(newchild(device, 'values'))
+	device.values = objects.new(newchild(device, 'values', update_cb), delchild(update_cb, 'values'))
 
 	--- Map of commands
 	-- @see io.devs.command
 	-- @see io.devs.map
-	device.commands = commands.new(newchild(device, 'commands'))
+	device.commands = commands.new(newchild(device, 'commands', update_cb), delchild(update_cb, 'commands'))
 
 	return setmetatable(device, {__index=class})
 end
