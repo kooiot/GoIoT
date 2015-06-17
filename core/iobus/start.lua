@@ -45,6 +45,16 @@ mpft['login'] = function(vars)
 	end
 end
 
+mpft['update'] = function(vars)
+	local namespace = vars.from
+	send_result('update', {result=true})
+	local client = clients[namespace]
+	if client then
+		client.tree = nil -- force update @fixme use a better way
+	end
+	pub.update(namespace)
+end
+
 mpft['publish'] = function(vars)
 	--log:debug('IOBUS', 'PUBLISH', vars.path)
 	local err = 'Invalid/Unsupported publish request'

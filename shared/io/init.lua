@@ -87,7 +87,8 @@ function _M.init(name, handlers)
 	--- devcies Interface
 	-- @see io.devs
 	app.devices = require('shared.io.devs').new(name, function(action, devname, kind, prop)
-		print('DEVS Update', action, devname, kind, prop)
+	--	print('DEVS Update', action, devname, kind, prop)
+		app.iobus:update()
 	end)
 	app.devices:bindcov(function(path, value)
 		--log:debug(name, 'Publish data changes at '..path)

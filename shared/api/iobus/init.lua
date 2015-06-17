@@ -32,6 +32,13 @@ function class:login(user, pass, port)
 	return reply(self.client:request(cjson.encode(req), true))
 end
 
+--- Update device tree
+function class:update()
+	local req = {"update", {from=self.from}}
+	return reply(self.client:request(cjson.encode(req), true))
+end
+
+
 --- Update/Write value by path
 -- @tparam string path The object/prop path
 -- @param value Value
