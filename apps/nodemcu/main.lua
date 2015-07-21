@@ -9,19 +9,24 @@ local ioname = arg[1]
 assert(ioname, 'Applicaiton needs to have a name')
 local server = nil
 
+--- The table saving devices
 local DEVS = {
 	["172.16.0.185"] = { ip = "172.16.0.185", name="test", online=os.time(), used=true},
 }
 
+--- The table saving all device inputs props
 local INPUTS = {}
 
+--- Global application handle
 local gapp = nil
 
+--- Save application configuration
 local function save_conf(app)
 	local config = require 'shared.api.config'
 	config.set(ioname..'.devs', cjson.encode({DEVS=DEVS}))
 end
 
+--- Add device command to device
 local function add_device_cmd(app, device, name, desc)
 	if not device or not name then
 		return nil, 'How dare U!!'
@@ -106,7 +111,7 @@ end
 
 local function scan_device(app)
 	log:debug(ioname, 'Sending request of version')
-	return send('VER:')
+	return send('SDP:')
 end
 
 local function read_gpio(app)
@@ -156,18 +161,18 @@ local function on_recv(data, ip, port)
 			end
 		end
 	end
-	if data:sub(1, 4) == 'VER:' then
-		local ver = data:sub(5)
-		if not DEVS[ip] then
-			print('New device found', ip, ver)
-			DEVS[ip] = {
-				ip = ip,
-				name = 'NodeMCU',
-				port = port,
-				ver = ver,
-				online = os.time(),
-				used = true,
-			}
+	if data:sub(1, 4) == 'SDP:' then
+		local sdp = cjson.decode(data:sub(5))
+		assert(sdp.name and sdp.ver and sdp.mac)
+		if not DEVS[ip] or DEVS[ip].name ~= sdp.name or DEVS[ip].mac ~= sdp.mac then
+			print('New device found', ip, data:sub(5))
+
+			sdp.ip = ip
+			sdp.port = port
+			sdp.online = os.time()
+			sdp.used = true
+
+			DEVS[ip] = sdp
 			create_vdevs(gapp)
 		end
 	end
@@ -213,25 +218,17 @@ end
 
 handlers.command = function(app, path, value, from)
 	local match = '^'..ioname..'/([^/]+)/commands/(.+)'
-	local devname, cmd = path:match(match)
-	local dev = find_dev(devname)
-	if not dev then
-		return nil, "No such device "..devname
+	local key, cmd = path:match(match)
+
+	for ip, dev in pairs(DEVS) do
+		if dev.ip == key or dev.name == key then
+			local r, err = send(cmd, dev.ip)
+			if not r then
+				log:error(ioname, "Failed to send out command", err)
+			end
+		end
 	end
-
-	return
-	--[[
-	local func = devctrl[cmd]
-	if not func then
-		return nil, "No such command "..cmd
-	end
-
-	local c, s = cmd:match('^(.+)_(.-)$')
-	print(c, s)
-	DEVS[devname].state[c] = s:upper()
-
-	return func(dev.ip)
-	]]--
+	log:error(ioname, 'Cannot find device', key)
 end
 
 gapp = ioapp.init(ioname, handlers)
