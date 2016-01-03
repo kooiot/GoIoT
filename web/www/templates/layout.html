@@ -144,16 +144,16 @@
 				<?=_("Menu")?>
 			</a>
 
-			<div class="title item">
-				<b>TipsyDate:</b> Go
+			<div class="header item">
+				<b>TipsyDate:</b>&nbspGo
 			</div>
 
-			<a class="popup icon item" data-content="Go home" href="/">
+			<a class="popup item" data-content="Go home" href="/">
 				<i class="home icon"></i> <?=_('Home')?>
 			</a>
 
 			<? if lwf.ctx.user then ?>
-			<a class="icon item" href="/store">
+			<a class="popup item" data-content="Get More Apps" href="/store">
 				<i class="cloud download icon"></i> <?=_('Store' )?>
 			</a>
 			<? end ?>
@@ -216,7 +216,7 @@
 					</div>
 				</div>
 				<? else ?>
-				<a class="icon item" href="/user/login">
+				<a class="item" href="/user/login">
 					<i class="sign in icon"></i><?=_('Sign In')?>
 				</a>
 				<? end ?>
