@@ -1,12 +1,12 @@
 -- modbus decode functions
 --
+local bit32 = require 'shared.compat.bit'
 
 local _M = {}
 
 _M.int8 = function (data)
-	val = string.byte(data)
-	val = ((val + 128) % 256) - 128
-	return val
+	local val = string.byte(data)
+	return ((val + 128) % 256) - 128
 end
 
 _M.uint8 = function (data)
@@ -14,29 +14,27 @@ _M.uint8 = function (data)
 end
 
 _M.int16 = function (data)
-	hv = string.byte(data)
-	hl = string.byte(data, 2)
-	val = hv * 256 + hl
-	val = ((val + 32768) % 65536) - 32768
-	return val
+	local hv = string.byte(data)
+	local lv = string.byte(data, 2)
+	val = hv * 256 + lv
+	return ((val + 32768) % 65536) - 32768
 end
 
 _M.uint16 = function (data)
-	hv = string.byte(data)
-	hl = string.byte(data, 2)
-	return hv * 256 + hl
+	local hv = string.byte(data)
+	local lv = string.byte(data, 2)
+	return hv * 256 + lv
 end
 
 _M.int32 = function (data)
-	val = _M.uint32(data)
-	val = ((val + 1073741824) % 2147483648) - 1073741824
-	return val
+	local val = _M.uint32(data)
+	return ((val + 1073741824) % 2147483648) - 1073741824
 end
 
 _M.uint32 = function (data)
-	hv = _M.uint16(data)
-	hl = _M.uint16(string.sub(data, 2, 2))
-	return hv * 65536 + hl
+	local hv = _M.uint16(data)
+	local lv = _M.uint16(string.sub(data, 2, 2))
+	return hv * 65536 + lv
 end
 
 _M.string = function (data, len)
@@ -44,7 +42,8 @@ _M.string = function (data, len)
 end
 
 _M.bit = function (data, len, offset)
-	if bit32.band(_M.uint8(data), bit32.lshift(1, offset)) == 0 then
+	local raw = string.sub(data, offset / 8)
+	if bit32.band(_M.uint8(raw), bit32.lshift(1, offset % 8)) == 0 then
 		return 0
 	else
 		return 1
