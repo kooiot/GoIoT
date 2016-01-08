@@ -233,7 +233,7 @@ local function save_yxx_map(ctree)
 	return config.set(ioname..'.config', ctree)
 end
 
-local function on_start()
+local function start()
 	dtree = load_yxx_map()
 	build_dtree()
 	yxx_map()
@@ -243,7 +243,7 @@ local function on_start()
 	init_sub()
 	sub_dtree()
 end
-app = require('shared.app').new(info, {on_start = on_start})
+app = require('shared.app').new(info, {start = start})
 app:init()
 app:reg_request_handler('list_devices', function(app, vars)
 	local devs = {}

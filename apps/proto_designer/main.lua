@@ -109,10 +109,10 @@ local port = serial.new()
 local learn_table = {}
 
 local handlers = {}
-handlers.on_start = function(app)
+handlers.start = function(app)
 end
 
-handlers.on_reload = function(app)
+handlers.reload = function(app)
 	-- TODO:
 end
 
@@ -144,7 +144,7 @@ local function reading(app)
 	learn_table.learning = false
 end
 
-handlers.on_run = function(app)
+handlers.run = function(app)
 	local abort = false
 	while not abort and learn_table.learning do
 		local r, data, size = port:read(1)
@@ -164,7 +164,7 @@ handlers.on_run = function(app)
 	return coroutine.yield(false, 1000)
 end
 
-handlers.on_write = function(app, path, value, from)
+handlers.write = function(app, path, value, from)
 	return nil, 'FIXME'
 end
 
@@ -210,7 +210,7 @@ local function send_cmd(app, device, name)
 	return true
 end
 
-handlers.on_command = function(app, path, value, from)
+handlers.command = function(app, path, value, from)
 	local match = '^'..ioname..'/([^/]+)/commands/(.+)'
 	local devname, cmd = path:match(match)
 	if devname == 'ir' and cmd == 'send' then
@@ -244,7 +244,7 @@ handlers.on_command = function(app, path, value, from)
 	end
 end
 
-handlers.on_import = function(app, filename)
+handlers.import = function(app, filename)
 	local f, err = io.open(filename)
 	if not f then
 		return nil, err

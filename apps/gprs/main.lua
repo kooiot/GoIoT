@@ -122,7 +122,7 @@ end
 ----------------------------------------------
 
 --初始化一些东西
-handlers.on_start = function(app)
+handlers.start = function(app)
 	log:info(ioname, 'Starting application[GPRS]')
 	if port:is_open() then 
 		return true
@@ -139,7 +139,7 @@ handlers.on_start = function(app)
 	return add_device_cmd(app, "GPRS", "SEND_MESSAGE", "send_message")
 end
 
-handlers.on_write = function (app, path, value, from)
+handlers.write = function (app, path, value, from)
 	return nil, 'FIXME'
 end
 
@@ -474,13 +474,13 @@ info.port = 5632
 info.ctx = zmq.context()
 info.poller = zpoller.new()
 info.name = ioname
-local function on_start()
+local function start()
 	return
 end
 
 local ggapp = nil
 local aborting = false
-local function on_close()
+local function close()
 	ggapp:close()
 	aborting = true
 end
@@ -533,7 +533,7 @@ end
 
 
 local conf, err = config.get(ioname..'.conf')
-ggapp = require('shared.app').new(info, {on_start = on_start, on_close = on_close})
+ggapp = require('shared.app').new(info, {start = start, close = close})
 --ggapp = require('shared.app').new(info, {})
 ggapp:init()
 local gprs_signal=function()
@@ -590,7 +590,7 @@ local function gprs_data()
 		end
 end
 
-handlers.on_command = function(app, path, value, from)
+handlers.command = function(app, path, value, from)
 	local match = '^'..ioname..'/([^/]+)/commands/(.+)'
 	local devname, cmd = path:match(match)
 
@@ -603,7 +603,7 @@ handlers.on_command = function(app, path, value, from)
 
 end
 
-handlers.on_run = function(app)
+handlers.run = function(app)
 	local abort = false
 	gprs_active(app)
 	gprs_init()

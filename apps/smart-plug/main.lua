@@ -100,16 +100,16 @@ local function load_conf(app)
 end
 
 local handlers = {}
-handlers.on_start = function(app)
+handlers.start = function(app)
 	devctrl.set_timeout(1) -- timeout 1 second
 	return load_conf(app)
 end
 
-handlers.on_reload = function(app)
+handlers.reload = function(app)
 	-- TODO:
 end
 
-handlers.on_run = function(app)
+handlers.run = function(app)
 	local abort = false
 	while not abort do
 		for name, dev in pairs(DEVS) do
@@ -142,11 +142,11 @@ handlers.on_run = function(app)
 	return coroutine.yield(false, 1000)
 end
 
-handlers.on_write = function(app, path, value, from)
+handlers.write = function(app, path, value, from)
 	return nil, 'FIXME'
 end
 
-handlers.on_command = function(app, path, value, from)
+handlers.command = function(app, path, value, from)
 	local match = '^'..ioname..'/([^/]+)/commands/(.+)'
 	local devname, cmd = path:match(match)
 	local dev = DEVS[devname]
@@ -165,7 +165,7 @@ handlers.on_command = function(app, path, value, from)
 	return func(dev.ip)
 end
 
-handlers.on_import = function(app, filename)
+handlers.import = function(app, filename)
 	local f, err = io.open(filename)
 	if not f then
 		return nil, err

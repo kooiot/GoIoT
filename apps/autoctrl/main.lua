@@ -87,7 +87,7 @@ local function on_close()
 	aborting = true
 end
 
-app = require('shared.app').new(info, {on_start = on_start, on_close = on_close})
+app = require('shared.app').new(info, {start = on_start, close = on_close})
 app:init()
 app:reg_request_handler('set_rule', function(app, vars)
 	--print(cjson.encode(vars))

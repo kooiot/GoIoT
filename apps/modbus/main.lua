@@ -109,7 +109,7 @@ stream.send = function(msg)
 end
 
 local handlers = {}
-handlers.on_start = function(app)
+handlers.start = function(app)
 	log:info(ioname, 'Received event [START]')
 	pause = false
 	if io_ports.main then
@@ -131,21 +131,21 @@ handlers.on_start = function(app)
 	return false
 end
 
-handlers.on_pause = function(app)
+handlers.pause = function(app)
 	--print(os.date(), 'Received pause Event')
 	log:info(ioname, 'Received event [PAUSE]')
 	pause = true
 	return true
 end
 
-handlers.on_reload = function(app)
+handlers.reload = function(app)
 	--print(os.date(), "On Reload")
 	log:info(ioname, 'Received event [RELOAD]')
 
 	return load_tags_conf(app, true)
 end
 
-handlers.on_run = function(app)
+handlers.run = function(app)
 	--log:info(ioname, 'RUN TIME')
 	--print(os.date(), 'RUN TIME')
 	
@@ -182,26 +182,17 @@ handlers.on_run = function(app)
 end
 
 -- Onwrite
-handlers.on_write = function(app, path, value, from)
-	log:debug(ioname, 'on_write called')
+handlers.write = function(app, path, value, from)
+	log:debug(ioname, 'write called')
 	return nil, 'FIXME'
 end
 
-handlers.on_command = function(app, path, value, from)
-	log:debug(ioname, 'on_command called')
+handlers.command = function(app, path, value, from)
+	log:debug(ioname, 'command called')
 	return nil, 'FIXME'
 end
 
-handlers.on_import = require('import').import
-
-io.add_port('main', {port.tcp_client, port.serial}, port.tcp_client) 
-io.add_port('backup', {port.tcp_client, port.serial}, port.tcp_client) 
-
-local setting = require('shared.io.setting')
-
-local t1 = setting.new('t1')
-t1:add_prop('prop1', 'test prop 1', 'number', 11, {min=1, max=99})
-io.add_setting(t1)
+handlers.import = require('import').import
 
 app = io.init(ioname, handlers)
 assert(app)
