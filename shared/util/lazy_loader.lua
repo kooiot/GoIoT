@@ -1,4 +1,5 @@
 local lfs = require 'lfs'
+local require = require
 
 local function _enum_dir (path, cb)
 	for file in lfs.dir(path) do
@@ -24,22 +25,29 @@ local function _add_package(self, name, pkname)
 	self._packages[name] = function() return require(pkname) end
 end
 
-function class:load(base_folder, base_pk)
-	assert(base_folder and base_pk)
-	_enum_dir(base_folder, function(file, ...)
+function class:load(folder, base_pk, prefix)
+	assert(folder and base_pk)
+	_enum_dir(folder, function(file, ...)
 		local p = file:match('(.+)%.lua$') or file:match('(.+)%.luac$')
 		if p then
-			local pk = p:gsub('/', '.')
+			local pk = prefix..'.'..p:gsub('/', '.')
+			if pk:sub(-5) == '.init' then
+				pk = pk:sub(1, -6)
+			end
 			_add_package(self, pk, base_pk..'.'..pk)
 		end
 	end)
 end
-function class:package(name, package)
+
+function class:add(name, package)
 	_add_package(self, name, package or name)
 end
 
 local _load = function(self, name)
 	if not self._packages[name] then
+		for k,v in pairs(self._packages) do
+			print(k, v)
+		end
 		return assert(nil, 'package '..name..' does not exits this loader')
 	end
 	self._loaded[name] = self._packages[name]()
@@ -47,7 +55,7 @@ local _load = function(self, name)
 end
 
 local _loader_call = function(self, pkname)
-	return self._loaded[pkname] or _load(self, pkname)
+	return require(pkname) or self._loaded[pkname] or _load(self, pkname)
 end
 
 return function()

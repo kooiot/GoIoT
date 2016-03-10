@@ -1,10 +1,10 @@
 #!/usr/bin/env lua
 
-local api = app.api.iobus
+local api = require 'go.api.iobus'
 local cjson = require 'cjson.safe'
 local zpoller =  require 'lzmq.poller'
 local zmq = require 'lzmq'
-require 'shared.zhelpers'
+require 'go.zhelpers'
 
 local ctx = zmq.context()
 local poller = zpoller.new()

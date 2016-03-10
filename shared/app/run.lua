@@ -11,9 +11,8 @@ local m_package_path = package.path
 package.path = string.format("%s;%s/?.lua;%s/?/init.lua", m_package_path, m_path, m_path)  
 
 --local pwd = os.getenv('PWD')
+require 'shared.zhelpers'
 local log = require('shared.log')
-local compat = require('shared.compat.env')
-local appenv = require 'shared.app.env'
 
 if #arg < 1 then
 	log:error('RUNNER', 'Application should start with its instance name')
@@ -30,7 +29,7 @@ if arg[#arg] == '-debug' then
 	log:info('RUNNER', 'Start application in DEBUG mode, addr:', info.addr, 'port:', info.port)
 end
 
-local f, err =  compat.loadfile('main.lua', nil, appenv)
+local f, err =  loadfile('main.lua')
 if not f then
 	log:error('RUNNER', 'Failed to compile application[', arg[1], ']:', err)
 else
@@ -43,6 +42,5 @@ else
 	end
 end
 ----
-local ztimer = require('lzmq.timer')
-ztimer.sleep(1000)
+sleep(1)
 os.exit()
