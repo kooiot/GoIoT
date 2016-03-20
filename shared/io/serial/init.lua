@@ -35,17 +35,16 @@ function class:open(port_name, opt, callback)
 	assert(p:set_flow_control(rs232['RS232_FLOW_'..opt.flowcontrol]) == rs232.RS232_ERR_NOERROR)
 
 	print(string.format("OK, port open with values '%s'", tostring(p)))
-	self.port = p
-	self.callback = callback
+	self._port = p
 
-	self.app:add_thread(function()
+	self._app:add_thread(function()
 		while not self._close do
-			if self.app:sleep(50) then
+			if self._app:sleep(50) then
 				break
 			end
-			local r, data, size = self:read(64, 10)
+			local r, data, size = self:_read(64, 10)
 			if r then
-				self.callback(data, size)
+				callback(data, size)
 			end
 		end
 	end)
@@ -53,21 +52,21 @@ function class:open(port_name, opt, callback)
 	return true
 end
 
---- Read data from serial port
+--- Read data from serial port(Internal using only)
 -- @tparam number len the length you want to read from searial
 -- @tparam number timeout the timeout in ms for reading
 -- @treturn boolean whether reading is success or not
 -- @treturn string the data read from serial
 -- @treturn number the size of data
 function class:_read(len, timeout)
-	if not self.port then 
+	if not self._port then 
 		return false, '', 0
 	end
 
 	assert(len)
 	-- read with timeout
-	local timeout = timeout or self.read_timeout -- in miliseconds
-	local e, data_read, size = self.port:read(len, timeout)
+	local timeout = timeout or self._read_timeout -- in miliseconds
+	local e, data_read, size = self._port:read(len, timeout)
 	return e == rs232.RS232_ERR_NOERROR, data_read, size
 end
 
@@ -75,34 +74,36 @@ end
 -- @tparam string data
 -- @tparam number timeout timeout in ms for writing operation
 function class:write(data, timeout)
-	if not self.port then
+	local port = self._port
+	if not port then
 		return false, 0
 	end
 
 	-- write with timeout 1000 msec
-	local e, len_written = self.port:write(data, timeout or self.write_timeout)
+	local e, len_written = port:write(data, timeout or self._write_timeout)
 	return e == rs232.RS232_ERR_NOERROR, len_written
 end
 
 function class:close()
-	if not self.port then
+	local port = self._port
+	if not port then
 		return
 	end
 	self._close = true
-	self.app:sleep(100)
+	self._app:sleep(100)
 
 	-- close
-	assert(self.port:close() == rs232.RS232_ERR_NOERROR)
-	self.port = nil
+	assert(port:close() == rs232.RS232_ERR_NOERROR)
+	self._port = nil
 end
 
 function class:set_timeout(write, read)
-	self.write_timeout = write or 100
-	self.read_timeout = read or 1000
+	self._write_timeout = write or 100
+	self._read_timeout = read or 1000
 end
 
 function class:is_open()
-	return self.port
+	return self._port
 end
 
 return {
@@ -110,9 +111,10 @@ return {
 	-- @tparam object app application object
 	new = function(app)
 		local obj = {
-			app = app,
-			write_timeout = 100,
-			read_timeout = 1000,
+			_app = app,
+			_port = nil,
+			_write_timeout = 100,
+			_read_timeout = 1000,
 		}
 		return setmetatable(obj, {__index=class})
 	end

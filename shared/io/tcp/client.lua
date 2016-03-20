@@ -7,17 +7,25 @@
 local class = {}
 
 --- Open connection
+-- @tparam string sip server ip
+-- @tparam number sport server listen port
 -- @tparam function callback Callback function when receiving data
 -- @treturn boolean result
 -- @treturn string error
-function class:open(callback)
+function class:open(sip, sport, callback)
 	if self._client then
 		return nil, "already connected"
 	end
 
+	if not sip or not sport then
+		return nil, "Remote ip/port are required"
+	end
 	if not callback then
 		return nil, "no callback function"
 	end
+
+	self._sip = sip
+	self._sport = sport
 	self._callback = callback
 
 	--print(require('shared.util.PrettyPrint')({zmq.STREAM, linger=0, identity='abcde', connect="tcp://"..self._sip..":"..self._sport}))
@@ -85,10 +93,8 @@ local _M = {}
 
 --- Create new tcp client object
 -- @tparam shared.app app application object (returns from io.init())
--- @tparam string sip server ip
--- @tparam number sport server listen port
 -- @treturn class
-_M.new = function(app, sip, sport)
+_M.new = function(app)
 	local ctx = app.ctx
 	local poller = app.poller
 	assert(ctx and poller)
@@ -97,8 +103,8 @@ _M.new = function(app, sip, sport)
 		_poller = poller,
 		_client=nil,
 		_client_id = nil,
-		_sip = sip or "127.0.0.1",
-		_sport = sport or 4000,
+		_sip = nil,
+		_sport = nil,
 		_callback=nil},
 		{__index=class})
 end
