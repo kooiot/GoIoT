@@ -7,40 +7,45 @@
 local class = {}
 
 --- Open connection
--- @tparam function cb callback function when receiving data
+-- @tparam function callback Callback function when receiving data
 -- @treturn boolean result
 -- @treturn string error
-function class:open(cb)
-	if self.client then
+function class:open(callback)
+	if self._client then
 		return nil, "already connected"
 	end
 
-	if not cb then
+	if not callback then
 		return nil, "no callback function"
 	end
-	self.cb = cb
+	self._callback = callback
 
-	--print(require('shared.util.PrettyPrint')({zmq.STREAM, linger=0, identity='abcde', connect="tcp://"..self.sip..":"..self.sport}))
+	--print(require('shared.util.PrettyPrint')({zmq.STREAM, linger=0, identity='abcde', connect="tcp://"..self._sip..":"..self._sport}))
 
-	local client, err = self.ctx:socket({zmq.STREAM, linger=0, identity='abcde', connect="tcp://"..self.sip..":"..self.sport})
+	local client, err = self._ctx:socket({
+		zmq.STREAM,
+		linger=0,
+		identity='abcde',
+		connect="tcp://"..self._sip..":"..self._sport
+	})
 	zassert(client, err)
 
 	local id, err = client:getopt_str(zmq.IDENTITY)
 	zassert(id, err)
-	self.client_id = id
+	self._client_id = id
 
-	self.client = client 
+	self._client = client 
 
-	self.poller:add(client, zmq.POLLIN, function()
-		local id, err = self.client:recv_len(256)
+	self._poller:add(client, zmq.POLLIN, function()
+		local id, err = client:recv_len(256)
 		if not id then
 			print(err)
 		end
 
-		local msg, err = self.client:recv()
+		local msg, err = client:recv()
 		if msg then
-			if self.cb then
-				self.cb(self, msg)
+			if self._callback then
+				self._callback(self, msg)
 			end
 		else
 			print(err)
@@ -53,12 +58,12 @@ end
 -- @treturn boolean result
 -- @treturn string error 
 function class:close()
-	if not self.client then
+	if not self._client then
 		return nil, "not connected"
 	end
-	self.poller:remove(self.client)
-	self.client:close()
-	self.client = nil
+	self._poller:remove(self._client)
+	self._client:close()
+	self._client = nil
 	return true
 end
 
@@ -67,9 +72,9 @@ end
 -- @treturn boolean
 -- @treturn error
 function class:send(msg)
-	local r, err = self.client:send(self.client_id, zmq.SNDMORE)
+	local r, err = self._client:send(self._client_id, zmq.SNDMORE)
 	assert(r, err)
-	return self.client:send(msg)
+	return self._client:send(msg)
 end
 
 --- Module
@@ -88,13 +93,13 @@ _M.new = function(app, sip, sport)
 	local poller = app.poller
 	assert(ctx and poller)
 	return setmetatable({
-		ctx = ctx,
-		poller = poller,
-		client=nil,
-		client_id = nil,
-		sip = sip or "127.0.0.1",
-		sport = sport or 4000,
-		cb=nil},
+		_ctx = ctx,
+		_poller = poller,
+		_client=nil,
+		_client_id = nil,
+		_sip = sip or "127.0.0.1",
+		_sport = sport or 4000,
+		_callback=nil},
 		{__index=class})
 end
 
