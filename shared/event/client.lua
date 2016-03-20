@@ -1,5 +1,4 @@
 --- Event classes
--- includes C(client) and S(server)
 -- @author Dirk Chang
 --
 
@@ -8,11 +7,7 @@ local zmq = require "lzmq"
 local cjson = require 'cjson'
 local zpoller = require 'lzmq.poller'
 
-local CONN_METHOD = "tcp://"
-local PUB_SERVER_PORT = ":5519"
-local REP_SERVER_PORT = ":5518"
-local SERVER_ENDPOINT = "localhost"
-
+local cfg = require 'shared.event.cfg'
 
 --- Event Object Type
 -- @table event
@@ -24,16 +19,16 @@ local SERVER_ENDPOINT = "localhost"
 -- @function callback
 -- @tparam event event
 
---- A client class
--- @type C
-local C = {}
+--- Event client class
+--	a type class
+local class = {}
 
 --- Create a new client object
 -- @tparam lzmq.context ctx 
 -- @tparam lzmq.poller poller 
 -- @tparam callback cb callback function
--- @treturn C a new server object
-function C.new(ctx, poller, cb)
+-- @treturn class a new server object
+function class.new(ctx, poller, cb)
 	local poller = poller or zpoller.new()
 	local ctx = ctx or zmq.context()
 	return setmetatable(
@@ -44,19 +39,19 @@ function C.new(ctx, poller, cb)
 		subscriber = nil,
 		option = nil,
 		callback = cb,
-	}, {__index = C})
+	}, {__index = class})
 end
 
 --- Open connection 
 -- @tparam string ip remote ip
 -- @treturn nil
 -- @raise assert on binding failure
-function C:open(ip)
+function class:open(ip)
 
 	local SOCKET_OPTION = {
 		zmq.SUB,
 		subscribe = 'EVENT ',
-		connect  = CONN_METHOD..(endpoint or SERVER_ENDPOINT)..PUB_SERVER_PORT,
+		connect  = cfg.CONN_METHOD..(ip or cfg.SERVER_ENDPOINT)..cfg.PUB_SERVER_PORT,
 	}
 
 	local subscriber, err = self.ctx:socket(SOCKET_OPTION)
@@ -85,7 +80,7 @@ function C:open(ip)
 	local REQ_SOCKET_OPTION = {
 		zmq.REQ,
 		linger   = 0,
-		connect  = CONN_METHOD..(endpoint or SERVER_ENDPOINT)..REP_SERVER_PORT,
+		connect  = cfg.CONN_METHOD..(ip or cfg.SERVER_ENDPOINT)..cfg.REP_SERVER_PORT,
 	}
 
 	local client, err = self.ctx:socket(REQ_SOCKET_OPTION)
@@ -101,7 +96,7 @@ end
 --- Close connection 
 --@treturn bool result
 --@treturn string error
-function C:close()
+function class:close()
 	if not self.client then
 		return nil, "not connected"
 	end
@@ -121,7 +116,7 @@ end
 -- @tparam event event object
 -- @treturn boolean ok
 -- @treturn string error
-function C:send(event)
+function class:send(event)
 	assert(event.src)
 	assert(event.name)
 	event.dest = event.dest or "ALL"
@@ -129,93 +124,7 @@ function C:send(event)
 	return self.client:send(cjson.encode(event))
 end
 
---- A server class
--- @type S
-local S = {}
-
---- Create a new server object
--- @tparam lzmq.context ctx
--- @tparam lzmq.poller poller
--- @treturn S a new server object
-function S.new(ctx, poller)
-	local ctx = ctx or zmq.context()
-	local poller = poller or zpoller.new()
-	return setmetatable(
-	{
-		ctx = ctx,
-		poller = poller,
-		server = nil,
-		publisher = nil,
-		option = nil,
-	}, {__index = S})
-end
-
-
---- Open the service
--- @tparam string ip local ip address, nil or '*' for any ethernet address
--- @treturn nil
--- @raise assert on binding failure
-function S:open(ip)
-	local ip = ip or "*"
-	local SOCKET_OPTION = {
-		zmq.PUB,
-		bind  = CONN_METHOD..ip..PUB_SERVER_PORT,
-	}
-
-	local publisher, err = self.ctx:socket(SOCKET_OPTION)
-	zassert(publisher, err)
-
-	self.publisher = publisher
-
-	--[[
-	self.poller:add(self.publisher, zmq.POLLIN, function()
-	end)
-	]]--
-
-	local REP_SOCKET_OPT = {
-		zmq.REP,
-		bind = CONN_METHOD..ip..REP_SERVER_PORT,
-	}
-	local server, err = self.ctx:socket(REP_SOCKET_OPT)
-	zassert(server, err)
-	self.server = server
-
-	self.poller:add(server, zmq.POLLIN, function()
-		local msg, err = self.server:recv()
-		if msg then
-			--print('EVENT RECV', msg)
-			self.publisher:send('EVENT ', zmq.SNDMORE)
-			self.publisher:send(msg)
-			--print('EVENT PUB DONE')
-		else
-			print('ERR', err)
-		end
-		-- tell the client
-		self.server:send('DONE')
-	end)
-end
-
---- Close the server
--- @return ok result
--- @treturn string error error message
-function S:close()
-	if not server then
-		return nil, "not initialized"
-	end
-	if self.poller then
-		self.poller:remove(self.server)
-		self.poller:remove(self.publisher)
-	end
-	
-	self.server:close()
-	self.server = nil
-	self.publisher:close()
-	self.publisher = nil
-	return true
-end
-
 ---@export
-return  {
-	C = C,
-	S = S,
+return {
+	new = class.new
 }

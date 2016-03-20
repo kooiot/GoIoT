@@ -203,7 +203,7 @@ local function get_app_info(path, version)
 end
 
 local function stop_application(lname)
-	local event = require('shared.event').C.new()
+	local event = require('shared.event.client').new()
 	event:open()
 	log:info('STORE', "Stoping application "..lname)
 	event:send({src='web', name='close', dest=lname})

@@ -102,7 +102,7 @@ end
 -- @treturn boolean result
 -- @treturn string error message
 function _M.stop(insname)
-	local event = require('shared.event').C.new()
+	local event = require('shared.event.client').new()
 	event:open()
 	--[[
 	local log = require 'shared.log'

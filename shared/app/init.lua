@@ -2,7 +2,7 @@
 -- Base interface for application
 
 local zmq = require 'lzmq'
-local event = require 'shared.event'
+local event_client = require 'shared.event.client'
 local zpoller = require 'lzmq.poller'
 local ztimer = require 'lzmq.timer'
 local cjson = require 'cjson.safe'
@@ -133,7 +133,7 @@ function class:init()
 		end)
 	end
 
-	self._event = event.C.new(self._ctx, self._poller, function (event) 
+	self._event = event_client.new(self._ctx, self._poller, function (event) 
 		self:on_event(event)
 	end)
 	self._event:open()
