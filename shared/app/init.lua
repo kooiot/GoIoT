@@ -8,11 +8,6 @@ local ztimer = require 'lzmq.timer'
 local cjson = require 'cjson.safe'
 local copas = require 'copas'
 
-local mpft = require 'shared.app.mpft'
-local empft = require 'shared.app.empft'
-
-local _ver = require '_ver' or {}
-
 --- Application class
 -- @type class
 local class = {}
@@ -24,9 +19,12 @@ local class = {}
 -- @return ok
 -- @treturn string error
 function class:firevent(dest, name, vars)
-	local event = {src=self.name, dest=dest, name=name, vars=vars}
-	--print('fire EVENT('..name..') to '..dest )
-	return self.event:send(event)
+	return self._event:send({
+		src=self._name,
+		dest=dest,
+		name=name,
+		vars=vars
+	})
 end
 
 --- Send error reply
@@ -46,8 +44,9 @@ end
 -- @return ok
 -- @treturn string error
 function class:reg_request_handler(name, handler)
-	if not self.mpft[name] then
-		self.mpft[name] = handler
+	local mpft = self._mpft or {}
+	if not _mpft[name] then
+		mpft[name] = handler
 		return true
 	end
 	return false, 'MSG '..name..' already registered!!'
@@ -61,15 +60,16 @@ function class:on_request(msg)
 	local json, err = cjson.decode(msg)
 	if not json then
 		print('JSON DECODE ERR', err)
-		send_err(self.server, 'Unsupported message format')
+		send_err(self._server, 'Unsupported message format')
 		return
 	end
 
 	local msgtype = json[1]
-	if self.mpft[msgtype] then
-		self.mpft[msgtype](self, json[2])
+	local mpft = self._mpft or {}
+	if mpft[msgtype] then
+		mpft[msgtype](self, json[2])
 	else
-		send_err(self.server, self.name..' has no handler for message '..msgtype)
+		send_err(self._server, self._name..' has no handler for message '..msgtype)
 	end
 end
 
@@ -79,8 +79,9 @@ end
 -- @return ok
 -- @treturn string error
 function class:reg_event_handler(name, handler)
-	if not self.empft[name] then
-		self.empft[name] = handler
+	local empft = self._empft or {}
+	if not empft[name] then
+		empft[name] = handler
 		return true
 	end
 	return false, 'Event '..name..' already registered!!'
@@ -92,13 +93,14 @@ end
 -- @treturn nil
 function class:on_event(event)
 	print('on_event', event.name, event.dest)
-	if event.dest ~= self.name and event.dest ~= 'ALL' then
+	if event.dest ~= self._name and event.dest ~= 'ALL' then
 		print('Event is not for me')
 		return
 	end
 
-	if self.empft[event.name] then
-		self.empft[event.name](self, event)
+	local empft = self._empft or {}
+	if empft[event.name] then
+		empft[event.name](self, event)
 	else
 		print('No handler for event', event.name)
 	end
@@ -107,21 +109,21 @@ end
 --- Initialize the application object
 -- @raise asserts on binding failure
 function class:init()
-	if self.port then
-		local server, err = self.ctx:socket({
+	if self._port then
+		local server, err = self._ctx:socket({
 			zmq.REP,
 		})
 		zassert(server, err)
-		if self.port_retry ~= 0 and server.bind_to_random_port then
-			self.port, err = server:bind_to_random_port('tcp://127.0.0.1', self.port, 128)
-			zassert(self.port, err)
+		if self._port_retry ~= 0 and server.bind_to_random_port then
+			self._port, err = server:bind_to_random_port('tcp://127.0.0.1', self._port, 128)
+			zassert(self._port, err)
 		else
-			zassert(server:bind('tcp://127.0.0.1:'..self.port))
+			zassert(server:bind('tcp://127.0.0.1:'..self._port))
 		end
-		self.server = server
+		self._server = server
 
-		self.poller:add(server, zmq.POLLIN, function()
-			local msg, err = self.server:recv()
+		self._poller:add(server, zmq.POLLIN, function()
+			local msg, err = server:recv()
 			if msg then
 				print(os.date(), 'Received request message')
 				self:on_request(msg)
@@ -131,20 +133,20 @@ function class:init()
 		end)
 	end
 
-	self.event = event.C.new(self.ctx, self.poller, function (event) 
+	self._event = event.C.new(self._ctx, self._poller, function (event) 
 		self:on_event(event)
 	end)
-	self.event:open()
+	self._event:open()
 
-	local client, err = self.ctx:socket({
+	local client, err = self._ctx:socket({
 		zmq.REQ,
 		connect = "tcp://localhost:5511"
 	})
 	zassert(client, err)
-	self.monclient = client
+	self._monclient = client
 
-	self.poller:add(client, zmq.POLLIN, function()
-		local msg, err = self.monclient:recv()
+	self._poller:add(client, zmq.POLLIN, function()
+		local msg, err = self._monclient:recv()
 		-- DO NOTHING on return
 	end)
 
@@ -163,13 +165,13 @@ function class:init()
 				self:send_notice()
 			end
 			-- Let the zmq run
-			self.poller:poll(50)
+			self._poller:poll(50)
 		end
 
 	end)
 
-	if self.handlers.start then
-		self.handlers.start(self)
+	if self._handlers.start then
+		self._handlers.start(self)
 	end
 end
 
@@ -178,8 +180,8 @@ end
 function class:send_notice(typ)
 	if not self._closed then
 		--print(os.date(), 'send notice')
-		local req = {'notice', {name=self.name, desc=self.desc, port=self.port, typ=typ}}
-		self.monclient:send(cjson.encode(req))
+		local req = {'notice', {name=self._name, desc=self._desc, port=self._port, typ=typ}}
+		self._monclient:send(cjson.encode(req))
 	end
 end
 
@@ -199,14 +201,10 @@ end
 -- @treturn table the meta table
 function class:meta()
 	return {
-		name = self.name,
-		port = self.port,
-		version = {
-			version = self.version,
-			build = self.build,
-			manufactor = self.manufactor,
-		},
-		web = self.web,
+		name = self._name,
+		desc = self._desc,
+		port = self._port,
+		version = self._ver,
 		app = self.handlers.app_meta(self)
 	}
 end
@@ -278,6 +276,7 @@ end
 -- @field version Version number 
 -- @field build Version build number
 -- @field name Appliation name
+-- @filed desc Application description
 -- @field desc Application description
 -- @field web (deleted)
 -- @field manufactor Application manufactor
@@ -295,43 +294,48 @@ end
 local function new(info, handlers)
 	assert(info.name, 'App port must be specified')
 
+	local mpft = require 'shared.app.mpft'
+	local empft = require 'shared.app.empft'
+	local _ver = require '_ver' or {}
+
 	local obj = {
 		zmq = zmq,
 		zpoller = zpoller,
 		cjson = cjson,
 		event = event,
 	}
-	obj.version = _ver.version or '0.1'
-	obj.build = _ver.build or '000001'
-	obj.name = info.name or _ver.name 
-	obj.desc = _ver.desc or 'unknown application'
-	obj.web = _ver.web or false -- the application pack has its own web pages
-	obj.manufactor = _ver.manufactor or 'KooIoT'
-	obj.port = info.port or 5515
-	obj.port_retry = info.no_port_retry and 0 or 128
-	obj.server = nil
+	obj._ver = {
+		version = _ver.version or '0.1',
+		build = _ver.build or '000001',
+		manufactor = _ver.manufactor or 'KooIoT'
+	}
+	obj._name = info.name or _ver.name 
+	obj._desc = info.desc or _ver.desc or 'unknown application'
+	obj._port = info.port or 5515
+	obj._port_retry = info.no_port_retry and 0 or 128
+	obj._server = nil
 
 	-- handler functions
-	obj.handlers = handlers or {}
+	obj._handlers = handlers or {}
 
-	obj.ctx = info.ctx or zmq.context()
-	obj.poller = info.poller or zpoller.new(3)
-	obj.event = nil
+	obj._ctx = info.ctx or zmq.context()
+	obj._poller = info.poller or zpoller.new(3)
+	obj._event = nil
 
 	-- Message Process Function table for REQ/REP
-	obj.mpft = {}
+	obj._mpft = {}
 	for k,v in pairs(mpft) do
-		obj.mpft[k] = v
+		obj._mpft[k] = v
 	end
 
 	-- Event Message Process Function table
-	obj.empft = {}
+	obj._empft = {}
 	for k,v in pairs(empft) do
-		obj.empft[k] = v
+		obj._empft[k] = v
 	end
 
 	-- Monitor application interfaces, which will be updated automatically
-	obj.monclient = nil
+	obj._monclient = nil
 
 	-- Closed flag
 	obj._closed = false
