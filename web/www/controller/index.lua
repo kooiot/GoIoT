@@ -25,7 +25,7 @@ local function log_to_event(logs)
 			else
 				ev.label = {icon='teal info'}
 			end
-			ev.date = os.date('%c', v.timestamp / 1000)
+			ev.date = os.date('%c', math.floor(v.timestamp / 1000))
 		if not SYS_SRC[v.src] then
 			ev.extra = {
 				text = v.content

@@ -51,7 +51,7 @@ echo $REVISION >> __install/version
 
 # For pre-installed applications
 mkdir __install/apps
-./scripts/pre_inst.sh cloudex admin 1.2.0
+./scripts/pre_inst.sh cloud admin 1.2.0
 
 # Compile lua files
 # ./scripts/compile_lua.sh 
@@ -78,10 +78,8 @@ rm -rf __install
 ./scripts/release_app.sh example
 # Release the yeelink
 ./scripts/release_app.sh yeelink
-# Release cloud 
+# Release cloud
 ./scripts/release_app.sh cloud
-# Release cloudex
-./scripts/release_app.sh cloudex
 # Release network
 ./scripts/release_app.sh network
 # Release IR Controller
