@@ -9,7 +9,7 @@ return {
 		local password = req:get_post_arg('password')
 		local r, err
 		if username and password then
-			r, err = app:authenticate(username, password)
+			r, err = lwf.ctx.auth:authenticate(username, password)
 			--[[
 			if r then
 				return res:redirect('/', 303)

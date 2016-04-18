@@ -24,8 +24,10 @@ return {
 	},
 	i18n = true,
 
-	auth = 'simple',
-	auth_file = get_auth_file(),
+	auth = {
+		name = 'simple',
+		file = get_auth_file(),
+	},
 
 	debug={
 		on = true,

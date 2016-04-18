@@ -10,6 +10,7 @@ return {
 		if not lwf.ctx.user then
 			res:redirect('/user/login')
 		else
+			local auth = lwf.ctx.auth
 			local username = lwf.ctx.user.username
 
 			local action = req.post_args['action']
@@ -35,11 +36,11 @@ return {
 				if newpass ~= newpass2 then
 					err = 'Password re-type is not same'
 				else
-					local r = app.auth:authenticate(tostring(username), tostring(orgpass))
+					local r = auth:authenticate(tostring(username), tostring(orgpass))
 					if not r then
 						err = 'Original password failure'
 					else
-						r, err = app.auth:set_password(tostring(username), tostring(newpass))
+						r, err = auth:set_password(tostring(username), tostring(newpass))
 					end
 				end
 				res:ltp('user/settings.html', {lwf=lwf, app=app, info=err})
